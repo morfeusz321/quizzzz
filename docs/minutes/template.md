@@ -17,10 +17,10 @@ Attendees: {names}
 
 ### Approve minutes of prior meeting
 
-{Agenda item 1} - {purpose of agenda item}.
+### {Agenda item 1} - {purpose of agenda item}.
 Describe in outline what was discussed in content and how you came to an outcome/finding. Was the purpose of the meeting (to inform/ brainstorm/ decide/ discuss) achieved? This (possibly) results in actions that you record in the action list.
 
-{Agenda item 2} - {purpose of agenda item}.
+### {Agenda item 2} - {purpose of agenda item}.
 Idem.
 
 ### Summary of action points
