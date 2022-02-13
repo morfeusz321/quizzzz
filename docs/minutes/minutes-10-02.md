@@ -3,7 +3,7 @@
 Location: Library project room/online (hybrid)\
 Date: 10.02\
 Time: 11:00 - 12:00\
-Attendees: Tereza, Erik, Gijs, Tadas, Fanni
+Attendees: Tereza Ležovičová, Erik Vidican, Gijs van der Heide, Tadas Lukavičius, Fanni Fiedrich
 
 ## Agenda items
 
