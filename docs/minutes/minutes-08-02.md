@@ -3,7 +3,7 @@
 Location: Online\
 Date: 08.02.2022\
 Time: 16:45 - 17:45\
-Attendees: Tereza, Erik, Filip, Gijs, Tadas, Fanni
+Attendees: Damla Ortaç (TA), Tereza Ležovičová, Erik Vidican, Filip Błaszczyk, Gijs van der Heide, Tadas Lukavičius, Fanni Fiedrich
 
 ## Agenda items
 
