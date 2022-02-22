@@ -40,26 +40,69 @@ Attendees: Damla Ortaç (TA), Tereza Ležovičová, Erik Vidican, Filip Błaszcz
 * 17:45 - **Closing**
 
 ### Opening by Chairperson 
-(No minutes)
 
 ### Announcements
 
+* Information Literacy - Did everyone start yet? 
+
 ### Approval of the agenda
-(Does anyone have any additions to the agenda? what is missing that you would like to discuss?)
+Approved beforehand.
 
 ### Approve minutes of prior meeting
+Approved.
 
-### Check-in - Discussion regarding code template.
-Describe in outline what was discussed in content and how you came to an outcome/finding. Was the purpose of the meeting (to inform/ brainstorm/ decide/ discuss) achieved? This (possibly) results in actions that you record in the action list.
+### Check-in and discussion regarding code template.
+Did everyone go over the code template?
+  * 
+
+Checkstyle rules
+  * 
 
 ### Code of conduct.
-Idem.
+Rubric points -> adjust code of conduct.
 
-### General planning of next steps.
-Idem.
+* Assignment description, good general description, but there's no overview of the tasks. The outside reader must be able to understand what we are doing.
 
-### Discussion regarding 20 activities.
-Idem.
+* Target or ambition, add something not grade related describing end goal of course.
+
+* Product, there are no clear deliverables, to the client at end of project, source code etc. There must also be standrads on this project. E.g. Certain testing coverage, type of coverage, more concrete mentioning of what we are expecting standard-wise.
+
+* Planning -> division of work, what do we focus on equal amount of time or equal amount of issues etc. And setting deadlines.
+
+* Behaviour -> mention that every member needs to work on every part of the code.
+
+* Mention when TA will intervene for deadlines.
+
+* Commitments -> mention measurements, what is quality of work. Everyone approves the work, or one person, etc. Qualtiy of chairman and note taker.
+
+* Meetings -> How do we arrange meetings (set date?). Do we cancel/postpone meetings? What is the goal of these meetings? In case the scheduled meetings aren't enough, how do we schedule new meetings?
+
+* Decision making, specify what happens in case of no consensus
+
+* Consequences, in case someone didn't meet a deadline, concrete consequences. Constructive consequences, e.g. why didn't you meet the deadline, do you need help? If this happens more often, when do we go to TA?
+
+* Dream team -> more concrete?
+
+Submit new code of conduct via GitLab.
+
+### API Endpoints
+GET, PUT, POST, and DELETE on an endpoint. We need to have one working endpoint. Weather application is also an endpoint?
+
+### Backlog feedback
+Keep playing around with subtasks and issues, but is fine right now.
+
+### Good GitLab practices
+Use board? In progress, in review, in testing, instead of only open/closed. Not mandatory, but nice feature.
+
+1-2 people per issue, if more needed, split the issue up! More people not recommended.
+
+Create more smaller issues/subtasks. Even very basic ones, like create this and this Class etc.
+
+Use time tracker.
+
+Merge requests: TA can get weekly report. Leave (constructive!) comments on merge requests!
+
+First pull dev before merge request, resolve the merge conflicts locally! So that the dev pipeline doesn't break! Not sure if applicable if we are not going to use a dev branch? Or do we want to use a dev branch?
 
 ### Sharing tips & tops (feedback for the chair and the team).
 Idem.
