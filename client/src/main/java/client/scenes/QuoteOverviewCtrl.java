@@ -29,6 +29,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class QuoteOverviewCtrl implements Initializable {
 
@@ -45,6 +47,9 @@ public class QuoteOverviewCtrl implements Initializable {
     private TableColumn<Quote, String> colLastName;
     @FXML
     private TableColumn<Quote, String> colQuote;
+
+    @FXML
+    private ImageView imageDisplay;
 
     @Inject
     public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -68,4 +73,19 @@ public class QuoteOverviewCtrl implements Initializable {
         data = FXCollections.observableList(quotes);
         table.setItems(data);
     }
+
+    public void onGetImage1ButtonClick() {
+
+        Image img = new Image(ServerUtils.getServer() + "api/img/00/shower.jpg");
+        imageDisplay.setImage(img);
+
+    }
+
+    public void onGetImage2ButtonClick() {
+
+        Image img = new Image(ServerUtils.getServer() + "api/img/00/smartphone.png");
+        imageDisplay.setImage(img);
+
+    }
+
 }

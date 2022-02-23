@@ -52,15 +52,6 @@ public class FromSourceActivityDeserializer extends StdDeserializer<Activity> {
         }
         String imagePath = groupID + "/" + imageName;
 
-        /*
-        URI imageURI = null;
-        try {
-            imageURI = FromSourceActivityDeserializer.class.getClassLoader().getResource(imagePath).toURI();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-         */
-
         return new Activity(id, imagePath, title, consumption);
     }
 
