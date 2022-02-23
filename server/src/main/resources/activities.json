@@ -1,0 +1,14 @@
+[
+  {
+    "id": "00-shower",
+    "title": "Taking a hot shower for 6 minutes",
+    "consumption_in_wh": 4000,
+    "source": "https://www.quora.com/How-can-I-estimate-the-kWh-of-electricity-when-I-take-a-shower"
+  },
+  {
+    "id": "00-smartphone",
+    "title": "Charging your smartphone at night",
+    "consumption_in_wh": 10,
+    "source": "https://9to5mac.com/2021/09/16/iphone-13-battery-life/"
+  }
+]

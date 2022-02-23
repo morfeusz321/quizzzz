@@ -18,12 +18,29 @@ package server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.ConfigurableApplicationContext;
+import server.database.ActivityDBController;
+
+import java.io.File;
+import java.net.URISyntaxException;
 
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
 public class Main {
 
     public static void main(String[] args) {
-        SpringApplication.run(Main.class, args);
+
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+
+        File f = null;
+        try {
+            f = new File(ActivityDBController.class.getClassLoader().getResource("activities.json").toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        context.getBean(ActivityDBController.class).forceReload(f);
+        context.getBean(ActivityDBController.class).printAll();
+
     }
 }
