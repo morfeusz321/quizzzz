@@ -29,6 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 public class QuoteOverviewCtrl implements Initializable {
 
@@ -45,6 +46,9 @@ public class QuoteOverviewCtrl implements Initializable {
     private TableColumn<Quote, String> colLastName;
     @FXML
     private TableColumn<Quote, String> colQuote;
+
+    @FXML
+    private TextField questionDisplayField;
 
     @Inject
     public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -68,4 +72,11 @@ public class QuoteOverviewCtrl implements Initializable {
         data = FXCollections.observableList(quotes);
         table.setItems(data);
     }
+
+    public void onGetQuestionButtonClick() {
+
+        questionDisplayField.setText(server.getRandomQuestion().questionString);
+
+    }
+
 }
