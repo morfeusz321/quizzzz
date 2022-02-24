@@ -2,42 +2,30 @@
 
 ## HCI Assignment
 
+Location: Drebbelweg/online (hybrid)\
+Date: 22.02.2022\
+Time: 14:45 - 16:45\
+
 * We discussed the HCI assignment report.
+  * Research regarding resources
+  * Screencast of prototype as guide for evaluators
+  * Instructions for evaluators
+  * Google Form for the problems found by the evaluators
+  * Introduction of report
+
+* Teamwork assignment 3B is done and uploaded to Brightspace.
 
 * Filip found a group that will review our design (and we will review theirs).
 
-* And discussed whether we all agree with the design.
-
+* Discussion whether we all agree with the design.
 
 
 # Team meeting - 22.02
 
 Location: Drebbelweg/online (hybrid)\
 Date: 22.02.2022\
-Time: 14:45 - 17:45\
+Time: 16:45 - 17:45\
 Attendees: Damla Ortaç (TA), Tereza Ležovičová, Erik Vidican, Filip Błaszczyk, Gijs van der Heide, Tadas Lukavičius, Fanni Fiedrich
-
-## Agenda items
-
-* 16:45 - 16:47 **Opening by chair**
-* 16:47 - 16:50 **Approval of the agenda and past minutes**
-* 16:50 - 16:56 **Check-in:** how are things going?
-* 16:56 - 17:02 **A short reflection on learnings** (tips/tops) last week
-* 17:02 - 17:08 **Check-in:** Discussion regarding code template
-  * Are there any questions? Does anyone need any help to understand things?
-  * Was everyone able to implement/understand the weather application?
-* 17:08 - 17:12 **Code of Conduct:** are we still on track? Do we need to make adjustments?
-* 17:12 - 17:25 **General planning of next steps**
-  * When do we start with coding?
-  * How do we want to organize the sub-tasks? (e.g. by creating smaller groups for certain tasks)
-  * Who would be interested in which topics?
-  * Making a tentative time plan
-* 17:25 - 17:30 **Discussion regarding 20 activities**
-  * Are any activities missing?
-  * Who will create a merge request on GitLab?
-* 17:30 - 17:35 **Sharing tips & tops (feedback for the chair and the team)**
-* 17:35 - 17:45 **Question round and questions for the TA**
-* 17:45 - **Closing**
 
 ### Opening by Chairperson 
 
@@ -53,10 +41,10 @@ Approved.
 
 ### Check-in and discussion regarding code template.
 Did everyone go over the code template?
-  * 
+  * No problems concerning the code template arose.
 
 Checkstyle rules
-  * 
+  * Tereza implements the checkstyle rules before we start coding (see action points).
 
 ### Code of conduct.
 Rubric points -> adjust code of conduct.
@@ -86,43 +74,41 @@ Rubric points -> adjust code of conduct.
 Submit new code of conduct via GitLab.
 
 ### API Endpoints
-GET, PUT, POST, and DELETE on an endpoint. We need to have one working endpoint. Weather application is also an endpoint?
+GET, PUT, POST, and DELETE on an endpoint. We need to have one working endpoint. Temperature function of weather application is also an endpoint.
 
 ### Backlog feedback
 Keep playing around with subtasks and issues, but is fine right now.
 
 ### Good GitLab practices
-Use board? In progress, in review, in testing, instead of only open/closed. Not mandatory, but nice feature.
+Consider using the board: In progress, in review, in testing, instead of only open/closed. Not mandatory, but nice feature.
 
-1-2 people per issue, if more needed, split the issue up! More people not recommended.
+Allocate 1-2 people per issue, if more needed, split the issue up! More people are not recommended.
 
 Create more smaller issues/subtasks. Even very basic ones, like create this and this Class etc.
 
 Use time tracker.
 
-Merge requests: TA can get weekly report. Leave (constructive!) comments on merge requests!
+Merge requests: TA can get weekly report. Leave (constructive!) comments on merge requests! It is important to first comment and then approve, and not just approve.
 
-First pull dev before merge request, resolve the merge conflicts locally! So that the dev pipeline doesn't break! Not sure if applicable if we are not going to use a dev branch? Or do we want to use a dev branch?
+First pull dev before merge request, resolve the merge conflicts locally. Then the dev pipeline doesn't break! Not sure if applicable if we are not going to use a dev branch? Or do we want to use a dev branch?
 
-### Sharing tips & tops (feedback for the chair and the team).
-Idem.
+Small commits are considered better style, it is easy to make mistakes in big chunks of code. Break your coding steps into small commits to ensure that everything works as intended.
 
 ### Summary of action points
-Give an overview of the division of tasks. What is expected from whom and when? Make an action list. 
 
 |Action items|Who is responsible|Deadline|
 |---|---|---|
-|   |   |   |
-|   |   |   |
-|   |   |   |
-|   |   |   |
-
-### Feedback round
-Give each other space to give and receive feedback (tip and top).
-Discuss with your fellow students whether you want to take notes of this or not.
+|API endpoint|Gijs|Friday|
+|Checkstyle|Tereza|Next week (before start of coding)|
+|Evaluate design of other team|Everyone individually|Wednesday evening|
+|Code of Conduct (adjusted version)|Everyone (team meeting)|Saturday|
+|HCI assignment in general|Everyone (team meeting)|Friday|
 
 ### Any questions?
-If there are any important announcements, you can take minutes.
 
-### Closing
-No minutes
+Use the 10 heuristics from the HCI lecture. If necessary, not needed heuristics can be removed, but it is better to consider all.
+Use the resources e.g. in the conclusion or to explain why certain UI features were implemented in that way.
+
+### Announcements
+
+Next team meeting is on Thursday. Then we will discuss the specific division of tasks for the HCI assignment and plan our approach. Also, the Code of Conduct should be discussed then.
