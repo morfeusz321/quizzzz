@@ -5,7 +5,7 @@
 
 Date:           22.02.2022\
 Time:           16:45 - 17:45\
-Main focus:     Planning of next steps/discussing code template\
+Main focus:     Discussing code template/different smaller topics\
 Chair:          Fanni Fiedrich\
 Note taker:     Gijs van der Heide\
 Other attendees: Damla Ortaç (TA), Tereza Ležovičová, Erik Vidican, Filip Błaszczyk, Tadas Lukavičius
@@ -20,15 +20,12 @@ Other attendees: Damla Ortaç (TA), Tereza Ležovičová, Erik Vidican, Filip B�
 * 17:02 - 17:08 **Check-in:** Discussion regarding code template
   * Are there any questions? Does anyone need any help to understand things?
   * Was everyone able to implement/understand the weather application?
-* 17:08 - 17:12 **Code of Conduct:** are we still on track? Do we need to make adjustments?
-* 17:12 - 17:25 **General planning of next steps**
-  * When do we start with coding?
-  * How do we want to organize the sub-tasks? (e.g. by creating smaller groups for certain tasks)
-  * Who would be interested in which topics?
-  * Making a tentative time plan
-* 17:25 - 17:30 **Discussion regarding 20 activities**
-  * Are any activities missing?
-  * Who will create a merge request on GitLab?
+* 17:08 - 17:13 **Code of Conduct:** 
+  * Feedback from TA
+  * Are we still on track? Do we need to make adjustments? 
+* 17:13 - 17:20 **API endpoints**
+* 17:20 - 17:25 **Backlog feedback**
+* 17:25 - 17:30 **Good GitLab practices:** Discussion
 * 17:30 - 17:35 **Sharing tips & tops (feedback for the chair and the team)**
 * 17:35 - 17:45 **Question round and questions for the TA**
 * 17:45 - **Closing**
