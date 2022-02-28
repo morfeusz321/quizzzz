@@ -88,4 +88,10 @@ public class ActivityDBController {
 
     }
 
+    public ActivityDB getInternalDB() {
+
+        return activityDB;
+
+    }
+
 }

@@ -1,5 +1,6 @@
 package server.api;
 
+import commons.Activity;
 import commons.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -7,7 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import server.database.QuestionDB;
+import server.database.ActivityDB;
+import server.database.ActivityDBController;
 
 import java.util.Random;
 
@@ -16,24 +18,26 @@ import java.util.Random;
 public class QuestionController {
 
     private final Random random;
-    private final QuestionDB questionDB;
+    private final ActivityDBController activityDBController;
 
-    public QuestionController(Random random, QuestionDB questionDB) {
+    public QuestionController(Random random, ActivityDBController activityDBController) {
 
         this.random = random;
-        this.questionDB = questionDB;
+        this.activityDBController = activityDBController;
 
     }
 
     @GetMapping("/random")
     public ResponseEntity<Question> getRandomQuestion() {
 
-        long count = questionDB.count();
+        ActivityDB activityDB = activityDBController.getInternalDB();
+
+        long count = activityDB.count();
         int index = random.nextInt((int) count);
 
-        Page<Question> page = questionDB.findAll(PageRequest.of(index, 1));
+        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if(page.hasContent()) {
-            return ResponseEntity.ok(page.getContent().get(0));
+            return ResponseEntity.ok(new Question(page.getContent().get(0)));
         }
 
         return ResponseEntity.internalServerError().build();

@@ -95,7 +95,7 @@ public class QuoteOverviewCtrl implements Initializable {
 
     public void onGetQuestionButtonClick() {
 
-        questionDisplayField.setText(server.getRandomQuestion().questionString);
+        questionDisplayField.setText(server.getRandomQuestion().displayQuestion());
 
     }
 

@@ -45,6 +45,12 @@ public class Activity {
 
     }
 
+    public String displayActivity() {
+
+        return Character.toLowerCase(title.charAt(0)) + title.substring(1);
+
+    }
+
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
