@@ -33,7 +33,6 @@ public class Main {
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
 
         context.getBean(ActivityDBController.class).forceReload();
-        context.getBean(ActivityDBController.class).printAll();
 
     }
 }

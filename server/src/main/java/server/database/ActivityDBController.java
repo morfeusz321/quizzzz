@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @Component
 public class ActivityDBController {
@@ -78,6 +79,12 @@ public class ActivityDBController {
     public void printAll() {
 
         activityDB.findAll().forEach(System.out::println);
+
+    }
+
+    public List<Activity> listAll() {
+
+        return activityDB.findAll();
 
     }
 
