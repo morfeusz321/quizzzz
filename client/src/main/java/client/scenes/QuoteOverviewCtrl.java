@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 
 import client.utils.ServerUtils;
 import commons.Quote;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,6 +32,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.control.TextField;
 
 public class QuoteOverviewCtrl implements Initializable {
 
@@ -50,6 +52,9 @@ public class QuoteOverviewCtrl implements Initializable {
 
     @FXML
     private ImageView imageDisplay;
+
+    @FXML
+    private TextField questionDisplayField;
 
     @Inject
     public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -85,6 +90,12 @@ public class QuoteOverviewCtrl implements Initializable {
 
         Image img = new Image(ServerUtils.getImageURL("00/smartphone.png"));
         imageDisplay.setImage(img);
+
+    }
+
+    public void onGetQuestionButtonClick() {
+
+        questionDisplayField.setText(server.getRandomQuestion().questionString);
 
     }
 

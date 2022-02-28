@@ -5,9 +5,41 @@
 
 <module name = "Checker">
     <module name="TreeWalker">
+<!--        checks for any unused imports-->
         <module name="UnusedImports" />
+<!--        checks if array initialization is in java style-->
+        <module name="ArrayTypeStyle" />
+<!--        checks if method is under 100 lines (not counting empty lines and single line comments-->
+        <module name="MethodLength">
+            <property name="tokens" value="METHOD_DEF" />
+            <property name="max" value="60" />
+            <property name="countEmpty" value="false" />
+        </module>
+<!--        checks empty line before methods declaration-->
+        <module name="EmptyLineSeparator">
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
+<!--        check all variables and identifiers (including ones with the static modifier) and enforce no abbreviations (essentially camel case) except for words like 'XML' and 'URL'-->
+        <module name="AbbreviationAsWordInName">
+            <property name="tokens" value="VARIABLE_DEF,CLASS_DEF"/>
+            <property name="ignoreFinal" value="true"/>
+            <property name="ignoreStatic" value="false"/>
+            <property name="allowedAbbreviationLength" value="0"/>
+            <property name="allowedAbbreviations" value="XML,URL,FXML"/>
+        </module>
+<!--        checks if classes begin with capital letter-->
+        <module name="TypeName">
+            <property name="format"
+                      value="^[A-Z][a-zA-Z]*$" />
+            <property name="tokens"
+                      value="CLASS_DEF" />
+        </module>
+<!--        checks if the braces are formatted right in methods (left in the first line, right on next line)-->
+        <module name="LeftCurly"/>
+        <module name="RightCurly">
+            <property name="option" value="alone" />
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
     </module>
-
-    <!-- TODO: decide in your team with other checkers to add! -->
 
 </module>

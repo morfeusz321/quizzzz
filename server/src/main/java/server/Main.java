@@ -19,10 +19,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
-import server.database.ActivityDBController;
 
-import java.io.File;
-import java.net.URISyntaxException;
+import server.database.ActivityDBController;
+import server.database.QuestionLoader;
 
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
@@ -33,6 +32,7 @@ public class Main {
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
 
         context.getBean(ActivityDBController.class).forceReload();
+        context.getBean(QuestionLoader.class).initQuestionDB();
 
     }
 }

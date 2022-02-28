@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
+import commons.Question;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -33,6 +34,16 @@ import jakarta.ws.rs.core.GenericType;
 public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
+
+    public Question getRandomQuestion() {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/questions/random")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(Question.class);
+
+    }
 
     public void getQuotesTheHardWay() throws IOException {
         var url = new URL("http://localhost:8080/api/quotes");
