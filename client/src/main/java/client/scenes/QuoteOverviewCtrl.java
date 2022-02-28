@@ -76,14 +76,14 @@ public class QuoteOverviewCtrl implements Initializable {
 
     public void onGetImage1ButtonClick() {
 
-        Image img = new Image(ServerUtils.getServer() + "api/img/00/shower.jpg");
+        Image img = new Image(ServerUtils.getImageURL("00/shower.jpg"));
         imageDisplay.setImage(img);
 
     }
 
     public void onGetImage2ButtonClick() {
 
-        Image img = new Image(ServerUtils.getServer() + "api/img/00/smartphone.png");
+        Image img = new Image(ServerUtils.getImageURL("00/smartphone.png"));
         imageDisplay.setImage(img);
 
     }

@@ -32,14 +32,7 @@ public class Main {
 
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
 
-        File f = null;
-        try {
-            f = new File(ActivityDBController.class.getClassLoader().getResource("activities.json").toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
-        context.getBean(ActivityDBController.class).forceReload(f);
+        context.getBean(ActivityDBController.class).forceReload();
         context.getBean(ActivityDBController.class).printAll();
 
     }

@@ -64,4 +64,10 @@ public class ServerUtils {
         return SERVER;
     }
 
+    public static String getImageURL(String imagePath) {
+
+        return SERVER + "api/img/" + imagePath;
+
+    }
+
 }

@@ -11,15 +11,32 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 @Component
 public class ActivityDBController {
 
     private final ActivityDB activityDB;
 
+    private final File jsonSource;
+
     public ActivityDBController(ActivityDB activityDB) {
 
         this.activityDB = activityDB;
+
+        File f = null;
+        try {
+            f = new File(ActivityDBController.class.getClassLoader().getResource("activities.json").toURI());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        this.jsonSource = f;
+
+    }
+
+    public void forceReload() {
+
+        forceReload(jsonSource);
 
     }
 
@@ -31,15 +48,17 @@ public class ActivityDBController {
 
     }
 
+    public void update() {
+
+        update(jsonSource);
+
+    }
+
     public void update(File file) {
 
         try {
 
             ObjectMapper mapper = new ObjectMapper();
-            SimpleModule module = new SimpleModule();
-            module.addDeserializer(Activity.class, new FromSourceActivityDeserializer());
-            mapper.registerModule(module);
-
             Activity[] activities = mapper.readValue(file, Activity[].class);
 
             for(Activity a : activities) {

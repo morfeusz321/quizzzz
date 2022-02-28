@@ -1,5 +1,8 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -11,15 +14,19 @@ import javax.persistence.Id;
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Activity {
 
     @Id
     public String id;
 
     @Column(columnDefinition="VARCHAR(255)")
+    @JsonProperty("image_path")
     public String imagePath;
 
     public String title;
+
+    @JsonProperty("consumption_in_wh")
     public long consumption;
 
     @SuppressWarnings("unused")
