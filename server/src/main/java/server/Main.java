@@ -19,7 +19,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
-import server.database.QuestionLoader;
+
+import server.database.ActivityDBController;
 
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
@@ -29,7 +30,7 @@ public class Main {
 
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
 
-        context.getBean(QuestionLoader.class).initQuestionDB();
+        context.getBean(ActivityDBController.class).forceReload();
 
     }
 }
