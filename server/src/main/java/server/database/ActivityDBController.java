@@ -20,6 +20,10 @@ public class ActivityDBController {
 
     private final File jsonSource;
 
+    /**
+     * Creates a controller for the activity database (this will set jsonSource to the activities.json file)
+     * @param activityDB database that will be used to store the activities
+     */
     public ActivityDBController(ActivityDB activityDB) {
 
         this.activityDB = activityDB;
@@ -34,12 +38,19 @@ public class ActivityDBController {
 
     }
 
+    /**
+     * Reload the database with the same json file (delete everything and then update the database)
+     */
     public void forceReload() {
 
         forceReload(jsonSource);
 
     }
 
+    /**
+     * Reload the database with a different json file (delete everything and then update the database)
+     * @param file a new json file with activities
+     */
     public void forceReload(File file) {
 
         activityDB.deleteAll();
@@ -48,12 +59,19 @@ public class ActivityDBController {
 
     }
 
+    /**
+     * Update the database with the same json file
+     */
     public void update() {
 
         update(jsonSource);
 
     }
 
+    /**
+     * Update the database with activities from a new json file (try to read the file, then save every activity to the database)
+     * @param file a new json file with activities
+     */
     public void update(File file) {
 
         try {
@@ -75,18 +93,29 @@ public class ActivityDBController {
 
     }
 
+    /**
+     * Print every activity from the database to the console
+     */
     public void printAll() {
 
         activityDB.findAll().forEach(System.out::println);
 
     }
 
+    /**
+     * This method creates a list of activities from the activity database
+     * @return a List containing all activities
+     */
     public List<Activity> listAll() {
 
         return activityDB.findAll();
 
     }
 
+    /**
+     * Method for returning the database
+     * @return the activity database
+     */
     public ActivityDB getInternalDB() {
 
         return activityDB;
