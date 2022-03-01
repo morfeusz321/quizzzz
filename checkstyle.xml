@@ -46,8 +46,9 @@
         <!-- checks whether record component names are in camel case -->
         <module name="RecordComponentName" />
 
-        <!--        checks if every method has javadoc-->
-        <module name="MissingJavadocMethod"/>
+        <module name="MissingJavadocMethod">
+            <property name="allowedAnnotations" value="Override,BeforeEach,Test"/>
+        </module>
 
 <!--        checks if the braces are formatted right in methods (left in the first line, right on next line)-->
         <module name="LeftCurly"/>
