@@ -56,12 +56,23 @@ public class QuoteOverviewCtrl implements Initializable {
     @FXML
     private TextField questionDisplayField;
 
+    /**
+     * Creates a QuoteOverviewCtrl, which controlles the display/interaction of the (main) overview screen.
+     * @param server Utilities for communicating with the server (API endpoint)
+     * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * TODO: rename the class, remove attributes/methods concerning quotes
+     */
     @Inject
     public QuoteOverviewCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
     }
 
+    /**
+     * TODO: to remove
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         colFirstName.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().person.firstName));
@@ -69,16 +80,25 @@ public class QuoteOverviewCtrl implements Initializable {
         colQuote.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().quote));
     }
 
+    /**
+     * TODO: to remove
+     */
     public void addQuote() {
         mainCtrl.showAdd();
     }
 
+    /**
+     * TODO: to remove
+     */
     public void refresh() {
         var quotes = server.getQuotes();
         data = FXCollections.observableList(quotes);
         table.setItems(data);
     }
 
+    /**
+     * Displays the image for the first activity
+     */
     public void onGetImage1ButtonClick() {
 
         Image img = new Image(ServerUtils.getImageURL("00/shower.jpg"));
@@ -86,6 +106,9 @@ public class QuoteOverviewCtrl implements Initializable {
 
     }
 
+    /**
+     * Displays the image for the second activity
+     */
     public void onGetImage2ButtonClick() {
 
         Image img = new Image(ServerUtils.getImageURL("00/smartphone.png"));
@@ -93,6 +116,9 @@ public class QuoteOverviewCtrl implements Initializable {
 
     }
 
+    /**
+     * Retrieves a random question from the server using the server utilities and displays it
+     */
     public void onGetQuestionButtonClick() {
 
         questionDisplayField.setText(server.getRandomQuestion().displayQuestion());

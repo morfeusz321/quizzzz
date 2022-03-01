@@ -41,6 +41,11 @@ public class AddQuoteCtrl {
     @FXML
     private TextField quote;
 
+    /**
+     * TODO: to remove
+     * @param server TODO: to remove
+     * @param mainCtrl TODO: to remove
+     */
     @Inject
     public AddQuoteCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
@@ -48,11 +53,17 @@ public class AddQuoteCtrl {
 
     }
 
+    /**
+     * TODO: to remove
+     */
     public void cancel() {
         clearFields();
         mainCtrl.showOverview();
     }
 
+    /**
+     * TODO: to remove
+     */
     public void ok() {
         try {
             server.addQuote(getQuote());
@@ -69,18 +80,29 @@ public class AddQuoteCtrl {
         mainCtrl.showOverview();
     }
 
+    /**
+     * TODO: to remove
+     * @return TODO: to remove
+     */
     private Quote getQuote() {
         var p = new Person(firstName.getText(), lastName.getText());
         var q = quote.getText();
         return new Quote(p, q);
     }
 
+    /**
+     * TODO: to remove
+     */
     private void clearFields() {
         firstName.clear();
         lastName.clear();
         quote.clear();
     }
 
+    /**
+     * TODO: to remove
+     * @param e TODO: to remove
+     */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
         case ENTER:

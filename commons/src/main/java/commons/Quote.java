@@ -39,26 +39,47 @@ public class Quote {
     public Person person;
     public String quote;
 
+    /**
+     * TODO: to remove
+     */
     @SuppressWarnings("unused")
     private Quote() {
         // for object mappers
     }
 
+    /**
+     * TODO: to remove
+     * @param person TODO: to remove
+     * @param quote TODO: to remove
+     */
     public Quote(Person person, String quote) {
         this.person = person;
         this.quote = quote;
     }
 
+    /**
+     * TODO: to remove
+     * @param obj TODO: to remove
+     * @return TODO: to remove
+     */
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
+    /**
+     * TODO: to remove
+     * @return TODO: to remove
+     */
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
+    /**
+     * TODO: to remove
+     * @return TODO: to remove
+     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);

@@ -35,6 +35,10 @@ public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
+    /**
+     * Gets a random question from the server using the API endpoint (sends a get request)
+     * @return Returns the retrieved question from the server
+     */
     public Question getRandomQuestion() {
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -45,6 +49,10 @@ public class ServerUtils {
 
     }
 
+    /**
+     * TODO: to remove
+     * @throws IOException TODO: to remove
+     */
     public void getQuotesTheHardWay() throws IOException {
         var url = new URL("http://localhost:8080/api/quotes");
         var is = url.openConnection().getInputStream();
@@ -55,6 +63,9 @@ public class ServerUtils {
         }
     }
 
+    /**
+     * TODO: to remove
+     */
     public List<Quote> getQuotes() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/quotes") //
@@ -63,6 +74,11 @@ public class ServerUtils {
                 .get(new GenericType<List<Quote>>() {});
     }
 
+    /**
+     * TODO: to remove
+     * @param quote TODO: to remove
+     * @return TODO: to remove
+     */
     public Quote addQuote(Quote quote) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/quotes") //
@@ -71,10 +87,19 @@ public class ServerUtils {
                 .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
     }
 
+    /**
+     * Gets the URL where the server is located as a string (e.g. http://localhost:8080/)
+     * @return Returns the URL where the server is located as a string
+     */
     public static String getServer() {
         return SERVER;
     }
 
+    /**
+     * Gets the URL to a given image path
+     * @param imagePath The path to the image which should be retrieved
+     * @return Returns the URL to the given image path
+     */
     public static String getImageURL(String imagePath) {
 
         return SERVER + "api/img/" + imagePath;
