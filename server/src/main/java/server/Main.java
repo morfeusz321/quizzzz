@@ -25,7 +25,10 @@ import server.database.ActivityDBController;
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
 public class Main {
-
+    /**
+     * Main class used to start the server of our application
+     * @param args arguments passed to main before starting the application
+     */
     public static void main(String[] args) {
 
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);

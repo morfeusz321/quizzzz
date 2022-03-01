@@ -23,6 +23,9 @@ import client.scenes.AddQuoteCtrl;
 import client.scenes.MainCtrl;
 import client.scenes.QuoteOverviewCtrl;
 
+/**
+ * The module used by the injector for the FXML loader, that makes sure there exists only one of each controller
+ */
 public class MyModule implements Module {
 
     @Override
