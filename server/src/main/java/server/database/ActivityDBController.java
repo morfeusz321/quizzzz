@@ -5,7 +5,6 @@ https://www.baeldung.com/jackson-deserialization
 package server.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import commons.Activity;
 import org.springframework.stereotype.Component;
 
