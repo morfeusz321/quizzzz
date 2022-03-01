@@ -30,6 +30,13 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
+    /**
+     * Initialize the main control with the different scenes and controllers of each scene. This class
+     * manages the switching between the scenes.
+     * @param primaryStage The stage (i.e. window) for all scenes
+     * @param overview Pair of the control and the scene of the overview
+     * @param add Pair of the control and the scene for adding quotes TODO: to remove
+     */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
             Pair<AddQuoteCtrl, Parent> add) {
         this.primaryStage = primaryStage;
@@ -43,12 +50,19 @@ public class MainCtrl {
         primaryStage.show();
     }
 
+    /**
+     * Shows the overview scene (table for quotes, question display, image display)
+     * TODO: remove table for quotes
+     */
     public void showOverview() {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
     }
 
+    /**
+     * TODO: to remove
+     */
     public void showAdd() {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);

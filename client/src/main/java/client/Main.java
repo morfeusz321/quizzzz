@@ -17,9 +17,6 @@ package client;
 
 import static com.google.inject.Guice.createInjector;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import com.google.inject.Injector;
 
 import client.scenes.AddQuoteCtrl;
@@ -33,12 +30,21 @@ public class Main extends Application {
     private static final Injector INJECTOR = createInjector(new MyModule());
     private static final MyFXML FXML = new MyFXML(INJECTOR);
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
+    /**
+     * Launches the client application
+     * @param args Command line arguments
+     */
+    public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Starts the application by loading the fxml files/scenes and by initializing the
+     * main control with the overview/quote adding. TODO: remove quote adding
+     * @param primaryStage The main application stage (i.e. window) in which all scenes are displayed
+     */
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage){
 
         var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
         var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");

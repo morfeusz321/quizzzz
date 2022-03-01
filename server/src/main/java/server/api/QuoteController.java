@@ -29,6 +29,9 @@ import org.springframework.web.bind.annotation.RestController;
 import commons.Quote;
 import server.database.QuoteRepository;
 
+/**
+ * TODO: remove
+ */
 @RestController
 @RequestMapping("/api/quotes")
 public class QuoteController {
@@ -36,16 +39,25 @@ public class QuoteController {
     private final Random random;
     private final QuoteRepository repo;
 
+    /**
+     * TODO: remove
+     */
     public QuoteController(Random random, QuoteRepository repo) {
         this.random = random;
         this.repo = repo;
     }
 
+    /**
+     * TODO: remove
+     */
     @GetMapping(path = { "", "/" })
     public List<Quote> getAll() {
         return repo.findAll();
     }
 
+    /**
+     * TODO: remove
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Quote> getById(@PathVariable("id") long id) {
         if (id < 0 || !repo.existsById(id)) {
@@ -54,6 +66,9 @@ public class QuoteController {
         return ResponseEntity.ok(repo.getById(id));
     }
 
+    /**
+     * TODO: remove
+     */
     @PostMapping(path = { "", "/" })
     public ResponseEntity<Quote> add(@RequestBody Quote quote) {
 
@@ -66,10 +81,16 @@ public class QuoteController {
         return ResponseEntity.ok(saved);
     }
 
+    /**
+     * TODO: remove
+     */
     private static boolean isNullOrEmpty(String s) {
         return s == null || s.isEmpty();
     }
 
+    /**
+     * TODO: remove
+     */
     @GetMapping("rnd")
     public ResponseEntity<Quote> getRandom() {
         var idx = random.nextInt((int) repo.count());

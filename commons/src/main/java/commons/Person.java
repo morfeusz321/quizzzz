@@ -36,26 +36,47 @@ public class Person {
     public String firstName;
     public String lastName;
 
+    /**
+     * TODO: to remove
+     */
     @SuppressWarnings("unused")
     private Person() {
         // for object mapper
     }
 
+    /**
+     * TODO: to remove
+     * @param firstName TODO: to remove
+     * @param lastName TODO: to remove
+     */
     public Person(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
 
+    /**
+     * TODO: to remove
+     * @param obj TODO: to remove
+     * @return TODO: to remove
+     */
     @Override
     public boolean equals(Object obj) {
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
+    /**
+     * TODO: to remove
+     * @return TODO: to remove
+     */
     @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
+    /**
+     * TODO: to remove
+     * @return TODO: to remove
+     */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
