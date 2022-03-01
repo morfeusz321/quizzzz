@@ -13,6 +13,9 @@ import server.database.ActivityDBController;
 
 import java.util.Random;
 
+/**
+ * The API controller for the questions. Controls everything mapped to /api/questions/...
+ */
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
@@ -20,6 +23,11 @@ public class QuestionController {
     private final Random random;
     private final ActivityDBController activityDBController;
 
+    /**
+     * Creates the API controller
+     * @param random the random to be used by this controller
+     * @param activityDBController the interface with the activity database to be used by this controller
+     */
     public QuestionController(Random random, ActivityDBController activityDBController) {
 
         this.random = random;
@@ -27,6 +35,11 @@ public class QuestionController {
 
     }
 
+    /**
+     * Maps to /api/questions/random
+     * Returns a random question generated from a random activity selected from the database
+     * @return a randomly generated question
+     */
     @GetMapping("/random")
     public ResponseEntity<Question> getRandomQuestion() {
 
