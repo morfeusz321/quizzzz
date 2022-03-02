@@ -4,11 +4,21 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.UUID;
+
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
+@Entity
 public class Question {
 
-    public Activity activity;
+    @Id
+    public final UUID QUESTION_ID = UUID.randomUUID();
+
+    public String activityID;
+    public String activityTitle;
+    public String activityImagePath;
 
     /**
      * Empty constructor used by object mapper
@@ -23,15 +33,29 @@ public class Question {
      * @param activity object that will be used for this question
      */
     public Question(Activity activity) {
-        this.activity = activity;
+
+        this.activityID = activity.id;
+        this.activityTitle = activity.title;
+        this.activityImagePath = activity.imagePath;
+
     }
 
     /**
-     * Display the question to the user
+     * Creates a human-readable form of this question
      * @return a formatted string containing the question
      */
     public String displayQuestion() {
-        return "How much energy does " + activity.displayActivity() + " take?";
+        return "How much energy does " + Activity.displayActivity(activityTitle) + " take?";
+    }
+
+    /**
+     * Returns this question's unique ID
+     * @return the random UUID associated with this question
+     */
+    public UUID getUUID() {
+
+        return QUESTION_ID;
+
     }
 
     /**
