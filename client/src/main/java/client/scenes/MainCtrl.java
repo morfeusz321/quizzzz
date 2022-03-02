@@ -30,6 +30,9 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
+    private BasicQuestionCtrl basicQuestionCtrl;
+    private Scene basicQuestion;
+
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
@@ -38,15 +41,20 @@ public class MainCtrl {
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add) {
+            Pair<AddQuoteCtrl, Parent> add, Pair<BasicQuestionCtrl, Parent> basicQuestion) {
         this.primaryStage = primaryStage;
+
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
+
+        this.basicQuestionCtrl = basicQuestion.getKey();
+        this.basicQuestion = new Scene(basicQuestion.getValue());
+        this.basicQuestion.getStylesheets().add(BasicQuestionCtrl.class.getResource("client/stylesheets/basic-question-style.css").toExternalForm());
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        showOverview();
+        showBasicQuestion(); // now starts with question screen
         primaryStage.show();
     }
 
@@ -58,6 +66,14 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
+    }
+
+    /**
+     * Shows the overview scene (table for quotes, question display, image display)
+     */
+    public void showBasicQuestion() {
+        primaryStage.setTitle("Basic question");
+        primaryStage.setScene(basicQuestion);
     }
 
     /**
