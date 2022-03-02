@@ -51,7 +51,12 @@ public class QuestionController {
         ActivityDB activityDB = activityDBController.getInternalDB();
 
         long count = activityDB.count();
-        int index = random.nextInt((int) count);
+        int index;
+        try {
+            index = random.nextInt((int) count);
+        } catch(IllegalArgumentException e) {
+            return ResponseEntity.internalServerError().build();
+        }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if(page.hasContent()) {
