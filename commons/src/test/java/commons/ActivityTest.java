@@ -9,15 +9,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class ActivityTest {
 
     @Test
-    void testEmptyConstructor()
-    {
+    void testEmptyConstructor() {
         var activity = new Activity();
         assertNotNull(activity);
     }
 
     @Test
-    void testConstructor()
-    {
+    void testConstructor() {
         var activity = new Activity("1","/path/to/image/","Activity", 200);
         assertNotNull(activity);
         assertEquals("1", activity.id);

@@ -9,8 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class QuestionTest {
 
     @Test
-    void testConstructor()
-    {
+    void testConstructor() {
         var activity = new Activity("1","/path/to/image/","Activity", 200);
         var question = new Question(activity);
         assertNotNull(activity);
