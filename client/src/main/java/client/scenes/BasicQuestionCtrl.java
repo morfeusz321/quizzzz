@@ -26,6 +26,9 @@ public class BasicQuestionCtrl {
     public Text title;
 
     @FXML
+    public ImageView bgImage;
+
+    @FXML
     public ImageView decreaseTime;
     @FXML
     public ImageView removeQuestion;
@@ -77,6 +80,7 @@ public class BasicQuestionCtrl {
         this.removeQuestion.setImage(new Image("/client/img/minus_1_btn.png"));
         this.doublePoints.setImage(new Image("/client/img/2x_btn.png"));
         this.hoverEmoji.setImage(new Image("/client/img/happy_lightbulb.png"));
+        this.bgImage.setImage(new Image("/client/img/bg_img.png"));
 
         //TODO: show the real image here or set it in another method
         // (right now the image is only static and inserted manually)
