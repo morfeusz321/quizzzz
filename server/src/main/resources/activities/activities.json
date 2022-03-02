@@ -1,0 +1,156 @@
+[
+  {
+    "id": "00-shower",
+    "image_path": "00/shower.jpg",
+    "title": "Taking a hot shower for 6 minutes",
+    "consumption_in_wh": 4000,
+    "source": "https://www.quora.com/How-can-I-estimate-the-kWh-of-electricity-when-I-take-a-shower"
+  },
+  {
+    "id": "00-smartphone",
+    "image_path": "00/smartphone.png",
+    "title": "Charging your smartphone at night",
+    "consumption_in_wh": 10,
+    "source": "https://9to5mac.com/2021/09/16/iphone-13-battery-life/"
+  },
+  {
+    "id": "24-AC",
+    "image_path": "24/AC.jpg",
+    "title": "Using an AC for 1 hour",
+    "consumption_in_wh": 3500,
+    "source": "https://americanhomewater.com/how-much-power-does-an-air-conditioner-use/"
+  },
+  {
+    "id": "24-ceilingfan",
+    "image_path": "24/ceilingfan.jpg",
+    "title": "Running a ceiling fan for 1 hour",
+    "consumption_in_wh": 50,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-coffee",
+    "image_path": "24/coffee.jpg",
+    "title": "Making 1 brew of coffee",
+    "consumption_in_wh": 120,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-dishwasher",
+    "image_path": "24/dishwasher.jpg",
+    "title": "Running a dishwasher for 2 hours",
+    "consumption_in_wh": 2550,
+    "source": "https://www.cse.org.uk/advice/advice-and-support/how-much-electricity-am-i-using"
+  },
+  {
+    "id": "24-dryer",
+    "image_path": "24/dryer.jpg",
+    "title": "Using a clothes dryer for 1 hour",
+    "consumption_in_wh": 3250,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-ebike",
+    "image_path": "24/ebike.jpg",
+    "title": "Riding an e-bike for 10km",
+    "consumption_in_wh": 75,
+    "source": "https://enveurope.springeropen.com/articles/10.1186/s12302-020-00307-8#:~:text=Certified%20and%20real%2Dworld%20energy%20consumption%20vary%20between%200.17%20and,the%20road%20than%20during%20certification."
+  },
+  {
+    "id": "24-electriccar",
+    "image_path": "24/electriccar.jpg",
+    "title": "Driving an electric car for 100km",
+    "consumption_in_wh": 15000,
+    "source": "https://www.energuide.be/en/questions-answers/how-much-power-does-an-electric-car-use/212/"
+  },
+  {
+    "id": "24-hairdryer",
+    "image_path": "24/hairdryer.jpg",
+    "title": "Using a hairdryer for 10 minutes",
+    "consumption_in_wh": 333,
+    "source": "https://www.cse.org.uk/advice/advice-and-support/how-much-electricity-am-i-using"
+  },
+  {
+    "id": "24-halogen",
+    "image_path": "24/halogen.jpg",
+    "title": "Using halogen lighting for 1 hour",
+    "consumption_in_wh": 300,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-laptop",
+    "image_path": "24/laptop.jpg",
+    "title": "Using a laptop for 1 hour",
+    "consumption_in_wh": 35,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-oven",
+    "image_path": "24/oven.jpg",
+    "title": "Baking something in the oven for 1 hour",
+    "consumption_in_wh": 2300,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-paper",
+    "image_path": "24/paper.jpg",
+    "title": "Producing a single sheet of A4 paper",
+    "consumption_in_wh": 38,
+    "source": "http://large.stanford.edu/courses/2010/ph240/pydipati1/"
+  },
+  {
+    "id": "24-playstation",
+    "image_path": "24/playstation.jpg",
+    "title": "Using a PlayStation 4 for 1 year",
+    "consumption_in_wh": 181000,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-producephone",
+    "image_path": "24/producephone.jpg",
+    "title": "Producing a modern smartphone",
+    "consumption_in_wh": 278000,
+    "source": "https://www.theatlantic.com/technology/archive/2014/10/the-energy-in-things/381557/"
+  },
+  {
+    "id": "24-selfie",
+    "image_path": "24/selfie.jpg",
+    "title": "Uploading selfie on instagram",
+    "consumption_in_wh": 102,
+    "source": "https://www.core-econ.org/wp-content/uploads/2019/07/Data-competition-selfie.pdf"
+  },
+  {
+    "id": "24-shower",
+    "image_path": "24/shower.jpg",
+    "title": "Taking a 5 minute shower",
+    "consumption_in_wh": 2500,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  },
+  {
+    "id": "24-t-shirt",
+    "image_path": "24/t-shirt.jpg",
+    "title": "Production of 1 cotton t-shirt",
+    "consumption_in_wh": 12000,
+    "source": "https://greenstory.ca/blog/greenesttee-all-about-the-energy/"
+  },
+  {
+    "id": "24-toast",
+    "image_path": "24/toast.jpg",
+    "title": "Toasting a toast for 2 minutes",
+    "consumption_in_wh": 40,
+    "source": "https://www.thehomehacksdiy.com/how-much-electricity-power-does-a-toaster-use/#How_Much_Electricity_Power_Does_A_Toaster_Use"
+  },
+  {
+    "id": "24-tv",
+    "image_path": "24/tv.jpg",
+    "title": "Watching 70in TV for an hour",
+    "consumption_in_wh": 109,
+    "source": "https://ecocostsavings.com/tv-wattage/#how-much-electricity-does-a-tv-use"
+  },
+  {
+    "id": "24-vacuum",
+    "image_path": "24/vacuum.jpg",
+    "title": "Using a vacuum cleaner for 1 hour",
+    "consumption_in_wh": 750,
+    "source": "https://www.siliconvalleypower.com/residents/save-energy/appliance-energy-use-chart"
+  }
+]

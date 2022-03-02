@@ -34,7 +34,7 @@ public class ActivityImageController {
 
         URI imageURI = null;
         try {
-            imageURI = ActivityImageController.class.getClassLoader().getResource(imagePathGroup + "/" + imagePathFileName).toURI();
+            imageURI = ActivityImageController.class.getClassLoader().getResource("activities/" + imagePathGroup + "/" + imagePathFileName).toURI();
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
