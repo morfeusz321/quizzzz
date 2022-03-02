@@ -91,7 +91,7 @@ public class QuestionControllerTest {
         Activity testActivity = new Activity("id", "imagePath", "title", 0);
         activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(Question.QuestionType.GENERAL, 1, testActivity, "0 Wh", "1 Wh", "2 Wh");
+        Question testQuestion = new Question(Question.QuestionType.GENERAL, testActivity, 1, "0 Wh", "1 Wh", "2 Wh");
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
@@ -107,13 +107,88 @@ public class QuestionControllerTest {
         Activity testActivity = new Activity("id", "imagePath", "title", 0);
         activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(Question.QuestionType.GENERAL, 1, testActivity, "0 Wh", "1 Wh", "2 Wh");
+        Question testQuestion = new Question(Question.QuestionType.GENERAL, testActivity, 1, "0 Wh", "1 Wh", "2 Wh");
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "2");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
         assertEquals("INCORRECT", s.getBody());
+
+    }
+
+    @Test
+    public void answerTestComparisonQuestionCorrect() {
+
+        Activity testActivity = new Activity("id", "imagePath", "title", 5);
+        activityDBController.getInternalDB().save(testActivity);
+
+        Activity answer1 = new Activity("id1", "imagePath", "title", 5);
+        Activity answer2 = new Activity("id2", "imagePath", "title", 10);
+        Activity answer3 = new Activity("id3", "imagePath", "title", 20);
+
+        Question testQuestion = new Question(Question.QuestionType.COMPARISON, 1, testActivity, answer1, answer2, answer3);
+        questionDBController.add(testQuestion);
+
+        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
+
+        assertEquals(HttpStatus.OK, s.getStatusCode());
+        assertEquals("CORRECT", s.getBody());
+
+    }
+
+    @Test
+    public void answerTestComparisonQuestionIncorrect() {
+
+        Activity testActivity = new Activity("id", "imagePath", "title", 5);
+        activityDBController.getInternalDB().save(testActivity);
+
+        Activity answer1 = new Activity("id1", "imagePath", "title", 5);
+        Activity answer2 = new Activity("id2", "imagePath", "title", 10);
+        Activity answer3 = new Activity("id3", "imagePath", "title", 20);
+
+        Question testQuestion = new Question(Question.QuestionType.COMPARISON, 1, testActivity, answer1, answer2, answer3);
+        questionDBController.add(testQuestion);
+
+        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "3");
+
+        assertEquals(HttpStatus.OK, s.getStatusCode());
+        assertEquals("INCORRECT", s.getBody());
+
+    }
+
+    @Test
+    public void answerTestEstimationQuestionCorrect() {
+
+        Activity testActivity = new Activity("id", "imagePath", "title", 50);
+        activityDBController.getInternalDB().save(testActivity);
+
+        Question testQuestion = new Question(Question.QuestionType.ESTIMATION, 50, testActivity);
+        questionDBController.add(testQuestion);
+
+        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "50");
+
+        assertEquals(HttpStatus.OK, s.getStatusCode());
+        assertEquals("PROXIMITY: 0", s.getBody());
+
+    }
+
+    @Test
+    public void answerTestEstimationQuestionIncorrect() {
+
+        Activity testActivity = new Activity("id", "imagePath", "title", 50);
+        activityDBController.getInternalDB().save(testActivity);
+
+        Question testQuestion = new Question(Question.QuestionType.ESTIMATION, 50, testActivity);
+        questionDBController.add(testQuestion);
+
+        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "40");
+        assertEquals(HttpStatus.OK, s.getStatusCode());
+        assertEquals("PROXIMITY: -10", s.getBody());
+
+        s = questionController.answer(testQuestion.questionId.toString(), "60");
+        assertEquals(HttpStatus.OK, s.getStatusCode());
+        assertEquals("PROXIMITY: 10", s.getBody());
 
     }
 

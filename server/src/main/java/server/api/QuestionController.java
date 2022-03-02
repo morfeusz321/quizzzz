@@ -61,8 +61,8 @@ public class QuestionController {
         if(page.hasContent()) {
             Activity a = page.getContent().get(0);
             Question toReturn = new Question(Question.QuestionType.GENERAL,
-                    2,
                     a,
+                    2,
                     (0.5 * a.consumption) + " Wh", a.consumption + " Wh", (2 * a.consumption) + " Wh");
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
@@ -77,7 +77,7 @@ public class QuestionController {
      * @param questionIDString the unique ID of the question being answered (post variable questionID)
      * @param answerString the answer to be given to this question (either 1, 2, 3 etc. for multiple choice questions, or an integer for open questions)
      *                     (post variable answerString)
-     * @return 200 OK: CORRECT or 200 OK: INCORRECT depending on the answer given,
+     * @return "200 OK: CORRECT", "200 OK: INCORRECT", or "200 OK: PROXIMITY: N" depending on the answer given,
      *                      204 No Content if the question with the specified ID does not exist,
      *                      400 Bad Request if the POST request is malformed,
      *                      or 500 Internal Server Error if the operation cannot be completed for any other reason

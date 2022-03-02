@@ -87,11 +87,11 @@ public class Question {
     /**
      * Creates a question object (used for QuestionType.GENERAL)
      * @param questionType should be QuestionType.GENERAL
-     * @param answer the answer to this question (i.e. the index 1, 2, 3 of the multiple choice answer)
      * @param activity the main activity of this question (i.e. the title)
+     * @param answer the answer to this question (i.e. the index 1, 2, 3 of the multiple choice answer)
      * @param generalQuestionAnswerOptions the answer options to be displayed for this question (e.g. "50 Wh", "100 Wh", etc.)
      */
-    public Question(QuestionType questionType, long answer, Activity activity, String... generalQuestionAnswerOptions) {
+    public Question(QuestionType questionType, Activity activity, long answer, String... generalQuestionAnswerOptions) {
 
         this.questionType = questionType;
 
@@ -115,10 +115,18 @@ public class Question {
 
     /**
      * Creates a human-readable form of this question
-     * @return a formatted string containing the question
+     * @return a formatted string of the question, which differs based on question type
      */
     public String displayQuestion() {
-        return "How much energy does " + Activity.displayActivity(activityTitle) + " take?";
+
+        if(questionType == QuestionType.GENERAL || questionType == QuestionType.ESTIMATION) {
+            return "How much energy does " + Activity.displayActivity(activityTitle) + " take?";
+        } else if(questionType == QuestionType.COMPARISON) {
+            return "Instead of " + Activity.displayActivity(activityTitle) + ", you could use the same amount of energy for...";
+        }
+
+        return activityTitle;
+
     }
 
     /**
