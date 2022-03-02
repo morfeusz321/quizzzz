@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="990.0" maxWidth="1920.0" minHeight="848.0" minWidth="1920.0" prefHeight="990.0" prefWidth="1686.0" styleClass="plane" stylesheets="@../stylesheets/basic-question-style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BasicQuestionCtrl">
+   <children>
+      <ImageView fx:id="backBtn" fitHeight="110.0" fitWidth="226.0" layoutX="20.0" layoutY="30.0" onMouseClicked="#switchToMenu">
+         <image>
+            <Image url="@../img/back_btn.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="title" layoutX="372.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The usage of energy of showering for 5 minutes is equivalent to filler filler filler filler filler filler filler filler filler filler filler:" wrappingWidth="1468.9186706542969">
+         <styleClass>
+            <String fx:value="question-title" />
+            <String fx:value="text" />
+         </styleClass>
+      </Text>
+      <Label layoutX="76.0" layoutY="285.0" text="Powers:">
+         <styleClass>
+            <String fx:value="powers-text" />
+            <String fx:value="text" />
+         </styleClass>
+      </Label>
+      <ImageView fx:id="decreaseTime" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="650.0" onMouseClicked="#useDecreaseTime" smooth="false">
+         <image>
+            <Image url="@../img/clock_btn.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="removeQuestion" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="373.0" onMouseClicked="#useRemoveQuestion" smooth="false">
+         <image>
+            <Image url="@../img/minus_1_btn.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="doublePoints" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="512.0" onMouseClicked="#useDoublePoints" smooth="false">
+         <image>
+            <Image url="@../img/2x_btn.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="414.0" fitWidth="414.0" layoutX="329.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/dishwasher.jpg" />
+         </image>
+      </ImageView>
+      <Button fx:id="answerBtn1" layoutX="800.0" layoutY="308.0" mnemonicParsing="false" onMouseClicked="#selectAnswer1" prefHeight="131.0" prefWidth="891.0" stylesheets="@../stylesheets/basic-question-style.css" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+         <styleClass>
+            <String fx:value="question-button" />
+            <String fx:value="text" />
+         </styleClass>
+      </Button>
+      <Button fx:id="answerBtn2" layoutX="800.0" layoutY="466.0" mnemonicParsing="false" onMouseClicked="#selectAnswer2" prefHeight="131.0" prefWidth="891.0" stylesheets="@../stylesheets/basic-question-style.css" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+         <styleClass>
+            <String fx:value="question-button" />
+            <String fx:value="text" />
+         </styleClass>
+      </Button>
+      <Button fx:id="answerBtn3" layoutX="800.0" layoutY="622.0" mnemonicParsing="false" onMouseClicked="#selectAnswer3" prefHeight="131.0" prefWidth="891.0" stylesheets="@../stylesheets/basic-question-style.css" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+         <styleClass>
+            <String fx:value="question-button" />
+            <String fx:value="text" />
+         </styleClass>
+      </Button>
+      <ProgressBar fx:id="timeBar" layoutX="41.0" layoutY="845.0" prefHeight="55.0" prefWidth="1646.0" progress="0.0" stylesheets="@../stylesheets/basic-question-style.css" />
+      <Label layoutX="766.0" layoutY="849.0" styleClass="progress-text" text="Time left: 0:10" />
+      <Label layoutX="1735.0" layoutY="690.0" text="React:">
+         <styleClass>
+            <String fx:value="react-text" />
+            <String fx:value="text" />
+         </styleClass>
+      </Label>
+      <ImageView fitHeight="211.0" fitWidth="186.0" layoutX="1702.0" layoutY="756.0">
+         <image>
+            <Image url="@../img/happy_lightbulb.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="questionInfo" layoutX="111.0" layoutY="915.0" text="Question 1/20">
+         <styleClass>
+            <String fx:value="bottom-info-text" />
+            <String fx:value="text" />
+         </styleClass>
+      </Label>
+      <Label fx:id="pointsInfo" layoutX="1393.0" layoutY="915.0" text="Your points: 200">
+         <styleClass>
+            <String fx:value="bottom-info-text" />
+            <String fx:value="text" />
+         </styleClass>
+      </Label>
+      <Label fx:id="playersInfo" layoutX="715.0" layoutY="915.0" text="Players in game: 5">
+         <styleClass>
+            <String fx:value="bottom-info-text" />
+            <String fx:value="text" />
+         </styleClass>
+      </Label>
+   </children>
+</AnchorPane>
