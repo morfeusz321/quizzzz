@@ -15,6 +15,7 @@
  */
 package client.utils;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.io.BufferedReader;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 
 import commons.Question;
+import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -46,6 +48,26 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(Question.class);
+
+    }
+
+    /**
+     * Sends the answer to a question to the server
+     * @param question the question to answer
+     * @param answer the answer to send to the server
+     * @return Either "CORRECT" or "INCORRECT" depending on whether the answer was correct
+     */
+    public String sendAnswerToServer(Question question, long answer) {
+
+        Form postVariables = new Form();
+        postVariables.param("questionID", question.QUESTION_ID.toString());
+        postVariables.param("answer", String.valueOf(answer));
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/questions/answer")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), String.class);
 
     }
 
