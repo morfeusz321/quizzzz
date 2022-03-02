@@ -6,7 +6,8 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane maxHeight="990.0" maxWidth="1920.0" minHeight="848.0" minWidth="1920.0" prefHeight="990.0" prefWidth="1920.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BasicQuestionCtrl">
@@ -19,36 +20,33 @@
             <String fx:value="text" />
          </styleClass>
       </Text>
-      <Label layoutX="76.0" layoutY="285.0" text="Powers:">
+      <Label layoutX="76.0" layoutY="279.0" text="Powers:">
          <styleClass>
             <String fx:value="powers-text" />
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <ImageView fx:id="decreaseTime" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="650.0" onMouseClicked="#useDecreaseTime" smooth="false">
+      <ImageView fx:id="decreaseTime" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="644.0" onMouseClicked="#useDecreaseTime" smooth="false">
       </ImageView>
-      <ImageView fx:id="removeQuestion" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="373.0" onMouseClicked="#useRemoveQuestion" smooth="false">
+      <ImageView fx:id="removeQuestion" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="367.0" onMouseClicked="#useRemoveQuestion" smooth="false">
       </ImageView>
-      <ImageView fx:id="doublePoints" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="512.0" onMouseClicked="#useDoublePoints" smooth="false">
+      <ImageView fx:id="doublePoints" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="506.0" onMouseClicked="#useDoublePoints" smooth="false">
       </ImageView>
-      <ImageView fx:id="questionImg" fitHeight="414.0" fitWidth="414.0" layoutX="329.0" layoutY="324.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="questionImg" fitHeight="414.0" fitWidth="414.0" layoutX="329.0" layoutY="317.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <Button fx:id="answerBtn1" layoutX="800.0" layoutY="308.0" mnemonicParsing="false" onMouseClicked="#selectAnswer1" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
-         <styleClass>
-            <String fx:value="question-button" />
-            <String fx:value="text" />
-         </styleClass>
-         <font>
-            <Font name="System Italic" size="12.0" />
-         </font>
-      </Button>
-      <Button fx:id="answerBtn2" layoutX="800.0" layoutY="466.0" mnemonicParsing="false" onMouseClicked="#selectAnswer2" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn1" layoutX="800.0" layoutY="301.0" mnemonicParsing="false" onMouseClicked="#selectAnswer1" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />
          </styleClass>
       </Button>
-      <Button fx:id="answerBtn3" layoutX="800.0" layoutY="622.0" mnemonicParsing="false" onMouseClicked="#selectAnswer3" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn2" layoutX="800.0" layoutY="459.0" mnemonicParsing="false" onMouseClicked="#selectAnswer2" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+         <styleClass>
+            <String fx:value="question-button" />
+            <String fx:value="text" />
+         </styleClass>
+      </Button>
+      <Button fx:id="answerBtn3" layoutX="800.0" layoutY="615.0" mnemonicParsing="false" onMouseClicked="#selectAnswer3" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />
@@ -62,7 +60,7 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <ImageView fx:id="hoverEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="1702.0" layoutY="756.0">
+      <ImageView fx:id="hoverEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="1702.0" layoutY="756.0" onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis">
       </ImageView>
       <Label fx:id="questionInfo" layoutX="111.0" layoutY="915.0" text="Question 1/20">
          <styleClass>
@@ -82,5 +80,10 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
+      <Pane fx:id="emojiPane" layoutX="979.0" layoutY="755.0" prefHeight="234.0" prefWidth="1883.0" visible="false">
+         <children>
+            <Rectangle arcHeight="100.0" arcWidth="100.0" height="219.0" layoutX="12.0" layoutY="-2.0" onMouseEntered="#displayEmojis" onMouseExited="#hideEmojis" stroke="#262323" strokeType="INSIDE" styleClass="emoji-pane" width="868.0" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

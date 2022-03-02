@@ -3,11 +3,16 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.*;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class BasicQuestionCtrl {
 
@@ -45,9 +50,12 @@ public class BasicQuestionCtrl {
     public Label playersInfo;
 
     @FXML
+    public ImageView questionImg;
+
+    @FXML
     public ImageView hoverEmoji;
     @FXML
-    public ImageView questionImg;
+    public Pane emojiPane;
 
     /**
      * Creates a BasicQuestionCtrl, which controls the display/interaction of the basic question screen.
@@ -131,5 +139,49 @@ public class BasicQuestionCtrl {
     public void selectAnswer3() {
         // TODO: implement functionality
         System.out.print("Clicked answer 3");
+    }
+
+    /**
+     * Sets visibility of emoji pane to visible and starts a fade- and path-transition (the emoji pane slides in)
+     */
+    public void emojisSlideIn() {
+        displayEmojis();
+
+        Line line = new Line();
+        line.setStartX(600);
+        line.setStartY(100);
+        line.setEndX(0);
+        line.setEndY(100);
+
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(450));
+        pathTransition.setPath(line);
+        pathTransition.setNode(emojiPane);
+        pathTransition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
+        pathTransition.setCycleCount(1);
+        pathTransition.setAutoReverse(false);
+
+        FadeTransition ft = new FadeTransition(Duration.millis(100), emojiPane);
+        ft.setFromValue(0.3);
+        ft.setToValue(1.0);
+        ft.setCycleCount(1);
+        ft.setAutoReverse(false);
+
+        ft.play();
+        pathTransition.play();
+    }
+
+    /**
+     * Sets visibility of emoji pane to visible
+     */
+    public void displayEmojis() {
+        emojiPane.setVisible(true);
+    }
+
+    /**
+     * Sets visibility of emoji pane to invisible
+     */
+    public void hideEmojis() {
+        emojiPane.setVisible(false);
     }
 }
