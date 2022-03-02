@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 public class Question {
 
     @Id
-    public UUID QUESTION_ID = UUID.randomUUID();
+    public UUID questionId = UUID.randomUUID();
 
     public String activityID;
     public String activityTitle;
@@ -53,10 +53,9 @@ public class Question {
      * Returns this question's unique ID
      * @return the random UUID associated with this question
      */
-    @JsonIgnore
-    public UUID getUUID() {
+    public UUID getQuestionId() {
 
-        return QUESTION_ID;
+        return questionId;
 
     }
 

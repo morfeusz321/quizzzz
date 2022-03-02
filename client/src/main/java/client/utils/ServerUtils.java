@@ -60,7 +60,7 @@ public class ServerUtils {
     public String sendAnswerToServer(Question question, long answer) {
 
         Form postVariables = new Form();
-        postVariables.param("questionID", question.QUESTION_ID.toString());
+        postVariables.param("questionID", question.questionId.toString());
         postVariables.param("answer", String.valueOf(answer));
 
         return ClientBuilder.newClient(new ClientConfig())
