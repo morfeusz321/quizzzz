@@ -1,0 +1,60 @@
+/*
+    Description:
+    This file is for the styling of the basic question type.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Karla&display=swap');
+
+.text {
+    -fx-font-family: Karla;
+    -fx-text-color: #252422;
+    -fx-font-style: italic;
+}
+
+.question-title {
+    -fx-font-size: 50px;
+    -fx-font-weight: bold;
+    /* TODO: remove/adjust this when dynamic text sizing is added - just a temporary static solution */
+}
+
+.question-button {
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+    -fx-background-color: #E9DEC8;
+    -fx-border-color: #252422;
+    -fx-border-width: 1px;
+    -fx-font-style: none;
+    -fx-font-size: 35px;
+    /* TODO: remove/adjust this when dynamic text sizing is added - just a temporary static solution */
+}
+
+.powers-text {
+    -fx-font-size: 46px;
+}
+
+.react-text {
+    -fx-font-size: 46px;
+}
+
+.bottom-info-text {
+    -fx-font-size: 36px;
+}
+
+.progress-text {
+    -fx-font-size: 30px;
+}
+
+.progress-bar > .track {
+    -fx-background-color: #E9DEC8;
+    -fx-border-width: 0px;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+}
+
+.progress-bar > .bar {
+    -fx-background-color: #E1B454;
+    -fx-border-width: 10px;
+    -fx-border-color: #E1B454;
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+}
