@@ -46,10 +46,6 @@ public class QuestionControllerTest {
         assertEquals(HttpStatus.OK, q.getStatusCode());
         assertNotNull(q.getBody());
         assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
-        Activity a = activityDBController.getInternalDB().findById(q.getBody().activityID).orElse(null);
-        assertNotNull(a);
-        assertEquals(a.title, q.getBody().activityTitle);
-        assertEquals(a.imagePath, q.getBody().activityImagePath);
 
     }
 
@@ -90,27 +86,15 @@ public class QuestionControllerTest {
     }
 
     @Test
-    public void answerTestActivityDoesNotExist() {
-
-        Question testQuestion = new Question(new Activity("id", "imagePath", "title", 0));
-        questionDBController.add(testQuestion);
-
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "0");
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, s.getStatusCode());
-
-    }
-
-    @Test
-    public void answerTestAnswerCorrect() {
+    public void answerTestGeneralQuestionAnswerCorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 0);
         activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(testActivity);
+        Question testQuestion = new Question(Question.QuestionType.GENERAL, 1, testActivity, "0 Wh", "1 Wh", "2 Wh");
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "0");
+        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
         assertEquals("CORRECT", s.getBody());
@@ -118,15 +102,15 @@ public class QuestionControllerTest {
     }
 
     @Test
-    public void answerTestAnswerIncorrect() {
+    public void answerTestGeneralQuestionAnswerIncorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 0);
         activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(testActivity);
+        Question testQuestion = new Question(Question.QuestionType.GENERAL, 1, testActivity, "0 Wh", "1 Wh", "2 Wh");
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
+        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "2");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
         assertEquals("INCORRECT", s.getBody());

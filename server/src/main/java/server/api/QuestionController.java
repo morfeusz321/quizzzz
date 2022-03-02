@@ -11,7 +11,6 @@ import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
@@ -60,7 +59,11 @@ public class QuestionController {
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if(page.hasContent()) {
-            Question toReturn = new Question(page.getContent().get(0));
+            Activity a = page.getContent().get(0);
+            Question toReturn = new Question(Question.QuestionType.GENERAL,
+                    2,
+                    a,
+                    (0.5 * a.consumption) + " Wh", a.consumption + " Wh", (2 * a.consumption) + " Wh");
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
         }
@@ -101,19 +104,20 @@ public class QuestionController {
             return ResponseEntity.noContent().build();
         }
 
-        Optional<Activity> activityOptional = activityDBController.getInternalDB().findById(q.activityID);
-        if(activityOptional.isEmpty()) {
-
-            return ResponseEntity.internalServerError().build();
-
+        Question.QuestionType type = q.questionType;
+        if(type == Question.QuestionType.COMPARISON || type == Question.QuestionType.GENERAL) {
+            if(answer == q.answer) {
+                return ResponseEntity.ok("CORRECT");
+            } else {
+                return ResponseEntity.ok("INCORRECT");
+            }
         }
-        Activity a = activityOptional.get();
 
-        if(answer == a.consumption) {
-            return ResponseEntity.ok("CORRECT");
-        } else {
-            return ResponseEntity.ok("INCORRECT");
+        if(type == Question.QuestionType.ESTIMATION) {
+            return ResponseEntity.ok("PROXIMITY: " + (answer - q.answer));
         }
+
+        return ResponseEntity.internalServerError().build();
 
     }
 
