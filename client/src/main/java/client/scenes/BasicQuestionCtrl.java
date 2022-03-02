@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
@@ -43,6 +44,11 @@ public class BasicQuestionCtrl {
     @FXML
     public Label playersInfo;
 
+    @FXML
+    public ImageView hoverEmoji;
+    @FXML
+    public ImageView questionImg;
+
     /**
      * Creates a BasicQuestionCtrl, which controls the display/interaction of the basic question screen.
     * @param server Utilities for communicating with the server (API endpoint)
@@ -52,6 +58,21 @@ public class BasicQuestionCtrl {
     public BasicQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+    }
+
+    /**
+     * Loads all images, i.e. initializes the images of all ImageView objects
+     */
+    public void showImages(){
+        this.backBtn.setImage(new Image("/client/img/back_btn.png"));
+        this.decreaseTime.setImage(new Image("/client/img/clock_btn.png"));
+        this.removeQuestion.setImage(new Image("/client/img/minus_1_btn.png"));
+        this.doublePoints.setImage(new Image("/client/img/2x_btn.png"));
+        this.hoverEmoji.setImage(new Image("/client/img/happy_lightbulb.png"));
+
+        //TODO: show the real image here or set it in another method
+        // (right now the image is only static and inserted manually)
+        this.questionImg.setImage(new Image("/client/img/dishwasher.jpg"));
     }
 
     /**

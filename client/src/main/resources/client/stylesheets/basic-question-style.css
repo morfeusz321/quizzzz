@@ -3,10 +3,10 @@
     This file is for the styling of the basic question type.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Karla&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Karla&display=swap'); */
 
 .text {
-    -fx-font-family: Karla;
+    /* -fx-font-family: Karla; TODO: find a way to import the font, does not work right now*/
     -fx-text-color: #252422;
     -fx-font-style: italic;
 }
