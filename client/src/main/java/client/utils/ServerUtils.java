@@ -55,7 +55,8 @@ public class ServerUtils {
      * Sends the answer to a question to the server
      * @param question the question to answer
      * @param answer the answer to send to the server
-     * @return Either "CORRECT" or "INCORRECT" depending on whether the answer was correct
+     * @return Either "CORRECT" or "INCORRECT" depending on whether the answer was correct for general and comparison questions,
+     * or "PROXIMITY: N" for estimation questions
      */
     public String sendAnswerToServer(Question question, long answer) {
 
