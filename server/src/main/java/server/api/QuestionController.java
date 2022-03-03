@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Activity;
+import commons.GeneralQuestion;
 import commons.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +11,7 @@ import server.database.ActivityDB;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -60,11 +62,10 @@ public class QuestionController {
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if(page.hasContent()) {
             Activity a = page.getContent().get(0);
-            Question toReturn = new Question(Question.QuestionType.GENERAL,
-                    a,
-                    2,
-                    (0.5 * a.consumption) + " Wh", a.consumption + " Wh", (2 * a.consumption) + " Wh");
-            questionDBController.add(toReturn);
+            Question toReturn = new GeneralQuestion(a,
+                    List.of((0.5 * a.consumption) + " Wh", a.consumption + " Wh", (2 * a.consumption) + " Wh"),
+                    2);
+            questionDBController.add((Question) toReturn);
             return ResponseEntity.ok(toReturn);
         }
 

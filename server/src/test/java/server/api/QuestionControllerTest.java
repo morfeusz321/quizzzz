@@ -1,7 +1,6 @@
 package server.api;
 
-import commons.Activity;
-import commons.Question;
+import commons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.*;
@@ -89,9 +88,8 @@ public class QuestionControllerTest {
     public void answerTestGeneralQuestionAnswerCorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 0);
-        activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(Question.QuestionType.GENERAL, testActivity, 1, "0 Wh", "1 Wh", "2 Wh");
+        Question testQuestion = new GeneralQuestion(testActivity, List.of("0 Wh", "1 Wh", "2 Wh"), 1);
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
@@ -105,9 +103,8 @@ public class QuestionControllerTest {
     public void answerTestGeneralQuestionAnswerIncorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 0);
-        activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(Question.QuestionType.GENERAL, testActivity, 1, "0 Wh", "1 Wh", "2 Wh");
+        Question testQuestion = new GeneralQuestion(testActivity, List.of("0 Wh", "1 Wh", "2 Wh"), 1);
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "2");
@@ -121,13 +118,11 @@ public class QuestionControllerTest {
     public void answerTestComparisonQuestionCorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 5);
-        activityDBController.getInternalDB().save(testActivity);
-
         Activity answer1 = new Activity("id1", "imagePath", "title", 5);
         Activity answer2 = new Activity("id2", "imagePath", "title", 10);
         Activity answer3 = new Activity("id3", "imagePath", "title", 20);
 
-        Question testQuestion = new Question(Question.QuestionType.COMPARISON, 1, testActivity, answer1, answer2, answer3);
+        Question testQuestion = new ComparisonQuestion(testActivity, List.of(answer1, answer2, answer3), 1);
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
@@ -141,13 +136,11 @@ public class QuestionControllerTest {
     public void answerTestComparisonQuestionIncorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 5);
-        activityDBController.getInternalDB().save(testActivity);
-
         Activity answer1 = new Activity("id1", "imagePath", "title", 5);
         Activity answer2 = new Activity("id2", "imagePath", "title", 10);
         Activity answer3 = new Activity("id3", "imagePath", "title", 20);
 
-        Question testQuestion = new Question(Question.QuestionType.COMPARISON, 1, testActivity, answer1, answer2, answer3);
+        Question testQuestion = new ComparisonQuestion(testActivity, List.of(answer1, answer2, answer3), 1);
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "3");
@@ -161,9 +154,8 @@ public class QuestionControllerTest {
     public void answerTestEstimationQuestionCorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 50);
-        activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(Question.QuestionType.ESTIMATION, 50, testActivity);
+        Question testQuestion = new EstimationQuestion(testActivity);
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "50");
@@ -177,9 +169,8 @@ public class QuestionControllerTest {
     public void answerTestEstimationQuestionIncorrect() {
 
         Activity testActivity = new Activity("id", "imagePath", "title", 50);
-        activityDBController.getInternalDB().save(testActivity);
 
-        Question testQuestion = new Question(Question.QuestionType.ESTIMATION, 50, testActivity);
+        Question testQuestion = new EstimationQuestion(testActivity);
         questionDBController.add(testQuestion);
 
         ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "40");
