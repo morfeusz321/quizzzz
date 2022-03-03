@@ -160,13 +160,13 @@ public class BasicQuestionCtrl {
         displayEmojis();
 
         Line line = new Line();
-        line.setStartX(980); // width of pane
-        line.setStartY(110); // height of pane/2
-        line.setEndX(465); // width of pane/2
-        line.setEndY(110); // height of pane/2
+        line.setStartX(740); // width of pane
+        line.setStartY(160/2.0); // height of pane/2
+        line.setEndX(740/2.0); // width of pane/2
+        line.setEndY(160/2.0); // height of pane/2
 
         PathTransition pathTransition = new PathTransition();
-        pathTransition.setDuration(Duration.millis(450));
+        pathTransition.setDuration(Duration.millis(350));
         pathTransition.setPath(line);
         pathTransition.setNode(emojiPane);
         pathTransition.setCycleCount(1);

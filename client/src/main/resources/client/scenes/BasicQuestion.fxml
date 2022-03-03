@@ -56,13 +56,13 @@
       </Button>
       <ProgressBar fx:id="timeBar" layoutX="41.0" layoutY="845.0" prefHeight="55.0" prefWidth="1646.0" progress="0.0" />
       <Label layoutX="766.0" layoutY="849.0" styleClass="progress-text" text="Time left: 0:10" />
-      <Label layoutX="1735.0" layoutY="690.0" text="React:">
+      <Label layoutX="1745.0" layoutY="738.0" text="React:">
          <styleClass>
             <String fx:value="react-text" />
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <ImageView fx:id="hoverEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="1702.0" layoutY="756.0" onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis">
+      <ImageView fx:id="hoverEmoji" fitHeight="150.0" fitWidth="186.0" layoutX="1734.0" layoutY="808.0" onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis" preserveRatio="true">
       </ImageView>
       <Label fx:id="questionInfo" layoutX="111.0" layoutY="915.0" text="Question 1/20">
          <styleClass>
@@ -82,14 +82,14 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <Pane fx:id="emojiPane" layoutX="943.0" layoutY="753.0" onMouseEntered="#displayEmojis" onMouseExited="#hideEmojis" prefHeight="220.0" prefWidth="980.0" visible="false">
+      <Pane fx:id="emojiPane" layoutX="1141.0" layoutY="805.0" onMouseEntered="#displayEmojis" onMouseExited="#hideEmojis" prefHeight="160.0" prefWidth="740.0" visible="false">
          <children>
-            <Rectangle arcHeight="100.0" arcWidth="100.0" height="220.0" layoutX="-1.0" layoutY="-2.0" stroke="#262323" strokeType="INSIDE" styleClass="emoji-pane" width="980.0" />
-            <ImageView fx:id="happyEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="759.0" layoutY="3.0" />
-            <ImageView fx:id="angryEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="570.0" layoutY="3.0" />
-            <ImageView fx:id="sadEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="371.0" layoutY="3.0" />
-            <ImageView fx:id="heartEmoji" fitHeight="140.0" fitWidth="164.0" layoutX="181.0" layoutY="38.0" preserveRatio="true" />
-            <ImageView fx:id="thumbsUpEmoji" fitHeight="186.0" fitWidth="145.0" layoutX="20.0" layoutY="15.0" preserveRatio="true" />
+            <Rectangle arcHeight="100.0" arcWidth="100.0" height="160.0" layoutX="-1.0" layoutY="-2.0" stroke="#262323" strokeType="INSIDE" styleClass="emoji-pane" width="740.0" />
+            <ImageView fx:id="happyEmoji" fitHeight="150.0" fitWidth="186.0" layoutX="593.0" layoutY="3.0" preserveRatio="true" />
+            <ImageView fx:id="angryEmoji" fitHeight="150.0" fitWidth="186.0" layoutX="442.0" layoutY="3.0" preserveRatio="true" />
+            <ImageView fx:id="sadEmoji" fitHeight="150.0" fitWidth="186.0" layoutX="298.0" layoutY="3.0" preserveRatio="true" />
+            <ImageView fx:id="heartEmoji" fitHeight="110.0" fitWidth="164.0" layoutX="144.0" layoutY="27.0" preserveRatio="true" />
+            <ImageView fx:id="thumbsUpEmoji" fitHeight="140.0" fitWidth="145.0" layoutX="15.0" layoutY="7.0" preserveRatio="true" />
          </children>
       </Pane>
    </children>
