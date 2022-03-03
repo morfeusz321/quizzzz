@@ -82,9 +82,14 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <Pane fx:id="emojiPane" layoutX="979.0" layoutY="755.0" prefHeight="234.0" prefWidth="1883.0" visible="false">
+      <Pane fx:id="emojiPane" layoutX="943.0" layoutY="753.0" onMouseEntered="#displayEmojis" onMouseExited="#hideEmojis" prefHeight="220.0" prefWidth="980.0" visible="false">
          <children>
-            <Rectangle arcHeight="100.0" arcWidth="100.0" height="219.0" layoutX="12.0" layoutY="-2.0" onMouseEntered="#displayEmojis" onMouseExited="#hideEmojis" stroke="#262323" strokeType="INSIDE" styleClass="emoji-pane" width="868.0" />
+            <Rectangle arcHeight="100.0" arcWidth="100.0" height="220.0" layoutX="-1.0" layoutY="-2.0" stroke="#262323" strokeType="INSIDE" styleClass="emoji-pane" width="980.0" />
+            <ImageView fx:id="happyEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="759.0" layoutY="3.0" />
+            <ImageView fx:id="angryEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="570.0" layoutY="3.0" />
+            <ImageView fx:id="sadEmoji" fitHeight="211.0" fitWidth="186.0" layoutX="371.0" layoutY="3.0" />
+            <ImageView fx:id="heartEmoji" fitHeight="140.0" fitWidth="164.0" layoutX="181.0" layoutY="38.0" preserveRatio="true" />
+            <ImageView fx:id="thumbsUpEmoji" fitHeight="186.0" fitWidth="145.0" layoutX="20.0" layoutY="15.0" preserveRatio="true" />
          </children>
       </Pane>
    </children>

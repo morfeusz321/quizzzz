@@ -61,6 +61,17 @@ public class BasicQuestionCtrl {
     @FXML
     public Pane emojiPane;
 
+    @FXML
+    public ImageView happyEmoji;
+    @FXML
+    public ImageView angryEmoji;
+    @FXML
+    public ImageView sadEmoji;
+    @FXML
+    public ImageView heartEmoji;
+    @FXML
+    public ImageView thumbsUpEmoji;
+
     /**
      * Creates a BasicQuestionCtrl, which controls the display/interaction of the basic question screen.
     * @param server Utilities for communicating with the server (API endpoint)
@@ -82,6 +93,11 @@ public class BasicQuestionCtrl {
         doublePoints.setImage(new Image("/client/img/2x_btn.png"));
         hoverEmoji.setImage(new Image("/client/img/happy_lightbulb.png"));
         bgImage.setImage(new Image("/client/img/bg_img.png"));
+        happyEmoji.setImage(new Image("/client/img/happy_lightbulb.png"));
+        sadEmoji.setImage(new Image("/client/img/sad_lightbulb.png"));
+        angryEmoji.setImage(new Image("/client/img/angry_lightbulb.png"));
+        heartEmoji.setImage(new Image("/client/img/heart_emoji.png"));
+        thumbsUpEmoji.setImage(new Image("/client/img/thumbs_up_emoji.png"));
 
         // TODO: show the real image here or set it in another method
         //  (right now the image is only static and inserted manually)
@@ -144,16 +160,15 @@ public class BasicQuestionCtrl {
         displayEmojis();
 
         Line line = new Line();
-        line.setStartX(600);
-        line.setStartY(100);
-        line.setEndX(0);
-        line.setEndY(100);
+        line.setStartX(980); // width of pane
+        line.setStartY(110); // height of pane/2
+        line.setEndX(465); // width of pane/2
+        line.setEndY(110); // height of pane/2
 
         PathTransition pathTransition = new PathTransition();
         pathTransition.setDuration(Duration.millis(450));
         pathTransition.setPath(line);
         pathTransition.setNode(emojiPane);
-        pathTransition.setOrientation(PathTransition.OrientationType.ORTHOGONAL_TO_TANGENT);
         pathTransition.setCycleCount(1);
         pathTransition.setAutoReverse(false);
 
