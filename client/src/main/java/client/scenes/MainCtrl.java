@@ -49,8 +49,16 @@ public class MainCtrl {
 
         this.basicQuestionCtrl = basicQuestion.getKey();
         this.basicQuestion = new Scene(basicQuestion.getValue());
-        this.basicQuestion.getStylesheets().add(BasicQuestionCtrl.class.getResource("/client/stylesheets/basic-question-style.css").toExternalForm());
-        this.basicQuestion.getStylesheets().add(BasicQuestionCtrl.class.getResource("/client/stylesheets/screen-style.css").toExternalForm());
+        this.basicQuestion.getStylesheets().add(
+                BasicQuestionCtrl.class.getResource(
+                        "/client/stylesheets/basic-question-style.css"
+                ).toExternalForm());
+        this.basicQuestion.getStylesheets().add(
+                BasicQuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+        this.basicQuestionCtrl.initializeAnswerEventHandlers();
+        this.basicQuestionCtrl.showImages();
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
@@ -75,7 +83,6 @@ public class MainCtrl {
     public void showBasicQuestion() {
         primaryStage.setTitle("Basic question");
         primaryStage.setScene(basicQuestion);
-        basicQuestionCtrl.showImages();
     }
 
     /**

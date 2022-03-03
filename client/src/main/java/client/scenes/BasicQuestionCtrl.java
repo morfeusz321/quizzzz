@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
@@ -75,16 +76,33 @@ public class BasicQuestionCtrl {
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
     public void showImages(){
-        this.backBtn.setImage(new Image("/client/img/back_btn.png"));
-        this.decreaseTime.setImage(new Image("/client/img/clock_btn.png"));
-        this.removeQuestion.setImage(new Image("/client/img/minus_1_btn.png"));
-        this.doublePoints.setImage(new Image("/client/img/2x_btn.png"));
-        this.hoverEmoji.setImage(new Image("/client/img/happy_lightbulb.png"));
-        this.bgImage.setImage(new Image("/client/img/bg_img.png"));
+        backBtn.setImage(new Image("/client/img/back_btn.png"));
+        decreaseTime.setImage(new Image("/client/img/clock_btn.png"));
+        removeQuestion.setImage(new Image("/client/img/minus_1_btn.png"));
+        doublePoints.setImage(new Image("/client/img/2x_btn.png"));
+        hoverEmoji.setImage(new Image("/client/img/happy_lightbulb.png"));
+        bgImage.setImage(new Image("/client/img/bg_img.png"));
 
         // TODO: show the real image here or set it in another method
         //  (right now the image is only static and inserted manually)
-        this.questionImg.setImage(new Image("/client/img/dishwasher.jpg"));
+        questionImg.setImage(new Image("/client/img/dishwasher.jpg"));
+    }
+
+    /**
+     * Initializes the event handlers of all answer buttons
+     */
+    public void initializeAnswerEventHandlers(){
+        answerBtn1.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> answerBtn1.getStyleClass().add("selected-answer"));
+        answerBtn2.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> answerBtn2.getStyleClass().add("selected-answer"));
+        answerBtn3.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> answerBtn3.getStyleClass().add("selected-answer"));
+
+        answerBtn1.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> answerBtn1.getStyleClass().add("hover-button"));
+        answerBtn2.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> answerBtn2.getStyleClass().add("hover-button"));
+        answerBtn3.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> answerBtn3.getStyleClass().add("hover-button"));
+
+        answerBtn1.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn1.getStyleClass().remove("hover-button"));
+        answerBtn2.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn2.getStyleClass().remove("hover-button"));
+        answerBtn3.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn3.getStyleClass().remove("hover-button"));
     }
 
     /**
@@ -117,33 +135,6 @@ public class BasicQuestionCtrl {
     public void useDoublePoints() {
         // TODO: implement functionality
         System.out.print("Used double points power");
-    }
-
-
-    /**
-     * Selects answer 1
-     * TODO: Refactor, too many methods right now. Maybe add handlers in Java (here) and not in fxml file.
-     *  Then it might be easier to avoid code duplication. Also for all enter/exit methods below.
-     */
-    public void selectAnswer1() {
-        // TODO: implement functionality
-        clickQuestionButton(answerBtn1);
-    }
-
-    /**
-     * Selects answer 2
-     */
-    public void selectAnswer2() {
-        // TODO: implement functionality
-        clickQuestionButton(answerBtn2);
-    }
-
-    /**
-     * Selects answer 3
-     */
-    public void selectAnswer3() {
-        // TODO: implement functionality
-        clickQuestionButton(answerBtn3);
     }
 
     /**
@@ -188,59 +179,5 @@ public class BasicQuestionCtrl {
      */
     public void hideEmojis() {
         emojiPane.setVisible(false);
-    }
-
-    /**
-     * Mouse exits the first answer button (reset background color)
-     */
-    public void exitQuestion1(){
-        exitQuestionButton(answerBtn1);
-    }
-
-    /**
-     * Mouse enters the first answer button (set background color to darker color)
-     */
-    public void enterQuestion1(){
-        enterQuestionButton(answerBtn1);
-    }
-
-    /**
-     * Mouse enters the second answer button (reset background color)
-     */
-    public void exitQuestion2(){
-        exitQuestionButton(answerBtn2);
-    }
-
-    /**
-     * Mouse enters the second answer button (set background color to darker color)
-     */
-    public void enterQuestion2(){
-        enterQuestionButton(answerBtn2);
-    }
-
-    /**
-     * Mouse enters the third answer button (reset background color)
-     */
-    public void exitQuestion3(){
-        exitQuestionButton(answerBtn3);
-    }
-
-    /**
-     * Mouse enters the third answer button (set background color to darker color)
-     */
-    public void enterQuestion3(){
-        enterQuestionButton(answerBtn3);
-    }
-
-    public void enterQuestionButton(Button btn){
-        btn.getStyleClass().add("hover-button");
-    }
-
-    public void exitQuestionButton(Button btn){
-        btn.getStyleClass().remove("hover-button");
-    }
-
-    public void clickQuestionButton(Button btn){
-        btn.getStyleClass().add("selected-answer");
     }
 }
