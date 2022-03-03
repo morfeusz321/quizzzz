@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
+import commons.Question;
 import javafx.animation.FadeTransition;
 import javafx.animation.PathTransition;
 import javafx.fxml.FXML;
@@ -15,6 +16,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+
+import java.util.List;
 
 public class BasicQuestionCtrl {
 
@@ -92,6 +95,26 @@ public class BasicQuestionCtrl {
          showImages();
          initializeAnswerEventHandlers();
          initializeEmojiEventHandlers();
+         loadQuestion();
+    }
+
+    /**
+     * Gets a random question from the server and displays the question to the client
+     */
+    public void loadQuestion() {
+
+        Question q = server.getRandomQuestion();
+
+        if(!(q.questionType == Question.QuestionType.GENERAL)) {
+            return; // Other question types not supported yet
+        }
+
+        questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
+        title.setText(q.displayQuestion());
+        answerBtn1.setText(q.answerOptions.get(0));
+        answerBtn2.setText(q.answerOptions.get(1));
+        answerBtn3.setText(q.answerOptions.get(2));
+
     }
 
     /**
@@ -119,17 +142,55 @@ public class BasicQuestionCtrl {
      * Initializes the event handlers of all answer buttons
      */
     public void initializeAnswerEventHandlers(){
-        answerBtn1.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> answerBtn1.getStyleClass().add("selected-answer"));
-        answerBtn2.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> answerBtn2.getStyleClass().add("selected-answer"));
-        answerBtn3.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> answerBtn3.getStyleClass().add("selected-answer"));
 
-        answerBtn1.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> answerBtn1.getStyleClass().add("hover-button"));
-        answerBtn2.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> answerBtn2.getStyleClass().add("hover-button"));
-        answerBtn3.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> answerBtn3.getStyleClass().add("hover-button"));
+        List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
+        buttonList.forEach(this::addEventHandlersToAnswerButton);
 
-        answerBtn1.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn1.getStyleClass().remove("hover-button"));
-        answerBtn2.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn2.getStyleClass().remove("hover-button"));
-        answerBtn3.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn3.getStyleClass().remove("hover-button"));
+    }
+
+    /**
+     * Gives an answer button its event handlers
+     * @param btn the answer button to give event handlers to
+     */
+    private void addEventHandlersToAnswerButton(Button btn) {
+
+        btn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> eventHandlerAnswerButtonMouseClicked(btn));
+        btn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> eventHandlerAnswerButtonMouseEntered(btn));
+        btn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> eventHandlerAnswerButtonMouseExited(btn));
+
+    }
+
+    /**
+     * The event handler called when an answer button is clicked
+     * @param btn the button that was clicked
+     */
+    private void eventHandlerAnswerButtonMouseClicked(Button btn) {
+
+        List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
+        buttonList.forEach(b -> b.getStyleClass().remove("selected-answer"));
+
+        btn.getStyleClass().add("selected-answer");
+
+    }
+
+    /**
+     * The event handler called when the user hovers over an answer button
+     * @param btn the button that was hovered over
+     */
+    private void eventHandlerAnswerButtonMouseEntered(Button btn) {
+
+        btn.getStyleClass().add("hover-button");
+
+    }
+
+    /**
+     * The event handler called when the user stops hovering over an answer button
+     * @param btn the button that was stopped hovering over
+     */
+    private void eventHandlerAnswerButtonMouseExited(Button btn) {
+
+        btn.getStyleClass().remove("hover-button");
+
     }
 
     /**
