@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Activity;
+import commons.AnswerResponseEntity;
 import commons.GeneralQuestion;
 import commons.Question;
 import org.springframework.data.domain.Page;
@@ -65,7 +66,7 @@ public class QuestionController {
             Question toReturn = new GeneralQuestion(a,
                     List.of((0.5 * a.consumption) + " Wh", a.consumption + " Wh", (2 * a.consumption) + " Wh"),
                     2);
-            questionDBController.add((Question) toReturn);
+            questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
         }
 
@@ -84,7 +85,8 @@ public class QuestionController {
      *                      or 500 Internal Server Error if the operation cannot be completed for any other reason
      */
     @PostMapping("/answer")
-    public ResponseEntity<String> answer(@RequestParam("questionID") String questionIDString, @RequestParam("answer") String answerString) {
+    public ResponseEntity<AnswerResponseEntity> answer(@RequestParam("questionID") String questionIDString,
+                                                       @RequestParam("answer") String answerString) {
 
         long answer;
         try {
@@ -108,14 +110,14 @@ public class QuestionController {
         Question.QuestionType type = q.questionType;
         if(type == Question.QuestionType.COMPARISON || type == Question.QuestionType.GENERAL) {
             if(answer == q.answer) {
-                return ResponseEntity.ok("CORRECT");
+                return ResponseEntity.ok(new AnswerResponseEntity(true));
             } else {
-                return ResponseEntity.ok("INCORRECT");
+                return ResponseEntity.ok(new AnswerResponseEntity(false));
             }
         }
 
         if(type == Question.QuestionType.ESTIMATION) {
-            return ResponseEntity.ok("PROXIMITY: " + (answer - q.answer));
+            return ResponseEntity.ok(new AnswerResponseEntity((answer == q.answer), (answer - q.answer)));
         }
 
         return ResponseEntity.internalServerError().build();

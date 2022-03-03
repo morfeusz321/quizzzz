@@ -60,7 +60,7 @@ public class QuestionControllerTest {
     @Test
     public void answerTestMalformedAnswer() {
 
-        ResponseEntity<String> s = questionController.answer(UUID.randomUUID().toString(), "cheese");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(UUID.randomUUID().toString(), "cheese");
 
         assertEquals(HttpStatus.BAD_REQUEST, s.getStatusCode());
 
@@ -69,7 +69,7 @@ public class QuestionControllerTest {
     @Test
     public void answerTestMalformedUUID() {
 
-        ResponseEntity<String> s = questionController.answer("whatever", "0");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer("whatever", "0");
 
         assertEquals(HttpStatus.BAD_REQUEST, s.getStatusCode());
 
@@ -78,7 +78,7 @@ public class QuestionControllerTest {
     @Test
     public void answerTestQuestionDoesNotExist() {
 
-        ResponseEntity<String> s = questionController.answer(UUID.randomUUID().toString(), "0");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(UUID.randomUUID().toString(), "0");
 
         assertEquals(HttpStatus.NO_CONTENT, s.getStatusCode());
 
@@ -92,10 +92,10 @@ public class QuestionControllerTest {
         Question testQuestion = new GeneralQuestion(testActivity, List.of("0 Wh", "1 Wh", "2 Wh"), 1);
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals("CORRECT", s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -107,10 +107,10 @@ public class QuestionControllerTest {
         Question testQuestion = new GeneralQuestion(testActivity, List.of("0 Wh", "1 Wh", "2 Wh"), 1);
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "2");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "2");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals("INCORRECT", s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 
@@ -125,10 +125,10 @@ public class QuestionControllerTest {
         Question testQuestion = new ComparisonQuestion(testActivity, List.of(answer1, answer2, answer3), 1);
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "1");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals("CORRECT", s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -143,10 +143,10 @@ public class QuestionControllerTest {
         Question testQuestion = new ComparisonQuestion(testActivity, List.of(answer1, answer2, answer3), 1);
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "3");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "3");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals("INCORRECT", s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 
@@ -158,10 +158,10 @@ public class QuestionControllerTest {
         Question testQuestion = new EstimationQuestion(testActivity);
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "50");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "50");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals("PROXIMITY: 0", s.getBody());
+        assertEquals(new AnswerResponseEntity(true, 0), s.getBody());
 
     }
 
@@ -173,13 +173,13 @@ public class QuestionControllerTest {
         Question testQuestion = new EstimationQuestion(testActivity);
         questionDBController.add(testQuestion);
 
-        ResponseEntity<String> s = questionController.answer(testQuestion.questionId.toString(), "40");
+        ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "40");
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals("PROXIMITY: -10", s.getBody());
+        assertEquals(new AnswerResponseEntity(false, -10), s.getBody());
 
         s = questionController.answer(testQuestion.questionId.toString(), "60");
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals("PROXIMITY: 10", s.getBody());
+        assertEquals(new AnswerResponseEntity(false, 10), s.getBody());
 
     }
 

@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
+import commons.AnswerResponseEntity;
 import commons.Question;
 import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
@@ -55,10 +56,10 @@ public class ServerUtils {
      * Sends the answer to a question to the server
      * @param question the question to answer
      * @param answer the answer to send to the server
-     * @return Either "CORRECT" or "INCORRECT" depending on whether the answer was correct for general and comparison questions,
-     * or "PROXIMITY: N" for estimation questions
+     * @return An AnswerResponseEntity which contains information about whether the answer was correct,
+     * as well as the proximity to the correct answer for estimation questions
      */
-    public String sendAnswerToServer(Question question, long answer) {
+    public AnswerResponseEntity sendAnswerToServer(Question question, long answer) {
 
         Form postVariables = new Form();
         postVariables.param("questionID", question.questionId.toString());
@@ -68,7 +69,7 @@ public class ServerUtils {
                 .target(SERVER).path("api/questions/answer")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
 
     }
 
