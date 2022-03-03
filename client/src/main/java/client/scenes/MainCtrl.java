@@ -57,8 +57,6 @@ public class MainCtrl {
                 BasicQuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
-        this.basicQuestionCtrl.initializeAnswerEventHandlers();
-        this.basicQuestionCtrl.showImages();
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());

@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
@@ -72,6 +73,9 @@ public class BasicQuestionCtrl {
     @FXML
     public ImageView thumbsUpEmoji;
 
+    @FXML
+    public AnchorPane anchorPane;
+
     /**
      * Creates a BasicQuestionCtrl, which controls the display/interaction of the basic question screen.
     * @param server Utilities for communicating with the server (API endpoint)
@@ -81,6 +85,13 @@ public class BasicQuestionCtrl {
     public BasicQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+    }
+
+    @FXML
+    protected void initialize() {
+         showImages();
+         initializeAnswerEventHandlers();
+         initializeEmojiEventHandlers();
     }
 
     /**
@@ -119,6 +130,62 @@ public class BasicQuestionCtrl {
         answerBtn1.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn1.getStyleClass().remove("hover-button"));
         answerBtn2.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn2.getStyleClass().remove("hover-button"));
         answerBtn3.addEventHandler(MouseEvent.MOUSE_EXITED, e -> answerBtn3.getStyleClass().remove("hover-button"));
+    }
+
+    /**
+     * Initializes the event handlers of all emojis
+     */
+    public void initializeEmojiEventHandlers(){
+        // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
+        happyEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(happyEmoji));
+        sadEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(sadEmoji));
+        angryEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(angryEmoji));
+        heartEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(heartEmoji));
+        thumbsUpEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(thumbsUpEmoji));
+    }
+
+    /**
+     * Displays an emoji animation for a specific emoji
+     * @param clickedEmoji The image view of the emoji in the emoji pane
+     */
+    public void emojiAnimation(ImageView clickedEmoji){
+        ImageView emoji = new ImageView(clickedEmoji.getImage());
+        anchorPane.getChildren().add(emoji);
+        emoji.toBack();
+
+        double sizeRatio = 0.6; // should be <= 1
+        emoji.setFitWidth(hoverEmoji.getFitWidth() * sizeRatio);
+        emoji.setPreserveRatio(true);
+        emoji.setLayoutX(hoverEmoji.getLayoutX() + 20);
+        emoji.setLayoutY(hoverEmoji.getLayoutY());
+        // TODO: when we do dynamic resizing of the window, the hardcoded values have to be changed
+
+        Line line = new Line();
+        line.setStartX(emoji.getFitWidth() / 2);
+        line.setStartY(0);
+        line.setEndX(emoji.getFitWidth() / 2);
+        line.setEndY(-490);
+
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(900));
+        pathTransition.setPath(line);
+        pathTransition.setNode(emoji);
+        pathTransition.setCycleCount(1);
+        pathTransition.setAutoReverse(false);
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(1100), emoji);
+        fadeIn.setFromValue(0.7);
+        fadeIn.setToValue(1.0);
+        fadeIn.setCycleCount(1);
+        fadeIn.setAutoReverse(false);
+
+        pathTransition.play();
+        fadeIn.play();
+
+        fadeIn.setOnFinished(e -> {
+            emoji.setVisible(false);
+            anchorPane.getChildren().remove(emoji);
+        });
     }
 
     /**
