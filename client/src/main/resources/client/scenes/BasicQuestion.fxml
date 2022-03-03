@@ -36,19 +36,19 @@
       </ImageView>
       <ImageView fx:id="questionImg" fitHeight="414.0" fitWidth="414.0" layoutX="329.0" layoutY="317.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <Button fx:id="answerBtn1" layoutX="800.0" layoutY="301.0" mnemonicParsing="false" onMouseClicked="#selectAnswer1" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn1" layoutX="800.0" layoutY="301.0" mnemonicParsing="false" onMouseClicked="#selectAnswer1" onMouseEntered="#enterQuestion1" onMouseExited="#exitQuestion1" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />
          </styleClass>
       </Button>
-      <Button fx:id="answerBtn2" layoutX="800.0" layoutY="459.0" mnemonicParsing="false" onMouseClicked="#selectAnswer2" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn2" layoutX="800.0" layoutY="459.0" mnemonicParsing="false" onMouseClicked="#selectAnswer2" onMouseEntered="#enterQuestion2" onMouseExited="#exitQuestion2" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />
          </styleClass>
       </Button>
-      <Button fx:id="answerBtn3" layoutX="800.0" layoutY="615.0" mnemonicParsing="false" onMouseClicked="#selectAnswer3" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn3" layoutX="800.0" layoutY="615.0" mnemonicParsing="false" onMouseClicked="#selectAnswer3" onMouseEntered="#enterQuestion3" onMouseExited="#exitQuestion3" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />

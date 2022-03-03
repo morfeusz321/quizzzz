@@ -28,6 +28,14 @@
     /* TODO: remove/adjust this when dynamic text sizing is added - just a temporary static solution */
 }
 
+.hover-button {
+    -fx-background-color: #e5d8b2;
+}
+
+.selected-answer {
+    -fx-background-color: #dabb78;
+}
+
 .powers-text {
     -fx-font-size: 46px;
 }

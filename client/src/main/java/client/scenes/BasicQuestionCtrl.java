@@ -82,8 +82,8 @@ public class BasicQuestionCtrl {
         this.hoverEmoji.setImage(new Image("/client/img/happy_lightbulb.png"));
         this.bgImage.setImage(new Image("/client/img/bg_img.png"));
 
-        //TODO: show the real image here or set it in another method
-        // (right now the image is only static and inserted manually)
+        // TODO: show the real image here or set it in another method
+        //  (right now the image is only static and inserted manually)
         this.questionImg.setImage(new Image("/client/img/dishwasher.jpg"));
     }
 
@@ -122,11 +122,12 @@ public class BasicQuestionCtrl {
 
     /**
      * Selects answer 1
-     * TODO: use mouseEvent to group selecting answers in one method (if that is possible)
+     * TODO: Refactor, too many methods right now. Maybe add handlers in Java (here) and not in fxml file.
+     *  Then it might be easier to avoid code duplication. Also for all enter/exit methods below.
      */
     public void selectAnswer1() {
         // TODO: implement functionality
-        System.out.print("Clicked answer 1");
+        clickQuestionButton(answerBtn1);
     }
 
     /**
@@ -134,7 +135,7 @@ public class BasicQuestionCtrl {
      */
     public void selectAnswer2() {
         // TODO: implement functionality
-        System.out.print("Clicked answer 2");
+        clickQuestionButton(answerBtn2);
     }
 
     /**
@@ -142,7 +143,7 @@ public class BasicQuestionCtrl {
      */
     public void selectAnswer3() {
         // TODO: implement functionality
-        System.out.print("Clicked answer 3");
+        clickQuestionButton(answerBtn3);
     }
 
     /**
@@ -187,5 +188,59 @@ public class BasicQuestionCtrl {
      */
     public void hideEmojis() {
         emojiPane.setVisible(false);
+    }
+
+    /**
+     * Mouse exits the first answer button (reset background color)
+     */
+    public void exitQuestion1(){
+        exitQuestionButton(answerBtn1);
+    }
+
+    /**
+     * Mouse enters the first answer button (set background color to darker color)
+     */
+    public void enterQuestion1(){
+        enterQuestionButton(answerBtn1);
+    }
+
+    /**
+     * Mouse enters the second answer button (reset background color)
+     */
+    public void exitQuestion2(){
+        exitQuestionButton(answerBtn2);
+    }
+
+    /**
+     * Mouse enters the second answer button (set background color to darker color)
+     */
+    public void enterQuestion2(){
+        enterQuestionButton(answerBtn2);
+    }
+
+    /**
+     * Mouse enters the third answer button (reset background color)
+     */
+    public void exitQuestion3(){
+        exitQuestionButton(answerBtn3);
+    }
+
+    /**
+     * Mouse enters the third answer button (set background color to darker color)
+     */
+    public void enterQuestion3(){
+        enterQuestionButton(answerBtn3);
+    }
+
+    public void enterQuestionButton(Button btn){
+        btn.getStyleClass().add("hover-button");
+    }
+
+    public void exitQuestionButton(Button btn){
+        btn.getStyleClass().remove("hover-button");
+    }
+
+    public void clickQuestionButton(Button btn){
+        btn.getStyleClass().add("selected-answer");
     }
 }
