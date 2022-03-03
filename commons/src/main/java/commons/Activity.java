@@ -54,10 +54,10 @@ public class Activity {
     }
 
     /**
-     * Display an activity to the screen
-     * @return a string with the activity
+     * Creates a form of the activity title that can be used in a sentence
+     * @return the activity title with the first letter guaranteed to be lowercase so that it can be used in a sentence
      */
-    public String displayActivity() {
+    public static String displayActivity(String title) {
         return Character.toLowerCase(title.charAt(0)) + title.substring(1);
     }
 

@@ -1,37 +1,63 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.List;
+import java.util.UUID;
+
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
-public class Question {
+@Entity
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
+public abstract class Question {
 
-    public Activity activity;
+    public enum QuestionType {
+        GENERAL,
+        COMPARISON,
+        ESTIMATION
+    }
+
+    @Id
+    public UUID questionId = UUID.randomUUID();
+    public QuestionType questionType;
+
+    public String activityTitle;
+    public String activityImagePath;
+
+    @ElementCollection
+    public List<String> answerOptions;
+    @JsonIgnore
+    public long answer;
 
     /**
      * Empty constructor used by object mapper
      */
     @SuppressWarnings("unused")
-    private Question() {
+    Question() {
 
     }
 
     /**
-     * Creates a question object
-     * @param activity object that will be used for this question
-     */
-    public Question(Activity activity) {
-        this.activity = activity;
-    }
-
-    /**
-     * Display the question to the user
-     * @return a formatted string containing the question
+     * Creates a human-readable form of this question
+     * @return a formatted string of the question, which differs based on question type
      */
     public String displayQuestion() {
-        return "How much energy does " + activity.displayActivity() + " take?";
+
+        if(questionType == QuestionType.GENERAL || questionType == QuestionType.ESTIMATION) {
+            return "How much energy does " + Activity.displayActivity(activityTitle) + " take?";
+        } else if(questionType == QuestionType.COMPARISON) {
+            return "Instead of " + Activity.displayActivity(activityTitle) + ", you could use the same amount of energy for...";
+        }
+
+        return activityTitle;
+
     }
 
     /**
