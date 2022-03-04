@@ -3,8 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
-import javafx.animation.FadeTransition;
-import javafx.animation.PathTransition;
+import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -15,6 +14,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+
+import java.util.Random;
 
 public class BasicQuestionCtrl {
 
@@ -146,9 +147,11 @@ public class BasicQuestionCtrl {
 
     /**
      * Displays an emoji animation for a specific emoji
-     * @param clickedEmoji The image view of the emoji in the emoji pane
+     * @param clickedEmoji The image view which was clicked (emoji in the emoji pane)
      */
     public void emojiAnimation(ImageView clickedEmoji){
+        // TODO: when we do dynamic resizing of the window, the hardcoded values have to be changed
+
         ImageView emoji = new ImageView(clickedEmoji.getImage());
         anchorPane.getChildren().add(emoji);
         emoji.toBack();
@@ -158,34 +161,53 @@ public class BasicQuestionCtrl {
         emoji.setPreserveRatio(true);
         emoji.setLayoutX(hoverEmoji.getLayoutX() + 20);
         emoji.setLayoutY(hoverEmoji.getLayoutY());
-        // TODO: when we do dynamic resizing of the window, the hardcoded values have to be changed
 
-        Line line = new Line();
-        line.setStartX(emoji.getFitWidth() / 2);
-        line.setStartY(0);
-        line.setEndX(emoji.getFitWidth() / 2);
-        line.setEndY(-490);
+        CubicCurve cubic = new CubicCurve();
+        cubic.setStartX(emoji.getFitWidth() / 2);
+        cubic.setStartY(0);
+        cubic.setControlX1(emoji.getFitWidth() / 2 + randomIntInRange(-20, -40));
+        cubic.setControlY1(randomIntInRange(-50, -125));
+        cubic.setControlX2(emoji.getFitWidth() / 2 + randomIntInRange(20, 40));
+        cubic.setControlY2(randomIntInRange(-175, -275));
+        cubic.setEndX(emoji.getFitWidth() / 2);
+        cubic.setEndY(-300);
 
         PathTransition pathTransition = new PathTransition();
-        pathTransition.setDuration(Duration.millis(900));
-        pathTransition.setPath(line);
+        pathTransition.setDuration(Duration.millis(600));
+        pathTransition.setPath(cubic);
         pathTransition.setNode(emoji);
         pathTransition.setCycleCount(1);
         pathTransition.setAutoReverse(false);
 
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(1100), emoji);
-        fadeIn.setFromValue(0.7);
-        fadeIn.setToValue(1.0);
-        fadeIn.setCycleCount(1);
-        fadeIn.setAutoReverse(false);
-
-        pathTransition.play();
-        fadeIn.play();
-
-        fadeIn.setOnFinished(e -> {
+        emoji.opacityProperty().setValue(0.5);
+        Timeline fade = new Timeline(
+                new KeyFrame(Duration.millis(600), new KeyValue(emoji.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(1050), new KeyValue(emoji.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(1350), new KeyValue(emoji.opacityProperty(), 0))
+        );
+        fade.setAutoReverse(false);
+        fade.setCycleCount(1);
+        fade.setOnFinished(e -> {
             emoji.setVisible(false);
             anchorPane.getChildren().remove(emoji);
         });
+
+        fade.play();
+        pathTransition.play();
+    }
+
+    /**
+     * Returns a random integer in a given range. The bounds need to be either both negative or both positive.
+     * @param lower The lower bound (inclusive)
+     * @param upper The upper bound (inclusive)
+     * @return A random integer in the given range.
+     */
+    public int randomIntInRange(int lower, int upper){
+        Random r = new Random();
+        if(lower < 0 && upper < 0){
+            return r.nextInt(-1 * upper + lower) * -1 + lower;
+        }
+        return r.nextInt(upper - lower) + lower;
     }
 
     /**
