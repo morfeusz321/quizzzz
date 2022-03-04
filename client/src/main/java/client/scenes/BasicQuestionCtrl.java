@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
+import commons.GeneralQuestion;
 import commons.Question;
 import javafx.animation.FadeTransition;
 import javafx.animation.PathTransition;
@@ -105,7 +106,7 @@ public class BasicQuestionCtrl {
 
         Question q = server.getRandomQuestion();
 
-        if(!(q.questionType == Question.QuestionType.GENERAL)) {
+        if(!(q instanceof GeneralQuestion)) {
             return; // Other question types not supported yet
         }
 
