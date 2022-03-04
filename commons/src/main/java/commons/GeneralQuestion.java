@@ -28,8 +28,6 @@ public class GeneralQuestion extends Question {
      */
     public GeneralQuestion(Activity mainActivity, List<String> answerOptions, long answer) {
 
-        this.questionType = QuestionType.GENERAL;
-
         this.activityTitle = mainActivity.title;
         this.activityImagePath = mainActivity.imagePath;
 

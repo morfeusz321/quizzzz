@@ -1,6 +1,7 @@
 package commons;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,17 +11,31 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class QuestionTest {
 
+    private Activity activity1;
+    private Activity activity2;
+    private Activity activity3;
+    private Activity activity4;
+
+    private Question generalQuestion;
+    private Question comparisonQuestion;
+    private Question estimationQuestion;
+
+    @BeforeEach
+    public void setup() {
+
+        this.activity1 = new Activity("1","/path/to/image/","Activity", 200);
+        this.activity2 = new Activity("2","/path/to/image/","Activity", 200);
+        this.activity3 = new Activity("3","/path/to/image/","Activity", 200);
+        this.activity4 = new Activity("4","/path/to/image/","Activity", 200);
+
+        this.generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
+        this.comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
+        this.estimationQuestion = new EstimationQuestion(activity1);
+
+    }
+
     @Test
     void testConstructors() {
-        Activity activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity4 = new Activity("4","/path/to/image/","Activity", 200);
-
-        Question generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activity1);
-
         assertNotNull(generalQuestion);
         assertNotNull(comparisonQuestion);
         assertNotNull(estimationQuestion);
@@ -28,14 +43,11 @@ class QuestionTest {
 
     @Test
     void testDisplayQuestion() {
-        Activity activity1 = new Activity("1","/path/to/image/","Taking a shower for 2 minutes", 200);
-        Activity activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity4 = new Activity("4","/path/to/image/","Activity", 200);
+        Activity activityNamed = new Activity("1","/path/to/image/","Taking a shower for 2 minutes", 200);
 
-        Question generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activity1);
+        Question generalQuestion = new GeneralQuestion(activityNamed, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
+        Question comparisonQuestion = new ComparisonQuestion(activityNamed, List.of(activity2, activity3, activity4), 3);
+        Question estimationQuestion = new EstimationQuestion(activityNamed);
 
         assertEquals("How much energy does taking a shower for 2 minutes take?", generalQuestion.displayQuestion());
         assertEquals("Instead of taking a shower for 2 minutes, you could use the same amount of energy for...", comparisonQuestion.displayQuestion());
@@ -44,15 +56,6 @@ class QuestionTest {
 
     @Test
     void testEquals() {
-        Activity activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity4 = new Activity("4","/path/to/image/","Activity", 200);
-
-        Question generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activity1);
-
         assertEquals(generalQuestion, generalQuestion);
         assertEquals(comparisonQuestion, comparisonQuestion);
         assertEquals(estimationQuestion, estimationQuestion);
@@ -71,19 +74,10 @@ class QuestionTest {
 
     @Test
     void testEquals2() {
-        Activity activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity4 = new Activity("4","/path/to/image/","Activity", 200);
-
         Activity activity12 = new Activity("1","/path/to/image/","Activity", 200);
         Activity activity22 = new Activity("2","/path/to/image/","Activity", 200);
         Activity activity32 = new Activity("3","/path/to/image/","Activity", 200);
         Activity activity42 = new Activity("4","/path/to/image/","Activity", 200);
-
-        Question generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activity1);
 
         Question generalQuestion2 = new GeneralQuestion(activity12, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         generalQuestion2.questionId = generalQuestion.questionId;
@@ -99,15 +93,6 @@ class QuestionTest {
 
     @Test
     void testNotEquals() {
-        Activity activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity4 = new Activity("4","/path/to/image/","Activity", 200);
-
-        Question generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activity1);
-
         Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
         Question estimationQuestion2 = new EstimationQuestion(activity1);
@@ -119,15 +104,6 @@ class QuestionTest {
 
     @Test
     void testHashCode() {
-        Activity activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity4 = new Activity("4","/path/to/image/","Activity", 200);
-
-        Question generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activity1);
-
         Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         generalQuestion2.questionId = generalQuestion.questionId;
         Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
@@ -142,15 +118,6 @@ class QuestionTest {
 
     @Test
     void testToString() {
-        Activity activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity4 = new Activity("4","/path/to/image/","Activity", 200);
-
-        Question generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activity1);
-
         assertEquals(ToStringBuilder.reflectionToString(generalQuestion, MULTI_LINE_STYLE), generalQuestion.toString());
         assertEquals(ToStringBuilder.reflectionToString(comparisonQuestion, MULTI_LINE_STYLE), comparisonQuestion.toString());
         assertEquals(ToStringBuilder.reflectionToString(estimationQuestion, MULTI_LINE_STYLE), estimationQuestion.toString());

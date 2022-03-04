@@ -25,8 +25,6 @@ public class EstimationQuestion extends Question {
      */
     public EstimationQuestion(Activity mainActivity) {
 
-        this.questionType = QuestionType.ESTIMATION;
-
         this.activityTitle = mainActivity.title;
         this.activityImagePath = mainActivity.imagePath;
 

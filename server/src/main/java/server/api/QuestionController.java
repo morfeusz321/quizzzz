@@ -1,9 +1,6 @@
 package server.api;
 
-import commons.Activity;
-import commons.AnswerResponseEntity;
-import commons.GeneralQuestion;
-import commons.Question;
+import commons.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -107,8 +104,7 @@ public class QuestionController {
             return ResponseEntity.noContent().build();
         }
 
-        Question.QuestionType type = q.questionType;
-        if(type == Question.QuestionType.COMPARISON || type == Question.QuestionType.GENERAL) {
+        if(q instanceof ComparisonQuestion || q instanceof GeneralQuestion) {
             if(answer == q.answer) {
                 return ResponseEntity.ok(new AnswerResponseEntity(true));
             } else {
@@ -116,7 +112,7 @@ public class QuestionController {
             }
         }
 
-        if(type == Question.QuestionType.ESTIMATION) {
+        if(q instanceof EstimationQuestion) {
             return ResponseEntity.ok(new AnswerResponseEntity((answer == q.answer), (answer - q.answer)));
         }
 
