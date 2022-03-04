@@ -28,8 +28,6 @@ public class ComparisonQuestion extends Question {
      */
     public ComparisonQuestion(Activity mainActivity, List<Activity> answerOptions, long answer) {
 
-        this.questionType = QuestionType.COMPARISON;
-
         this.activityTitle = mainActivity.title;
         this.activityImagePath = mainActivity.imagePath;
 

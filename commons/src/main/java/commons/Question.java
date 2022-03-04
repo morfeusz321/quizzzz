@@ -18,15 +18,8 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "@class")
 public abstract class Question {
 
-    public enum QuestionType {
-        GENERAL,
-        COMPARISON,
-        ESTIMATION
-    }
-
     @Id
     public UUID questionId = UUID.randomUUID();
-    public QuestionType questionType;
 
     public String activityTitle;
     public String activityImagePath;
@@ -50,9 +43,9 @@ public abstract class Question {
      */
     public String displayQuestion() {
 
-        if(questionType == QuestionType.GENERAL || questionType == QuestionType.ESTIMATION) {
+        if(this instanceof GeneralQuestion || this instanceof EstimationQuestion) {
             return "How much energy does " + Activity.displayActivity(activityTitle) + " take?";
-        } else if(questionType == QuestionType.COMPARISON) {
+        } else if(this instanceof ComparisonQuestion) {
             return "Instead of " + Activity.displayActivity(activityTitle) + ", you could use the same amount of energy for...";
         }
 
