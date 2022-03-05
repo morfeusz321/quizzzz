@@ -105,6 +105,7 @@ public class BasicQuestionCtrl {
         initializeAnswerEventHandlers();
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
+        initializeBackButtonHandlers();
         startProgressbar(15000);
     }
 
@@ -179,6 +180,21 @@ public class BasicQuestionCtrl {
         decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e -> decreaseTime.setEffect(null));
         removeQuestion.addEventHandler(MouseEvent.MOUSE_EXITED, e -> removeQuestion.setEffect(null));
         doublePoints.addEventHandler(MouseEvent.MOUSE_EXITED, e -> doublePoints.setEffect(null));
+    }
+
+    /**
+     * Initializes the event handlers of the back button
+     */
+    private void initializeBackButtonHandlers() {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showOverview());
+        // TODO: when the menu screen is added, modify this
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
     }
 
     /**
@@ -282,14 +298,6 @@ public class BasicQuestionCtrl {
             return r.nextInt(-1 * upper + lower) * -1 + lower;
         }
         return r.nextInt(upper - lower) + lower;
-    }
-
-    /**
-     * Switches back to the main menu
-     */
-    public void switchToMenu() {
-        // TODO: when the menu screen is added, modify this
-        mainCtrl.showOverview();
     }
 
     /**
