@@ -96,6 +96,9 @@ public class BasicQuestionCtrl {
         refresh();
     }
 
+    /**
+     * Refreshes the scene, i.e. handles initialization, images and progressbar
+     */
     public void refresh(){
         showImages();
         initializeAnswerEventHandlers();
