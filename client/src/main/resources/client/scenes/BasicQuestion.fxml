@@ -28,11 +28,11 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <ImageView fx:id="decreaseTime" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="644.0" onMouseClicked="#useDecreaseTime" smooth="false">
+      <ImageView fx:id="decreaseTime" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="644.0" smooth="false">
       </ImageView>
-      <ImageView fx:id="removeQuestion" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="367.0" onMouseClicked="#useRemoveQuestion" smooth="false">
+      <ImageView fx:id="removeQuestion" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="367.0" smooth="false">
       </ImageView>
-      <ImageView fx:id="doublePoints" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="506.0" onMouseClicked="#useDoublePoints" smooth="false">
+      <ImageView fx:id="doublePoints" fitHeight="120.0" fitWidth="134.0" layoutX="83.0" layoutY="506.0" smooth="false">
       </ImageView>
       <ImageView fx:id="questionImg" fitHeight="414.0" fitWidth="414.0" layoutX="329.0" layoutY="317.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>

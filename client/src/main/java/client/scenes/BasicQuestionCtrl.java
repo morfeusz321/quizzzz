@@ -6,6 +6,7 @@ import com.google.inject.Inject;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -103,6 +104,7 @@ public class BasicQuestionCtrl {
         showImages();
         initializeAnswerEventHandlers();
         initializeEmojiEventHandlers();
+        initializePowerEventHandlers();
         startProgressbar(15000);
     }
 
@@ -154,6 +156,29 @@ public class BasicQuestionCtrl {
         angryEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(angryEmoji));
         heartEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(heartEmoji));
         thumbsUpEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(thumbsUpEmoji));
+    }
+
+    /**
+     * Initializes the event handlers of the powers
+     */
+    public void initializePowerEventHandlers(){
+        // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower(decreaseTime));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower(decreaseTime));
+        doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower(decreaseTime));
+
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> decreaseTime.setEffect(hover));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> removeQuestion.setEffect(hover));
+        doublePoints.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> doublePoints.setEffect(hover));
+
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e -> decreaseTime.setEffect(null));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_EXITED, e -> removeQuestion.setEffect(null));
+        doublePoints.addEventHandler(MouseEvent.MOUSE_EXITED, e -> doublePoints.setEffect(null));
     }
 
     /**
@@ -268,27 +293,11 @@ public class BasicQuestionCtrl {
     }
 
     /**
-     * Lets the player use the decrease time power-up
+     * TODO: handle powers here
+     * @param clickedPower The image view of the power that was clicked
      */
-    public void useDecreaseTime() {
-        // TODO: implement functionality
-        System.out.print("Used decrease time power");
-    }
-
-    /**
-     * Lets the player use the remove answer power-up
-     */
-    public void useRemoveQuestion() {
-        // TODO: implement functionality
-        System.out.print("Used decrease time power");
-    }
-
-    /**
-     * Lets the player use the double points power-up
-     */
-    public void useDoublePoints() {
-        // TODO: implement functionality
-        System.out.print("Used double points power");
+    private void handlePower(ImageView clickedPower) {
+        System.out.println(clickedPower.getImage().getUrl() + " was clicked.");
     }
 
     /**
