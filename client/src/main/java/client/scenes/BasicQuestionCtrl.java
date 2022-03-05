@@ -77,6 +77,9 @@ public class BasicQuestionCtrl {
     @FXML
     public AnchorPane anchorPane;
 
+    @FXML
+    public Label timeLabel;
+
     /**
      * Creates a BasicQuestionCtrl, which controls the display/interaction of the basic question screen.
     * @param server Utilities for communicating with the server (API endpoint)
@@ -90,9 +93,14 @@ public class BasicQuestionCtrl {
 
     @FXML
     protected void initialize() {
-         showImages();
-         initializeAnswerEventHandlers();
-         initializeEmojiEventHandlers();
+        refresh();
+    }
+
+    public void refresh(){
+        showImages();
+        initializeAnswerEventHandlers();
+        initializeEmojiEventHandlers();
+        startProgressbar(15000);
     }
 
     /**
@@ -143,6 +151,44 @@ public class BasicQuestionCtrl {
         angryEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(angryEmoji));
         heartEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(heartEmoji));
         thumbsUpEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(thumbsUpEmoji));
+    }
+
+    /**
+     * This handles the animation of the time-bar and the setting of the time-label ("time left: ", "time ran out").
+     * @param timeInMillis The time in milliseconds which the time-bar should take until the "time runs out"
+     */
+    public void startProgressbar(int timeInMillis){
+        timeBar.setProgress(1);
+        int remainingTime = timeInMillis / 1000; // in seconds
+
+        Timeline timeAnim = new Timeline(
+                new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
+        );
+        Timeline changeLabel = new Timeline();
+        for(int i = 0; i <= remainingTime; i++){
+            int finalI = i;
+            changeLabel.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(remainingTime - i),
+                    finished -> timeLabel.setText("Time left: 00:" + addPrependingZero(finalI))));
+        }
+        changeLabel.setOnFinished(finished -> {
+            timeLabel.setText("Time ran out!");
+        });
+
+        timeAnim.play();
+        changeLabel.play();
+    }
+
+    /**
+     * If necessary, this adds a prepending zero to a given integer. Used for displaying the timer.
+     * @param i The integer to display
+     * @return A string of the integer (if necessary, with a prepended zero)
+     */
+    public String addPrependingZero(int i){
+        if(i < 10){
+            return "0" + i;
+        }
+        return String.valueOf(i);
     }
 
     /**

@@ -55,7 +55,7 @@
          </styleClass>
       </Button>
       <ProgressBar fx:id="timeBar" layoutX="41.0" layoutY="845.0" prefHeight="55.0" prefWidth="1646.0" progress="0.0" />
-      <Label layoutX="766.0" layoutY="849.0" styleClass="progress-text" text="Time left: 0:10" />
+      <Label fx:id="timeLabel" layoutX="766.0" layoutY="849.0" styleClass="progress-text" />
       <Label layoutX="1745.0" layoutY="738.0" text="React:">
          <styleClass>
             <String fx:value="react-text" />
