@@ -30,7 +30,7 @@ public class ActivityDBController {
 
         File f = null;
         try {
-            f = new File(ActivityDBController.class.getClassLoader().getResource("activities.json").toURI());
+            f = new File(ActivityDBController.class.getClassLoader().getResource("activities/activities.json").toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
