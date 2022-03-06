@@ -24,6 +24,9 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
+    private MainScreenCtrl mainScreenCtrl;
+    private Scene mainScreen;
+
     private QuoteOverviewCtrl overviewCtrl;
     private Scene overview;
 
@@ -38,15 +41,19 @@ public class MainCtrl {
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add) {
+            Pair<AddQuoteCtrl, Parent> add, Pair<MainScreenCtrl, Parent> mainScreen) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
+        this.mainScreenCtrl = mainScreen.getKey();
+        this.mainScreen = new Scene(mainScreen.getValue());
+
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        showOverview();
+        showMainScreen();
+        //showOverview();
         primaryStage.show();
     }
 
@@ -67,5 +74,13 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    }
+
+    /**
+     * Shows the main screen scene
+     */
+    public void showMainScreen() {
+        primaryStage.setTitle("Quizzz");
+        primaryStage.setScene(mainScreen);
     }
 }

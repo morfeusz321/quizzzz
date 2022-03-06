@@ -22,6 +22,7 @@ import com.google.inject.Scopes;
 import client.scenes.AddQuoteCtrl;
 import client.scenes.MainCtrl;
 import client.scenes.QuoteOverviewCtrl;
+import client.scenes.MainScreenCtrl;
 
 /**
  * The module used by the injector for the FXML loader, that makes sure there exists only one of each controller
@@ -33,5 +34,6 @@ public class MyModule implements Module {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
         binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(MainScreenCtrl.class).in(Scopes.SINGLETON);
     }
 }
