@@ -85,13 +85,19 @@ public abstract class QuestionCtrl {
     }
 
     /**
-     * Refreshes the scene, i.e. handles initialization, images and progressbar
+     * Initializes the scene, i.e. handles initialization, images
      */
-    public void refresh(){
+    public void initialize(){
         showImages();
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
         initializeBackButtonHandlers();
+    }
+
+    /**
+     * Refreshes the progressbar
+     */
+    public void refreshProgressBar(){
         startProgressbar(15000);
     }
 
@@ -180,7 +186,10 @@ public abstract class QuestionCtrl {
                     new KeyFrame(Duration.seconds(remainingTime - i),
                             finished -> timeLabel.setText("Time left: 00:" + addPrependingZero(finalI))));
         }
-        changeLabel.setOnFinished(finished -> timeLabel.setText("Time ran out!"));
+        changeLabel.setOnFinished(finished -> {
+            timeLabel.setText("Time ran out!");
+            mainCtrl.nextQuestion();
+        });
 
         timeAnim.play();
         changeLabel.play();

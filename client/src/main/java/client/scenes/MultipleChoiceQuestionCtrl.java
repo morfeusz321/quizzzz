@@ -34,13 +34,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     * Refreshes the scene, i.e. handles initialization, images and progressbar.
-     * Superclass handles everything except loading the question (done in specific subclasses)
-     * and initializing the answer buttons (this is different for the estimation question).
+     * Initializes the scene elements
      */
-    @Override
-    public void refresh(){
-        super.refresh();
+    @FXML
+    public void initialize(){
+        super.initialize();
         initializeAnswerEventHandlers();
     }
 

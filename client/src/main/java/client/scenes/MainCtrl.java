@@ -20,6 +20,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.util.Random;
+
 public class MainCtrl {
 
     private Stage primaryStage;
@@ -33,27 +35,44 @@ public class MainCtrl {
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
 
+    private ComparisonQuestionCtrl comparisonQuestionCtrl;
+    private Scene comparisonQuestion;
+
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
      * @param overview Pair of the control and the scene of the overview
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
+     * @param generalQ Pair of the control and the scene of the general question
+     * @param comparisonQ Pair of the control and the scene of the comparison question
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQuestion) {
+                           Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQ,
+                           Pair<ComparisonQuestionCtrl, Parent> comparisonQ) {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
-        this.generalQuestionCtrl = generalQuestion.getKey();
-        this.generalQuestion = new Scene(generalQuestion.getValue());
+        this.generalQuestionCtrl = generalQ.getKey();
+        this.generalQuestion = new Scene(generalQ.getValue());
         this.generalQuestion.getStylesheets().add(
                 GeneralQuestionCtrl.class.getResource(
                         "/client/stylesheets/general-question-style.css"
                 ).toExternalForm());
         this.generalQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
+        this.comparisonQuestionCtrl = comparisonQ.getKey();
+        this.comparisonQuestion = new Scene(comparisonQ.getValue());
+        this.comparisonQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/general-question-style.css"
+                ).toExternalForm());
+        this.comparisonQuestion.getStylesheets().add(
                 GeneralQuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
@@ -76,11 +95,23 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the overview scene (table for quotes, question display, image display)
+     * Shows the general question screen and loads a new question
      */
     public void showGeneralQuestion() {
         primaryStage.setTitle("General question");
         primaryStage.setScene(generalQuestion);
+        generalQuestionCtrl.loadQuestion();
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows the comparison question screen and loads a new question
+     */
+    public void showComparisonQuestion() {
+        primaryStage.setTitle("Comparison question");
+        primaryStage.setScene(comparisonQuestion);
+        comparisonQuestionCtrl.loadQuestion();
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -90,5 +121,19 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    }
+
+    /**
+     * Shows next question, the question type is selected randomly
+     */
+    public void nextQuestion() {
+        Random nextQuestionType = new Random();
+        int type = nextQuestionType.nextInt(2);
+
+        if(type == 0){
+            showGeneralQuestion();
+        } else {
+            showComparisonQuestion();
+        }
     }
 }

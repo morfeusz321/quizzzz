@@ -2,20 +2,19 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-
 import commons.GeneralQuestion;
 import commons.Question;
 import javafx.scene.image.Image;
 
-public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
+public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
     /**
-     * Creates a GeneralQuestionCtrl, which controls the display/interaction of the general question screen.
+     * Creates a ComparisonQuestionCtrl, which controls the display/interaction of the comparison question screen.
     * @param server Utilities for communicating with the server (API endpoint)
     * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public GeneralQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public ComparisonQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
         super(server, mainCtrl);
     }
 
@@ -24,6 +23,8 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
      */
     public void loadQuestion() {
 
+        // TODO: add comparison question type, and restructure this afterwards (temporarily used question loader
+        //  for general question)
         Question q = server.getRandomQuestion();
 
         if(!(q instanceof GeneralQuestion)) {
