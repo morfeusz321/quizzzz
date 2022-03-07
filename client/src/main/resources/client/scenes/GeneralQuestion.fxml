@@ -36,19 +36,19 @@
       </ImageView>
       <ImageView fx:id="questionImg" fitHeight="414.0" fitWidth="414.0" layoutX="329.0" layoutY="317.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <Button fx:id="answerBtn1" layoutX="800.0" layoutY="301.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn1" layoutX="996.0" layoutY="302.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="500.0" text="10000 kWh" textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />
          </styleClass>
       </Button>
-      <Button fx:id="answerBtn2" layoutX="800.0" layoutY="459.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn2" layoutX="996.0" layoutY="459.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="500.0" text="10000 kWh" textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />
          </styleClass>
       </Button>
-      <Button fx:id="answerBtn3" layoutX="800.0" layoutY="615.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="891.0" text="filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler filler." textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="answerBtn3" layoutX="996.0" layoutY="616.0" mnemonicParsing="false" prefHeight="131.0" prefWidth="500.0" text="10000 kWh" textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="question-button" />
             <String fx:value="text" />
