@@ -30,8 +30,8 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
-    private BasicQuestionCtrl basicQuestionCtrl;
-    private Scene basicQuestion;
+    private GeneralQuestionCtrl generalQuestionCtrl;
+    private Scene generalQuestion;
 
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
@@ -41,27 +41,27 @@ public class MainCtrl {
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add, Pair<BasicQuestionCtrl, Parent> basicQuestion) {
+            Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQuestion) {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
-        this.basicQuestionCtrl = basicQuestion.getKey();
-        this.basicQuestion = new Scene(basicQuestion.getValue());
-        this.basicQuestion.getStylesheets().add(
-                BasicQuestionCtrl.class.getResource(
-                        "/client/stylesheets/basic-question-style.css"
+        this.generalQuestionCtrl = generalQuestion.getKey();
+        this.generalQuestion = new Scene(generalQuestion.getValue());
+        this.generalQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/general-question-style.css"
                 ).toExternalForm());
-        this.basicQuestion.getStylesheets().add(
-                BasicQuestionCtrl.class.getResource(
+        this.generalQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        showBasicQuestion(); // now starts with question screen
+        showGeneralQuestion(); // now starts with first question screen
         primaryStage.show();
     }
 
@@ -78,9 +78,9 @@ public class MainCtrl {
     /**
      * Shows the overview scene (table for quotes, question display, image display)
      */
-    public void showBasicQuestion() {
-        primaryStage.setTitle("Basic question");
-        primaryStage.setScene(basicQuestion);
+    public void showGeneralQuestion() {
+        primaryStage.setTitle("General question");
+        primaryStage.setScene(generalQuestion);
     }
 
     /**

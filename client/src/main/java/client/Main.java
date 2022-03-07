@@ -17,7 +17,7 @@ package client;
 
 import static com.google.inject.Guice.createInjector;
 
-import client.scenes.BasicQuestionCtrl;
+import client.scenes.GeneralQuestionCtrl;
 import com.google.inject.Injector;
 
 import client.scenes.AddQuoteCtrl;
@@ -49,9 +49,9 @@ public class Main extends Application {
 
         var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
         var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
-        var basicQ = FXML.load(BasicQuestionCtrl.class, "client", "scenes", "BasicQuestion.fxml");
+        var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "MultipleChoiceQuestion.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, basicQ);
+        mainCtrl.initialize(primaryStage, overview, add, generalQ);
     }
 }

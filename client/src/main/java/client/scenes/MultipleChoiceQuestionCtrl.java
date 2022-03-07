@@ -2,18 +2,16 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-
-import commons.GeneralQuestion;
-import commons.Question;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+
 import java.util.List;
 
-public class BasicQuestionCtrl extends QuestionCtrl {
+public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
     public ImageView removeQuestion;
 
@@ -25,30 +23,25 @@ public class BasicQuestionCtrl extends QuestionCtrl {
     public Button answerBtn3;
 
     /**
-     * Creates a BasicQuestionCtrl, which controls the display/interaction of the basic question screen.
-    * @param server Utilities for communicating with the server (API endpoint)
-    * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * Creates a MultipleChoiceQuestionCtrl, which controls the display/interaction of all multiple choice question
+     * screens. This includes the general question and the comparison question screens.
+     * @param server Utilities for communicating with the server (API endpoint)
+     * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public BasicQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public MultipleChoiceQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
         super(server, mainCtrl);
-    }
-
-    @FXML
-    protected void initialize() {
-        refresh();
     }
 
     /**
      * Refreshes the scene, i.e. handles initialization, images and progressbar.
-     * Superclass handles everything except loading the question and initializing the answer buttons (this is
-     * different for the estimation question).
+     * Superclass handles everything except loading the question (done in specific subclasses)
+     * and initializing the answer buttons (this is different for the estimation question).
      */
     @Override
     public void refresh(){
         super.refresh();
         initializeAnswerEventHandlers();
-        loadQuestion();
     }
 
     /**
@@ -81,25 +74,6 @@ public class BasicQuestionCtrl extends QuestionCtrl {
 
         removeQuestion.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> removeQuestion.setEffect(hover));
         removeQuestion.addEventHandler(MouseEvent.MOUSE_EXITED, e -> removeQuestion.setEffect(null));
-    }
-
-    /**
-     * Gets a random question from the server and displays the question to the client
-     */
-    public void loadQuestion() {
-
-        Question q = server.getRandomQuestion();
-
-        if(!(q instanceof GeneralQuestion)) {
-            return; // Other question types not supported yet
-        }
-
-        questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
-        title.setText(q.displayQuestion());
-        answerBtn1.setText(q.answerOptions.get(0));
-        answerBtn2.setText(q.answerOptions.get(1));
-        answerBtn3.setText(q.answerOptions.get(2));
-
     }
 
     /**

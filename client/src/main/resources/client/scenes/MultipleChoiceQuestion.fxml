@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="990.0" maxWidth="1920.0" minHeight="848.0" minWidth="1920.0" prefHeight="990.0" prefWidth="1920.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.BasicQuestionCtrl">
+<AnchorPane fx:id="anchorPane" maxHeight="990.0" maxWidth="1920.0" minHeight="848.0" minWidth="1920.0" prefHeight="990.0" prefWidth="1920.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GeneralQuestionCtrl">
    <children>
       <ImageView fx:id="bgImage" fitHeight="392.0" fitWidth="2846.0" layoutX="-912.0" layoutY="-148.0">
       </ImageView>
