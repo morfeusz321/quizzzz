@@ -9,10 +9,7 @@ import server.database.ActivityDB;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The API controller for the questions. Controls everything mapped to /api/questions/...
@@ -63,6 +60,70 @@ public class QuestionController {
             Question toReturn = new GeneralQuestion(a,
                     List.of((0.5 * a.consumption) + " Wh", a.consumption + " Wh", (2 * a.consumption) + " Wh"),
                     2);
+            questionDBController.add(toReturn);
+            return ResponseEntity.ok(toReturn);
+        }
+
+        return ResponseEntity.internalServerError().build();
+
+    }
+
+    /**
+     * Maps to /api/questions/random
+     * Returns a random question generated from a random activity selected from the database
+     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     */
+    @GetMapping("/random/comparison")
+    public ResponseEntity<Question> getComparisonQuestion() {
+
+        ActivityDB activityDB = activityDBController.getInternalDB();
+
+        long count = activityDB.count();
+        int index;
+        try {
+            index = random.nextInt((int) count-4);
+        } catch(IllegalArgumentException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 4));
+        ArrayList<Activity> activities = new ArrayList<>();
+        Activity mainActivity = null;
+        if(page.hasContent()) {
+            for(int i = 0; i<4;i++){
+                Activity a = page.getContent().get(i);
+                if(mainActivity==null || mainActivity.consumption<a.consumption){
+                    mainActivity = a;
+                }
+                activities.add(a);
+            }
+            Question toReturn = new ComparisonQuestion(mainActivity, activities,activities.indexOf(mainActivity));
+            questionDBController.add(toReturn);
+            return ResponseEntity.ok(toReturn);
+        }
+
+        return ResponseEntity.internalServerError().build();
+
+    }
+
+
+    @GetMapping("/random/estimation")
+    public ResponseEntity<Question> getEstimationQuestion() {
+
+        ActivityDB activityDB = activityDBController.getInternalDB();
+
+        long count = activityDB.count();
+        int index;
+        try {
+            index = random.nextInt((int) count);
+        } catch(IllegalArgumentException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
+        if(page.hasContent()) {
+            Activity a = page.getContent().get(0);
+            Question toReturn = new EstimationQuestion(a);
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
         }
