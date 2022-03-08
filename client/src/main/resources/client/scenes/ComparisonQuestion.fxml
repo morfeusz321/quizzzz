@@ -66,19 +66,19 @@
       </ImageView>
       <Label fx:id="questionInfo" layoutX="111.0" layoutY="915.0" text="Question 1/20">
          <styleClass>
-            <String fx:value="bottom-info-text" />
+            <String fx:value="smaller-info-text" />
             <String fx:value="text" />
          </styleClass>
       </Label>
       <Label fx:id="pointsInfo" layoutX="1393.0" layoutY="915.0" text="Your points: 200">
          <styleClass>
-            <String fx:value="bottom-info-text" />
+            <String fx:value="smaller-info-text" />
             <String fx:value="text" />
          </styleClass>
       </Label>
       <Label fx:id="playersInfo" layoutX="715.0" layoutY="915.0" text="Players in game: 5">
          <styleClass>
-            <String fx:value="bottom-info-text" />
+            <String fx:value="smaller-info-text" />
             <String fx:value="text" />
          </styleClass>
       </Label>

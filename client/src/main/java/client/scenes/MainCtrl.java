@@ -38,6 +38,9 @@ public class MainCtrl {
     private ComparisonQuestionCtrl comparisonQuestionCtrl;
     private Scene comparisonQuestion;
 
+    private EstimationQuestionCtrl estimationQuestionCtrl;
+    private Scene estimationQuestion;
+
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
@@ -46,10 +49,12 @@ public class MainCtrl {
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
+     * @param estimationQ Pair of the control and the scene of the estimation question
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQ,
-                           Pair<ComparisonQuestionCtrl, Parent> comparisonQ) {
+                           Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
+                           Pair<EstimationQuestionCtrl, Parent> estimationQ) {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -77,10 +82,21 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
+        this.estimationQuestionCtrl = estimationQ.getKey();
+        this.estimationQuestion = new Scene(estimationQ.getValue());
+        this.estimationQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/general-question-style.css"
+                ).toExternalForm());
+        this.estimationQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        showGeneralQuestion(); // now starts with first question screen
+        showEstimationQuestion(); // now starts with first question screen
         primaryStage.show();
     }
 
@@ -115,6 +131,16 @@ public class MainCtrl {
     }
 
     /**
+     * Shows the estimation question screen and loads a new question
+     */
+    public void showEstimationQuestion() {
+        primaryStage.setTitle("Estimation question");
+        primaryStage.setScene(estimationQuestion);
+        estimationQuestionCtrl.loadQuestion();
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
      * TODO: to remove
      */
     public void showAdd() {
@@ -128,10 +154,12 @@ public class MainCtrl {
      */
     public void nextQuestion() {
         Random nextQuestionType = new Random();
-        int type = nextQuestionType.nextInt(2);
+        int type = nextQuestionType.nextInt(3);
 
         if(type == 0){
             showGeneralQuestion();
+        } else if(type == 1){
+            showEstimationQuestion();
         } else {
             showComparisonQuestion();
         }
