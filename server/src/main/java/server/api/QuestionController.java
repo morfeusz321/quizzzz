@@ -58,7 +58,7 @@ public class QuestionController {
         if(page.hasContent()) {
             Activity a = page.getContent().get(0);
             Question toReturn = new GeneralQuestion(a,
-                    List.of((0.5 * a.consumption) + " Wh", a.consumption + " Wh", (2 * a.consumption) + " Wh"),
+                    List.of((int)((getRandomWithExclusion(random,0,2,1) * a.consumption)) + " Wh", a.consumption + " Wh", (int)(((getRandomWithExclusion(random,0,2,1) * a.consumption))) + " Wh"),
                     2);
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
@@ -160,6 +160,17 @@ public class QuestionController {
 
         return ResponseEntity.internalServerError().build();
 
+    }
+
+    private static double getRandomWithExclusion(Random rnd, int start, int end, int... exclude) {
+        double random = start + rnd.nextDouble(end - start + 1 - exclude.length);
+        for (int ex : exclude) {
+            if (random < ex) {
+                break;
+            }
+            random++;
+        }
+        return (double) Math.round(random * 10) / 10;
     }
 
 }
