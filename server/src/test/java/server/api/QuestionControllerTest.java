@@ -353,6 +353,11 @@ public class QuestionControllerTest {
         public <S extends Activity, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
             return null;
         }
+
+        @Override
+        public List<Activity> getFourRandomActivities() {
+            return null;
+        }
     }
 
     private class TestQuestionDB implements QuestionDB {

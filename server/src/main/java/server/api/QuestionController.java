@@ -75,35 +75,16 @@ public class QuestionController {
      */
     @GetMapping("/random/comparison")
     public ResponseEntity<Question> getComparisonQuestion() {
-
-        ActivityDB activityDB = activityDBController.getInternalDB();
-
-        long count = activityDB.count();
-        int index;
-        try {
-            index = random.nextInt((int) count-4);
-        } catch(IllegalArgumentException e) {
-            return ResponseEntity.internalServerError().build();
-        }
-
-        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 4));
-        ArrayList<Activity> activities = new ArrayList<>();
+        List<Activity> activities = activityDBController.getFourRandomActivities();
         Activity mainActivity = null;
-        if(page.hasContent()) {
-            for(int i = 0; i<4;i++){
-                Activity a = page.getContent().get(i);
-                if(mainActivity==null || mainActivity.consumption<a.consumption){
-                    mainActivity = a;
-                }
-                activities.add(a);
+        for(Activity a : activities){
+            if(mainActivity==null||mainActivity.consumption>a.consumption){
+                mainActivity=a;
             }
-            Question toReturn = new ComparisonQuestion(mainActivity, activities,activities.indexOf(mainActivity));
+        }
+            Question toReturn = new ComparisonQuestion(mainActivity,activities,activities.indexOf(mainActivity));
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
-        }
-
-        return ResponseEntity.internalServerError().build();
-
     }
 
 
