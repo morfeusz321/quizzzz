@@ -1,6 +1,5 @@
 package server.database;
 
-import commons.Quote;
 import commons.Score;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +49,10 @@ public class ScoreDBController {
         return saved;
     }
 
+    /**
+     * Finds all scores that are currently stored in the database
+     * @return all scores that are currently stored in the database
+     */
     public List<Score> findAll() {
         return scoreDB.findAll();
     }
