@@ -1,6 +1,10 @@
 package commons;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 
 /**
@@ -68,4 +72,24 @@ public class Player {
     public boolean equals(Object o) {
         return EqualsBuilder.reflectionEquals(this, o);
     }
+
+
+    /**
+     * hashes a code for this object
+     * @return hash code
+     */
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    /**
+     * Creates a string for this subject
+     * @return a formatted string in multi line style
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
+    }
+
 }

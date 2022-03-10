@@ -15,8 +15,10 @@
  */
 package commons;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.junit.jupiter.api.Test;
 
+import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PlayerTest {
@@ -68,4 +70,17 @@ public class PlayerTest {
         assertFalse(p.equals(b));
     }
 
+    @Test
+    void testHashCode() {
+        var player = new Player();
+        var player2 = new Player();
+        assertEquals(player, player2);
+        assertEquals(player.hashCode(), player2.hashCode());
+    }
+
+    @Test
+    void testToString() {
+        var player = new Player();
+        assertEquals(ToStringBuilder.reflectionToString(player, MULTI_LINE_STYLE), player.toString());
+    }
 }
