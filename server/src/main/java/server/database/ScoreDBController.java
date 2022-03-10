@@ -31,6 +31,7 @@ public class ScoreDBController {
      * @return if found, the corresponding Score object, otherwise null
      */
     public Score getScoreByName(String username) {
+        // TODO: Is it possible to test this method? Dependency injection is used, so probably not.
         return scoreDB.findById(username).orElse(null);
     }
 
