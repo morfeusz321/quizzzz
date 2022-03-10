@@ -15,9 +15,11 @@
  */
 package client.scenes;
 
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 
 public class MainCtrl {
@@ -53,7 +55,12 @@ public class MainCtrl {
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        showOverview();
+        primaryStage.setOnCloseRequest(event -> {
+            userCtrl.sendLeaveMessageToServer();
+            System.exit(0);
+        });
+
+        showUsernameInputScreen();
         primaryStage.show();
     }
 
@@ -75,4 +82,12 @@ public class MainCtrl {
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
+
+    public void showUsernameInputScreen() {
+
+        primaryStage.setTitle("Username input");
+        primaryStage.setScene(username);
+
+    }
+
 }

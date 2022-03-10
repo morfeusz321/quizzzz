@@ -21,11 +21,16 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import commons.AnswerResponseEntity;
 import commons.Question;
+import commons.gameupdate.GameUpdate;
 import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 
@@ -33,10 +38,60 @@ import commons.Quote;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.core.GenericType;
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
+    private static final String WS_SERVER = "ws://localhost:8080/websocket";
+    private StompSession session = connect(WS_SERVER);
+
+    private StompSession connect(String url) {
+
+        StandardWebSocketClient client = new StandardWebSocketClient();
+        WebSocketStompClient stomp = new WebSocketStompClient(client);
+        stomp.setMessageConverter(new MappingJackson2MessageConverter());
+
+        try {
+            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+        } catch(InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch(ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        throw new IllegalStateException();
+
+    }
+
+    public void registerForGameUpdates(UUID gameUUID, Consumer<GameUpdate> consumer) {
+
+        registerForWebsocketMessages("/topic/gameupdates/" + gameUUID.toString(), GameUpdate.class, consumer);
+
+    }
+
+    private <T> void registerForWebsocketMessages(String destination, Class<T> type, Consumer<T> consumer) {
+
+        session.subscribe(destination, new StompFrameHandler() {
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return type;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                consumer.accept((T) payload);
+            }
+        });
+
+    }
 
     /**
      * Gets a random question from the server using the API endpoint (sends a get request)
@@ -135,7 +190,7 @@ public class ServerUtils {
      * @param username - the name of the player
      * @return string indicating whether the request was successful
      */
-    public String addUserName(String username) {
+    public GameUpdate addUserName(String username) {
         Form postUsername = new Form();
         postUsername.param("username", username);
 
@@ -143,7 +198,25 @@ public class ServerUtils {
                 .target(SERVER).path("api/user/enter") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+                .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), GameUpdate.class);
+    }
+
+    public String leaveGame(String username, UUID gameUUID) {
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gameUUID", gameUUID.toString());
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/user/leave") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
+
+    public void startGame() {
+
+        session.send("/game/start", "A game start has been requested.");
+
     }
 
 }

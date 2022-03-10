@@ -22,6 +22,11 @@ public class Player {
         points = 0;
     }
 
+    public Player(String username) {
+        this();
+        this.username = username;
+    }
+
     /**
      * gets the username of the player
      * @return username of the player
