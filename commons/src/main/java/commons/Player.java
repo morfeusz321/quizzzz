@@ -1,5 +1,7 @@
 package commons;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 import java.util.Objects;
 
 /**
@@ -65,9 +67,6 @@ public class Player {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Player player = (Player) o;
-        return points == player.points && Objects.equals(username, player.username);
+        return EqualsBuilder.reflectionEquals(this, o);
     }
 }
