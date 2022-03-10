@@ -15,6 +15,7 @@
  */
 package client.utils;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.io.BufferedReader;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.util.List;
 
 import commons.Question;
+import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -112,11 +114,14 @@ public class ServerUtils {
      * @return string indicating whether the request was successful
      */
     public String addUserName(String username) {
+        Form postUsername = new Form();
+        postUsername.param("username", username);
+
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/user/enter") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(username, APPLICATION_JSON), String.class);
+                .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), String.class);
     }
 
 }
