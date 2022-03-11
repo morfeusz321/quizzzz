@@ -132,6 +132,12 @@ public class ServerUtils {
     public String changeServer(String server) {
         Form postServer = new Form();
         postServer.param("server", server);
+        if(!server.startsWith("http://"))
+            server = "http://" + server;
+
+        if(!server.endsWith("/"))
+            server +="/";
+        
         SERVER = server;
 
         return ClientBuilder.newClient(new ClientConfig()) //
