@@ -52,26 +52,8 @@ public class UserCtrl {
      */
     public void join() {
         try {
-            server.addUserName(getUserName());
-        } catch (WebApplicationException e) {
-
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
-            alert.showAndWait();
-            return;
-        }
-
-        mainCtrl.showOverview();
-    }
-
-    /**
-     *  sends the username and the new server address that the user has entered
-     */
-    public void joinNewServer() {
-        try {
-            server.addUserName(getUserName());
             server.changeServer(getServer());
+            server.addUserName(getUserName());
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);

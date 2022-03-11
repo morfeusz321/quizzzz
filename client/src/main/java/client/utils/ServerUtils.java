@@ -127,23 +127,14 @@ public class ServerUtils {
     /**
      * Sends a post request for the server address
      * @param server - the address of the server
-     * @return string indicating whether the request was successful
      */
-    public String changeServer(String server) {
-        Form postServer = new Form();
-        postServer.param("server", server);
+    public void changeServer(String server) {
         if(!server.startsWith("http://"))
             server = "http://" + server;
 
         if(!server.endsWith("/"))
             server +="/";
-        
-        SERVER = server;
 
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/user/enter") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(postServer, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        SERVER = server;
     }
 }
