@@ -109,7 +109,7 @@ public class ServerUtils {
     }
 
     /**
-     * Sends a post request
+     * Sends a post request for the player username
      * @param username - the name of the player
      * @return string indicating whether the request was successful
      */
@@ -124,6 +124,11 @@ public class ServerUtils {
                 .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), String.class);
     }
 
+    /**
+     * Sends a post request for the server address
+     * @param server - the address of the server
+     * @return string indicating whether the request was successful
+     */
     public String changeServer(String server) {
         Form postServer = new Form();
         postServer.param("server", server);
