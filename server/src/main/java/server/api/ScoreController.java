@@ -1,7 +1,6 @@
 package server.api;
 
 import commons.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.ScoreDBController;
 
@@ -24,23 +23,13 @@ public class ScoreController {
     }
 
     /**
-     * Maps to /api/scores/add?user=name&score=score
-     * @param username the username for which to save the score (post variable user)
-     * @param scoreString the score to save, as a string (post variable score)
-     * @return 200 OK if a score was saved, 400 Bad Request if the POST request is malformed
+     * Adds a score to the database (no API mapping)
+     * @param username the username for which to save the score
+     * @param score the score to save
+     * @return the score that was saved
      */
-    @PostMapping("/add")
-    public ResponseEntity<Score> addScore(@RequestParam("user") String username,
-                                          @RequestParam("score") String scoreString) {
-        int score;
-        try {
-            score = Integer.parseInt(scoreString);
-        } catch(NumberFormatException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        Score saved = scoreDBController.add(new Score(username, score));
-        return ResponseEntity.ok(saved);
+    public Score addScore(String username, int score) {
+        return scoreDBController.add(new Score(username, score));
     }
 
     /**

@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.*;
 import org.springframework.data.repository.query.FluentQuery;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import server.database.*;
 
 import java.util.*;
@@ -24,40 +22,27 @@ public class ScoreControllerTest {
     }
 
     @Test
-    public void addScoreTestMalformed() {
-        ResponseEntity<Score> s = scoreController.addScore("username", "totally a number");
-
-        assertEquals(HttpStatus.BAD_REQUEST, s.getStatusCode());
-    }
-
-    @Test
     public void addScoreSimpleTest() {
-        ResponseEntity<Score> s = scoreController.addScore("username", "10");
-
-        assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new Score("username", 10), s.getBody());
+        Score s = scoreController.addScore("username", 10);
+        assertEquals(new Score("username", 10), s);
     }
 
     @Test
     public void addScoreTestOverwrite() {
-        ResponseEntity<Score> oldS = scoreController.addScore("username", "10");
-        ResponseEntity<Score> newS = scoreController.addScore("username", "100");
+        Score oldS = scoreController.addScore("username", 10);
+        Score newS = scoreController.addScore("username", 100);
 
-        assertEquals(HttpStatus.OK, oldS.getStatusCode());
-        assertEquals(HttpStatus.OK, newS.getStatusCode());
-        assertEquals(new Score("username", 10), oldS.getBody());
-        assertEquals(new Score("username", 100), newS.getBody());
+        assertEquals(new Score("username", 10), oldS);
+        assertEquals(new Score("username", 100), newS);
     }
 
     @Test
     public void addScoreTestNoOverwrite() {
-        ResponseEntity<Score> oldS = scoreController.addScore("username", "100");
-        ResponseEntity<Score> newS = scoreController.addScore("username", "10");
+        Score oldS = scoreController.addScore("username", 100);
+        Score newS = scoreController.addScore("username", 10);
 
-        assertEquals(HttpStatus.OK, oldS.getStatusCode());
-        assertEquals(HttpStatus.OK, newS.getStatusCode());
-        assertEquals(new Score("username", 100), oldS.getBody());
-        assertEquals(new Score("username", 100), newS.getBody());
+        assertEquals(new Score("username", 100), oldS);
+        assertEquals(new Score("username", 100), newS);
     }
 
     @Test
@@ -67,7 +52,7 @@ public class ScoreControllerTest {
 
     @Test
     public void getAllTest() {
-        scoreController.addScore("username", "100");
+        scoreController.addScore("username", 100);
         assertEquals(List.of(new Score("username", 100)), scoreController.getAll());
     }
 
