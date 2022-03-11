@@ -35,7 +35,7 @@ import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private static String SERVER = "http://localhost:8080/";
 
     /**
      * Gets a random question from the server using the API endpoint (sends a get request)
@@ -124,4 +124,15 @@ public class ServerUtils {
                 .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), String.class);
     }
 
+    public String changeServer(String server) {
+        Form postServer = new Form();
+        postServer.param("server", server);
+        SERVER = server;
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/user/enter") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(postServer, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
 }
