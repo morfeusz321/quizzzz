@@ -15,15 +15,18 @@
  */
 package client.scenes;
 
+import client.utils.ServerUtils;
+import com.google.inject.Inject;
+import commons.GeneralQuestion;
+import commons.Question;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.util.Random;
-
 public class MainCtrl {
 
+    private final ServerUtils server;
     private Stage primaryStage;
 
     private QuoteOverviewCtrl overviewCtrl;
@@ -40,6 +43,11 @@ public class MainCtrl {
 
     private EstimationQuestionCtrl estimationQuestionCtrl;
     private Scene estimationQuestion;
+
+    @Inject
+    public MainCtrl(ServerUtils server) {
+        this.server = server;
+    }
 
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
@@ -96,7 +104,7 @@ public class MainCtrl {
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        showEstimationQuestion(); // now starts with first question screen
+        nextQuestion(); // now starts with first question screen
         primaryStage.show();
     }
 
@@ -113,30 +121,30 @@ public class MainCtrl {
     /**
      * Shows the general question screen and loads a new question
      */
-    public void showGeneralQuestion() {
+    public void showGeneralQuestion(Question q) {
         primaryStage.setTitle("General question");
         primaryStage.setScene(generalQuestion);
-        generalQuestionCtrl.loadQuestion();
+        generalQuestionCtrl.loadQuestion(q);
         // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
      * Shows the comparison question screen and loads a new question
      */
-    public void showComparisonQuestion() {
+    public void showComparisonQuestion(Question q) {
         primaryStage.setTitle("Comparison question");
         primaryStage.setScene(comparisonQuestion);
-        comparisonQuestionCtrl.loadQuestion();
+        comparisonQuestionCtrl.loadQuestion(q);
         // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
      * Shows the estimation question screen and loads a new question
      */
-    public void showEstimationQuestion() {
+    public void showEstimationQuestion(Question q) {
         primaryStage.setTitle("Estimation question");
         primaryStage.setScene(estimationQuestion);
-        estimationQuestionCtrl.loadQuestion();
+        estimationQuestionCtrl.loadQuestion(q);
         // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
@@ -153,15 +161,10 @@ public class MainCtrl {
      * Shows next question, the question type is selected randomly
      */
     public void nextQuestion() {
-        Random nextQuestionType = new Random();
-        int type = nextQuestionType.nextInt(3);
-
-        if(type == 0){
-            showGeneralQuestion();
-        } else if(type == 1){
-            showEstimationQuestion();
-        } else {
-            showComparisonQuestion();
+        Question q = server.getRandomQuestion();
+        if(q instanceof GeneralQuestion) {
+            showGeneralQuestion(q);
         }
+        // TODO: other questions are not implemented yet, this has to be modified after that
     }
 }

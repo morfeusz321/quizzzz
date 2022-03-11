@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.GeneralQuestion;
 import commons.Question;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -50,13 +49,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar
      * (and TODO the initialization of the slider).
      */
-    public void loadQuestion() {
-
-        Question q = server.getRandomQuestion();
-
-        if(!(q instanceof GeneralQuestion)) {
-            return; // Other question types not supported yet
-        }
+    public void loadQuestion(Question q) {
 
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
