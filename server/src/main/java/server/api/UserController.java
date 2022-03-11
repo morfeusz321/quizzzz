@@ -25,8 +25,7 @@ public class UserController {
      * @return a text that the user has entered the name successfully
      */
     @PostMapping("/enter")
-    public ResponseEntity<String> getUserName(@RequestParam("username") String username,
-                                              @RequestParam("server") String server) {
+    public ResponseEntity<String> getUserName(@RequestParam("username") String username, @RequestParam("server") String server) {
 
         Player player = new Player();
         player.setUsername(username);
