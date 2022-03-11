@@ -25,8 +25,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 public class UserCtrl {
@@ -52,7 +50,8 @@ public class UserCtrl {
     }
 
     /**
-     *  sends the username that the user has entered
+     * Sends the server a request to join the current game with the username specified in the TextField in
+     * the GUI, and registers for updates for that game if it can be joined.
      */
     public void join() {
 
@@ -94,6 +93,10 @@ public class UserCtrl {
 
     }
 
+    /**
+     * The handler for all incoming game updates via the WebSocket connection
+     * @param gameUpdate the update for this game received from the WebSocket session
+     */
     private void gameUpdateHandler(GameUpdate gameUpdate) {
 
         System.out.print("Update received...\t");
@@ -110,6 +113,9 @@ public class UserCtrl {
 
     }
 
+    /**
+     * Informs the server that the client is leaving the game
+     */
     public void sendLeaveMessageToServer() {
 
         server.leaveGame(currentUsername, gameUUID);

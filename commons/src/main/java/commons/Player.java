@@ -22,6 +22,10 @@ public class Player {
         points = 0;
     }
 
+    /**
+     * Creates a new Player with the specified username
+     * @param username the username of this player
+     */
     public Player(String username) {
         this();
         this.username = username;

@@ -52,6 +52,11 @@ public class ServerUtils {
     private static final String WS_SERVER = "ws://localhost:8080/websocket";
     private StompSession session = connect(WS_SERVER);
 
+    /**
+     * Attempts to establish a WebSocket connection with the server at the specified URL
+     * @param url the URL with which a WebSocket connection is to be established
+     * @return a WebSocket session if it can be established
+     */
     private StompSession connect(String url) {
 
         StandardWebSocketClient client = new StandardWebSocketClient();
@@ -70,12 +75,25 @@ public class ServerUtils {
 
     }
 
+    /**
+     * Subscribes to the gameupdates WebSocket topic for the game with the specified UUID. All
+     * messages published to the topic will be sent to the specified consumer.
+     * @param gameUUID the UUID of the game whose topic to subscribe to
+     * @param consumer the consumer to send all the messages published to the topic to
+     */
     public void registerForGameUpdates(UUID gameUUID, Consumer<GameUpdate> consumer) {
 
         registerForWebsocketMessages("/topic/gameupdates/" + gameUUID.toString(), GameUpdate.class, consumer);
 
     }
 
+    /**
+     * Utility method to subscribe to a WebSocket topic
+     * @param destination the URL (relative to the connected server) of the WebSocket topic
+     * @param type the class of the message expected to be received from the topic
+     * @param consumer the consumer to send all messages published to the topic to
+     * @param <T> the type of the message expected to be received from the topic
+     */
     private <T> void registerForWebsocketMessages(String destination, Class<T> type, Consumer<T> consumer) {
 
         session.subscribe(destination, new StompFrameHandler() {
@@ -201,6 +219,12 @@ public class ServerUtils {
                 .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), GameUpdate.class);
     }
 
+    /**
+     * Informs the server that the specified player is leaving the game
+     * @param username the username of the player that is leaving
+     * @param gameUUID the UUID of the game that the player is leaving
+     * @return the response from the server
+     */
     public String leaveGame(String username, UUID gameUUID) {
         Form form = new Form();
         form.param("username", username);
@@ -213,6 +237,9 @@ public class ServerUtils {
                 .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
     }
 
+    /**
+     * Informs the server that a player has requested that the current game be started
+     */
     public void startGame() {
 
         session.send("/game/start", "A game start has been requested.");

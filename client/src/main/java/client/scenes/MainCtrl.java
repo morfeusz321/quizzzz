@@ -15,11 +15,9 @@
  */
 package client.scenes;
 
-import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Pair;
 
 public class MainCtrl {
@@ -83,6 +81,9 @@ public class MainCtrl {
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
+    /**
+     * Shows the username input screen
+     */
     public void showUsernameInputScreen() {
 
         primaryStage.setTitle("Username input");

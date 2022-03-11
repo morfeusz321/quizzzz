@@ -30,8 +30,12 @@ public class UserController {
 
     /**
      * Maps to /api/user/enter
-     * Creates the player entity and sets the username for it
-     * @return a text that the user has entered the name successfully
+     * Creates the player entity and sets the username for it, and attempts to have this player join the
+     * current game.
+     * @param username the requested username for this player
+     * @return 200 OK: GameUpdateFullPlayerList if the player has joined the current game, or 200 OK:
+     * GameUpdateNameInUse if the current username is already in use in the current game, and the player
+     * can therefore not join the current game with the specified username
      */
     @PostMapping("/enter")
     public ResponseEntity<GameUpdate> getUserName(@RequestParam("username") String username) {
@@ -46,6 +50,13 @@ public class UserController {
 
     }
 
+    /**
+     * Removes the player with the specified username from the specified game
+     * @param username the username of the player that is leaving
+     * @param gameUUIDString the UUID game that the player is in
+     * @return 200 OK: regardless of whether the player was actually in the game or whether
+     * the game even existed, or 400 Bad Request if the UUID was malformed
+     */
     @PostMapping("/leave")
     public ResponseEntity<String> leaveGame(@RequestParam("username") String username,
                                             @RequestParam("gameUUID") String gameUUIDString) {
