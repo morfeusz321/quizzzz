@@ -204,19 +204,44 @@ public class ServerUtils {
     }
 
     /**
-     * Sends a post request
-     * @param username - the name of the player
-     * @return string indicating whether the request was successful
+     * Sends a request to join a multiplayer game
+     * @param username the requested username
+     * @return a GameUpdateFullPlayerList if the player has joined a multiplayer game, or a GameUpdateNameInUse
+     * if a player with the requested username is already in the current game
      */
-    public GameUpdate addUserName(String username) {
-        Form postUsername = new Form();
-        postUsername.param("username", username);
+    public GameUpdate joinMultiplayerGame(String username) {
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gametype", "multiplayer");
 
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/user/enter") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), GameUpdate.class);
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), GameUpdate.class);
+    }
+
+    /**
+     * Sends a request to start a singleplayer game
+     * @param username the requested username
+     * @param confirmNameInUse true if the client wishes to start a singleplayer game even if the username
+     *                         has been registered to the leaderboard before
+     * @return a GameUpdateGameStarting if the game is starting, or a GameUpdateNameInUse if the name requested
+     * has been registered to the leaderboard before and confirmNameInUse was set to false
+     */
+    public GameUpdate joinSinglePlayerGame(String username, boolean confirmNameInUse) {
+
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gametype", "singleplayer");
+        form.param("confirmNameInUse", String.valueOf(confirmNameInUse));
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/user/enter") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), GameUpdate.class);
+
     }
 
     /**

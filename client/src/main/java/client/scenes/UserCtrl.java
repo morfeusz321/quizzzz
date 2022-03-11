@@ -59,7 +59,7 @@ public class UserCtrl {
 
         GameUpdate gu;
         try {
-            gu = server.addUserName(un);
+            gu = server.joinMultiplayerGame(un);
         } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);

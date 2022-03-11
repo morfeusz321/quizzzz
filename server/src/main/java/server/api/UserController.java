@@ -2,12 +2,14 @@ package server.api;
 
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
+import commons.gameupdate.GameUpdateGameStarting;
 import commons.gameupdate.GameUpdateNameInUse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import commons.Player;
 import server.game.GameController;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -31,22 +33,59 @@ public class UserController {
     /**
      * Maps to /api/user/enter
      * Creates the player entity and sets the username for it, and attempts to have this player join the
-     * current game.
+     * current game for multiplayer games, or registers it to the leaderboard for singleplayer games.
+     * If the username is already in use, for multiplayer games, the player will not be able to join. For
+     * singleplayer games, the player must include the confirmNameInUse=true parameter in the URL in order to
+     * be registered to the leaderboard.
      * @param username the requested username for this player
-     * @return 200 OK: GameUpdateFullPlayerList if the player has joined the current game, or 200 OK:
+     * @param gametype the game type that the player wishes to join (either "singleplayer" or "multiplayer")
+     * @param confirmNameInUse confirms that the player knows that the name has already been used on the leaderboard
+     *                         before for singleplayer games, and still wishes to use its requested username
+     * @return For multiplayer games: 200 OK: GameUpdateFullPlayerList if the player has joined the current game, or 200 OK:
      * GameUpdateNameInUse if the current username is already in use in the current game, and the player
-     * can therefore not join the current game with the specified username
+     * can therefore not join the current game with the specified username. For singleplayer games: 200 OK:
+     * GameUpdateGameStarting if the player has been registered to the leaderboard, and a singleplayer game is starting, or
+     * 200 OK: GameUpdateNameInUse if the name has already been registered to the leaderboard and the confirmNameInUse
+     * parameter is not present or is not set to true. Can also return 400 Bad Request if the gametype parameter is invalid.
      */
     @PostMapping("/enter")
-    public ResponseEntity<GameUpdate> getUserName(@RequestParam("username") String username) {
+    public ResponseEntity<GameUpdate> getUserName(@RequestParam("username") String username,
+                                                  @RequestParam("gametype") String gametype,
+                                                  @RequestParam("confirmNameInUse") Optional<String> confirmNameInUse) {
 
-        Player player = new Player(username);
-        boolean playerAdded = gameController.addPlayerToCurrentGame(player);
-        if(!playerAdded) {
-            return ResponseEntity.ok(new GameUpdateNameInUse());
+        if(gametype.equals("singleplayer")) {
+
+            if(true /* check if the username has been used on the leaderboard here */) {
+
+                if(confirmNameInUse.isPresent()) {
+                    if(confirmNameInUse.get().equals("true")) {
+                        /* Create new Player here */
+                        return ResponseEntity.ok(new GameUpdateGameStarting());
+                    } else {
+                        return ResponseEntity.ok(new GameUpdateNameInUse());
+                    }
+                } else {
+                    return ResponseEntity.ok(new GameUpdateNameInUse());
+                }
+
+            } else {
+
+                /* Create new player here */
+                return ResponseEntity.ok(new GameUpdateGameStarting());
+
+            }
+
+        } else if(gametype.equals("multiplayer")) {
+            Player player = new Player(username);
+            boolean playerAdded = gameController.addPlayerToCurrentGame(player);
+            if(!playerAdded) {
+                return ResponseEntity.ok(new GameUpdateNameInUse());
+            }
+
+            return ResponseEntity.ok(new GameUpdateFullPlayerList(gameController.getCurrentGamePlayers(), gameController.getCurrentGameUUID()));
+        } else {
+            return ResponseEntity.badRequest().build();
         }
-
-        return ResponseEntity.ok(new GameUpdateFullPlayerList(gameController.getCurrentGamePlayers(), gameController.getCurrentGameUUID()));
 
     }
 
