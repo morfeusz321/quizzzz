@@ -44,6 +44,10 @@ public class MainCtrl {
     private EstimationQuestionCtrl estimationQuestionCtrl;
     private Scene estimationQuestion;
 
+    /**
+     * Creates a MainCtrl, which controls displaying and switching between screens.
+     * @param server Utilities for communicating with the server (API endpoint)
+     */
     @Inject
     public MainCtrl(ServerUtils server) {
         this.server = server;
