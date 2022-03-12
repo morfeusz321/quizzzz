@@ -26,7 +26,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
         // TODO: add "more expensive" question type, and restructure this afterwards
 
-        questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
+        questionImg.setImage(new Image("/client/img/question_mark.png"));
         title.setText(q.displayQuestion());
         answerBtn1.setText(q.answerOptions.get(0));
         answerBtn2.setText(q.answerOptions.get(1));
@@ -34,5 +34,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
         refreshProgressBar();
 
     }
+
+    // TODO: when the answer is displayed, the correct image should be shown!
 
 }
