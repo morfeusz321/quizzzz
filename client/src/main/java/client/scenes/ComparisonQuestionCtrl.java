@@ -4,13 +4,9 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
 import commons.Question;
-import javafx.fxml.FXML;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
-    @FXML
-    public ImageView questionImg;
 
     /**
      * Creates a ComparisonQuestionCtrl, which controls the display/interaction of the comparison question screen.

@@ -51,6 +51,9 @@ public abstract class QuestionCtrl {
     public Label playersInfo;
 
     @FXML
+    public ImageView questionImg;
+
+    @FXML
     public ImageView hoverEmoji;
     @FXML
     public Pane emojiPane;

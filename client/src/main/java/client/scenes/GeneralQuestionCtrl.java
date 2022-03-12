@@ -5,13 +5,9 @@ import com.google.inject.Inject;
 
 import commons.CommonUtils;
 import commons.Question;
-import javafx.fxml.FXML;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
-    @FXML
-    public ImageView questionImg;
 
     /**
      * Creates a GeneralQuestionCtrl, which controls the display/interaction of the general question screen.
