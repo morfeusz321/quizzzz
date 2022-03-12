@@ -17,6 +17,11 @@
     /* TODO: remove/adjust this when dynamic text sizing is added - just a temporary static solution */
 }
 
+.most-expensive-title {
+    -fx-font-size: 80px;
+    -fx-font-weight: bold;
+}
+
 .question-button {
     -fx-background-radius: 50px;
     -fx-border-radius: 50px;

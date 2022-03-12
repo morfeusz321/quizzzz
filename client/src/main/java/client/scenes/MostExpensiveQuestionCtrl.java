@@ -4,6 +4,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
 import commons.Question;
+import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 
 public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
@@ -20,6 +21,15 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     }
 
     /**
+     * Initializes the title
+     */
+    @FXML
+    public void initialize(){
+        super.initialize();
+        title.setText("What is most expensive?");
+    }
+
+    /**
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar.
      */
     public void loadQuestion(Question q) {
@@ -27,7 +37,6 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
         // TODO: add "more expensive" question type, and restructure this afterwards
 
         questionImg.setImage(new Image("/client/img/question_mark.png"));
-        title.setText(q.displayQuestion());
         answerBtn1.setText(q.answerOptions.get(0));
         answerBtn2.setText(q.answerOptions.get(1));
         answerBtn3.setText(q.answerOptions.get(2));
