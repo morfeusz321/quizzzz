@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.CommonUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
@@ -27,10 +28,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * screens. This includes the general question and the comparison question screens.
      * @param server Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param utils Common utilities (for server- and client-side)
      */
     @Inject
-    public MultipleChoiceQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
-        super(server, mainCtrl);
+    public MultipleChoiceQuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
+        super(server, mainCtrl, utils);
     }
 
     /**

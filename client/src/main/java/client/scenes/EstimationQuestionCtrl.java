@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.CommonUtils;
 import commons.Question;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -26,10 +27,11 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * Creates a EstimationQuestionCtrl, which controls the display/interaction of the estimation question screen.
      * @param server Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param utils Common utilities (for server- and client-side)
      */
     @Inject
-    public EstimationQuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
-        super(server, mainCtrl);
+    public EstimationQuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
+        super(server, mainCtrl, utils);
     }
 
     /**

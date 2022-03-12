@@ -16,11 +16,15 @@ import javafx.scene.shape.CubicCurve;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import commons.CommonUtils;
+
 import java.util.Random;
 
 public abstract class QuestionCtrl {
     protected final ServerUtils server; // TODO: not sure if this is good style (using protected) - also next line
     protected final MainCtrl mainCtrl;
+
+    private final CommonUtils utils;
 
     @FXML
     public ImageView backBtn;
@@ -77,11 +81,13 @@ public abstract class QuestionCtrl {
      * from this class.
      * @param server Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param utils Common utilities (for server- and client-side)
      */
     @Inject
-    public QuestionCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public QuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.utils = utils;
     }
 
     /**
@@ -184,7 +190,7 @@ public abstract class QuestionCtrl {
             int finalI = i;
             changeLabel.getKeyFrames().add(
                     new KeyFrame(Duration.seconds(remainingTime - i),
-                            finished -> timeLabel.setText("Time left: 00:" + addPrependingZero(finalI))));
+                            finished -> timeLabel.setText("Time left: 00:" + utils.addPrependingZero(finalI))));
         }
         changeLabel.setOnFinished(finished -> {
             timeLabel.setText("Time ran out!");
@@ -193,18 +199,6 @@ public abstract class QuestionCtrl {
 
         timeAnim.play();
         changeLabel.play();
-    }
-
-    /**
-     * If necessary, this adds a prepending zero to a given integer. Used for displaying the timer.
-     * @param i The integer to display
-     * @return A string of the integer (if necessary, with a prepended zero)
-     */
-    public String addPrependingZero(int i){
-        if(i < 10){
-            return "0" + i;
-        }
-        return String.valueOf(i);
     }
 
     /**
@@ -224,13 +218,14 @@ public abstract class QuestionCtrl {
         emoji.setLayoutX(hoverEmoji.getLayoutX() + 20);
         emoji.setLayoutY(hoverEmoji.getLayoutY());
 
+        Random r = new Random();
         CubicCurve cubic = new CubicCurve();
         cubic.setStartX(emoji.getFitWidth() / 2);
         cubic.setStartY(0);
-        cubic.setControlX1(emoji.getFitWidth() / 2 + randomIntInRange(-20, -40));
-        cubic.setControlY1(randomIntInRange(-50, -125));
-        cubic.setControlX2(emoji.getFitWidth() / 2 + randomIntInRange(20, 40));
-        cubic.setControlY2(randomIntInRange(-175, -275));
+        cubic.setControlX1(emoji.getFitWidth() / 2 + utils.randomIntInRange(-40, -20, r));
+        cubic.setControlY1(utils.randomIntInRange(-125, -50, r));
+        cubic.setControlX2(emoji.getFitWidth() / 2 + utils.randomIntInRange(20, 40, r));
+        cubic.setControlY2(utils.randomIntInRange(-275, -175, r));
         cubic.setEndX(emoji.getFitWidth() / 2);
         cubic.setEndY(-300);
 
@@ -256,20 +251,6 @@ public abstract class QuestionCtrl {
 
         fade.play();
         pathTransition.play();
-    }
-
-    /**
-     * Returns a random integer in a given range. The bounds need to be either both negative or both positive.
-     * @param lower The lower bound (inclusive)
-     * @param upper The upper bound (inclusive)
-     * @return A random integer in the given range.
-     */
-    public int randomIntInRange(int lower, int upper){
-        Random r = new Random();
-        if(lower < 0 && upper < 0){
-            return r.nextInt(-1 * upper + lower) * -1 + lower;
-        }
-        return r.nextInt(upper - lower) + lower;
     }
 
     /**
