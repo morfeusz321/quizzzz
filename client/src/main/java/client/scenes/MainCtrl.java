@@ -38,6 +38,9 @@ public class MainCtrl {
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
 
+    private MostExpensiveQuestionCtrl mostExpensiveQuestionCtrl;
+    private Scene mostExpensiveQuestion;
+
     private ComparisonQuestionCtrl comparisonQuestionCtrl;
     private Scene comparisonQuestion;
 
@@ -62,15 +65,19 @@ public class MainCtrl {
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
-                           Pair<EstimationQuestionCtrl, Parent> estimationQ) {
+                           Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                           Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
+
+        // TODO: this definitely needs restructuring, too much code duplication
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
@@ -105,6 +112,17 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
+        this.mostExpensiveQuestionCtrl = mostExpensiveQ.getKey();
+        this.mostExpensiveQuestion = new Scene(mostExpensiveQ.getValue());
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/general-question-style.css"
+                ).toExternalForm());
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
@@ -123,7 +141,7 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the general question screen and loads a new question
+     * Shows the general question screen
      */
     public void showGeneralQuestion(Question q) {
         primaryStage.setTitle("General question");
@@ -133,7 +151,7 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the comparison question screen and loads a new question
+     * Shows the comparison question screen
      */
     public void showComparisonQuestion(Question q) {
         primaryStage.setTitle("Comparison question");
@@ -143,7 +161,17 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the estimation question screen and loads a new question
+     * Shows the "most expensive" question screen
+     */
+    public void showMostExpensiveQuestion(Question q) {
+        primaryStage.setTitle("Most expensive question");
+        primaryStage.setScene(mostExpensiveQuestion);
+        mostExpensiveQuestionCtrl.loadQuestion(q);
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows the estimation question screen
      */
     public void showEstimationQuestion(Question q) {
         primaryStage.setTitle("Estimation question");
