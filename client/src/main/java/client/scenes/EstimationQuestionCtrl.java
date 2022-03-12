@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
 public class EstimationQuestionCtrl extends QuestionCtrl {
@@ -19,15 +20,17 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     @FXML
     private Slider slideBar;
     @FXML
-    public Text answerDisplay;
+    private Text answerDisplay;
     @FXML
-    public Label minLabel;
+    private Label minLabel;
     @FXML
-    public Label maxLabel;
+    private Label maxLabel;
     @FXML
-    public Button setAnswerBtn;
+    private Button setAnswerBtn;
     @FXML
-    public TextField answerTxtField;
+    private TextField answerTxtField;
+
+    private boolean answerSet;
 
     /**
      * Creates a EstimationQuestionCtrl, which controls the display/interaction of the estimation question screen.
@@ -38,6 +41,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     @Inject
     public EstimationQuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
         super(server, mainCtrl, utils);
+        answerSet = false;
     }
 
     /**
@@ -75,6 +79,29 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                     slideBar.setValue(newInt);
                 }
         );
+        initializeAnswerBtnEventHandlers();
+    }
+
+    /**
+     * Initializes the event handlers of the "set answer" button
+     */
+    public void initializeAnswerBtnEventHandlers(){
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if(answerSet){
+                answerSet = false;
+                setAnswerBtn.setText("Set as answer");
+                slideBar.setDisable(false);
+                answerTxtField.setDisable(false);
+            } else {
+                answerSet = true;
+                setAnswerBtn.setText("Edit answer");
+                slideBar.setDisable(true);
+                answerTxtField.setDisable(true);
+                // TODO: send answer to server here
+            }
+        });
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> setAnswerBtn.getStyleClass().add("hover-button"));
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> setAnswerBtn.getStyleClass().remove("hover-button"));
     }
 
     /**
@@ -93,6 +120,10 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         minLabel.setText("0");
         answerTxtField.setText("0");
         slideBar.setValue(0);
+        answerSet = false;
+        setAnswerBtn.setText("Set as answer");
+        slideBar.setDisable(false);
+        answerTxtField.setDisable(false);
         slideBar.setMajorTickUnit(100);
         slideBar.setMinorTickCount(99);
         // must be one less than major tick unit -> one tick per kWh
