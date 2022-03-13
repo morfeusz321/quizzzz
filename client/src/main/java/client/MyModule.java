@@ -15,14 +15,10 @@
  */
 package client;
 
-import client.scenes.UserCtrl;
+import client.scenes.*;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
-
-import client.scenes.AddQuoteCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
 
 /**
  * The module used by the injector for the FXML loader, that makes sure there exists only one of each controller
@@ -35,5 +31,7 @@ public class MyModule implements Module {
         binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
         binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(UserCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminEditActivityCtrl.class).in(Scopes.SINGLETON);
     }
 }

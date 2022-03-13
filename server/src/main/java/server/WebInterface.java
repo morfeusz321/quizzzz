@@ -1,6 +1,7 @@
 package server;
 
 import commons.Activity;
+import commons.Utils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,12 +93,12 @@ public class WebInterface {
     /**
      * Saves a modified activity to the database
      * @param activity a modified activity
-     * @return string indicating whether the request was successful
+     * @return 200 OK: Activity saved, 400 Bad Request: Wrong input
      */
     @PostMapping("/debug/activities/edit")
     public ResponseEntity<Activity> edit(@RequestBody Activity activity) {
 
-        if (activity.id == null || isNullOrEmpty(activity.imagePath) || isNullOrEmpty(activity.title)
+        if (activity.id == null || Utils.isNullOrEmpty(activity.imagePath) || Utils.isNullOrEmpty(activity.title)
                 || activity.consumption == 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -106,7 +107,4 @@ public class WebInterface {
         return ResponseEntity.ok(saved);
     }
 
-    private static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
 }
