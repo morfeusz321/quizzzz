@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
    <children>
-      <TableView fx:id="table" layoutX="38.0" layoutY="28.0" prefHeight="376.0" prefWidth="785.0">
+      <TableView fx:id="table" layoutX="38.0" layoutY="28.0" onMouseClicked="#handleClickTableView" prefHeight="376.0" prefWidth="785.0">
         <columns>
-            <TableColumn fx:id="id" prefWidth="75.0" text="ID" />
-          <TableColumn fx:id="imagePath" prefWidth="117.5999984741211" text="Image path" />
-          <TableColumn fx:id="title" prefWidth="283.1999816894531" text="Title" />
-            <TableColumn fx:id="consumption" prefWidth="111.20001220703125" text="Consumption" />
-            <TableColumn fx:id="source" prefWidth="200.79998779296875" text="Source" />
+            <TableColumn fx:id="id" prefWidth="103.20000457763672" text="ID" />
+          <TableColumn fx:id="imagePath" prefWidth="131.99996948242188" text="Image path" />
+          <TableColumn fx:id="title" prefWidth="372.7999572753906" text="Title" />
+            <TableColumn fx:id="consumption" prefWidth="178.4000244140625" text="Consumption" />
         </columns>
       </TableView>
-      <Button layoutX="755.0" layoutY="558.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
+      <Button layoutX="755.0" layoutY="558.0" mnemonicParsing="false" onAction="#cancel" text="Back" />
+      <Label fx:id="totalNo" layoutX="38.0" layoutY="422.0" text="Label" />
+      <Label fx:id="selected" layoutX="38.0" layoutY="453.0" text="Currently selected: None" />
+      <Button fx:id="edit" disable="true" layoutX="92.0" layoutY="471.0" mnemonicParsing="false" onAction="#showEdit" text="Edit selected" />
    </children>
 </AnchorPane>

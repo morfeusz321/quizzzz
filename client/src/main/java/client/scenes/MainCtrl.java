@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import commons.Activity;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -36,6 +37,9 @@ public class MainCtrl {
     private AdminCtrl adminCtrl;
     private Scene adminScene;
 
+    private AdminEditActivityCtrl adminEditCtrl;
+    private Scene adminEditScene;
+
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
@@ -46,7 +50,7 @@ public class MainCtrl {
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<UserCtrl, Parent> username,
-                           Pair<AdminCtrl, Parent> adminScene) {
+                           Pair<AdminCtrl, Parent> adminScene, Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -59,6 +63,9 @@ public class MainCtrl {
 
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
+
+        this.adminEditCtrl = adminEditScene.getKey();
+        this.adminEditScene = new Scene(adminEditScene.getValue());
 
         showOverview();
         primaryStage.show();
@@ -87,9 +94,19 @@ public class MainCtrl {
      * Show the admin screen (table with all activities)
      */
     public void showAdmin() {
-        primaryStage.setTitle("Admin ");
+        primaryStage.setTitle("Admin");
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
         //add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    }
+
+    /**
+     * Show the edit activity screen
+     * @param activity a previously selected activity
+     */
+    public void showAdminEdit(Activity activity) {
+        primaryStage.setTitle("Admin - Edit activity");
+        primaryStage.setScene(adminEditScene);
+        adminEditCtrl.setActivity(activity);
     }
 }

@@ -100,7 +100,7 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a all activities from the server using the API endpoint
+     * Gets all activities from the server using the API endpoint
      * @return a list of activities
      */
     public List<Activity> getActivities() {
@@ -109,6 +109,19 @@ public class ServerUtils {
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Activity>>() {});
+    }
+
+    /**
+     * Post a modified activity to the server using the API endpoint
+     * @param activity modified activity
+     * @return string indicating whether the request was successful
+     */
+    public Activity editActivity(Activity activity) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("debug/activities/edit") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
     }
 
     /**

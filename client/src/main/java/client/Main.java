@@ -48,8 +48,9 @@ public class Main extends Application {
         var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
         var username = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
         var admin = FXML.load(AdminCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var adminEdit = FXML.load(AdminEditActivityCtrl.class, "client", "scenes", "AdminEditActivity.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, username, admin);
+        mainCtrl.initialize(primaryStage, overview, add, username, admin,adminEdit);
     }
 }

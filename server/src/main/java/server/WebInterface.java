@@ -4,7 +4,10 @@ import commons.Activity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import server.database.ActivityDB;
 import server.database.ActivityDBController;
 
 import java.util.List;
@@ -78,12 +81,32 @@ public class WebInterface {
     }
 
     /**
-     * aa
-     * @return aa
+     * Get all activities from the database
+     * @return a list of activities
      */
     @GetMapping("/debug/activities")
     public ResponseEntity<List<Activity>> getAllActivities() {
         return ResponseEntity.ok(activityDBController.listAll());
     }
 
+    /**
+     * Saves a modified activity to the database
+     * @param activity a modified activity
+     * @return string indicating whether the request was successful
+     */
+    @PostMapping("/debug/activities/edit")
+    public ResponseEntity<Activity> edit(@RequestBody Activity activity) {
+
+        if (activity.id == null || isNullOrEmpty(activity.imagePath) || isNullOrEmpty(activity.title)
+                || activity.consumption == 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        ActivityDB activityDB = activityDBController.getInternalDB();
+        Activity saved = activityDB.save(activity);
+        return ResponseEntity.ok(saved);
+    }
+
+    private static boolean isNullOrEmpty(String s) {
+        return s == null || s.isEmpty();
+    }
 }
