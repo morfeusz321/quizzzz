@@ -1,9 +1,11 @@
 package server;
 
+import commons.Activity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import server.database.ActivityDB;
 import server.database.ActivityDBController;
 
 import java.util.List;
@@ -74,6 +76,15 @@ public class WebInterface {
 
         return ResponseEntity.ok(sb.toString());
 
+    }
+
+    /**
+     * aa
+     * @return aa
+     */
+    @GetMapping("/debug/activities")
+    public ResponseEntity<List<Activity>> getAllActivities() {
+        return ResponseEntity.ok(activityDBController.listAll());
     }
 
 }
