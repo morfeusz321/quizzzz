@@ -87,6 +87,10 @@ public class QuoteOverviewCtrl implements Initializable {
         mainCtrl.showAdd();
     }
 
+    public void showAdmin() {
+        mainCtrl.showAdmin();
+    }
+
     /**
      * TODO: to remove
      */

@@ -33,6 +33,9 @@ public class MainCtrl {
     private UserCtrl userCtrl;
     private Scene username;
 
+    private AdminCtrl adminCtrl;
+    private Scene adminScene;
+
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
@@ -42,7 +45,8 @@ public class MainCtrl {
      * @param username
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<UserCtrl, Parent> username) {
+                           Pair<AddQuoteCtrl, Parent> add, Pair<UserCtrl, Parent> username,
+                           Pair<AdminCtrl, Parent> adminScene) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -52,6 +56,9 @@ public class MainCtrl {
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
+
+        this.adminCtrl = adminScene.getKey();
+        this.adminScene = new Scene(adminScene.getValue());
 
         showOverview();
         primaryStage.show();
@@ -74,5 +81,12 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    }
+
+    public void showAdmin() {
+        primaryStage.setTitle("Quotes: Adding Quote");
+        primaryStage.setScene(adminScene);
+        adminCtrl.refresh();
+        //add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 }

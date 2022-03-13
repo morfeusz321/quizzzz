@@ -24,5 +24,6 @@
       <Button layoutX="74.0" layoutY="454.0" mnemonicParsing="false" onAction="#onGetImage2ButtonClick" text="Get Image 2" />
       <TextField fx:id="questionDisplayField" editable="false" layoutX="166.0" layoutY="569.0" prefHeight="98.0" prefWidth="420.0" />
       <Button layoutX="49.0" layoutY="606.0" mnemonicParsing="false" onAction="#onGetQuestionButtonClick" text="Get Question" />
+      <Button layoutX="514.0" layoutY="441.0" mnemonicParsing="false" onAction="#showAdmin" text="Admin" />
    </children>
 </AnchorPane>
