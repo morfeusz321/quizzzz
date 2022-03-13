@@ -33,21 +33,29 @@ public class MainCtrl {
     private AddQuoteCtrl addCtrl;
     private Scene add;
 
+    private UserCtrl userCtrl;
+    private Scene username;
+
     /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
      * @param overview Pair of the control and the scene of the overview
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
+     * @param username
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-            Pair<AddQuoteCtrl, Parent> add, Pair<MainScreenCtrl, Parent> mainScreen) {
+                    Pair<AddQuoteCtrl, Parent> add, Pair<UserCtrl, Parent> username, 
+                    Pair<MainScreenCtrl, Parent> mainScreen) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
 
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
+
+        this.userCtrl = username.getKey();
+        this.username = new Scene(username.getValue());
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());

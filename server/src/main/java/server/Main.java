@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import server.database.ActivityDBController;
+import server.database.QuestionDBController;
 
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
@@ -33,7 +34,9 @@ public class Main {
 
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
 
+        context.getBean(ActivityDBController.class).setJsonSourceToActivitiesFile();
         context.getBean(ActivityDBController.class).forceReload();
+        context.getBean(QuestionDBController.class).clear();
 
     }
 }
