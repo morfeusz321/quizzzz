@@ -21,11 +21,10 @@ public class UserController {
      * Maps to /api/user/enter
      * Creates the player entity and sets the username for it
      * @param username - the name of the user
-     * @param server - the server the player wants to join
      * @return a text that the user has entered the name successfully
      */
     @PostMapping("/enter")
-    public ResponseEntity<String> getUserName(@RequestParam("username") String username, @RequestParam("server") String server) {
+    public ResponseEntity<String> getUserName(@RequestParam("username") String username) {
 
         Player player = new Player();
         player.setUsername(username);
