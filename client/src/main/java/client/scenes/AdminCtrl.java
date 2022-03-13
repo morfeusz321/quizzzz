@@ -3,8 +3,6 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Activity;
-import commons.Quote;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -53,10 +50,16 @@ public class AdminCtrl implements Initializable {
         consumption.setCellValueFactory(q -> new SimpleStringProperty(String.valueOf(q.getValue().consumption)));
     }
 
+    /**
+     * Return to the main overview
+     */
     public void cancel() {
         mainCtrl.showOverview();
     }
 
+    /**
+     * Gets a list of all activities and creates a table with these values
+     */
     public void refresh() {
         var activities = server.getActivities();
         data = FXCollections.observableList(activities);

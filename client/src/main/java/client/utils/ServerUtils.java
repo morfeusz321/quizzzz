@@ -98,6 +98,11 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .get(new GenericType<List<Quote>>() {});
     }
+
+    /**
+     * Gets a all activities from the server using the API endpoint
+     * @return a list of activities
+     */
     public List<Activity> getActivities() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("debug/activities") //

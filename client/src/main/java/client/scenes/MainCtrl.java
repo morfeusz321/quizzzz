@@ -83,8 +83,11 @@ public class MainCtrl {
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
+    /**
+     * Show the admin screen (table with all activities)
+     */
     public void showAdmin() {
-        primaryStage.setTitle("Quotes: Adding Quote");
+        primaryStage.setTitle("Admin ");
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
         //add.setOnKeyPressed(e -> addCtrl.keyPressed(e));

@@ -87,6 +87,9 @@ public class QuoteOverviewCtrl implements Initializable {
         mainCtrl.showAdd();
     }
 
+    /**
+     * Show the admin screen when clicking on a button TODO: this will be moved to another overview once everything is merged
+     */
     public void showAdmin() {
         mainCtrl.showAdmin();
     }
