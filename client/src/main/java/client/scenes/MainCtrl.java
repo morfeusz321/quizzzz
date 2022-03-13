@@ -24,11 +24,8 @@ public class MainCtrl {
 
     private Stage primaryStage;
 
-    private QuoteOverviewCtrl overviewCtrl;
+    private OverviewCtrl overviewCtrl;
     private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
 
     private UserCtrl userCtrl;
     private Scene username;
@@ -38,11 +35,10 @@ public class MainCtrl {
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
      * @param overview Pair of the control and the scene of the overview
-     * @param add Pair of the control and the scene for adding quotes TODO: to remove
-     * @param username
+     * @param username the name of the player
      */
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<UserCtrl, Parent> username) {
+    public void initialize(Stage primaryStage, Pair<OverviewCtrl, Parent> overview,
+                           Pair<UserCtrl, Parent> username) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
         this.overview = new Scene(overview.getValue());
@@ -50,29 +46,15 @@ public class MainCtrl {
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
-
         showOverview();
         primaryStage.show();
     }
 
     /**
-     * Shows the overview scene (table for quotes, question display, image display)
-     * TODO: remove table for quotes
+     * Shows the overview scene (question display, image display)
      */
     public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
-        overviewCtrl.refresh();
     }
 
-    /**
-     * TODO: to remove
-     */
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
-    }
 }
