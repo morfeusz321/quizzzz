@@ -6,13 +6,11 @@ package server.database;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import commons.Activity;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -124,11 +122,19 @@ public class ActivityDBController {
 
     }
 
-
+    /**
+     * Gets a list of 5 random activities from the database
+     * @return list of 5 random activities
+     */
     public List<Activity> getFiveRandomActivities(){
         return activityDB.getFiveRandomActivities();
     }
 
+
+    /**
+     * Gets a list of 2 random activities from the database
+     * @return list of 2 random activities
+     */
     public List<Activity> getTwoRandomActivities(){
         return activityDB.getTwoRandomActivities();
     }
