@@ -1,5 +1,6 @@
 package server.game;
 
+import commons.GameType;
 import commons.Player;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -15,6 +16,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 public class Game {
 
     private UUID uuid;
+    private GameType gameType;
 
     private ConcurrentHashMap<String, Player> players;
 
@@ -22,9 +24,10 @@ public class Game {
      * Creates a new game
      * @param uuid the UUID for this new game
      */
-    public Game(UUID uuid) {
+    public Game(UUID uuid, GameType gameType) {
 
         this.uuid = uuid;
+        this.gameType = gameType;
         this.players = new ConcurrentHashMap<>();
 
     }
@@ -36,6 +39,16 @@ public class Game {
     public UUID getUUID() {
 
         return this.uuid;
+
+    }
+
+    /**
+     * Returns this game's game type
+     * @return this game's game type
+     */
+    public GameType getGameType() {
+
+        return this.gameType;
 
     }
 

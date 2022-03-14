@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
 import commons.AnswerResponseEntity;
+import commons.GameType;
 import commons.Question;
 import commons.gameupdate.GameUpdate;
 import jakarta.ws.rs.core.Form;
@@ -212,7 +213,7 @@ public class ServerUtils {
     public GameUpdate joinMultiplayerGame(String username) {
         Form form = new Form();
         form.param("username", username);
-        form.param("gametype", "multiplayer");
+        form.param("gametype", GameType.MULTIPLAYER.name());
 
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/user/enter") //
@@ -233,7 +234,7 @@ public class ServerUtils {
 
         Form form = new Form();
         form.param("username", username);
-        form.param("gametype", "singleplayer");
+        form.param("gametype", GameType.SINGLEPLAYER.name());
         form.param("confirmNameInUse", String.valueOf(confirmNameInUse));
 
         return ClientBuilder.newClient(new ClientConfig()) //

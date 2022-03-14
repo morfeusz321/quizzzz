@@ -1,5 +1,6 @@
 package server.game;
 
+import commons.GameType;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ public class GameTest {
 
         this.uuid = UUID.randomUUID();
 
-        this.game = new Game(uuid);
+        this.game = new Game(uuid, GameType.MULTIPLAYER);
 
     }
 
@@ -34,6 +35,7 @@ public class GameTest {
 
         assertNotNull(game);
         assertEquals(uuid, game.getUUID());
+        assertEquals(GameType.MULTIPLAYER, game.getGameType());
 
     }
 
@@ -107,7 +109,7 @@ public class GameTest {
         assertEquals(game, game);
         assertEquals(game.hashCode(), game.hashCode());
 
-        Game game2 = new Game(uuid);
+        Game game2 = new Game(uuid, GameType.MULTIPLAYER);
         assertEquals(game, game2);
         assertEquals(game.hashCode(), game2.hashCode());
 
@@ -121,16 +123,20 @@ public class GameTest {
     @Test
     public void testEqualsAndHashCodeNotEqual() {
 
-        Game game2 = new Game(UUID.randomUUID());
+        Game game0 = new Game(uuid, GameType.SINGLEPLAYER);
+        assertNotEquals(game, game0);
+        assertNotEquals(game.hashCode(), game0.hashCode());
+
+        Game game2 = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
         assertNotEquals(game, game2);
         assertNotEquals(game.hashCode(), game2.hashCode());
 
-        Game game3 = new Game(uuid);
+        Game game3 = new Game(uuid, GameType.MULTIPLAYER);
         game3.addPlayer(player1);
         assertNotEquals(game, game3);
         assertNotEquals(game.hashCode(), game3.hashCode());
 
-        Game game4 = new Game(uuid);
+        Game game4 = new Game(uuid, GameType.MULTIPLAYER);
         game.addPlayer(player1);
         game4.addPlayer(player2);
         assertNotEquals(game, game4);
@@ -144,6 +150,7 @@ public class GameTest {
         assertTrue(s.contains(Game.class.getSimpleName()));
         assertTrue(s.contains("\n"));
         assertTrue(s.contains("uuid"));
+        assertTrue(s.contains("gameType"));
         assertTrue(s.contains("players"));
     }
 

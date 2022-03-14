@@ -1,5 +1,6 @@
 package server.game;
 
+import commons.GameType;
 import commons.Player;
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
@@ -25,7 +26,7 @@ public class GameController {
     public GameController(GameUpdateManager gameUpdateManager) {
 
         this.games = new ConcurrentHashMap<>();
-        this.currentGame = new Game(UUID.randomUUID());
+        this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
         this.gameUpdateManager = gameUpdateManager;
 
     }
@@ -111,7 +112,7 @@ public class GameController {
         gameUpdateManager.startGame(currentGameUUID);
 
         games.put(currentGameUUID, currentGame);
-        this.currentGame = new Game(UUID.randomUUID());
+        this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
 
     }
 
@@ -204,7 +205,7 @@ public class GameController {
     public GameUpdate createSinglePlayerGame(Player player) {
 
         UUID uuid = UUID.randomUUID();
-        Game singlePlayerGame = new Game(uuid);
+        Game singlePlayerGame = new Game(uuid, GameType.SINGLEPLAYER);
         singlePlayerGame.addPlayer(player);
 
         this.games.put(uuid, singlePlayerGame);

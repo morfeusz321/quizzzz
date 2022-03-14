@@ -1,5 +1,6 @@
 package server.api;
 
+import commons.GameType;
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
 import commons.gameupdate.GameUpdateNameInUse;
@@ -52,7 +53,7 @@ public class UserController {
                                                   @RequestParam("gametype") String gametype,
                                                   @RequestParam("confirmNameInUse") Optional<String> confirmNameInUse) {
 
-        if(gametype.equals("singleplayer")) {
+        if(gametype.equals(GameType.SINGLEPLAYER.name())) {
 
             if(false /* check if the username has been used on the leaderboard here */) {
 
@@ -82,7 +83,7 @@ public class UserController {
 
             }
 
-        } else if(gametype.equals("multiplayer")) {
+        } else if(gametype.equals(GameType.MULTIPLAYER.name())) {
 
             Player player = new Player(username);
             boolean playerAdded = gameController.addPlayerToCurrentGame(player);
