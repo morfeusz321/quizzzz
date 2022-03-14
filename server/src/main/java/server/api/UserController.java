@@ -2,7 +2,6 @@ package server.api;
 
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
-import commons.gameupdate.GameUpdateGameStarting;
 import commons.gameupdate.GameUpdateNameInUse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,8 +61,7 @@ public class UserController {
                     if(confirmNameInUse.get().equals("true")) {
 
                         Player player = new Player(username);
-                        gameController.createSinglePlayerGame(player);
-                        return ResponseEntity.ok(new GameUpdateGameStarting());
+                        return ResponseEntity.ok(gameController.createSinglePlayerGame(player));
 
                     } else {
 
@@ -80,8 +78,7 @@ public class UserController {
             } else {
 
                 Player player = new Player(username);
-                gameController.createSinglePlayerGame(player);
-                return ResponseEntity.ok(new GameUpdateGameStarting());
+                return ResponseEntity.ok(gameController.createSinglePlayerGame(player));
 
             }
 

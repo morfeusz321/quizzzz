@@ -1,9 +1,13 @@
 package server.game;
 
 import commons.Player;
+import commons.gameupdate.GameUpdate;
+import commons.gameupdate.GameUpdateFullPlayerList;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -197,12 +201,22 @@ public class GameController {
      * Creates a new single player game containing the provided player
      * @param player the player for the single player game
      */
-    public void createSinglePlayerGame(Player player) {
+    public GameUpdate createSinglePlayerGame(Player player) {
 
         UUID uuid = UUID.randomUUID();
         Game singlePlayerGame = new Game(uuid);
         singlePlayerGame.addPlayer(player);
+
         this.games.put(uuid, singlePlayerGame);
+
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                gameUpdateManager.startGame(uuid);
+            }
+        }, 1500);
+
+        return new GameUpdateFullPlayerList(singlePlayerGame.getPlayers(), singlePlayerGame.getUUID());
 
     }
 
