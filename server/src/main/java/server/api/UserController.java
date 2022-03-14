@@ -33,18 +33,18 @@ public class UserController {
     /**
      * Maps to /api/user/enter
      * Creates the player entity and sets the username for it, and attempts to have this player join the
-     * current game for multiplayer games, or registers it to the leaderboard for singleplayer games.
+     * current game for multiplayer games, or creates a new game for it for singleplayer games.
      * If the username is already in use, for multiplayer games, the player will not be able to join. For
      * singleplayer games, the player must include the confirmNameInUse=true parameter in the URL in order to
-     * be registered to the leaderboard.
+     * start the game.
      * @param username the requested username for this player
-     * @param gametype the game type that the player wishes to join (either "singleplayer" or "multiplayer")
+     * @param gametype the game type that the player wishes to join (either GameType.SINGLEPLAYER or GameType.MULTIPLAYER)
      * @param confirmNameInUse confirms that the player knows that the name has already been used on the leaderboard
      *                         before for singleplayer games, and still wishes to use its requested username
      * @return For multiplayer games: 200 OK: GameUpdateFullPlayerList if the player has joined the current game, or 200 OK:
      * GameUpdateNameInUse if the current username is already in use in the current game, and the player
      * can therefore not join the current game with the specified username. For singleplayer games: 200 OK:
-     * GameUpdateGameStarting if the player has been registered to the leaderboard, and a singleplayer game is starting, or
+     * GameUpdateFullPlayerList if the player has been registered, and a singleplayer game is starting, or
      * 200 OK: GameUpdateNameInUse if the name has already been registered to the leaderboard and the confirmNameInUse
      * parameter is not present or is not set to true. Can also return 400 Bad Request if the gametype parameter is invalid.
      */
