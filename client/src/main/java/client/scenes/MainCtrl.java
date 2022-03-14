@@ -44,6 +44,9 @@ public class MainCtrl {
     private EstimationQuestionCtrl estimationQuestionCtrl;
     private Scene estimationQuestion;
 
+    private WaitingRoomCtrl waitingRoomCtrl;
+    private Scene waitingRoom;
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -62,11 +65,13 @@ public class MainCtrl {
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param waitingRoom Pair of the control and the scene of the waiting room
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
-                           Pair<EstimationQuestionCtrl, Parent> estimationQ) {
+                           Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                           Pair<WaitingRoomCtrl, Parent> waitingRoom) {
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -105,6 +110,17 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
+        this.waitingRoomCtrl = waitingRoom.getKey();
+        this.waitingRoom = new Scene(waitingRoom.getValue());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/waiting-room-style.css"
+                ).toExternalForm());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
@@ -120,6 +136,14 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
+    }
+
+    /**
+     * Shows the waiting room screen
+     */
+    public void showWaitingRoom() {
+        primaryStage.setTitle("Waiting room");
+        primaryStage.setScene(waitingRoom);
     }
 
     /**
