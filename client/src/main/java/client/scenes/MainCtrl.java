@@ -41,7 +41,12 @@ public class MainCtrl {
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
      * @param username
      */
+    private DynamicTextController dTextCtrl;
+    private Scene dynamicText;
+
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
+            Pair<AddQuoteCtrl, Parent> add,
+                           Pair<DynamicTextController, Parent> dynamicText) {
                            Pair<AddQuoteCtrl, Parent> add, Pair<UserCtrl, Parent> username) {
         this.primaryStage = primaryStage;
         this.overviewCtrl = overview.getKey();
@@ -53,7 +58,10 @@ public class MainCtrl {
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        showOverview();
+        this.dTextCtrl = dynamicText.getKey();
+        this.dynamicText = new Scene(dynamicText.getValue());
+
+        showDynamicText();
         primaryStage.show();
     }
 
@@ -75,4 +83,12 @@ public class MainCtrl {
         primaryStage.setScene(add);
         add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
+
+    public void showDynamicText() {
+
+        primaryStage.setTitle("Dynamic Text Tester");
+        primaryStage.setScene(dynamicText);
+
+    }
+
 }

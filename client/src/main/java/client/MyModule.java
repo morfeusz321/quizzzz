@@ -15,6 +15,7 @@
  */
 package client;
 
+import client.scenes.DynamicTextController;
 import client.scenes.UserCtrl;
 import com.google.inject.Binder;
 import com.google.inject.Module;
@@ -35,5 +36,6 @@ public class MyModule implements Module {
         binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
         binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
         binder.bind(UserCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(DynamicTextController.class).in(Scopes.SINGLETON);
     }
 }
