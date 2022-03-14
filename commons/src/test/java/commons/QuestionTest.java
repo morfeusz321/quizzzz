@@ -112,7 +112,7 @@ class QuestionTest {
         assertNotEquals(generalQuestion, generalQuestion2);
         assertNotEquals(comparisonQuestion, comparisonQuestion2);
         assertNotEquals(estimationQuestion, estimationQuestion2);
-        assertEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+        assertNotEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
     }
 
     @Test
