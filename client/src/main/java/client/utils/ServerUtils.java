@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
@@ -49,9 +50,9 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
-    private static final String WS_SERVER = "ws://localhost:8080/websocket";
-    private StompSession session = connect(WS_SERVER);
+    private static String SERVER = "http://localhost:8080/";
+    private static String WS_SERVER = "ws://localhost:8080/websocket";
+    private StompSession session;
 
     /**
      * Attempts to establish a WebSocket connection with the server at the specified URL
@@ -270,6 +271,36 @@ public class ServerUtils {
 
         session.send("/game/start", "A game start has been requested.");
 
+    }
+
+    /**
+     * Sends a post request for the server address
+     * @param server - the address of the server
+     */
+    public void changeServer(String server) {
+
+        if(server.contains("://")) {
+
+            String[] split = server.split("://");
+            if(split.length != 2) {
+                throw new IllegalArgumentException("Malformed URL \"" + server + "\"");
+            }
+
+            server = split[1];
+
+        }
+
+        if(!server.endsWith("/"))
+            server +="/";
+
+        SERVER = "http://" + server;
+        try {
+            URL url = new URL(SERVER);
+        } catch(MalformedURLException e) {
+            throw new IllegalArgumentException("Malformed URL \"" + server + "\" - " + e.getMessage());
+        }
+        WS_SERVER = "ws://" + server + "websocket";
+        session = connect(WS_SERVER);
     }
 
 }
