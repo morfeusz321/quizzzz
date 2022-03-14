@@ -221,5 +221,14 @@ public class MainCtrl {
         primaryStage.setScene(username);
 
     }
+
+    /**
+     * Sends a message to the server via userCtrl that the player is leaving the game
+     */
+    public void sendLeaveMessageToServer() {
+
+        userCtrl.sendLeaveMessageToServer();
+
+    }
     
 }

@@ -35,6 +35,7 @@ public class UserCtrl {
 
     private String currentUsername;
     private UUID gameUUID;
+    private String serverAddressPreFill = "localhost:8080";
 
     @FXML
     private TextField username;
@@ -58,7 +59,7 @@ public class UserCtrl {
      * Initializes the default text for the server address
      */
     public void initialize() {
-        serverAddress.setText("localhost:8080");
+        serverAddress.setText(serverAddressPreFill);
     }
 
     /**
@@ -97,6 +98,7 @@ public class UserCtrl {
         server.registerForGameUpdates(gameUUID, waitingRoomCtrl::gameUpdateHandler);
 
         this.currentUsername = un;
+        this.serverAddressPreFill = getServer();
 
         /*
         new Timer().schedule(new TimerTask() {
