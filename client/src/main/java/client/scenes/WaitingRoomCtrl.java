@@ -3,13 +3,18 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
+import commons.Player;
+import commons.gameupdate.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 public class WaitingRoomCtrl {
+
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
@@ -17,6 +22,12 @@ public class WaitingRoomCtrl {
 
     @FXML
     private ImageView backBtn;
+
+    @FXML
+    private ImageView lightbulb;
+
+    @FXML
+    private ListView<String> playerList;
 
     /**
      * Creates a WaitingRoomCtrl, which controls the display/interaction of the waiting room.
@@ -37,13 +48,17 @@ public class WaitingRoomCtrl {
     public void initialize(){
         showImages();
         initializeBackButtonHandlers();
+        initializeLightbulbHandlers();
     }
 
     /**
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
     public void showImages(){
+
         backBtn.setImage(new Image("/client/img/back_btn.png"));
+        lightbulb.setImage(new Image("/client/img/happy_lightbulb.png"));
+
     }
 
     /**
@@ -60,4 +75,51 @@ public class WaitingRoomCtrl {
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
         backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
     }
+
+    /**
+     * Initializes the event handlers of the light bulb
+     */
+    private void initializeLightbulbHandlers() {
+
+        lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> server.startGame());
+
+    }
+
+    /**
+     * The handler for all incoming game updates via the WebSocket connection, such as players leaving or joining
+     * @param gameUpdate the update for this game received from the WebSocket session
+     */
+    protected void gameUpdateHandler(GameUpdate gameUpdate) {
+
+        System.out.print("Update received...\t");
+
+        if(gameUpdate instanceof GameUpdatePlayerJoined) {
+            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+            Platform.runLater(() -> playerList.getItems().add(((GameUpdatePlayerJoined) gameUpdate).getPlayer().getUsername()));
+        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
+            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+            Platform.runLater(() -> playerList.getItems().remove(((GameUpdatePlayerLeft) gameUpdate).getPlayer().getUsername()));
+        } else if(gameUpdate instanceof GameUpdateGameStarting) {
+            System.out.print("GAME STARTING!");
+        }
+
+        System.out.println();
+
+    }
+
+    /**
+     * Deletes all entries from the player list of the waiting room and then adds all
+     * players in the player list in the game update
+     * @param gameUpdateFullPlayerList the game update to load the new player list from
+     */
+    protected void updateWaitingRoomPlayers(GameUpdateFullPlayerList gameUpdateFullPlayerList) {
+
+        playerList.getItems().removeAll();
+        playerList.getItems().addAll(gameUpdateFullPlayerList.getPlayerList()
+                                                                .stream()
+                                                                .map(Player::getUsername)
+                                                                .toList());
+
+    }
+
 }
