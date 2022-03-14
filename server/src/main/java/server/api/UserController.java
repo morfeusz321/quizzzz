@@ -55,36 +55,51 @@ public class UserController {
 
         if(gametype.equals("singleplayer")) {
 
-            if(true /* check if the username has been used on the leaderboard here */) {
+            if(false /* check if the username has been used on the leaderboard here */) {
 
                 if(confirmNameInUse.isPresent()) {
+
                     if(confirmNameInUse.get().equals("true")) {
-                        /* Create new Player here */
+
+                        Player player = new Player(username);
+                        gameController.createSinglePlayerGame(player);
                         return ResponseEntity.ok(new GameUpdateGameStarting());
+
                     } else {
+
                         return ResponseEntity.ok(new GameUpdateNameInUse());
+
                     }
+
                 } else {
+
                     return ResponseEntity.ok(new GameUpdateNameInUse());
+
                 }
 
             } else {
 
-                /* Create new player here */
+                Player player = new Player(username);
+                gameController.createSinglePlayerGame(player);
                 return ResponseEntity.ok(new GameUpdateGameStarting());
 
             }
 
         } else if(gametype.equals("multiplayer")) {
+
             Player player = new Player(username);
             boolean playerAdded = gameController.addPlayerToCurrentGame(player);
             if(!playerAdded) {
                 return ResponseEntity.ok(new GameUpdateNameInUse());
             }
 
-            return ResponseEntity.ok(new GameUpdateFullPlayerList(gameController.getCurrentGamePlayers(), gameController.getCurrentGameUUID()));
+            return ResponseEntity.ok(new GameUpdateFullPlayerList(gameController.getCurrentGamePlayers(),
+                                                                    gameController.getCurrentGameUUID()));
+
         } else {
+
             return ResponseEntity.badRequest().build();
+
         }
 
     }

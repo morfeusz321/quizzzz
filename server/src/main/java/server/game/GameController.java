@@ -193,4 +193,17 @@ public class GameController {
 
     }
 
+    /**
+     * Creates a new single player game containing the provided player
+     * @param player the player for the single player game
+     */
+    public void createSinglePlayerGame(Player player) {
+
+        UUID uuid = UUID.randomUUID();
+        Game singlePlayerGame = new Game(uuid);
+        singlePlayerGame.addPlayer(player);
+        this.games.put(uuid, singlePlayerGame);
+
+    }
+
 }
