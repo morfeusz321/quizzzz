@@ -130,4 +130,20 @@ public class ServerUtils {
 
     }
 
+    /**
+     * Sends a post request
+     * @param username - the name of the player
+     * @return string indicating whether the request was successful
+     */
+    public String addUserName(String username) {
+        Form postUsername = new Form();
+        postUsername.param("username", username);
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/user/enter") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
+
 }

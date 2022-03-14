@@ -33,6 +33,7 @@ public class MyModule implements Module {
         binder.bind(GeneralQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(UserCtrl.class).in(Scopes.SINGLETON);
         binder.bind(WaitingRoomCtrl.class).in(Scopes.SINGLETON);
     }
 }

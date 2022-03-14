@@ -9,6 +9,9 @@ build/
 
 **/*.swp
 
+### Activity repo ###
+server/src/main/resources/activities
+
 ### STS ###
 .apt_generated
 .classpath

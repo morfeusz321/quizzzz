@@ -44,6 +44,9 @@ public class MainCtrl {
     private EstimationQuestionCtrl estimationQuestionCtrl;
     private Scene estimationQuestion;
 
+    private UserCtrl userCtrl;
+    private Scene username;
+
     private WaitingRoomCtrl waitingRoomCtrl;
     private Scene waitingRoom;
 
@@ -65,13 +68,18 @@ public class MainCtrl {
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param username Pair of the control and the scene of the username input screen
      * @param waitingRoom Pair of the control and the scene of the waiting room
      */
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQ,
+    public void initialize(Stage primaryStage,
+                           Pair<QuoteOverviewCtrl, Parent> overview,
+                           Pair<AddQuoteCtrl, Parent> add,
+                           Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                           Pair<UserCtrl, Parent> username,
                            Pair<WaitingRoomCtrl, Parent> waitingRoom) {
+
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -110,6 +118,9 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
+        this.userCtrl = username.getKey();
+        this.username = new Scene(username.getValue());
+
         this.waitingRoomCtrl = waitingRoom.getKey();
         this.waitingRoom = new Scene(waitingRoom.getValue());
         this.waitingRoom.getStylesheets().add(
@@ -136,6 +147,13 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
+    }
+
+    public void showUsernameInput() {
+
+        primaryStage.setTitle("Choose a username");
+        primaryStage.setScene(username);
+
     }
 
     /**
