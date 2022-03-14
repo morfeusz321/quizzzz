@@ -125,7 +125,11 @@ public class ActivityDBController {
     }
 
 
-    public List<Activity> getFourRandomActivities(){
-        return activityDB.getFourRandomActivities();
+    public List<Activity> getFiveRandomActivities(){
+        return activityDB.getFiveRandomActivities();
+    }
+
+    public List<Activity> getTwoRandomActivities(){
+        return activityDB.getTwoRandomActivities();
     }
 }

@@ -354,8 +354,14 @@ public class QuestionControllerTest {
             return null;
         }
 
+
         @Override
-        public List<Activity> getFourRandomActivities() {
+        public List<Activity> getFiveRandomActivities() {
+            return null;
+        }
+
+        @Override
+        public List<Activity> getTwoRandomActivities() {
             return null;
         }
     }

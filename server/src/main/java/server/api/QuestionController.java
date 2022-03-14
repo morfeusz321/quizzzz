@@ -24,7 +24,8 @@ public class QuestionController {
 
     /**
      * Creates the API controller
-     * @param random the random to be used by this controller
+     *
+     * @param random               the random to be used by this controller
      * @param activityDBController the interface with the activity database to be used by this controller
      * @param questionDBController the interface with the question database to be used by this controller
      */
@@ -39,6 +40,7 @@ public class QuestionController {
     /**
      * Maps to /api/questions/random
      * Returns a random question generated from a random activity selected from the database
+     *
      * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
      */
     @GetMapping("/random")
@@ -50,15 +52,15 @@ public class QuestionController {
         int index;
         try {
             index = random.nextInt((int) count);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.internalServerError().build();
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if(page.hasContent()) {
+        if (page.hasContent()) {
             Activity a = page.getContent().get(0);
             Question toReturn = new GeneralQuestion(a,
-                    List.of((int)((getRandomWithExclusion(random,0,2,1) * a.consumption)) + " Wh", a.consumption + " Wh", (int)(((getRandomWithExclusion(random,0,2,1) * a.consumption))) + " Wh"),
+                    List.of((int) ((getRandomWithExclusion(random, 0, 2, 1) * a.consumption)) + " Wh", a.consumption + " Wh", (int) (((getRandomWithExclusion(random, 0, 2, 1) * a.consumption))) + " Wh"),
                     2);
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
@@ -68,23 +70,48 @@ public class QuestionController {
 
     }
 
+    @GetMapping("/random/which")
+    public ResponseEntity<Question> getWhichIsMoreQuestion() {
+
+        List<Activity> activities = activityDBController.getTwoRandomActivities();
+
+        Activity firstActivity = activities.get(0).consumption>activities.get(1).consumption ? activities.get(0):activities.get(1);
+        Question toReturn = new WhichIsMoreQuestion(firstActivity, activities, activities.indexOf(firstActivity));
+        questionDBController.add(toReturn);
+        return ResponseEntity.ok(toReturn);
+    }
+
     /**
      * Maps to /api/questions/random
      * Returns a random question generated from a random activity selected from the database
+     *
      * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
      */
     @GetMapping("/random/comparison")
     public ResponseEntity<Question> getComparisonQuestion() {
-        List<Activity> activities = activityDBController.getFourRandomActivities();
-        Activity mainActivity = null;
-        for(Activity a : activities){
-            if(mainActivity==null||mainActivity.consumption>a.consumption){
-                mainActivity=a;
+        List<Activity> activities = activityDBController.getFiveRandomActivities();
+        Collections.sort(activities, new Comparator<Activity>() {
+            @Override
+            public int compare(Activity o1, Activity o2) {
+                return (int) (o1.consumption - o2.consumption);
+            }
+        });
+        Activity firstActivity = null;
+        Activity secondActivity = null;
+        int difference = Integer.MAX_VALUE;
+        for (int i = 0; i < activities.size() - 1; i++) {
+            if (activities.get(i + 1).consumption - activities.get(i).consumption < difference) {
+                difference = (int) (activities.get(i + 1).consumption - activities.get(i).consumption);
+                firstActivity=activities.get(i+1);
+                secondActivity=activities.get(i);
             }
         }
-            Question toReturn = new ComparisonQuestion(mainActivity,activities,activities.indexOf(mainActivity));
-            questionDBController.add(toReturn);
-            return ResponseEntity.ok(toReturn);
+        if((difference/firstActivity.consumption)>0.1){
+            return getComparisonQuestion();
+        }
+        Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
+        questionDBController.add(toReturn);
+        return ResponseEntity.ok(toReturn);
     }
 
 
@@ -97,12 +124,12 @@ public class QuestionController {
         int index;
         try {
             index = random.nextInt((int) count);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.internalServerError().build();
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if(page.hasContent()) {
+        if (page.hasContent()) {
             Activity a = page.getContent().get(0);
             Question toReturn = new EstimationQuestion(a);
             questionDBController.add(toReturn);
@@ -115,13 +142,14 @@ public class QuestionController {
 
     /**
      * Maps to /api/questions/answer?questionID=id&answer=answer
+     *
      * @param questionIDString the unique ID of the question being answered (post variable questionID)
-     * @param answerString the answer to be given to this question (either 1, 2, 3 etc. for multiple choice questions, or an integer for open questions)
-     *                     (post variable answerString)
+     * @param answerString     the answer to be given to this question (either 1, 2, 3 etc. for multiple choice questions, or an integer for open questions)
+     *                         (post variable answerString)
      * @return "200 OK: CORRECT", "200 OK: INCORRECT", or "200 OK: PROXIMITY: N" depending on the answer given,
-     *                      204 No Content if the question with the specified ID does not exist,
-     *                      400 Bad Request if the POST request is malformed,
-     *                      or 500 Internal Server Error if the operation cannot be completed for any other reason
+     * 204 No Content if the question with the specified ID does not exist,
+     * 400 Bad Request if the POST request is malformed,
+     * or 500 Internal Server Error if the operation cannot be completed for any other reason
      */
     @PostMapping("/answer")
     public ResponseEntity<AnswerResponseEntity> answer(@RequestParam("questionID") String questionIDString,
@@ -130,31 +158,31 @@ public class QuestionController {
         long answer;
         try {
             answer = Long.parseLong(answerString);
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().build();
         }
 
         UUID questionID;
         try {
             questionID = UUID.fromString(questionIDString);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
         Question q = questionDBController.getById(questionID);
-        if(Objects.isNull(q)) {
+        if (Objects.isNull(q)) {
             return ResponseEntity.noContent().build();
         }
 
-        if(q instanceof ComparisonQuestion || q instanceof GeneralQuestion) {
-            if(answer == q.answer) {
+        if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion) {
+            if (answer == q.answer) {
                 return ResponseEntity.ok(new AnswerResponseEntity(true));
             } else {
                 return ResponseEntity.ok(new AnswerResponseEntity(false));
             }
         }
 
-        if(q instanceof EstimationQuestion) {
+        if (q instanceof EstimationQuestion) {
             return ResponseEntity.ok(new AnswerResponseEntity((answer == q.answer), (answer - q.answer)));
         }
 

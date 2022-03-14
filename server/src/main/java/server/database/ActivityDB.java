@@ -8,6 +8,9 @@ import java.util.List;
 
 public interface ActivityDB extends JpaRepository<Activity, String> {
 
-    @Query(value = "SELECT * FROM activity Order By RAND() LIMIT 4",nativeQuery = true)
-    public List<Activity> getFourRandomActivities();
+    @Query(value = "SELECT * FROM activity Order By RAND() LIMIT 5",nativeQuery = true)
+    public List<Activity> getFiveRandomActivities();
+
+    @Query(value = "SELECT * FROM activity Order By RAND() LIMIT 2",nativeQuery = true)
+    public List<Activity> getTwoRandomActivities();
 }
