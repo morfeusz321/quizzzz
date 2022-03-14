@@ -121,7 +121,6 @@ public class UserController {
 
         gameController.removePlayerFromGame(username, uuid);
         return ResponseEntity.ok().build();
-
     }
 
 }
