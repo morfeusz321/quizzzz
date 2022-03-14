@@ -51,7 +51,7 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 public class ServerUtils {
 
     private static String SERVER = "http://localhost:8080/";
-    private static String WS_SERVER = "ws://localhost:8080/websocket/";
+    private static String WS_SERVER = "ws://localhost:8080/websocket";
     private StompSession session;
 
     /**
@@ -299,7 +299,7 @@ public class ServerUtils {
         } catch(MalformedURLException e) {
             throw new IllegalArgumentException("Malformed URL \"" + server + "\" - " + e.getMessage());
         }
-        WS_SERVER = "ws://" + server + "websocket/";
+        WS_SERVER = "ws://" + server + "websocket";
         session = connect(WS_SERVER);
     }
 
