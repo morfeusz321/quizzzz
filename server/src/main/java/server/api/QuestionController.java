@@ -125,7 +125,7 @@ public class QuestionController {
             }
 
             //If difference is bigger than 10% of the original activity we search again
-            if ((difference / firstActivity.consumption) > 0.1) {
+            if ((difference / firstActivity.consumption) < 0.1) {
                 return getComparisonQuestion();
             }
 
