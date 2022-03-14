@@ -70,51 +70,80 @@ public class QuestionController {
 
     }
 
+    /**
+     * Maps to /api/questions/random/which
+     * Returns a which is more question generated from a random activities selected from the database
+     *
+     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     */
     @GetMapping("/random/which")
     public ResponseEntity<Question> getWhichIsMoreQuestion() {
 
-        List<Activity> activities = activityDBController.getTwoRandomActivities();
+        try{
+            List<Activity> activities = activityDBController.getTwoRandomActivities();
 
-        Activity firstActivity = activities.get(0).consumption>activities.get(1).consumption ? activities.get(0):activities.get(1);
-        Question toReturn = new WhichIsMoreQuestion(firstActivity, activities, activities.indexOf(firstActivity));
-        questionDBController.add(toReturn);
-        return ResponseEntity.ok(toReturn);
+            Activity firstActivity = activities.get(0).consumption > activities.get(1).consumption ? activities.get(0) : activities.get(1);
+            Question toReturn = new WhichIsMoreQuestion(firstActivity, activities, activities.indexOf(firstActivity));
+            questionDBController.add(toReturn);
+            return ResponseEntity.ok(toReturn);
+        }catch (RuntimeException e){
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     /**
-     * Maps to /api/questions/random
-     * Returns a random question generated from a random activity selected from the database
+     * Maps to /api/questions/random/comparison
+     * Returns a comparison question generated from a random activity selected from the database
      *
      * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
      */
     @GetMapping("/random/comparison")
     public ResponseEntity<Question> getComparisonQuestion() {
-        List<Activity> activities = activityDBController.getFiveRandomActivities();
-        Collections.sort(activities, new Comparator<Activity>() {
-            @Override
-            public int compare(Activity o1, Activity o2) {
-                return (int) (o1.consumption - o2.consumption);
+        try{
+            //We search for the smallest difference between two consumptions
+
+
+            //First we sort the list of returned activities
+            List<Activity> activities = activityDBController.getFiveRandomActivities();
+            Collections.sort(activities, new Comparator<Activity>() {
+                @Override
+                public int compare(Activity o1, Activity o2) {
+                    return (int) (o1.consumption - o2.consumption);
+                }
+            });
+
+            //Now we search in the List
+            Activity firstActivity = null;
+            Activity secondActivity = null;
+            int difference = Integer.MAX_VALUE;
+            for (int i = 0; i < activities.size() - 1; i++) {
+                if (activities.get(i + 1).consumption - activities.get(i).consumption < difference) {
+                    difference = (int) (activities.get(i + 1).consumption - activities.get(i).consumption);
+                    firstActivity = activities.get(i + 1);
+                    secondActivity = activities.get(i);
+                }
             }
-        });
-        Activity firstActivity = null;
-        Activity secondActivity = null;
-        int difference = Integer.MAX_VALUE;
-        for (int i = 0; i < activities.size() - 1; i++) {
-            if (activities.get(i + 1).consumption - activities.get(i).consumption < difference) {
-                difference = (int) (activities.get(i + 1).consumption - activities.get(i).consumption);
-                firstActivity=activities.get(i+1);
-                secondActivity=activities.get(i);
+
+            //If difference is bigger than 10% of the original activity we search again
+            if ((difference / firstActivity.consumption) > 0.1) {
+                return getComparisonQuestion();
             }
+
+            //We return the question
+            Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
+            questionDBController.add(toReturn);
+            return ResponseEntity.ok(toReturn);
+        }catch (RuntimeException e){
+            return ResponseEntity.internalServerError().build();
         }
-        if((difference/firstActivity.consumption)>0.1){
-            return getComparisonQuestion();
-        }
-        Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
-        questionDBController.add(toReturn);
-        return ResponseEntity.ok(toReturn);
     }
 
-
+    /**
+     * Maps to /api/questions/random/estimation
+     * Returns a random question generated from a random activity selected from the database
+     *
+     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     */
     @GetMapping("/random/estimation")
     public ResponseEntity<Question> getEstimationQuestion() {
 
@@ -190,6 +219,15 @@ public class QuestionController {
 
     }
 
+
+    /**
+     * Generates random number from given range excluding those given as the parameter
+     * @param rnd Instant of the Random class
+     * @param start the start of the range in which the number will be generated
+     * @param end the end of the range in which the number will be generated
+     * @param exclude numbers that will be excluded from the given range
+     * @return random number in given range (number is rounded to first decimal place)
+     */
     private static double getRandomWithExclusion(Random rnd, int start, int end, int... exclude) {
         double random = start + rnd.nextDouble(end - start + 1 - exclude.length);
         for (int ex : exclude) {

@@ -36,11 +36,11 @@ public class QuestionControllerTest {
     }
 
     @Test
-    public void getRandomQuestionTest() {
+    public void getWhichIsMoreQuestionTest() {
 
         activityDBController.forceReload();
 
-        ResponseEntity<Question> q = questionController.getRandomQuestion();
+        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
 
         assertEquals(HttpStatus.OK, q.getStatusCode());
         assertNotNull(q.getBody());
@@ -56,6 +56,73 @@ public class QuestionControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
 
     }
+
+    @Test
+    public void getRandomQuestionTest() {
+
+        activityDBController.forceReload();
+
+        ResponseEntity<Question> q = questionController.getRandomQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+    }
+
+    @Test
+    public void getWhichIsMoreQuestionNoActivities() {
+
+        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+
+    }
+
+    @Test
+    public void getComparisonQuestionTest() {
+
+        activityDBController.forceReload();
+
+        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+    }
+
+    @Test
+    public void getComparisonNoActivities() {
+
+        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+
+    }
+
+    @Test
+    public void getEstimationQuestionTest() {
+
+        activityDBController.forceReload();
+
+        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+    }
+
+    @Test
+    public void getEstimationNoActivities() {
+
+        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+
+    }
+
 
     @Test
     public void answerTestMalformedAnswer() {
@@ -186,7 +253,6 @@ public class QuestionControllerTest {
     private class NotSoRandom extends Random {
 
 
-
     }
 
     private class TestActivityDB implements ActivityDB {
@@ -213,7 +279,7 @@ public class QuestionControllerTest {
         public Page<Activity> findAll(Pageable pageable) {
 
             List<Activity> returnValues = new ArrayList<>();
-            for(long i = pageable.getOffset(); i < pageable.getOffset() + pageable.getPageSize(); i++) {
+            for (long i = pageable.getOffset(); i < pageable.getOffset() + pageable.getPageSize(); i++) {
 
                 returnValues.add(db.get((int) i));
 
@@ -357,12 +423,20 @@ public class QuestionControllerTest {
 
         @Override
         public List<Activity> getFiveRandomActivities() {
-            return null;
+            Activity activity1 = new Activity("1", "/path/to/image/", "Activity", 200);
+            Activity activity2 = new Activity("2", "/path/to/image/", "Activity", 200);
+            Activity activity3 = new Activity("3", "/path/to/image/", "Activity", 200);
+            Activity activity4 = new Activity("4", "/path/to/image/", "Activity", 200);
+            Activity activity5 = new Activity("1", "/path/to/image/", "Activity", 200);
+
+            return List.of(activity1, activity2, activity3, activity4, activity5);
         }
 
         @Override
         public List<Activity> getTwoRandomActivities() {
-            return null;
+            Activity activity1 = new Activity("1", "/path/to/image/", "Activity", 200);
+            Activity activity2 = new Activity("2", "/path/to/image/", "Activity", 200);
+            return List.of(activity1,activity2);
         }
     }
 
@@ -404,8 +478,8 @@ public class QuestionControllerTest {
         @Override
         public void deleteById(UUID uuid) {
             List<Question> toRemove = new ArrayList<>();
-            for(Question q : db) {
-                if(q.questionId.equals(uuid)) {
+            for (Question q : db) {
+                if (q.questionId.equals(uuid)) {
                     toRemove.add(q);
                 }
             }
