@@ -10,15 +10,14 @@ public class CommonUtils {
     public CommonUtils() {}
 
     /**
-     * If necessary, this adds a prepending zero to a given integer. Used for displaying the timer.
+     * If necessary, this adds a prepending zero to a given integer to pad
+     * its String representation to a length of 2. Used for displaying the timer.
      * @param i The integer to display
      * @return A string of the integer (if necessary, with a prepended zero)
      */
     public String addPrependingZero(int i){
-        if(i < 10){
-            return "0" + i;
-        }
-        return String.valueOf(i);
+        if(i < 0 || i >= 10) return String.valueOf(i);
+        return "0" + i;
     }
 
     /**

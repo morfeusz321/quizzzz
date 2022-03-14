@@ -30,6 +30,7 @@ public class CommonUtilsTest {
     void prependingZeroTestNoPrepend(){
         CommonUtils utils = new CommonUtils();
         assertEquals("10", utils.addPrependingZero(10));
+        assertEquals("-3", utils.addPrependingZero(-3));
     }
 
     @RepeatedTest(20)
