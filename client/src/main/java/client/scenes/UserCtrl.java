@@ -52,6 +52,13 @@ public class UserCtrl {
         this.server = server;
     }
 
+     /**
+     * Initializes the default text for the server address
+     */
+    public void initialize() {
+        serverAddress.setText("localhost:8080");
+    }
+
     /**
      * Sends the server a request to join the current game with the username specified in the TextField in
      * the GUI, and registers for updates for that game if it can be joined.

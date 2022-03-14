@@ -8,7 +8,7 @@
       <Button layoutX="228.0" layoutY="82.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="94.0" text="Join" />
       <TextField fx:id="username" layoutX="109.0" layoutY="16.0" prefHeight="26.0" prefWidth="333.0" />
       <Label layoutX="28.0" layoutY="20.0" text="Username:" />
-      <TextField fx:id="serverAddress" layoutX="109.0" layoutY="49.0" prefHeight="26.0" prefWidth="334.0" promptText="localhost:8080" />
+      <TextField fx:id="serverAddress" layoutX="109.0" layoutY="49.0" prefHeight="26.0" prefWidth="334.0" />
       <Label layoutX="48.0" layoutY="53.0" text="Server:" />
    </children>
 </AnchorPane>
