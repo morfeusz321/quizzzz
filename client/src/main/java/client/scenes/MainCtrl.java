@@ -75,33 +75,33 @@ public class MainCtrl {
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
         this.generalQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/general-question-style.css"
                 ).toExternalForm());
         this.generalQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
         this.comparisonQuestionCtrl = comparisonQ.getKey();
         this.comparisonQuestion = new Scene(comparisonQ.getValue());
         this.comparisonQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/general-question-style.css"
                 ).toExternalForm());
         this.comparisonQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
         this.estimationQuestionCtrl = estimationQ.getKey();
         this.estimationQuestion = new Scene(estimationQ.getValue());
         this.estimationQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/general-question-style.css"
                 ).toExternalForm());
         this.estimationQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 

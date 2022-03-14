@@ -14,14 +14,14 @@ import java.util.List;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
-    public ImageView removeQuestion;
+    private ImageView removeQuestion;
 
     @FXML
-    public Button answerBtn1;
+    protected Button answerBtn1;
     @FXML
-    public Button answerBtn2;
+    protected Button answerBtn2;
     @FXML
-    public Button answerBtn3;
+    protected Button answerBtn3;
 
     /**
      * Creates a MultipleChoiceQuestionCtrl, which controls the display/interaction of all multiple choice question
@@ -39,7 +39,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * Initializes the scene elements
      */
     @FXML
-    public void initialize(){
+    protected void initialize(){
         super.initialize();
         initializeAnswerEventHandlers();
     }
@@ -50,7 +50,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * the estimation question).
      */
     @Override
-    public void showImages(){
+    protected void showImages(){
         super.showImages();
         removeQuestion.setImage(new Image("/client/img/minus_1_btn.png"));
     }
@@ -61,11 +61,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * the estimation question).
      */
     @Override
-    public void initializePowerEventHandlers(){
+    protected void initializePowerEventHandlers(){
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         super.initializePowerEventHandlers();
 
-        removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.handlePower(decreaseTime));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.handlePower("remove question"));
 
         ColorAdjust hover = new ColorAdjust();
         hover.setBrightness(-0.05);
@@ -79,7 +79,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      * Initializes the event handlers of all answer buttons
      */
-    public void initializeAnswerEventHandlers(){
+    private void initializeAnswerEventHandlers(){
 
         List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         buttonList.forEach(this::addEventHandlersToAnswerButton);
