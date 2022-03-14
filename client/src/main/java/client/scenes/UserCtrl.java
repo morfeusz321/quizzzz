@@ -15,11 +15,8 @@
  */
 package client.scenes;
 
-import com.google.inject.Inject;
-
 import client.utils.ServerUtils;
-import commons.Person;
-import commons.Quote;
+import com.google.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -27,46 +24,32 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
-public class AddQuoteCtrl {
+public class UserCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
     @FXML
-    private TextField firstName;
-
-    @FXML
-    private TextField lastName;
-
-    @FXML
-    private TextField quote;
+    private TextField username;
 
     /**
-     * TODO: to remove
-     * @param server TODO: to remove
-     * @param mainCtrl TODO: to remove
+     * Constructor
+     * @param server
+     * @param mainCtrl
      */
     @Inject
-    public AddQuoteCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public UserCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
 
     }
 
     /**
-     * TODO: to remove
+     *  sends the username that the user has entered
      */
-    public void cancel() {
-        clearFields();
-        mainCtrl.showOverview();
-    }
-
-    /**
-     * TODO: to remove
-     */
-    public void ok() {
+    public void join() {
         try {
-            server.addQuote(getQuote());
+            server.addUserName(getUserName());
         } catch (WebApplicationException e) {
 
             var alert = new Alert(Alert.AlertType.ERROR);
@@ -76,40 +59,25 @@ public class AddQuoteCtrl {
             return;
         }
 
-        clearFields();
         mainCtrl.showOverview();
     }
 
     /**
-     * TODO: to remove
-     * @return TODO: to remove
+     * gets the username
+     * @return String which is the username
      */
-    private Quote getQuote() {
-        var p = new Person(firstName.getText(), lastName.getText());
-        var q = quote.getText();
-        return new Quote(p, q);
+    private String getUserName() {
+        return username.getText();
     }
 
     /**
-     * TODO: to remove
-     */
-    private void clearFields() {
-        firstName.clear();
-        lastName.clear();
-        quote.clear();
-    }
-
-    /**
-     * TODO: to remove
-     * @param e TODO: to remove
+     *  the click of enter continues as join
+     * @param e a click of the user
      */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
         case ENTER:
-            ok();
-            break;
-        case ESCAPE:
-            cancel();
+            join();
             break;
         default:
             break;

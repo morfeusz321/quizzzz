@@ -15,6 +15,7 @@
  */
 package client.utils;
 
+import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import java.io.BufferedReader;
@@ -23,7 +24,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
 
+import commons.AnswerResponseEntity;
 import commons.Question;
+import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 
 import commons.Quote;
@@ -35,6 +38,10 @@ public class ServerUtils {
 
     private static final String SERVER = "http://localhost:8080/";
 
+    /**
+     * Gets a random question from the server using the API endpoint (sends a get request)
+     * @return Returns the retrieved question from the server
+     */
     public Question getRandomQuestion() {
 
         return ClientBuilder.newClient(new ClientConfig())
@@ -45,6 +52,31 @@ public class ServerUtils {
 
     }
 
+    /**
+     * Sends the answer to a question to the server
+     * @param question the question to answer
+     * @param answer the answer to send to the server
+     * @return An AnswerResponseEntity which contains information about whether the answer was correct,
+     * as well as the proximity to the correct answer for estimation questions
+     */
+    public AnswerResponseEntity sendAnswerToServer(Question question, long answer) {
+
+        Form postVariables = new Form();
+        postVariables.param("questionID", question.questionId.toString());
+        postVariables.param("answer", String.valueOf(answer));
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/questions/answer")
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
+
+    }
+
+    /**
+     * TODO: to remove
+     * @throws IOException TODO: to remove
+     */
     public void getQuotesTheHardWay() throws IOException {
         var url = new URL("http://localhost:8080/api/quotes");
         var is = url.openConnection().getInputStream();
@@ -55,6 +87,9 @@ public class ServerUtils {
         }
     }
 
+    /**
+     * TODO: to remove
+     */
     public List<Quote> getQuotes() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/quotes") //
@@ -63,6 +98,11 @@ public class ServerUtils {
                 .get(new GenericType<List<Quote>>() {});
     }
 
+    /**
+     * TODO: to remove
+     * @param quote TODO: to remove
+     * @return TODO: to remove
+     */
     public Quote addQuote(Quote quote) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/quotes") //
@@ -70,4 +110,40 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(quote, APPLICATION_JSON), Quote.class);
     }
+
+    /**
+     * Gets the URL where the server is located as a string (e.g. http://localhost:8080/)
+     * @return Returns the URL where the server is located as a string
+     */
+    public static String getServer() {
+        return SERVER;
+    }
+
+    /**
+     * Gets the URL to a given image path
+     * @param imagePath The path to the image which should be retrieved
+     * @return Returns the URL to the given image path
+     */
+    public static String getImageURL(String imagePath) {
+
+        return SERVER + "api/img/" + imagePath;
+
+    }
+
+    /**
+     * Sends a post request
+     * @param username - the name of the player
+     * @return string indicating whether the request was successful
+     */
+    public String addUserName(String username) {
+        Form postUsername = new Form();
+        postUsername.param("username", username);
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/user/enter") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
+
 }
