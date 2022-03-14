@@ -18,15 +18,23 @@ public class ActivityDBController {
 
     private final ActivityDB activityDB;
 
-    private final File jsonSource;
+    private File jsonSource;
 
     /**
-     * Creates a controller for the activity database (this will set jsonSource to the activities.json file)
+     * Creates a controller for the activity database
      * @param activityDB database that will be used to store the activities
      */
     public ActivityDBController(ActivityDB activityDB) {
 
         this.activityDB = activityDB;
+        this.jsonSource = null;
+
+    }
+
+    /**
+     *  This will set the default jsonSource to the activities.json file to allow for easier reloading
+     */
+    public void setJsonSourceToActivitiesFile() {
 
         File f = null;
         try {

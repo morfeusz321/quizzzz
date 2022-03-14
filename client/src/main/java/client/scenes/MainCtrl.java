@@ -44,6 +44,9 @@ public class MainCtrl {
     private EstimationQuestionCtrl estimationQuestionCtrl;
     private Scene estimationQuestion;
 
+    private UserCtrl userCtrl;
+    private Scene username;
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -59,12 +62,14 @@ public class MainCtrl {
      * @param primaryStage The stage (i.e. window) for all scenes
      * @param overview Pair of the control and the scene of the overview
      * @param add Pair of the control and the scene for adding quotes TODO: to remove
+     * @param username
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQ,
+                           Pair<AddQuoteCtrl, Parent> add,  Pair<UserCtrl, Parent> username,
+                           Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ) {
         this.primaryStage = primaryStage;
@@ -104,6 +109,9 @@ public class MainCtrl {
                 QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
+
+        this.userCtrl = username.getKey();
+        this.username = new Scene(username.getValue());
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
