@@ -135,7 +135,12 @@ public class MainCtrl {
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
 
-        nextQuestion(); // now starts with first question screen
+        primaryStage.setOnCloseRequest(event -> {
+            userCtrl.sendLeaveMessageToServer();
+            System.exit(0);
+        });
+
+        showUsernameInputScreen();
         primaryStage.show();
     }
 
@@ -147,13 +152,6 @@ public class MainCtrl {
         primaryStage.setTitle("Quotes: Overview");
         primaryStage.setScene(overview);
         overviewCtrl.refresh();
-    }
-
-    public void showUsernameInput() {
-
-        primaryStage.setTitle("Choose a username");
-        primaryStage.setScene(username);
-
     }
 
     /**
@@ -213,4 +211,15 @@ public class MainCtrl {
         }
         // TODO: other questions are not implemented yet, this has to be modified after that
     }
+
+     /**
+      * Shows the username input screen
+     */
+    public void showUsernameInputScreen() {
+
+        primaryStage.setTitle("Username input");
+        primaryStage.setScene(username);
+
+    }
+    
 }

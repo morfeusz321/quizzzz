@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.gameupdate.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -24,10 +25,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
+import java.util.UUID;
+
 public class UserCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+
+    private String currentUsername;
+    private UUID gameUUID;
 
     @FXML
     private TextField username;
@@ -41,17 +47,20 @@ public class UserCtrl {
     public UserCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
-
     }
 
     /**
-     *  sends the username that the user has entered
+     * Sends the server a request to join the current game with the username specified in the TextField in
+     * the GUI, and registers for updates for that game if it can be joined.
      */
     public void join() {
-        try {
-            server.addUserName(getUserName());
-        } catch (WebApplicationException e) {
 
+        String un = getUserName();
+
+        GameUpdate gu;
+        try {
+            gu = server.joinMultiplayerGame(un);
+        } catch (WebApplicationException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
@@ -59,7 +68,58 @@ public class UserCtrl {
             return;
         }
 
-        mainCtrl.showOverview();
+        if(gu instanceof GameUpdateNameInUse) {
+            System.out.println("Name in use!");
+            return;
+        }
+
+        if(gu instanceof GameUpdateFullPlayerList) {
+            System.out.println(((GameUpdateFullPlayerList) gu).getPlayerList());
+            this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
+        }
+
+        server.registerForGameUpdates(gameUUID, this::gameUpdateHandler);
+
+        this.currentUsername = un;
+
+        /*
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                server.startGame();
+            }
+        }, 10000);
+        */
+
+    }
+
+    /**
+     * The handler for all incoming game updates via the WebSocket connection
+     * @param gameUpdate the update for this game received from the WebSocket session
+     */
+    private void gameUpdateHandler(GameUpdate gameUpdate) {
+
+        System.out.print("Update received...\t");
+
+        if(gameUpdate instanceof GameUpdatePlayerJoined) {
+            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
+            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdateGameStarting) {
+            System.out.print("GAME STARTING!");
+        }
+
+        System.out.println();
+
+    }
+
+    /**
+     * Informs the server that the client is leaving the game
+     */
+    public void sendLeaveMessageToServer() {
+
+        server.leaveGame(currentUsername, gameUUID);
+
     }
 
     /**
