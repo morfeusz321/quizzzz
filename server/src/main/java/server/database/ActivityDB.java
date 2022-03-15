@@ -20,6 +20,6 @@ public interface ActivityDB extends JpaRepository<Activity, String> {
      * Uses query to generate 2 random activities from database
      * @return List of 2 random activities from the database
      */
-    @Query(value = "SELECT * FROM activity Order By RAND() LIMIT 2",nativeQuery = true)
-    public List<Activity> getTwoRandomActivities();
+    @Query(value = "SELECT * FROM activity Order By RAND() LIMIT 3",nativeQuery = true)
+    public List<Activity> getThreeRandomActivities();
 }

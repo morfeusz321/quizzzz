@@ -56,7 +56,7 @@ public class QuestionController {
             return ResponseEntity.internalServerError().build();
         }
 
-        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
+        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 2));
         if (page.hasContent()) {
             Activity a = page.getContent().get(0);
             Question toReturn = new GeneralQuestion(a,
@@ -79,14 +79,21 @@ public class QuestionController {
     @GetMapping("/random/which")
     public ResponseEntity<Question> getWhichIsMoreQuestion() {
 
-        try{
-            List<Activity> activities = activityDBController.getTwoRandomActivities();
+        try {
+            List<Activity> activities = activityDBController.getThreeRandomActivities();
 
-            Activity firstActivity = activities.get(0).consumption > activities.get(1).consumption ? activities.get(0) : activities.get(1);
-            Question toReturn = new WhichIsMoreQuestion(firstActivity, activities, activities.indexOf(firstActivity));
+            Activity a1 = activities.get(0);
+            for(int i=1;i<3;i++){
+                if(a1.consumption<activities.get(i).consumption){
+                    a1=activities.get(i);
+                }
+            }
+
+            Question toReturn = new WhichIsMoreQuestion(a1, activities, activities.indexOf(a1));
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
-        }catch (RuntimeException e){
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
     }
@@ -125,7 +132,7 @@ public class QuestionController {
             }
 
             //If difference is bigger than 10% of the original activity we search again
-            if ((difference / firstActivity.consumption) < 0.1) {
+            if ((difference / firstActivity.consumption) > 0.1) {
                 return getComparisonQuestion();
             }
 
@@ -133,7 +140,7 @@ public class QuestionController {
             Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
-        }catch (RuntimeException e){
+        }catch (StackOverflowError e){
             return ResponseEntity.internalServerError().build();
         }
     }
