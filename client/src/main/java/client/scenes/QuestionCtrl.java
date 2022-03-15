@@ -27,53 +27,53 @@ public abstract class QuestionCtrl {
     private final CommonUtils utils;
 
     @FXML
-    public ImageView backBtn;
+    private ImageView backBtn;
 
     @FXML
-    public Text title;
+    protected Text title;
 
     @FXML
-    public ImageView bgImage;
+    private ImageView bgImage;
 
     @FXML
-    public ImageView decreaseTime;
+    protected ImageView decreaseTime;
     @FXML
-    public ImageView doublePoints;
+    private ImageView doublePoints;
 
     @FXML
-    public ProgressBar timeBar;
+    private ProgressBar timeBar;
 
     @FXML
-    public Label questionInfo;
+    private Label questionInfo;
     @FXML
-    public Label pointsInfo;
+    private Label pointsInfo;
     @FXML
-    public Label playersInfo;
+    private Label playersInfo;
 
     @FXML
-    public ImageView questionImg;
+    protected ImageView questionImg;
 
     @FXML
-    public ImageView hoverEmoji;
+    private ImageView hoverEmoji;
     @FXML
-    public Pane emojiPane;
+    private Pane emojiPane;
 
     @FXML
-    public ImageView happyEmoji;
+    private ImageView happyEmoji;
     @FXML
-    public ImageView angryEmoji;
+    private ImageView angryEmoji;
     @FXML
-    public ImageView sadEmoji;
+    private ImageView sadEmoji;
     @FXML
-    public ImageView heartEmoji;
+    private ImageView heartEmoji;
     @FXML
-    public ImageView thumbsUpEmoji;
+    private ImageView thumbsUpEmoji;
 
     @FXML
-    public AnchorPane anchorPane;
+    private AnchorPane anchorPane;
 
     @FXML
-    public Label timeLabel;
+    private Label timeLabel;
 
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
@@ -93,7 +93,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the scene, i.e. handles initialization, images
      */
-    public void initialize(){
+    protected void initialize(){
         showImages();
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
@@ -103,14 +103,14 @@ public abstract class QuestionCtrl {
     /**
      * Refreshes the progressbar
      */
-    public void refreshProgressBar(){
+    protected void refreshProgressBar(){
         startProgressbar(15000);
     }
 
     /**
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
-    public void showImages(){
+    protected void showImages(){
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         decreaseTime.setImage(new Image("/client/img/clock_btn.png"));
         doublePoints.setImage(new Image("/client/img/2x_btn.png"));
@@ -130,7 +130,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the event handlers of all emojis
      */
-    public void initializeEmojiEventHandlers(){
+    private void initializeEmojiEventHandlers(){
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         happyEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(happyEmoji));
         sadEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(sadEmoji));
@@ -142,10 +142,10 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the event handlers of the powers
      */
-    public void initializePowerEventHandlers(){
+    protected void initializePowerEventHandlers(){
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
-        decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower(decreaseTime));
-        doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower(doublePoints));
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("decrease time"));
+        doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("double points"));
 
         ColorAdjust hover = new ColorAdjust();
         hover.setBrightness(-0.05);
@@ -178,7 +178,7 @@ public abstract class QuestionCtrl {
      * This handles the animation of the time-bar and the setting of the time-label ("time left: ", "time ran out").
      * @param timeInMillis The time in milliseconds which the time-bar should take until the "time runs out"
      */
-    public void startProgressbar(int timeInMillis){
+    private void startProgressbar(int timeInMillis){
         timeBar.setProgress(1);
         int remainingTime = timeInMillis / 1000; // in seconds
 
@@ -205,7 +205,7 @@ public abstract class QuestionCtrl {
      * Displays an emoji animation for a specific emoji
      * @param clickedEmoji The image view which was clicked (emoji in the emoji pane)
      */
-    public void emojiAnimation(ImageView clickedEmoji){
+    private void emojiAnimation(ImageView clickedEmoji){
         // TODO: when we do dynamic resizing of the window, the hardcoded values have to be changed
 
         ImageView emoji = new ImageView(clickedEmoji.getImage());
@@ -255,11 +255,12 @@ public abstract class QuestionCtrl {
 
     /**
      * TODO: handle powers here
-     * @param clickedPower The image view of the power that was clicked
+     * @param power A string describing the power that was clicked
      */
-    protected void handlePower(ImageView clickedPower) {
-        // TODO: not sure if using protected is good style, this method is called in subclasses
-        System.out.println(clickedPower.getImage().getUrl() + " was clicked.");
+    public void handlePower(String power) {
+        System.out.println(power + " was clicked.");
+        // TODO: add (private) methods here for handling powers (which are for example called in a switch-statement).
+        //  Alternatively we can also create classes for handling the powers and call methods of those classes here.
     }
 
     /**

@@ -38,7 +38,8 @@ public class QuestionControllerTest {
     @Test
     public void getRandomQuestionTest() {
 
-        activityDBController.forceReload();
+        activityDBController.getInternalDB().deleteAll();
+        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 0));
 
         ResponseEntity<Question> q = questionController.getRandomQuestion();
 

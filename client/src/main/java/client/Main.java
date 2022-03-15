@@ -48,8 +48,10 @@ public class Main extends Application {
         var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "GeneralQuestion.fxml");
         var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
         var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
+        var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, generalQ, comparisonQ, estimationQ);
+
+        mainCtrl.initialize(primaryStage, overview, add, input, generalQ, comparisonQ, estimationQ);
     }
 }
