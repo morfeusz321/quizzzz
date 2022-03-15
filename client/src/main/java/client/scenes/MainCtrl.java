@@ -29,6 +29,9 @@ public class MainCtrl {
     private final ServerUtils server;
     private Stage primaryStage;
 
+    private MainScreenCtrl mainScreenCtrl;
+    private Scene mainScreen;
+
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
 
@@ -60,11 +63,20 @@ public class MainCtrl {
      * @param estimationQ Pair of the control and the scene of the estimation question
      */
     public void initialize(Stage primaryStage,
+                           Pair<MainScreenCtrl, Parent> mainScreen,
                            Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ) {
+
         this.primaryStage = primaryStage;
+
+        this.mainScreenCtrl = mainScreen.getKey();
+        this.mainScreen = new Scene(mainScreen.getValue());
+        this.mainScreen.getStylesheets().add(
+                MainScreenCtrl.class.getResource(
+                        "/client/stylesheets/main-style.css"
+                ).toExternalForm());
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
@@ -102,6 +114,7 @@ public class MainCtrl {
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
 
+        //showMainScreen();
         nextQuestion();
         primaryStage.show();
     }
@@ -134,6 +147,14 @@ public class MainCtrl {
         primaryStage.setScene(estimationQuestion);
         estimationQuestionCtrl.loadQuestion(q);
         // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows the main screen scene
+     */
+    public void showMainScreen() {
+        primaryStage.setTitle("Quizzz");
+        primaryStage.setScene(mainScreen);
     }
 
     /**
