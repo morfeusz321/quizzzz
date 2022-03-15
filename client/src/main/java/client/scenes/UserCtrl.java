@@ -32,10 +32,13 @@ public class UserCtrl {
     @FXML
     private TextField username;
 
+    @FXML
+    private TextField serverAddress;
+
     /**
      * Constructor
-     * @param server
-     * @param mainCtrl
+     * @param server Utilities for communicating with the server (API endpoint)
+     * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
     public UserCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -49,6 +52,7 @@ public class UserCtrl {
      */
     public void join() {
         try {
+            server.changeServer(getServer());
             server.addUserName(getUserName());
         } catch (WebApplicationException e) {
 
@@ -68,6 +72,14 @@ public class UserCtrl {
      */
     private String getUserName() {
         return username.getText();
+    }
+
+    /**
+     * gets the new server address
+     * @return String which is the new server address
+     */
+    private String getServer() {
+        return serverAddress.getText();
     }
 
     /**

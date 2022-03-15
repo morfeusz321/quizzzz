@@ -3,10 +3,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="95.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="123.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserCtrl">
    <children>
-      <Button layoutX="193.0" layoutY="54.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="72.0" text="Join" />
-      <TextField fx:id="username" layoutX="109.0" layoutY="24.0" prefHeight="26.0" prefWidth="346.0" />
-      <Label layoutX="28.0" layoutY="29.0" text="Username" />
+      <Button layoutX="228.0" layoutY="82.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="94.0" text="Join" />
+      <TextField fx:id="username" layoutX="109.0" layoutY="16.0" prefHeight="26.0" prefWidth="333.0" />
+      <Label layoutX="28.0" layoutY="20.0" text="Username:" />
+      <TextField fx:id="serverAddress" layoutX="109.0" layoutY="49.0" prefHeight="26.0" prefWidth="334.0" promptText="localhost:8080" />
+      <Label layoutX="48.0" layoutY="53.0" text="Server:" />
    </children>
 </AnchorPane>
