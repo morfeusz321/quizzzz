@@ -72,7 +72,7 @@ public class MainCtrl {
      */
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
                            Pair<AddQuoteCtrl, Parent> add,  
-                           Pair<MainScreenCtrl, Parent> mainScreen
+                           Pair<MainScreenCtrl, Parent> mainScreen,
                            Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
