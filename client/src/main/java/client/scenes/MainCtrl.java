@@ -32,12 +32,6 @@ public class MainCtrl {
     private MainScreenCtrl mainScreenCtrl;
     private Scene mainScreen;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
-
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
 
@@ -63,15 +57,12 @@ public class MainCtrl {
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
-     * @param overview Pair of the control and the scene of the overview
-     * @param add Pair of the control and the scene for adding quotes TODO: to remove
-     * @param username
+     * @param username the name of the player
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
      */
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add,  
+    public void initialize(Stage primaryStage,
                            Pair<MainScreenCtrl, Parent> mainScreen,
                            Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
@@ -79,9 +70,6 @@ public class MainCtrl {
                            Pair<EstimationQuestionCtrl, Parent> estimationQ) {
 
         this.primaryStage = primaryStage;
-
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
 
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
@@ -126,23 +114,9 @@ public class MainCtrl {
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
-
         //showMainScreen();
-        //showOverview();
-        nextQuestion(); // now starts with first question screen
+        nextQuestion();
         primaryStage.show();
-    }
-
-    /**
-     * Shows the overview scene (table for quotes, question display, image display)
-     * TODO: remove table for quotes
-     */
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
     }
 
     /**
@@ -176,21 +150,13 @@ public class MainCtrl {
     }
 
     /**
-     * TODO: to remove
-     */
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
-    }
-
-    /**
      * Shows the main screen scene
      */
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
         primaryStage.setScene(mainScreen);
     }
+
     /**
      * Shows next question, the question type is selected randomly
      */
