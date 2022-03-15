@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class ActivityDBController {
@@ -38,7 +39,7 @@ public class ActivityDBController {
 
         File f = null;
         try {
-            f = new File(ActivityDBController.class.getClassLoader().getResource("activities/activities.json").toURI());
+            f = new File(Objects.requireNonNull(ActivityDBController.class.getClassLoader().getResource("activities/activities.json")).toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
