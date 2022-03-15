@@ -15,7 +15,6 @@
  */
 package client;
 
-import client.scenes.DynamicTextController;
 import client.scenes.UserCtrl;
 import client.scenes.*;
 import com.google.inject.Binder;
@@ -36,6 +35,5 @@ public class MyModule implements Module {
         binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(UserCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(DynamicTextController.class).in(Scopes.SINGLETON);
     }
 }

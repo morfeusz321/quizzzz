@@ -47,6 +47,7 @@ public class MainCtrl {
     private UserCtrl userCtrl;
     private Scene username;
 
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -67,14 +68,14 @@ public class MainCtrl {
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
      */
-    private DynamicTextController dTextCtrl;
-    private Scene dynamicText;
 
     public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add,  Pair<UserCtrl, Parent> username,
+                           Pair<AddQuoteCtrl, Parent> add,
+                             Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ) {
+                           
         this.primaryStage = primaryStage;
 
         this.overviewCtrl = overview.getKey();
@@ -118,6 +119,7 @@ public class MainCtrl {
 
         this.addCtrl = add.getKey();
         this.add = new Scene(add.getValue());
+
 
         nextQuestion(); // now starts with first question screen
         primaryStage.show();
@@ -169,7 +171,7 @@ public class MainCtrl {
     public void showAdd() {
         primaryStage.setTitle("Quotes: Adding Quote");
         primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+        overviewCtrl.refresh();
     }
 
     /**
@@ -182,4 +184,5 @@ public class MainCtrl {
         }
         // TODO: other questions are not implemented yet, this has to be modified after that
     }
+
 }

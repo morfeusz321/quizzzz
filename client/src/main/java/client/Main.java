@@ -17,10 +17,7 @@ package client;
 
 import static com.google.inject.Guice.createInjector;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 
-import client.scenes.DynamicTextController;
 import client.scenes.UserCtrl;
 import client.scenes.*;
 import com.google.inject.Injector;
@@ -54,7 +51,6 @@ public class Main extends Application {
         var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
         var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
         var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
-        var dynamicText = FXML.load(DynamicTextController.class, "client", "scenes", "DynamicTextSize.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
 
