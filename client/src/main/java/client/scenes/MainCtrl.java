@@ -81,7 +81,7 @@ public class MainCtrl {
         this.generalQuestion = new Scene(generalQ.getValue());
         this.generalQuestion.getStylesheets().add(
                 QuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.generalQuestion.getStylesheets().add(
                 QuestionCtrl.class.getResource(
@@ -92,7 +92,7 @@ public class MainCtrl {
         this.comparisonQuestion = new Scene(comparisonQ.getValue());
         this.comparisonQuestion.getStylesheets().add(
                 QuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.comparisonQuestion.getStylesheets().add(
                 QuestionCtrl.class.getResource(
@@ -103,7 +103,7 @@ public class MainCtrl {
         this.estimationQuestion = new Scene(estimationQ.getValue());
         this.estimationQuestion.getStylesheets().add(
                 QuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.estimationQuestion.getStylesheets().add(
                 QuestionCtrl.class.getResource(

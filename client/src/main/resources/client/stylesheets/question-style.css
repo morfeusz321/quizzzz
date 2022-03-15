@@ -28,6 +28,16 @@
     /* TODO: remove/adjust this when dynamic text sizing is added - just a temporary static solution */
 }
 
+.set-answer-button {
+    -fx-background-radius: 50px;
+    -fx-border-radius: 50px;
+    -fx-background-color: #E9DEC8;
+    -fx-border-color: #252422;
+    -fx-border-width: 1px;
+    -fx-font-style: none;
+    -fx-font-size: 26px;
+}
+
 .hover-button {
     -fx-background-color: #e5d8b2;
 }
@@ -92,4 +102,13 @@
     -fx-pref-height: 24px;
     -fx-background-radius: 100%;
     -fx-border-radius: 100%;
+}
+
+.text-field {
+    -fx-background-color: #E9DEC8;
+    -fx-border-width: 0px;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-font-style: none;
+    -fx-font-size: 26px;
 }
