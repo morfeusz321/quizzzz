@@ -10,6 +10,7 @@
 }
 .text {
     -fx-text-color: #252422;
+    -fx-font-style: italic;
 }
 
 .title-text1 {
