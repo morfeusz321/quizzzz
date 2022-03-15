@@ -21,6 +21,8 @@ public class DynamicText {
      * a certain Text object.
      * @param txt The Text object which this class handles
      * @param maxHeight The maximal height the text should have
+     * @param fontSize The size of the font of the text
+     * @param fontFamily The family of the font of the text
      */
     public DynamicText(Text txt, double maxHeight, double fontSize, String fontFamily) {
         this.outTxt = txt;
@@ -39,6 +41,7 @@ public class DynamicText {
      * Sets the text of the Text object to a given string, while considering the resizing of the text (keeping the
      * height below the maximum height).
      * @param text The string to set the text to
+     * @param fontSize size of the font
      */
     public void setText(String text, int fontSize){
         outTxt.setText(text);
