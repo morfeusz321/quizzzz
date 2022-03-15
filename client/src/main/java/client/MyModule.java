@@ -29,6 +29,7 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(MainScreenCtrl.class).in(Scopes.SINGLETON);
         binder.bind(GeneralQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
