@@ -1,0 +1,9 @@
+/*
+    Description:
+    This file is for shared style properties for all screens.
+    If nothing apart from the background color is added, this should be removed.
+*/
+
+.plane {
+    -fx-background-color: #F0EAD6;
+}

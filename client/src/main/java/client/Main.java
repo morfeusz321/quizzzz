@@ -16,12 +16,10 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
-
-import client.scenes.OverviewCtrl;
-import client.scenes.UserCtrl;
 import com.google.inject.Injector;
 
-import client.scenes.MainCtrl;
+import client.scenes.*;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -44,11 +42,13 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage){
-
-        var overview = FXML.load(OverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-        var username = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
+        var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "GeneralQuestion.fxml");
+        var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
+        var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
+        var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, username);
+
+        mainCtrl.initialize(primaryStage, input, generalQ, comparisonQ, estimationQ);
     }
 }

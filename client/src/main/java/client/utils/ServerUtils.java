@@ -28,7 +28,7 @@ import jakarta.ws.rs.client.Entity;
 
 public class ServerUtils {
 
-    private static final String SERVER = "http://localhost:8080/";
+    private static String SERVER = "http://localhost:8080/";
 
     /**
      * Gets a random question from the server using the API endpoint (sends a get request)
@@ -85,7 +85,7 @@ public class ServerUtils {
     }
 
     /**
-     * Sends a post request
+     * Sends a post request for the player username
      * @param username - the name of the player
      * @return string indicating whether the request was successful
      */
@@ -100,4 +100,17 @@ public class ServerUtils {
                 .post(Entity.entity(postUsername, APPLICATION_FORM_URLENCODED_TYPE), String.class);
     }
 
+    /**
+     * Sends a post request for the server address
+     * @param server - the address of the server
+     */
+    public void changeServer(String server) {
+        if(!server.startsWith("http://"))
+            server = "http://" + server;
+
+        if(!server.endsWith("/"))
+            server +="/";
+
+        SERVER = server;
+    }
 }

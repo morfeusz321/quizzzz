@@ -15,6 +15,10 @@
  */
 package client.scenes;
 
+import client.utils.ServerUtils;
+import com.google.inject.Inject;
+import commons.GeneralQuestion;
+import commons.Question;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -22,39 +26,124 @@ import javafx.util.Pair;
 
 public class MainCtrl {
 
+    private final ServerUtils server;
     private Stage primaryStage;
 
-    private OverviewCtrl overviewCtrl;
-    private Scene overview;
+    private GeneralQuestionCtrl generalQuestionCtrl;
+    private Scene generalQuestion;
+
+    private ComparisonQuestionCtrl comparisonQuestionCtrl;
+    private Scene comparisonQuestion;
+
+    private EstimationQuestionCtrl estimationQuestionCtrl;
+    private Scene estimationQuestion;
 
     private UserCtrl userCtrl;
     private Scene username;
 
     /**
+     * Creates a MainCtrl, which controls displaying and switching between screens.
+     * @param server Utilities for communicating with the server (API endpoint)
+     */
+    @Inject
+    public MainCtrl(ServerUtils server) {
+        this.server = server;
+    }
+
+    /**
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
-     * @param overview Pair of the control and the scene of the overview
      * @param username the name of the player
+     * @param generalQ Pair of the control and the scene of the general question
+     * @param comparisonQ Pair of the control and the scene of the comparison question
+     * @param estimationQ Pair of the control and the scene of the estimation question
      */
-    public void initialize(Stage primaryStage, Pair<OverviewCtrl, Parent> overview,
-                           Pair<UserCtrl, Parent> username) {
+    public void initialize(Stage primaryStage,
+                           Pair<UserCtrl, Parent> username,
+                           Pair<GeneralQuestionCtrl, Parent> generalQ,
+                           Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
+                           Pair<EstimationQuestionCtrl, Parent> estimationQ) {
         this.primaryStage = primaryStage;
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
+
+        this.generalQuestionCtrl = generalQ.getKey();
+        this.generalQuestion = new Scene(generalQ.getValue());
+        this.generalQuestion.getStylesheets().add(
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
+                ).toExternalForm());
+        this.generalQuestion.getStylesheets().add(
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
+        this.comparisonQuestionCtrl = comparisonQ.getKey();
+        this.comparisonQuestion = new Scene(comparisonQ.getValue());
+        this.comparisonQuestion.getStylesheets().add(
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
+                ).toExternalForm());
+        this.comparisonQuestion.getStylesheets().add(
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
+        this.estimationQuestionCtrl = estimationQ.getKey();
+        this.estimationQuestion = new Scene(estimationQ.getValue());
+        this.estimationQuestion.getStylesheets().add(
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
+                ).toExternalForm());
+        this.estimationQuestion.getStylesheets().add(
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
 
-        showOverview();
+        nextQuestion();
         primaryStage.show();
     }
 
     /**
-     * Shows the overview scene (question display, image display)
+     * Shows the general question screen and loads a new question
      */
-    public void showOverview() {
-        primaryStage.setScene(overview);
+    public void showGeneralQuestion(Question q) {
+        primaryStage.setTitle("General question");
+        primaryStage.setScene(generalQuestion);
+        generalQuestionCtrl.loadQuestion(q);
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
+    /**
+     * Shows the comparison question screen and loads a new question
+     */
+    public void showComparisonQuestion(Question q) {
+        primaryStage.setTitle("Comparison question");
+        primaryStage.setScene(comparisonQuestion);
+        comparisonQuestionCtrl.loadQuestion(q);
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows the estimation question screen and loads a new question
+     */
+    public void showEstimationQuestion(Question q) {
+        primaryStage.setTitle("Estimation question");
+        primaryStage.setScene(estimationQuestion);
+        estimationQuestionCtrl.loadQuestion(q);
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows next question, the question type is selected randomly
+     */
+    public void nextQuestion() {
+        Question q = server.getRandomQuestion();
+        if(q instanceof GeneralQuestion) {
+            showGeneralQuestion(q);
+        }
+        // TODO: other questions are not implemented yet, this has to be modified after that
+    }
 }
