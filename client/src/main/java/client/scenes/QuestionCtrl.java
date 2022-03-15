@@ -168,7 +168,7 @@ public abstract class QuestionCtrl {
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
-        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showOverview());
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.nextQuestion());
         // TODO: when the menu screen is added, modify this
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
         backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));

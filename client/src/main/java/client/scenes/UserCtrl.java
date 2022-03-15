@@ -70,7 +70,6 @@ public class UserCtrl {
             return;
         }
 
-        mainCtrl.showOverview();
     }
 
     /**

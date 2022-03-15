@@ -18,6 +18,7 @@ package client;
 import client.scenes.DynamicTextController;
 import client.scenes.UserCtrl;
 import client.scenes.*;
+
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -30,8 +31,7 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(MainScreenCtrl.class).in(Scopes.SINGLETON);
         binder.bind(GeneralQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
