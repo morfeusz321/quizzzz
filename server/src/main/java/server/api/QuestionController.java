@@ -56,7 +56,7 @@ public class QuestionController {
             return ResponseEntity.internalServerError().build();
         }
 
-        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 2));
+        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if (page.hasContent()) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
