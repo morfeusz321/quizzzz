@@ -62,7 +62,7 @@ public class MainScreenCtrl implements Initializable {
      */
     @FXML
     private void singlePlayer(ActionEvent event){
-        mainCtrl.nextQuestion();
+        mainCtrl.showUsernameInputScreen();
     }
 
     //TODO: add multiplayer and help
