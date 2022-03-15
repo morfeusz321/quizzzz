@@ -89,24 +89,22 @@ public class WaitingRoomCtrl {
     }
 
     /**
-     * The handler for all incoming game updates via the WebSocket connection, such as players leaving or joining
-     * @param gameUpdate the update for this game received from the WebSocket session
+     * Adds a player to the list of players displayed in the waiting room
+     * @param player the player to add to the list
      */
-    protected void gameUpdateHandler(GameUpdate gameUpdate) {
+    protected void addPlayerToWaitingRoom(Player player) {
 
-        System.out.print("Update received...\t");
+        Platform.runLater(() -> playerList.getItems().add(player.getUsername()));
 
-        if(gameUpdate instanceof GameUpdatePlayerJoined) {
-            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
-            Platform.runLater(() -> playerList.getItems().add(((GameUpdatePlayerJoined) gameUpdate).getPlayer().getUsername()));
-        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
-            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
-            Platform.runLater(() -> playerList.getItems().remove(((GameUpdatePlayerLeft) gameUpdate).getPlayer().getUsername()));
-        } else if(gameUpdate instanceof GameUpdateGameStarting) {
-            System.out.print("GAME STARTING!");
-        }
+    }
 
-        System.out.println();
+    /**
+     * Removes a player from the list of players displayed in the waiting room
+     * @param player the player to remove from the list
+     */
+    protected void removePlayerFromWaitingRoom(Player player) {
+
+        Platform.runLater(() -> playerList.getItems().remove(player.getUsername()));
 
     }
 

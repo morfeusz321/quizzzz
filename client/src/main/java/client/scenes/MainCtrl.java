@@ -19,6 +19,10 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.GeneralQuestion;
 import commons.Question;
+import commons.gameupdate.GameUpdate;
+import commons.gameupdate.GameUpdateGameStarting;
+import commons.gameupdate.GameUpdatePlayerJoined;
+import commons.gameupdate.GameUpdatePlayerLeft;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -136,7 +140,7 @@ public class MainCtrl {
         this.add = new Scene(add.getValue());
 
         primaryStage.setOnCloseRequest(event -> {
-            userCtrl.sendLeaveMessageToServer();
+            sendLeaveMessageToServer();
             System.exit(0);
         });
 
@@ -220,14 +224,38 @@ public class MainCtrl {
         primaryStage.setTitle("Username input");
         primaryStage.setScene(username);
 
+        username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
+
     }
 
     /**
-     * Sends a message to the server via userCtrl that the player is leaving the game
+     * Informs the server that the client is leaving the game
      */
     public void sendLeaveMessageToServer() {
 
-        userCtrl.sendLeaveMessageToServer();
+        server.leaveGame(userCtrl.getSavedCurrentUsername(), userCtrl.getSavedGameUUID());
+
+    }
+
+    /**
+     * The handler for all incoming game updates via the WebSocket connection, such as players leaving or joining
+     * @param gameUpdate the update for this game received from the WebSocket session
+     */
+    protected void gameUpdateHandler(GameUpdate gameUpdate) {
+
+        System.out.print("Update received...\t");
+
+        if(gameUpdate instanceof GameUpdatePlayerJoined) {
+            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+            waitingRoomCtrl.addPlayerToWaitingRoom(((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
+            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+            waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdateGameStarting) {
+            System.out.print("GAME STARTING!");
+        }
+
+        System.out.println();
 
     }
     

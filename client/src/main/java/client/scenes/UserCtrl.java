@@ -95,7 +95,7 @@ public class UserCtrl {
             this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
         }
 
-        server.registerForGameUpdates(gameUUID, waitingRoomCtrl::gameUpdateHandler);
+        server.registerForGameUpdates(gameUUID, mainCtrl::gameUpdateHandler);
 
         this.currentUsername = un;
         this.serverAddressPreFill = getServer();
@@ -114,11 +114,22 @@ public class UserCtrl {
     }
 
     /**
-     * Informs the server that the client is leaving the game
+     * Returns the username entered by the player which has been used to join a game on the server
+     * @return the current username of the user registered to the server
      */
-    public void sendLeaveMessageToServer() {
+    public String getSavedCurrentUsername() {
 
-        server.leaveGame(currentUsername, gameUUID);
+        return currentUsername;
+
+    }
+
+    /**
+     * Returns the UUID of the game that the user is currently in
+     * @return the UUID of the current game received from the server
+     */
+    public UUID getSavedGameUUID() {
+
+        return gameUUID;
 
     }
 
