@@ -19,7 +19,7 @@ Other attendees: Damla Ortaç (TA), Fanni Fiedrich, Erik Vidican, Filip Błaszcz
 * 16:56 - 17:02 **A short reflection on learnings** (tips/tops) last week
 * 17:02 - 17:08 **Check-in:** Discussion regarding code issues. Does anyone have any question regarding their assigned issues?
 * 17:08 - 17:13 **Dividing issues for this week**
-* 17:20 - 17:25 **HCI feedback**
+* 17:20 - 17:25 **Problems with coding and planning**
 * 17:25 - 17:35 **Sharing tips & tops (feedback for the chair and the team)**
 * 17:35 - 17:45 **Question round and questions for the TA**
 * 17:45 - **Closing**
