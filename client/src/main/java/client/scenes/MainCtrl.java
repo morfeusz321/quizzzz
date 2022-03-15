@@ -53,6 +53,7 @@ public class MainCtrl {
 
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
+        this.mainScreen.getStylesheets().add(MainScreenCtrl.class.getResource("/client/stylesheets/main-style.css").toExternalForm());
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());

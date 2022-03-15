@@ -1,0 +1,35 @@
+.button {
+    -fx-background-color: #E1B545;
+    -fx-border-style: solid;
+    -fx-border-radius: 50px;
+    -fx-border-width: 3px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 531.05px;
+    -fx-min-height: 131px;
+    -fx-font-size: 50px;
+}
+.text {
+    -fx-text-color: #252422;
+}
+
+.title-text1 {
+    -fx-font-size: 80px;
+}
+
+.title-text2 {
+    -fx-font-size: 120px;
+}
+
+.title-text3 {
+    -fx-font-size: 50px;
+}
+
+.button-background {
+    -fx-background-color: #B3A787;
+    -fx-border-radius: 50px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 531.05px;
+    -fx-min-height: 131px;
+}
+
+
