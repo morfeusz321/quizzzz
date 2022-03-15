@@ -64,7 +64,7 @@ public class QuestionController {
             aw.add( a.consumption + " Wh");
             aw.add((int) (((getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)));
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh"));
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
         }
@@ -92,7 +92,7 @@ public class QuestionController {
                 }
             }
 
-            Question toReturn = new WhichIsMoreQuestion(a1, activities, activities.indexOf(a1));
+            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1));
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
         } catch (Exception e) {

@@ -19,14 +19,12 @@ public class WhichIsMoreQuestion extends Question{
 
     /**
      * Creates a question object (used for QuestionType.WHICHISMORE)
-     * @param mainActivity the main activity of this question (i.e. the title)
      * @param answerOptions the answer options to be displayed for this question (e.g. "50 Wh", "100 Wh", etc.)
      * @param answer the answer to this question (i.e. the index 1, 2, 3 of the multiple choice answer)
      */
-    public WhichIsMoreQuestion(Activity mainActivity, List<Activity> answerOptions, long answer) {
-
-        this.activityTitle = mainActivity.title;
-        this.activityImagePath = mainActivity.imagePath;
+    public WhichIsMoreQuestion(List<Activity> answerOptions, long answer) {
+        this.activityTitle = null;
+        this.activityImagePath = null;
 
         this.answerOptions = new ArrayList<>();
         for(Activity a : answerOptions) {
