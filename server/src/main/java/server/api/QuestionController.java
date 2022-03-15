@@ -59,9 +59,12 @@ public class QuestionController {
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 2));
         if (page.hasContent()) {
             Activity a = page.getContent().get(0);
-            Question toReturn = new GeneralQuestion(a,
-                    List.of((int) ((getRandomWithExclusion(random, 0, 2, 1) * a.consumption)) + " Wh", a.consumption + " Wh", (int) (((getRandomWithExclusion(random, 0, 2, 1) * a.consumption))) + " Wh"),
-                    2);
+            List<String> aw = new ArrayList<>();
+            aw.add((int) ((getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
+            aw.add( a.consumption + " Wh");
+            aw.add((int) (((getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
+            Collections.shuffle(aw);
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)));
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
         }
@@ -235,7 +238,7 @@ public class QuestionController {
      * @param exclude numbers that will be excluded from the given range
      * @return random number in given range (number is rounded to first decimal place)
      */
-    private static double getRandomWithExclusion(Random rnd, int start, int end, int... exclude) {
+    private static double getRandomWithExclusion(Random rnd, double start, double end, int... exclude) {
         double random = start + rnd.nextDouble(end - start + 1 - exclude.length);
         for (int ex : exclude) {
             if (random < ex) {
