@@ -28,8 +28,10 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(MainScreenCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(GeneralQuestionCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(UserCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminEditActivityCtrl.class).in(Scopes.SINGLETON);
