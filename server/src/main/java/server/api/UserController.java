@@ -20,6 +20,7 @@ public class UserController {
     /**
      * Maps to /api/user/enter
      * Creates the player entity and sets the username for it
+     * @param username - the name of the user
      * @return a text that the user has entered the name successfully
      */
     @PostMapping("/enter")
@@ -28,8 +29,7 @@ public class UserController {
         Player player = new Player();
         player.setUsername(username);
 
-        return ResponseEntity.ok("Entered a name successfully!");
-
+        return ResponseEntity.ok("Entered players info successfully!");
     }
 
 }
