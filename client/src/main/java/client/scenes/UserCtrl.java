@@ -48,6 +48,13 @@ public class UserCtrl {
     }
 
     /**
+     * Initializes the default text for the server address
+     */
+    public void initialize() {
+        serverAddress.setText("localhost:8080");
+    }
+
+    /**
      *  sends the username that the user has entered
      */
     public void join() {
