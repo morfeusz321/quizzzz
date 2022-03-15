@@ -22,11 +22,9 @@ import java.net.URISyntaxException;
 
 import client.scenes.DynamicTextController;
 import client.scenes.UserCtrl;
+import client.scenes.*;
 import com.google.inject.Injector;
 
-import client.scenes.AddQuoteCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -50,13 +48,16 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage){
-
         var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
         var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+        var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "GeneralQuestion.fxml");
+        var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
+        var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
         var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
         var dynamicText = FXML.load(DynamicTextController.class, "client", "scenes", "DynamicTextSize.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add, input);
+
+        mainCtrl.initialize(primaryStage, overview, add, input, generalQ, comparisonQ, estimationQ);
     }
 }
