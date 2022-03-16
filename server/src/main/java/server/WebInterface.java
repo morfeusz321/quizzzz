@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import server.database.ActivityDB;
 import server.database.ActivityDBController;
 
+import java.io.File;
 import java.util.List;
 
 @Controller
@@ -121,6 +122,22 @@ public class WebInterface {
         ActivityDB activityDB = activityDBController.getInternalDB();
         activityDB.delete(activity);
         return ResponseEntity.ok(activity);
+    }
+
+    /**
+     * Imports a new list of activities to the database
+     * @param path path to the json file
+     * @return 200 OK: List imported, 400 Bad Request: Wrong input
+     */
+    @PostMapping("/debug/activities/import")
+    public ResponseEntity<String> importActivity(@RequestBody String path) {
+
+        if (CommonUtils.isNullOrEmpty(path)) {
+            return ResponseEntity.badRequest().build();
+        }
+        File file = new File(path);
+        activityDBController.forceReload(file);
+        return ResponseEntity.ok(path);
     }
 
 }

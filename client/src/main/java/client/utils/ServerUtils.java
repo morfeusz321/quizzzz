@@ -108,6 +108,19 @@ public class ServerUtils {
     }
 
     /**
+     * Sends a post request to import a list of activities
+     * @param path the path to the json file
+     * @return string indicating whether the request was successful
+     */
+    public String importActivity(String path) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("debug/activities/import") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(path, APPLICATION_JSON), String.class);
+    }
+
+    /**
      * Gets the URL where the server is located as a string (e.g. http://localhost:8080/)
      * @return Returns the URL where the server is located as a string
      */

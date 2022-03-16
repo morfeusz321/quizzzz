@@ -8,9 +8,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -41,6 +44,7 @@ public class AdminCtrl implements Initializable {
     private Button delete;
 
     private Activity currentActivity;
+    private Scene adminScene;
 
     /**
      * Constructor for a AdminCtrl, which controls the display/interaction of managing the activities
@@ -83,6 +87,29 @@ public class AdminCtrl implements Initializable {
             refresh();
         } else {
             alert.close();
+        }
+    }
+
+    /**
+     * Sets the current scene to admin scene (required for file chooser)
+     * @param scene admin scene
+     */
+    public void setScene(Scene scene) {
+        this.adminScene = scene;
+    }
+
+    /**
+     * Opens a file chooser window where you can choose an activities.json file to import
+     */
+    public void importActivity() {
+        FileChooser fileChooser = new FileChooser();
+        try {
+            File selectedFile = fileChooser.showOpenDialog(adminScene.getWindow());
+            String path = selectedFile.getPath();
+            server.importActivity(path);
+            refresh();
+        } catch (NullPointerException e) {
+            System.out.println("Selected file is null");
         }
     }
 

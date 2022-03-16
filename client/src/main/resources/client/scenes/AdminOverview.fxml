@@ -22,5 +22,6 @@
       <Button fx:id="edit" disable="true" layoutX="143.0" layoutY="471.0" mnemonicParsing="false" onAction="#showEdit" text="Edit selected" />
       <Button fx:id="delete" disable="true" layoutX="38.0" layoutY="471.0" mnemonicParsing="false" onAction="#delete" text="Delete selected" />
       <Button layoutX="40.0" layoutY="565.0" mnemonicParsing="false" onAction="#addActivity" text="Add Activity" />
+      <Button layoutX="135.0" layoutY="565.0" mnemonicParsing="false" onAction="#importActivity" text="Import activity list" />
    </children>
 </AnchorPane>

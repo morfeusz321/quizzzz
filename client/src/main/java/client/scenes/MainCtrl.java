@@ -190,6 +190,7 @@ public class MainCtrl {
         primaryStage.setTitle("Admin");
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
+        adminCtrl.setScene(adminScene);
     }
 
     /**
