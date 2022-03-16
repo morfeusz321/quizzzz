@@ -253,6 +253,13 @@ public class ServerUtils {
      * @return the response from the server
      */
     public String leaveGame(String username, UUID gameUUID) {
+
+        if(session != null) {
+            if(session.isConnected()) {
+                session.disconnect();
+            }
+        }
+
         Form form = new Form();
         form.param("username", username);
         form.param("gameUUID", gameUUID.toString());
