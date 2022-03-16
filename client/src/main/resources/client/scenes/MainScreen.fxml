@@ -34,5 +34,6 @@
             <String fx:value="button" />
          </styleClass>
       </Button>
+      <Button fx:id="admin" layoutX="1676.0" layoutY="927.0" mnemonicParsing="false" onAction="#showAdmin" prefHeight="26.0" prefWidth="51.0" styleClass="admin-button" text="Admin" />
    </children>
 </AnchorPane>

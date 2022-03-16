@@ -129,8 +129,8 @@ public class MainCtrl {
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
 
-        //showMainScreen();
-        nextQuestion();
+        showMainScreen();
+        //nextQuestion();
         primaryStage.show();
     }
 
@@ -190,7 +190,6 @@ public class MainCtrl {
         primaryStage.setTitle("Admin");
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
-        //add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
     }
 
     /**

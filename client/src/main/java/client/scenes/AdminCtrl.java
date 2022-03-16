@@ -65,7 +65,7 @@ public class AdminCtrl implements Initializable {
      * Return to the main overview
      */
     public void cancel() {
-        mainCtrl.showOverview();
+        mainCtrl.showMainScreen();
     }
 
     /**
