@@ -1,12 +1,24 @@
 package commons;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CommonUtilsTest {
+
+    private Random random;
+
+    @BeforeEach
+    public void setup() {
+
+        this.random = new NotSoRandom();
+
+    }
+
     @Test
     void prependingZeroTestPrepend(){
         CommonUtils utils = new CommonUtils();
@@ -17,21 +29,96 @@ public class CommonUtilsTest {
     void prependingZeroTestNoPrepend(){
         CommonUtils utils = new CommonUtils();
         assertEquals("10", utils.addPrependingZero(10));
+        assertEquals("-3", utils.addPrependingZero(-3));
+    }
+
+    @RepeatedTest(20)
+    void randomIntInRangeTestBothNegative(){
+        CommonUtils utils = new CommonUtils();
+        int r = utils.randomIntInRange(-50, -10, random);
+        assertEquals(((NotSoRandom) random).getLastReturned() - 50, r);
+    }
+
+    @RepeatedTest(20)
+    void randomIntInRangeTestBothPositive(){
+        CommonUtils utils = new CommonUtils();
+        int r = utils.randomIntInRange(10, 50, random);
+        assertEquals(((NotSoRandom) random).getLastReturned() + 10, r);
+    }
+
+    @RepeatedTest(20)
+    void randomIntInRangeTestMixedSignBounds() {
+        CommonUtils utils = new CommonUtils();
+        int r = utils.randomIntInRange(-10, 50, random);
+        assertEquals(((NotSoRandom) random).getLastReturned() - 10, r);
     }
 
     @Test
-    void randomIntInRangeTestNegative(){
+    void randomIntInRangeTestIllegalBounds() {
         CommonUtils utils = new CommonUtils();
-        int randomNegative = utils.randomIntInRange(-50, -10, new Random(12345));
-        Random r = new Random(12345);
-        assertEquals((r.nextInt(60) - 10) * -1, randomNegative);
+        assertThrows(IllegalArgumentException.class, () -> utils.randomIntInRange(10, 0, random));
     }
 
     @Test
-    void randomIntInRangeTestPositive(){
+    void randomIntInRangeTestEqualBounds() {
         CommonUtils utils = new CommonUtils();
-        int randomPositive = utils.randomIntInRange(10, 50, new Random(12345));
-        Random r = new Random(12345);
-        assertEquals(r.nextInt(60) - 10, randomPositive);
+        assertEquals(4, utils.randomIntInRange(4, 4, random));
     }
+
+    @Test
+    public void testRandomWithExclusion() {
+
+        CommonUtils utils = new CommonUtils();
+        double r = utils.getRandomWithExclusion(new NotSoRandomForExclusion(), 0, 1, 0);
+
+        assertNotEquals(0.0, r);
+
+    }
+
+    private class NotSoRandom extends Random {
+
+        private int lastReturned;
+
+        @Override
+        public int nextInt(int bound) {
+
+            int ret = super.nextInt(bound);
+            this.lastReturned = ret;
+
+            return ret;
+
+        }
+
+        public int getLastReturned() {
+
+            return lastReturned;
+
+        }
+
+    }
+
+    private class NotSoRandomForExclusion extends Random {
+
+        private double lastReturned = -1;
+
+        @Override
+        public double nextDouble() {
+
+            if(lastReturned == 0) {
+
+                double ret = super.nextDouble();
+                lastReturned = ret;
+                return ret;
+
+            } else {
+
+                lastReturned = 0;
+                return 0;
+
+            }
+
+        }
+
+    }
+
 }

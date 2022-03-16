@@ -29,11 +29,8 @@ public class MainCtrl {
     private final ServerUtils server;
     private Stage primaryStage;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
+    private MainScreenCtrl mainScreenCtrl;
+    private Scene mainScreen;
 
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
@@ -46,6 +43,9 @@ public class MainCtrl {
 
     private EstimationQuestionCtrl estimationQuestionCtrl;
     private Scene estimationQuestion;
+
+    private UserCtrl userCtrl;
+    private Scene username;
 
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
@@ -60,55 +60,60 @@ public class MainCtrl {
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
-     * @param overview Pair of the control and the scene of the overview
-     * @param add Pair of the control and the scene for adding quotes TODO: to remove
+     * @param username the name of the player
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
      * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
      */
-    public void initialize(Stage primaryStage, Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add, Pair<GeneralQuestionCtrl, Parent> generalQ,
+    public void initialize(Stage primaryStage,
+                           Pair<MainScreenCtrl, Parent> mainScreen,
+                           Pair<UserCtrl, Parent> username,
+                           Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ,
                            Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
         this.primaryStage = primaryStage;
 
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
+        this.mainScreenCtrl = mainScreen.getKey();
+        this.mainScreen = new Scene(mainScreen.getValue());
+        this.mainScreen.getStylesheets().add(
+                MainScreenCtrl.class.getResource(
+                        "/client/stylesheets/main-style.css"
+                ).toExternalForm());
 
         // TODO: this definitely needs restructuring, too much code duplication
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
         this.generalQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.generalQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
         this.comparisonQuestionCtrl = comparisonQ.getKey();
         this.comparisonQuestion = new Scene(comparisonQ.getValue());
         this.comparisonQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.comparisonQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
         this.estimationQuestionCtrl = estimationQ.getKey();
         this.estimationQuestion = new Scene(estimationQ.getValue());
         this.estimationQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.estimationQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
@@ -116,28 +121,19 @@ public class MainCtrl {
         this.mostExpensiveQuestion = new Scene(mostExpensiveQ.getValue());
         this.mostExpensiveQuestion.getStylesheets().add(
                 GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.mostExpensiveQuestion.getStylesheets().add(
                 GeneralQuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.userCtrl = username.getKey();
+        this.username = new Scene(username.getValue());
 
-        nextQuestion(); // now starts with first question screen
+        //showMainScreen();
+        nextQuestion();
         primaryStage.show();
-    }
-
-    /**
-     * Shows the overview scene (table for quotes, question display, image display)
-     * TODO: remove table for quotes
-     */
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
     }
 
     /**
@@ -181,12 +177,11 @@ public class MainCtrl {
     }
 
     /**
-     * TODO: to remove
+     * Shows the main screen scene
      */
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    public void showMainScreen() {
+        primaryStage.setTitle("Quizzz");
+        primaryStage.setScene(mainScreen);
     }
 
     /**

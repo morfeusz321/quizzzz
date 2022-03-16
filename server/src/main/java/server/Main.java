@@ -34,6 +34,7 @@ public class Main {
 
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
 
+        context.getBean(ActivityDBController.class).setJsonSourceToActivitiesFile();
         context.getBean(ActivityDBController.class).forceReload();
         context.getBean(QuestionDBController.class).clear();
 
