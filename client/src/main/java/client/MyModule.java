@@ -33,5 +33,6 @@ public class MyModule implements Module {
         binder.bind(GeneralQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(MostExpensiveQuestionCtrl.class).in(Scopes.SINGLETON);
     }
 }
