@@ -115,7 +115,7 @@ public class WaitingRoomCtrl {
      */
     protected void updateWaitingRoomPlayers(GameUpdateFullPlayerList gameUpdateFullPlayerList) {
 
-        playerList.getItems().removeAll();
+        playerList.getItems().clear();
         playerList.getItems().addAll(gameUpdateFullPlayerList.getPlayerList()
                                                                 .stream()
                                                                 .map(Player::getUsername)
