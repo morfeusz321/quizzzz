@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class QuestionControllerTest {
 
-    private NotSoRandom random;
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
     private QuestionController questionController;
@@ -27,10 +26,9 @@ public class QuestionControllerTest {
     @BeforeEach
     public void setup() {
 
-        random = new NotSoRandom();
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionController = new QuestionController(random, activityDBController, questionDBController);
+        questionController = new QuestionController(new Random(), activityDBController, questionDBController);
 
     }
 
@@ -82,7 +80,12 @@ public class QuestionControllerTest {
     @Test
     public void getComparisonQuestionTest() {
 
-        activityDBController.forceReload();
+        activityDBController.getInternalDB().deleteAll();
+        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 0));
+        activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 0));
+        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 0));
+        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 0));
+        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 0));
 
         ResponseEntity<Question> q = questionController.getComparisonQuestion();
 
@@ -101,7 +104,8 @@ public class QuestionControllerTest {
     @Test
     public void getEstimationQuestionTest() {
 
-        activityDBController.forceReload();
+        activityDBController.getInternalDB().deleteAll();
+        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 0));
 
         ResponseEntity<Question> q = questionController.getEstimationQuestion();
 
@@ -244,47 +248,6 @@ public class QuestionControllerTest {
         s = questionController.answer(testQuestion.questionId.toString(), "60");
         assertEquals(HttpStatus.OK, s.getStatusCode());
         assertEquals(new AnswerResponseEntity(false, 10), s.getBody());
-
-    }
-
-    @Test
-    public void testRandomWithExclusion() {
-
-        double r = QuestionController.getRandomWithExclusion(new NotSoRandom(), 0, 1, 0);
-
-        assertNotEquals(0.0, r);
-
-    }
-
-    private class NotSoRandom extends Random {
-
-        private boolean hasReturned = false;
-        private double lastReturned = 0;
-
-        @Override
-        public double nextDouble() {
-
-            if(!hasReturned) {
-                hasReturned = true;
-                lastReturned = 0;
-                return 0;
-            }
-
-            if(lastReturned == 0) {
-
-                double ret = super.nextDouble();
-                lastReturned = ret;
-                return ret;
-
-            } else {
-
-                lastReturned = 0;
-                return 0;
-
-            }
-
-        }
-
 
     }
 

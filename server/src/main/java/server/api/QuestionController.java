@@ -46,6 +46,8 @@ public class QuestionController {
     @GetMapping("/random")
     public ResponseEntity<Question> getRandomQuestion() {
 
+        CommonUtils utils = new CommonUtils();
+
         ActivityDB activityDB = activityDBController.getInternalDB();
 
         long count = activityDB.count();
@@ -60,9 +62,9 @@ public class QuestionController {
         if (page.hasContent()) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
-            aw.add((int) ((getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
+            aw.add((int) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
             aw.add( a.consumption + " Wh");
-            aw.add((int) (((getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
+            aw.add((int) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
             Collections.shuffle(aw);
             Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh"));
             questionDBController.add(toReturn);
@@ -227,26 +229,6 @@ public class QuestionController {
 
         return ResponseEntity.internalServerError().build();
 
-    }
-
-
-    /**
-     * Generates random number from given range excluding those given as the parameter
-     * @param rnd Instant of the Random class
-     * @param start the start of the range in which the number will be generated
-     * @param end the end of the range in which the number will be generated
-     * @param exclude numbers that will be excluded from the given range
-     * @return random number in given range (number is rounded to first decimal place)
-     */
-    public static double getRandomWithExclusion(Random rnd, double start, double end, int... exclude) {
-        double random = start + (end - start) * rnd.nextDouble();
-        random = (double) Math.round(random * 10) / 10;
-        for (int ex : exclude) {
-            if (random == (double) ex) {
-                return getRandomWithExclusion(rnd, start, end, exclude);
-            }
-        }
-        return random;
     }
 
 }
