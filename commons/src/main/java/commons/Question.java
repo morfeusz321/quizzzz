@@ -47,6 +47,8 @@ public abstract class Question {
             return "How much energy does " + Activity.displayActivity(activityTitle) + " take?";
         } else if(this instanceof ComparisonQuestion) {
             return "Instead of " + Activity.displayActivity(activityTitle) + ", you could use the same amount of energy for...";
+        }else if(this instanceof WhichIsMoreQuestion){
+            return "Which activity consumes more energy?";
         }
 
         return activityTitle;

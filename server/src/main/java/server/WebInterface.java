@@ -1,11 +1,17 @@
 package server;
 
+import commons.Activity;
+import commons.CommonUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import server.database.ActivityDB;
 import server.database.ActivityDBController;
 
+import java.io.File;
 import java.util.List;
 
 @Controller
@@ -74,6 +80,64 @@ public class WebInterface {
 
         return ResponseEntity.ok(sb.toString());
 
+    }
+
+    /**
+     * Get all activities from the database
+     * @return a list of activities
+     */
+    @GetMapping("/debug/activities")
+    public ResponseEntity<List<Activity>> getAllActivities() {
+        return ResponseEntity.ok(activityDBController.listAll());
+    }
+
+    /**
+     * Saves a modified activity to the database
+     * @param activity a modified activity
+     * @return 200 OK: Activity saved, 400 Bad Request: Wrong input
+     */
+    @PostMapping("/debug/activities/edit")
+    public ResponseEntity<Activity> edit(@RequestBody Activity activity) {
+
+        if (activity.id == null || CommonUtils.isNullOrEmpty(activity.imagePath) || CommonUtils.isNullOrEmpty(activity.title)
+                || activity.consumption == 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        ActivityDB activityDB = activityDBController.getInternalDB();
+        Activity saved = activityDB.save(activity);
+        return ResponseEntity.ok(saved);
+    }
+
+    /**
+     * Deletes an activity from the database
+     * @param activity the activity that will be deleted
+     * @return 200 OK: Activity deleted, 400 Bad Request: Wrong input
+     */
+    @PostMapping("/debug/activities/delete")
+    public ResponseEntity<Activity> delete(@RequestBody Activity activity) {
+
+        if (activity.id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        ActivityDB activityDB = activityDBController.getInternalDB();
+        activityDB.delete(activity);
+        return ResponseEntity.ok(activity);
+    }
+
+    /**
+     * Imports a new list of activities to the database
+     * @param path path to the json file
+     * @return 200 OK: List imported, 400 Bad Request: Wrong input
+     */
+    @PostMapping("/debug/activities/import")
+    public ResponseEntity<String> importActivity(@RequestBody String path) {
+
+        if (CommonUtils.isNullOrEmpty(path)) {
+            return ResponseEntity.badRequest().build();
+        }
+        File file = new File(path);
+        activityDBController.forceReload(file);
+        return ResponseEntity.ok(path);
     }
 
 }
