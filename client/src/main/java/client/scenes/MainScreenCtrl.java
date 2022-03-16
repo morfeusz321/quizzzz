@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+import commons.GameType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,6 +13,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainScreenCtrl implements Initializable {
+
+    protected GameType selectedGameType;
 
     /* @FXML
     private Button singlePlayer;
@@ -62,7 +65,22 @@ public class MainScreenCtrl implements Initializable {
      */
     @FXML
     private void singlePlayer(ActionEvent event){
-        mainCtrl.nextQuestion();
+
+        this.selectedGameType = GameType.SINGLEPLAYER;
+        mainCtrl.showUsernameInputScreen();
+
+    }
+
+    /**
+     * Starts the multi player mode of the game TODO: should be changed to show another screen when everything is merged
+     * @param event click on multiplayer button
+     */
+    @FXML
+    private void multiPlayer(ActionEvent event) {
+
+        this.selectedGameType = GameType.MULTIPLAYER;
+        mainCtrl.showUsernameInputScreen();
+
     }
 
     /**

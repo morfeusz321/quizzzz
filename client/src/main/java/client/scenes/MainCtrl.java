@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.GameType;
 import commons.GeneralQuestion;
 import commons.Question;
 import commons.Activity;
@@ -129,8 +130,12 @@ public class MainCtrl {
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
 
+        primaryStage.setOnCloseRequest(event -> {
+            userCtrl.sendLeaveMessageToServer();
+            System.exit(0);
+        });
+
         showMainScreen();
-        //nextQuestion();
         primaryStage.show();
     }
 
@@ -184,6 +189,27 @@ public class MainCtrl {
     }
 
     /**
+     * Shows the username input screen
+     */
+    public void showUsernameInputScreen() {
+
+        primaryStage.setTitle("Username input");
+        primaryStage.setScene(username);
+
+    }
+
+    /**
+     * Returns the game type that has been selected by the user by clicking on either the singleplayer
+     * or multiplayer button
+     * @return the game type selected by the user
+     */
+    public GameType getSelectedGameType() {
+
+        return mainScreenCtrl.selectedGameType;
+
+    }
+
+    /**
      * Show the admin screen (table with all activities)
      */
     public void showAdmin() {
@@ -202,4 +228,5 @@ public class MainCtrl {
         primaryStage.setScene(adminEditScene);
         adminEditCtrl.setActivity(activity);
     }
+
 }
