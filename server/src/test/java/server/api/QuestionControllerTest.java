@@ -15,12 +15,10 @@ import server.database.QuestionDBController;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QuestionControllerTest {
 
-    private NotSoRandom random;
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
     private QuestionController questionController;
@@ -28,10 +26,38 @@ public class QuestionControllerTest {
     @BeforeEach
     public void setup() {
 
-        random = new NotSoRandom();
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionController = new QuestionController(random, activityDBController, questionDBController);
+        questionController = new QuestionController(new Random(), activityDBController, questionDBController);
+
+    }
+
+    @Test
+    public void getWhichIsMoreQuestionTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 201);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 260);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 187);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+
+        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertEquals(activity2.title, q.getBody().answerOptions.get((int) q.getBody().answer));
+
+    }
+
+    @Test
+    public void getRandomQuestionTestNoActivities() {
+
+        ResponseEntity<Question> q = questionController.getRandomQuestion();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
 
     }
 
@@ -50,13 +76,73 @@ public class QuestionControllerTest {
     }
 
     @Test
-    public void getRandomQuestionTestNoActivities() {
+    public void getWhichIsMoreQuestionNoActivities() {
 
-        ResponseEntity<Question> q = questionController.getRandomQuestion();
+        activityDBController.getInternalDB().deleteAll();
+        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
 
     }
+
+    @Test
+    public void getComparisonQuestionTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 201);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 260);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 187);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 2070);
+        Activity activity5 = new Activity("5", "/path/to/image/", "Activity 5", 20092);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+        activityDBController.getInternalDB().save(activity4);
+        activityDBController.getInternalDB().save(activity5);
+
+        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+        assertTrue(activity1.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer))
+                        ||
+                activity3.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer)));
+
+    }
+
+    @Test
+    public void getComparisonNoActivities() {
+        activityDBController.getInternalDB().deleteAll();
+        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+    }
+
+    @Test
+    public void getEstimationQuestionTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 0));
+
+        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+    }
+
+    @Test
+    public void getEstimationNoActivities() {
+
+        activityDBController.getInternalDB().deleteAll();
+        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+
+    }
+
 
     @Test
     public void answerTestMalformedAnswer() {
@@ -184,12 +270,6 @@ public class QuestionControllerTest {
 
     }
 
-    private class NotSoRandom extends Random {
-
-
-
-    }
-
     private class TestActivityDB implements ActivityDB {
 
         private List<Activity> db;
@@ -214,7 +294,7 @@ public class QuestionControllerTest {
         public Page<Activity> findAll(Pageable pageable) {
 
             List<Activity> returnValues = new ArrayList<>();
-            for(long i = pageable.getOffset(); i < pageable.getOffset() + pageable.getPageSize(); i++) {
+            for (long i = pageable.getOffset(); i < pageable.getOffset() + pageable.getPageSize(); i++) {
 
                 returnValues.add(db.get((int) i));
 
@@ -354,6 +434,48 @@ public class QuestionControllerTest {
         public <S extends Activity, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
             return null;
         }
+
+        @Override
+        public ArrayList<Activity> getFiveRandomActivities() {
+
+            ArrayList<Activity> random = new ArrayList<>();
+            Random r = new Random();
+
+            List<Activity> copy = new ArrayList<>();
+            copy.addAll(db);
+
+            for(int i = 0; i < 5 && copy.size() > 0; i++) {
+
+                int idx = r.nextInt(copy.size());
+                random.add(copy.get(idx));
+                copy.remove(idx);
+
+            }
+
+            return random;
+        }
+
+        @Override
+        public ArrayList<Activity> getThreeRandomActivities() {
+
+            ArrayList<Activity> random = new ArrayList<>();
+            Random r = new Random();
+
+            List<Activity> copy = new ArrayList<>();
+            copy.addAll(db);
+
+            for(int i = 0; i < 3 && copy.size() > 0; i++) {
+
+                int idx = r.nextInt(copy.size());
+                random.add(copy.get(idx));
+                copy.remove(idx);
+
+            }
+
+            return random;
+
+        }
+
     }
 
     private class TestQuestionDB implements QuestionDB {
@@ -394,8 +516,8 @@ public class QuestionControllerTest {
         @Override
         public void deleteById(UUID uuid) {
             List<Question> toRemove = new ArrayList<>();
-            for(Question q : db) {
-                if(q.questionId.equals(uuid)) {
+            for (Question q : db) {
+                if (q.questionId.equals(uuid)) {
                     toRemove.add(q);
                 }
             }

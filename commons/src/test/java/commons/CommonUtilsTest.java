@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CommonUtilsTest {
 
@@ -66,6 +65,16 @@ public class CommonUtilsTest {
         assertEquals(4, utils.randomIntInRange(4, 4, random));
     }
 
+    @Test
+    public void testRandomWithExclusion() {
+
+        CommonUtils utils = new CommonUtils();
+        double r = utils.getRandomWithExclusion(new NotSoRandomForExclusion(), 0, 1, 0);
+
+        assertNotEquals(0.0, r);
+
+    }
+
     private class NotSoRandom extends Random {
 
         private int lastReturned;
@@ -83,6 +92,30 @@ public class CommonUtilsTest {
         public int getLastReturned() {
 
             return lastReturned;
+
+        }
+
+    }
+
+    private class NotSoRandomForExclusion extends Random {
+
+        private double lastReturned = -1;
+
+        @Override
+        public double nextDouble() {
+
+            if(lastReturned == 0) {
+
+                double ret = super.nextDouble();
+                lastReturned = ret;
+                return ret;
+
+            } else {
+
+                lastReturned = 0;
+                return 0;
+
+            }
 
         }
 
