@@ -26,7 +26,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class UserCtrl {
