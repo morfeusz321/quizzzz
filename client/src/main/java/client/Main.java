@@ -16,12 +16,9 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
-
 import com.google.inject.Injector;
+import client.scenes.*;
 
-import client.scenes.AddQuoteCtrl;
-import client.scenes.MainCtrl;
-import client.scenes.QuoteOverviewCtrl;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -40,16 +37,18 @@ public class Main extends Application {
 
     /**
      * Starts the application by loading the fxml files/scenes and by initializing the
-     * main control with the overview/quote adding. TODO: remove quote adding
      * @param primaryStage The main application stage (i.e. window) in which all scenes are displayed
      */
     @Override
     public void start(Stage primaryStage){
-
-        var overview = FXML.load(QuoteOverviewCtrl.class, "client", "scenes", "QuoteOverview.fxml");
-        var add = FXML.load(AddQuoteCtrl.class, "client", "scenes", "AddQuote.fxml");
+        var mainScreen = FXML.load(MainScreenCtrl.class, "client", "scenes", "MainScreen.fxml");
+        var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "GeneralQuestion.fxml");
+        var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
+        var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
+        var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, overview, add);
+
+        mainCtrl.initialize(primaryStage, mainScreen, input, generalQ, comparisonQ, estimationQ);
     }
 }
