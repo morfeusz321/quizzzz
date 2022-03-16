@@ -38,6 +38,6 @@
       <Text id="title-2" layoutX="345.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Waiting for other players to join..." />
       <Text id="title-3" layoutX="713.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Use the time to recharge your energy..." />
       <ListView id="playerList" fx:id="playerList" layoutX="138.0" layoutY="431.0" prefHeight="495.0" prefWidth="960.0" />
-      <Text id="players-text" layoutX="139.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Players joined:" textAlignment="CENTER" wrappingWidth="960.0" />
+      <Text fx:id="playersJoined" id="players-text" layoutX="139.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="0 players joined:" textAlignment="CENTER" wrappingWidth="960.0" />
    </children>
 </AnchorPane>

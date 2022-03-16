@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.CommonUtils;
 import commons.Player;
 import commons.gameupdate.*;
 import javafx.application.Platform;
@@ -12,6 +11,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 
 public class WaitingRoomCtrl {
 
@@ -30,6 +30,11 @@ public class WaitingRoomCtrl {
     @FXML
     private ListView<String> playerList;
 
+    @FXML
+    public Text playersJoined;
+
+    private int numPlayers;
+
     /**
      * Creates a WaitingRoomCtrl, which controls the display/interaction of the waiting room.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -39,6 +44,7 @@ public class WaitingRoomCtrl {
     public WaitingRoomCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        numPlayers = 0;
     }
 
     /**
@@ -95,6 +101,8 @@ public class WaitingRoomCtrl {
     protected void addPlayerToWaitingRoom(Player player) {
 
         Platform.runLater(() -> playerList.getItems().add(player.getUsername()));
+        numPlayers++;
+        playersJoined.setText(numPlayers + " players joined:");
 
     }
 
@@ -105,6 +113,8 @@ public class WaitingRoomCtrl {
     protected void removePlayerFromWaitingRoom(Player player) {
 
         Platform.runLater(() -> playerList.getItems().remove(player.getUsername()));
+        numPlayers--;
+        playersJoined.setText(numPlayers + " players joined:");
 
     }
 
@@ -120,6 +130,8 @@ public class WaitingRoomCtrl {
                                                                 .stream()
                                                                 .map(Player::getUsername)
                                                                 .toList());
+        numPlayers = gameUpdateFullPlayerList.getPlayerList().size();
+        playersJoined.setText(numPlayers + " players joined:");
 
     }
 
