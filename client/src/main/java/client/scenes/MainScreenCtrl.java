@@ -83,6 +83,13 @@ public class MainScreenCtrl implements Initializable {
 
     }
 
+    /**
+     * Opens the admin screen
+     */
+    public void showAdmin() {
+        mainCtrl.showAdmin();
+    }
+
     //TODO: add multiplayer and help
 
 }

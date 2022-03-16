@@ -16,7 +16,6 @@
 package client;
 
 import client.scenes.*;
-
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -34,5 +33,7 @@ public class MyModule implements Module {
         binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(UserCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminEditActivityCtrl.class).in(Scopes.SINGLETON);
     }
 }
