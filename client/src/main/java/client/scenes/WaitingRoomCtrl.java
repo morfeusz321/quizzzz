@@ -18,13 +18,14 @@ public class WaitingRoomCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
-    private final CommonUtils utils;
-
     @FXML
     private ImageView backBtn;
 
     @FXML
     private ImageView lightbulb;
+
+    @FXML
+    public ImageView speechBubble;
 
     @FXML
     private ListView<String> playerList;
@@ -33,13 +34,11 @@ public class WaitingRoomCtrl {
      * Creates a WaitingRoomCtrl, which controls the display/interaction of the waiting room.
      * @param server Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
-     * @param utils Common utilities (for server- and client-side)
      */
     @Inject
-    public WaitingRoomCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
+    public WaitingRoomCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-        this.utils = utils;
     }
 
     /**
@@ -57,7 +56,8 @@ public class WaitingRoomCtrl {
     public void showImages(){
 
         backBtn.setImage(new Image("/client/img/back_btn.png"));
-        lightbulb.setImage(new Image("/client/img/happy_lightbulb.png"));
+        lightbulb.setImage(new Image("/client/img/lightbulb_arms_down.png"));
+        speechBubble.setImage(new Image("/client/img/speech_bubble.png"));
 
     }
 

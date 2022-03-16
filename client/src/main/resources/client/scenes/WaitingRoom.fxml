@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane maxHeight="1440.0" maxWidth="2560.0" minHeight="720.0" minWidth="1280.0" prefHeight="1080.0" prefWidth="1920.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.WaitingRoomCtrl">
    <children>
       <ImageView fx:id="backBtn" fitHeight="110.0" fitWidth="226.0" layoutX="20.0" layoutY="30.0" />
-      <ImageView fx:id="lightbulb" fitHeight="393.0" fitWidth="338.0" layoutX="1274.0" layoutY="544.0" preserveRatio="true">
-      </ImageView>
-      <ImageView fx:id="speechBubble" fitHeight="333.0" fitWidth="401.0" layoutX="1442.0" layoutY="252.0" preserveRatio="true">
-      </ImageView>
-      <Text id="speech-bubble-text" layoutX="1458.0" layoutY="328.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Click me to start the game for everyone!" textAlignment="CENTER" wrappingWidth="369.9293212890625">
-         <font>
-            <Font size="43.0" />
-         </font>
-      </Text>
-      <Text id="title-1" layoutX="578.0" layoutY="144.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Waiting room">
-         <font>
-            <Font size="96.0" />
-         </font>
-      </Text>
-      <Text id="title-2" layoutX="345.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Waiting for other players to join...">
-         <font>
-            <Font size="49.0" />
-         </font>
-      </Text>
-      <Text id="title-3" layoutX="713.0" layoutY="308.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Use the time to recharge your energy...">
-         <font>
-            <Font size="35.0" />
-         </font>
-      </Text>
+      <ImageView fx:id="lightbulb" fitHeight="393.0" fitWidth="338.0" layoutX="1290" layoutY="544.0" preserveRatio="true" />
+      <ImageView fx:id="speechBubble" fitHeight="333.0" fitWidth="401.0" layoutX="1442.0" layoutY="252.0" preserveRatio="true" />
+      <TextFlow layoutX="1468.0" layoutY="283" prefHeight="64.0" prefWidth="350.0" textAlignment="CENTER">
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Click me">
+            <styleClass>
+               <String fx:value="speech-bubble-text" />
+               <String fx:value="bold" />
+               <String fx:value="text" />
+            </styleClass>
+            <font>
+               <Font size="43.0" />
+            </font>
+         </Text>
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" to start the game for everyone!">
+            <styleClass>
+               <String fx:value="speech-bubble-text" />
+               <String fx:value="text" />
+            </styleClass>
+            <font>
+               <Font size="43.0" />
+            </font>
+         </Text>
+      </TextFlow>
+      <Text id="title-1" layoutX="578.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Waiting room" />
+      <Text id="title-2" layoutX="345.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Waiting for other players to join..." />
+      <Text id="title-3" layoutX="713.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Use the time to recharge your energy..." />
       <ListView id="playerList" fx:id="playerList" layoutX="138.0" layoutY="431.0" prefHeight="495.0" prefWidth="960.0" />
-      <Text id="players-text" layoutX="139.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Players joined:" textAlignment="CENTER" wrappingWidth="960.0">
-         <font>
-            <Font size="35.0" />
-         </font>
-      </Text>
+      <Text id="players-text" layoutX="139.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Players joined:" textAlignment="CENTER" wrappingWidth="960.0" />
    </children>
 </AnchorPane>

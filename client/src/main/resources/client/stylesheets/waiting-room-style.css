@@ -11,12 +11,9 @@
     -fx-font-style: italic;
 }
 
-#speech-bubble-text {
-    -fx-font-size: 43px;
-}
-
 #title-1 {
     -fx-font-size: 96px;
+    -fx-font-weight: bold;
 }
 
 #title-2 {
@@ -29,6 +26,7 @@
 
 #players-text {
     -fx-font-size: 35px;
+    -fx-font-weight: bold;
 }
 
 #playerList {
@@ -78,4 +76,12 @@
     -fx-background-color: #E9DEC8;
     -fx-background-radius: 20px;
 
+}
+
+.speech-bubble-text {
+    -fx-font-size: 43px;
+}
+
+.bold {
+    -fx-font-weight: bold;
 }
