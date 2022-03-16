@@ -2,8 +2,10 @@ package client.utils;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.Objects;
+import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 public class DynamicText {
     private final Text outTxt;
@@ -13,8 +15,6 @@ public class DynamicText {
     private final double pixelsPerSize;
     private double currLineHeight;
     private final String fontFamily;
-
-
 
     /**
      * Create an instance of a dynamic text handler. This handles the resizing of the font for
@@ -41,7 +41,7 @@ public class DynamicText {
      * Sets the text of the Text object to a given string, while considering the resizing of the text (keeping the
      * height below the maximum height).
      * @param text The string to set the text to
-     * @param fontSize size of the font
+     * @param fontSize Size of the font (maximum it can set it to, while keeping the bounds)
      */
     public void setText(String text, int fontSize){
         outTxt.setText(text);
@@ -65,6 +65,7 @@ public class DynamicText {
      */
     @Override
     public boolean equals(Object o) {
+        // Kept this equals method and did not use the EqualsBuilder because Text has no equals method.
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DynamicText that = (DynamicText) o;
@@ -79,7 +80,7 @@ public class DynamicText {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(outTxt.getText(), maxHeight, middleY, pixelsPerSize, currLineHeight, fontFamily);
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     /**
@@ -88,14 +89,7 @@ public class DynamicText {
      */
     @Override
     public String toString() {
-        return "DynamicText{" +
-                "outTxt=" + outTxt +
-                ", maxHeight=" + maxHeight +
-                ", middleY=" + middleY +
-                ", pixelsPerSize=" + pixelsPerSize +
-                ", currLineHeight=" + currLineHeight +
-                ", fontFamily='" + fontFamily + '\'' +
-                '}';
+        return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
 
 }
