@@ -12,9 +12,7 @@
 }
 
 .question-title {
-    -fx-font-size: 50px;
     -fx-font-weight: bold;
-    /* TODO: remove/adjust this when dynamic text sizing is added - just a temporary static solution */
 }
 
 .question-button {
@@ -25,7 +23,6 @@
     -fx-border-width: 1px;
     -fx-font-style: none;
     -fx-font-size: 35px;
-    /* TODO: remove/adjust this when dynamic text sizing is added - just a temporary static solution */
 }
 
 .set-answer-button {

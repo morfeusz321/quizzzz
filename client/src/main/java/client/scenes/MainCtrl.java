@@ -70,6 +70,7 @@ public class MainCtrl {
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
      */
+
     public void initialize(Stage primaryStage,
                            Pair<MainScreenCtrl, Parent> mainScreen,
                            Pair<UserCtrl, Parent> username,
@@ -172,6 +173,7 @@ public class MainCtrl {
     /**
      * Shows the main screen scene
      */
+
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
         primaryStage.setScene(mainScreen);
