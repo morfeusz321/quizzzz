@@ -50,6 +50,25 @@ public class CommonUtils {
     }
 
     /**
+     * Generates random number from given range excluding those given as the parameter
+     * @param rnd Instant of the Random class
+     * @param start the start of the range in which the number will be generated
+     * @param end the end of the range in which the number will be generated
+     * @param exclude numbers that will be excluded from the given range
+     * @return random number in given range (number is rounded to first decimal place)
+     */
+    public double getRandomWithExclusion(Random rnd, double start, double end, int... exclude) {
+        double random = start + (end - start) * rnd.nextDouble();
+        random = (double) Math.round(random * 10) / 10;
+        for (int ex : exclude) {
+            if (random == (double) ex) {
+                return getRandomWithExclusion(rnd, start, end, exclude);
+            }
+        }
+        return random;
+    }
+
+    /**
      * Utility method, used to check if a string is null or empty
      * @param s a string
      * @return true if the string is empty or null, false otherwise
