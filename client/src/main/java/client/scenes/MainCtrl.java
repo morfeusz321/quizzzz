@@ -114,8 +114,10 @@ public class MainCtrl {
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
 
-        //showMainScreen();
-        nextQuestion();
+        showMainScreen();
+        //nextQuestion();
+
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
