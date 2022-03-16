@@ -1,7 +1,7 @@
 package server;
 
 import commons.Activity;
-import commons.Utils;
+import commons.CommonUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,13 +98,29 @@ public class WebInterface {
     @PostMapping("/debug/activities/edit")
     public ResponseEntity<Activity> edit(@RequestBody Activity activity) {
 
-        if (activity.id == null || Utils.isNullOrEmpty(activity.imagePath) || Utils.isNullOrEmpty(activity.title)
+        if (activity.id == null || CommonUtils.isNullOrEmpty(activity.imagePath) || CommonUtils.isNullOrEmpty(activity.title)
                 || activity.consumption == 0) {
             return ResponseEntity.badRequest().build();
         }
         ActivityDB activityDB = activityDBController.getInternalDB();
         Activity saved = activityDB.save(activity);
         return ResponseEntity.ok(saved);
+    }
+
+    /**
+     * Deletes an activity from the database
+     * @param activity the activity that will be deleted
+     * @return 200 OK: Activity deleted, 400 Bad Request: Wrong input
+     */
+    @PostMapping("/debug/activities/delete")
+    public ResponseEntity<Activity> delete(@RequestBody Activity activity) {
+
+        if (activity.id == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        ActivityDB activityDB = activityDBController.getInternalDB();
+        activityDB.delete(activity);
+        return ResponseEntity.ok(activity);
     }
 
 }

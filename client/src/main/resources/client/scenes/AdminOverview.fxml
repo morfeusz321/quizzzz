@@ -19,6 +19,7 @@
       <Button layoutX="755.0" layoutY="558.0" mnemonicParsing="false" onAction="#cancel" text="Back" />
       <Label fx:id="totalNo" layoutX="38.0" layoutY="422.0" text="Label" />
       <Label fx:id="selected" layoutX="38.0" layoutY="453.0" text="Currently selected: None" />
-      <Button fx:id="edit" disable="true" layoutX="92.0" layoutY="471.0" mnemonicParsing="false" onAction="#showEdit" text="Edit selected" />
+      <Button fx:id="edit" disable="true" layoutX="143.0" layoutY="471.0" mnemonicParsing="false" onAction="#showEdit" text="Edit selected" />
+      <Button fx:id="delete" disable="true" layoutX="38.0" layoutY="471.0" mnemonicParsing="false" onAction="#delete" text="Delete selected" />
    </children>
 </AnchorPane>

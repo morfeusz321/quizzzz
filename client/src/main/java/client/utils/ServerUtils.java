@@ -84,11 +84,24 @@ public class ServerUtils {
     /**
      * Post a modified activity to the server using the API endpoint
      * @param activity modified activity
-     * @return string indicating whether the request was successful
+     * @return the new activity if the request was successful
      */
     public Activity editActivity(Activity activity) {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("debug/activities/edit") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    /**
+     * Sends a post request to delete an activity
+     * @param activity the activity that will be deleted
+     * @return the old activity (now deleted) if the request was successful
+     */
+    public Activity deleteActivity(Activity activity) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("debug/activities/delete") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
                 .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);

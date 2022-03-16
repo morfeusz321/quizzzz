@@ -8,13 +8,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AdminCtrl implements Initializable {
@@ -39,6 +37,8 @@ public class AdminCtrl implements Initializable {
     private Label selected;
     @FXML
     private Button edit;
+    @FXML
+    private Button delete;
 
     private Activity currentActivity;
 
@@ -69,6 +69,24 @@ public class AdminCtrl implements Initializable {
     }
 
     /**
+     * Method for deleting an activity from the database
+     */
+    public void delete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Are you sure you want to delete this entry?");
+        alert.setContentText("This will delete " + currentActivity.id);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            server.deleteActivity(currentActivity);
+            refresh();
+        } else {
+            alert.close();
+        }
+    }
+
+    /**
      * Show the edit activity scene
      */
     public void showEdit() {
@@ -84,6 +102,8 @@ public class AdminCtrl implements Initializable {
         data = FXCollections.observableList(activities);
         table.setItems(data);
         totalNo.setText("Total number of activities: " + table.getItems().size());
+        edit.setDisable(true);
+        delete.setDisable(true);
     }
 
     @FXML
@@ -92,5 +112,6 @@ public class AdminCtrl implements Initializable {
         selected.setText("Currently selected: " + activity.id);
         currentActivity = activity;
         edit.setDisable(false);
+        delete.setDisable(false);
     }
 }
