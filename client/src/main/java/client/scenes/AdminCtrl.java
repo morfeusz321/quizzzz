@@ -43,9 +43,9 @@ public class AdminCtrl implements Initializable {
     private Activity currentActivity;
 
     /**
-     * Constructor
-     * @param server
-     * @param mainCtrl
+     * Constructor for a AdminCtrl, which controls the display/interaction of managing the activities
+     * @param server Utilities for communicating with the server (API endpoint)
+     * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
     public AdminCtrl(ServerUtils server, MainCtrl mainCtrl) {
@@ -87,6 +87,14 @@ public class AdminCtrl implements Initializable {
     }
 
     /**
+     * Show the edit activity scene (sending null as activity, in order to create a new activity)
+     * reusing the same scene as edit activity
+     */
+    public void addActivity() {
+        mainCtrl.showAdminEdit(null);
+    }
+
+    /**
      * Show the edit activity scene
      */
     public void showEdit() {
@@ -106,6 +114,10 @@ public class AdminCtrl implements Initializable {
         delete.setDisable(true);
     }
 
+    /**
+     * Automatically updates currentActivity to the selected activity from the table
+     * @param click mouse event
+     */
     @FXML
     private void handleClickTableView(MouseEvent click) {
         Activity activity = table.getSelectionModel().getSelectedItem();
