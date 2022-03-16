@@ -15,8 +15,7 @@ import server.database.QuestionDBController;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class QuestionControllerTest {
 
@@ -247,7 +246,43 @@ public class QuestionControllerTest {
 
     }
 
+    @Test
+    public void testRandomWithExclusion() {
+
+        double r = QuestionController.getRandomWithExclusion(new NotSoRandom(), 0, 1, 0);
+
+        assertNotEquals(0.0, r);
+
+    }
+
     private class NotSoRandom extends Random {
+
+        private boolean hasReturned = false;
+        private double lastReturned = 0;
+
+        @Override
+        public double nextDouble() {
+
+            if(!hasReturned) {
+                hasReturned = true;
+                lastReturned = 0;
+                return 0;
+            }
+
+            if(lastReturned == 0) {
+
+                double ret = super.nextDouble();
+                lastReturned = ret;
+                return ret;
+
+            } else {
+
+                lastReturned = 0;
+                return 0;
+
+            }
+
+        }
 
 
     }

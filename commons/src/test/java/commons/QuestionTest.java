@@ -55,7 +55,7 @@ class QuestionTest {
         assertEquals("How much energy does taking a shower for 2 minutes take?", generalQuestion.displayQuestion());
         assertEquals("Instead of taking a shower for 2 minutes, you could use the same amount of energy for...", comparisonQuestion.displayQuestion());
         assertEquals("How much energy does taking a shower for 2 minutes take?", estimationQuestion.displayQuestion());
-        assertEquals("Which activity consume more energy?", whichIsMoreQuestion.displayQuestion());
+        assertEquals("Which activity consumes more energy?", whichIsMoreQuestion.displayQuestion());
     }
 
     @Test

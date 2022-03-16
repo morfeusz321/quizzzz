@@ -135,7 +135,7 @@ public class QuestionController {
             }
 
             //If difference is bigger than 10% of the original activity we search again
-            if ((difference / firstActivity.consumption) > 0.1) {
+            if (((double) difference / firstActivity.consumption) > 0.1) {
                 return getComparisonQuestion();
             }
 
@@ -213,7 +213,7 @@ public class QuestionController {
             return ResponseEntity.noContent().build();
         }
 
-        if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion) {
+        if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion || q instanceof WhichIsMoreQuestion) {
             if (answer == q.answer) {
                 return ResponseEntity.ok(new AnswerResponseEntity(true));
             } else {
@@ -238,15 +238,15 @@ public class QuestionController {
      * @param exclude numbers that will be excluded from the given range
      * @return random number in given range (number is rounded to first decimal place)
      */
-    private static double getRandomWithExclusion(Random rnd, double start, double end, int... exclude) {
-        double random = start + rnd.nextDouble(end - start + 1 - exclude.length);
+    public static double getRandomWithExclusion(Random rnd, double start, double end, int... exclude) {
+        double random = start + (end - start) * rnd.nextDouble();
+        random = (double) Math.round(random * 10) / 10;
         for (int ex : exclude) {
-            if (random < ex) {
-                break;
+            if (random == (double) ex) {
+                return getRandomWithExclusion(rnd, start, end, exclude);
             }
-            random++;
         }
-        return (double) Math.round(random * 10) / 10;
+        return random;
     }
 
 }
