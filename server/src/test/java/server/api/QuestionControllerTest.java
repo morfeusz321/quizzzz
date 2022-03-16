@@ -32,18 +32,25 @@ public class QuestionControllerTest {
 
     }
 
-//    @Test
-//    public void getWhichIsMoreQuestionTest() {
-//
-//        activityDBController.forceReload();
-//
-//        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
-//
-//        assertEquals(HttpStatus.OK, q.getStatusCode());
-//        assertNotNull(q.getBody());
-//        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
-//
-//    }
+    @Test
+    public void getWhichIsMoreQuestionTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 201);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 260);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 187);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+
+        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertEquals(activity2.title, q.getBody().answerOptions.get((int) q.getBody().answer));
+
+    }
 
     @Test
     public void getRandomQuestionTestNoActivities() {
@@ -82,11 +89,11 @@ public class QuestionControllerTest {
     public void getComparisonQuestionTest() {
 
         activityDBController.getInternalDB().deleteAll();
-        Activity activity1 = new Activity("1", "/path/to/image/", "Activity", 201);
-        Activity activity2 = new Activity("2", "/path/to/image/", "Activity", 260);
-        Activity activity3 = new Activity("3", "/path/to/image/", "Activity", 187);
-        Activity activity4 = new Activity("4", "/path/to/image/", "Activity", 2070);
-        Activity activity5 = new Activity("5", "/path/to/image/", "Activity", 20092);
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 201);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 260);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 187);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 2070);
+        Activity activity5 = new Activity("5", "/path/to/image/", "Activity 5", 20092);
         activityDBController.getInternalDB().save(activity1);
         activityDBController.getInternalDB().save(activity2);
         activityDBController.getInternalDB().save(activity3);
@@ -98,6 +105,10 @@ public class QuestionControllerTest {
         assertEquals(HttpStatus.OK, q.getStatusCode());
         assertNotNull(q.getBody());
         assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+        assertTrue(activity1.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer))
+                        ||
+                activity3.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer)));
 
     }
 
