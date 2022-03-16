@@ -99,17 +99,10 @@ public class CommonUtilsTest {
 
     private class NotSoRandomForExclusion extends Random {
 
-        private boolean hasReturned = false;
-        private double lastReturned = 0;
+        private double lastReturned = -1;
 
         @Override
         public double nextDouble() {
-
-            if(!hasReturned) {
-                hasReturned = true;
-                lastReturned = 0;
-                return 0;
-            }
 
             if(lastReturned == 0) {
 
@@ -125,7 +118,6 @@ public class CommonUtilsTest {
             }
 
         }
-
 
     }
 

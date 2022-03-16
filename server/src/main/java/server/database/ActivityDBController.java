@@ -142,8 +142,8 @@ public class ActivityDBController {
 
 
     /**
-     * Gets a list of 2 random activities from the database
-     * @return list of 2 random activities
+     * Gets a list of 3 random activities from the database
+     * @return list of 3 random activities
      */
     public ArrayList<Activity> getThreeRandomActivities(){
         return activityDB.getThreeRandomActivities();
