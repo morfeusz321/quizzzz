@@ -33,14 +33,27 @@
 
 #playerList {
     -fx-font-size: 35px;
+    -fx-background-insets: 0;
+    -fx-border-width: 0px;
+    -fx-background-color: #F0EAD6;
+    -fx-padding: 0;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+.list-cell {
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
 }
 
 #playerList .list-cell:even {
-    -fx-background-color: #D8D2C0;
+    -fx-background-color: #E9DEC8;
 }
 
 #playerList .list-cell:odd {
-    -fx-background-color: #C0BBAB;
+    -fx-background-color: #F0EAD6;
+    -fx-border-color: #E9DEC8;
+    -fx-border-width: 3px;
 }
 
 #playerList .scroll-bar:vertical .increment-arrow,
@@ -48,16 +61,21 @@
     -fx-opacity: 0;
 }
 
+#playerList .scroll-bar > .increment-button,
+#playerList .scroll-bar > .decrement-button {
+    -fx-pref-height: 0;
+}
+
 #playerList .scroll-bar:vertical .track-background {
-    -fx-background-color: #C0BBAB;
-    -fx-opacity: 0.75;
+    -fx-background-color: #F0EAD6;
 }
 
 #playerList .scroll-bar:vertical .track {
-    -fx-background-color: #C0BBAB;
-    -fx-opacity: 0.75;
+    -fx-background-color: #F0EAD6;
 }
 
 #playerList .scroll-bar:vertical .thumb {
-    -fx-background-color: #605D55;
+    -fx-background-color: #E9DEC8;
+    -fx-background-radius: 20px;
+
 }
