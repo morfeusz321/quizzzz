@@ -19,6 +19,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.GeneralQuestion;
 import commons.Question;
+import commons.Activity;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -44,6 +45,12 @@ public class MainCtrl {
     private UserCtrl userCtrl;
     private Scene username;
 
+    private AdminCtrl adminCtrl;
+    private Scene adminScene;
+
+    private AdminEditActivityCtrl adminEditCtrl;
+    private Scene adminEditScene;
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -67,7 +74,9 @@ public class MainCtrl {
                            Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
-                           Pair<EstimationQuestionCtrl, Parent> estimationQ) {
+                           Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                           Pair<AdminCtrl, Parent> adminScene,
+                           Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
 
         this.primaryStage = primaryStage;
 
@@ -114,8 +123,14 @@ public class MainCtrl {
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
 
-        //showMainScreen();
-        nextQuestion();
+        this.adminCtrl = adminScene.getKey();
+        this.adminScene = new Scene(adminScene.getValue());
+
+        this.adminEditCtrl = adminEditScene.getKey();
+        this.adminEditScene = new Scene(adminEditScene.getValue());
+
+        showMainScreen();
+        //nextQuestion();
         primaryStage.show();
     }
 
@@ -166,5 +181,25 @@ public class MainCtrl {
             showGeneralQuestion(q);
         }
         // TODO: other questions are not implemented yet, this has to be modified after that
+    }
+
+    /**
+     * Show the admin screen (table with all activities)
+     */
+    public void showAdmin() {
+        primaryStage.setTitle("Admin");
+        primaryStage.setScene(adminScene);
+        adminCtrl.refresh();
+        adminCtrl.setScene(adminScene);
+    }
+
+    /**
+     * Show the edit activity screen
+     * @param activity a previously selected activity
+     */
+    public void showAdminEdit(Activity activity) {
+        primaryStage.setTitle("Admin - Edit activity");
+        primaryStage.setScene(adminEditScene);
+        adminEditCtrl.setActivity(activity);
     }
 }

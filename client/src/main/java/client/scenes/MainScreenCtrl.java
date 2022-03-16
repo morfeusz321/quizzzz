@@ -65,6 +65,13 @@ public class MainScreenCtrl implements Initializable {
         mainCtrl.nextQuestion();
     }
 
+    /**
+     * Opens the admin screen
+     */
+    public void showAdmin() {
+        mainCtrl.showAdmin();
+    }
+
     //TODO: add multiplayer and help
 
 }

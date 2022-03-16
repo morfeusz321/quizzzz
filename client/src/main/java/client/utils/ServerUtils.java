@@ -18,6 +18,9 @@ package client.utils;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
+import java.util.List;
+
+import commons.Activity;
 import commons.AnswerResponseEntity;
 import commons.Question;
 import jakarta.ws.rs.core.Form;
@@ -25,6 +28,7 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.GenericType;
 
 public class ServerUtils {
 
@@ -63,6 +67,57 @@ public class ServerUtils {
                 .accept(APPLICATION_JSON)
                 .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
 
+    }
+
+    /**
+     * Gets all activities from the server using the API endpoint
+     * @return a list of activities
+     */
+    public List<Activity> getActivities() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("debug/activities") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Activity>>() {});
+    }
+
+    /**
+     * Post a modified activity to the server using the API endpoint
+     * @param activity modified activity
+     * @return the new activity if the request was successful
+     */
+    public Activity editActivity(Activity activity) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("debug/activities/edit") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    /**
+     * Sends a post request to delete an activity
+     * @param activity the activity that will be deleted
+     * @return the old activity (now deleted) if the request was successful
+     */
+    public Activity deleteActivity(Activity activity) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("debug/activities/delete") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(activity, APPLICATION_JSON), Activity.class);
+    }
+
+    /**
+     * Sends a post request to import a list of activities
+     * @param path the path to the json file
+     * @return string indicating whether the request was successful
+     */
+    public String importActivity(String path) {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("debug/activities/import") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(path, APPLICATION_JSON), String.class);
     }
 
     /**
