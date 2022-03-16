@@ -9,6 +9,42 @@ import static org.junit.jupiter.api.Assertions.*;
 class DynamicTextTest {
 
     @Test
+    public void testWhyPipelineFailing() {
+
+        try {
+            Text werweqr = new Text();
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Text rewtrty = new Text("fhdsajkh");
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testWhyPipelineFailing2() {
+
+        try {
+            Text sdfsda = new Text();
+            sdfsda.setText("djlks");
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Text dfasfds = new Text("uerirw");
+            dfasfds.setText("dafsdsaf");
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
     void setText() {
         String text = "Very very Very very Very very Very very Very very Very very Very very Very very Very very Very very Very very long question";
         int originalFontSize = 20;
