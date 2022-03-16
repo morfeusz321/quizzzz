@@ -71,6 +71,7 @@ public class QuestionControllerTest {
     @Test
     public void getWhichIsMoreQuestionNoActivities() {
 
+        activityDBController.getInternalDB().deleteAll();
         ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
@@ -81,11 +82,16 @@ public class QuestionControllerTest {
     public void getComparisonQuestionTest() {
 
         activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 0));
-        activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 0));
-        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 0));
-        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 0));
-        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 0));
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity", 201);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity", 260);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity", 187);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity", 2070);
+        Activity activity5 = new Activity("5", "/path/to/image/", "Activity", 20092);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+        activityDBController.getInternalDB().save(activity4);
+        activityDBController.getInternalDB().save(activity5);
 
         ResponseEntity<Question> q = questionController.getComparisonQuestion();
 
@@ -95,11 +101,12 @@ public class QuestionControllerTest {
 
     }
 
-//    @Test
-//    public void getComparisonNoActivities() {
-//        ResponseEntity<Question> q = questionController.getComparisonQuestion();
-//        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
-//    }
+    @Test
+    public void getComparisonNoActivities() {
+        activityDBController.getInternalDB().deleteAll();
+        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+    }
 
     @Test
     public void getEstimationQuestionTest() {
@@ -118,6 +125,7 @@ public class QuestionControllerTest {
     @Test
     public void getEstimationNoActivities() {
 
+        activityDBController.getInternalDB().deleteAll();
         ResponseEntity<Question> q = questionController.getEstimationQuestion();
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
@@ -416,26 +424,45 @@ public class QuestionControllerTest {
             return null;
         }
 
-
         @Override
         public ArrayList<Activity> getFiveRandomActivities() {
-            ArrayList<Activity> temp = new ArrayList<>();
-            Activity activity1 = new Activity("1", "/path/to/image/", "Activity", 201);
-            Activity activity2 = new Activity("2", "/path/to/image/", "Activity", 260);
-            Activity activity3 = new Activity("3", "/path/to/image/", "Activity", 20);
-            Activity activity4 = new Activity("4", "/path/to/image/", "Activity", 2070);
-            Activity activity5 = new Activity("5", "/path/to/image/", "Activity", 20092);
-            temp.add(activity1);
-            temp.add(activity2);
-            temp.add(activity3);
-            temp.add(activity4);
-            temp.add(activity5);
-            return temp;
+
+            ArrayList<Activity> random = new ArrayList<>();
+            Random r = new Random();
+
+            List<Activity> copy = new ArrayList<>();
+            copy.addAll(db);
+
+            for(int i = 0; i < 5 && copy.size() > 0; i++) {
+
+                int idx = r.nextInt(copy.size());
+                random.add(copy.get(idx));
+                copy.remove(idx);
+
+            }
+
+            return random;
         }
 
         @Override
         public ArrayList<Activity> getThreeRandomActivities() {
-            return null;
+
+            ArrayList<Activity> random = new ArrayList<>();
+            Random r = new Random();
+
+            List<Activity> copy = new ArrayList<>();
+            copy.addAll(db);
+
+            for(int i = 0; i < 3 && copy.size() > 0; i++) {
+
+                int idx = r.nextInt(copy.size());
+                random.add(copy.get(idx));
+                copy.remove(idx);
+
+            }
+
+            return random;
+
         }
 
     }

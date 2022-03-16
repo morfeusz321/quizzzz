@@ -117,6 +117,11 @@ public class QuestionController {
 
             //First we sort the list of returned activities
             List<Activity> activities = activityDBController.getFiveRandomActivities();
+
+            if(activities.size() < 5) {
+                return ResponseEntity.internalServerError().build();
+            }
+
             Collections.sort(activities, new Comparator<Activity>() {
                 @Override
                 public int compare(Activity o1, Activity o2) {
