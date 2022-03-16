@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.GameType;
 import commons.GeneralQuestion;
 import commons.Question;
 import javafx.scene.Parent;
@@ -179,6 +180,17 @@ public class MainCtrl {
 
         primaryStage.setTitle("Username input");
         primaryStage.setScene(username);
+
+    }
+
+    /**
+     * Returns the game type that has been selected by the user by clicking on either the singleplayer
+     * or multiplayer button
+     * @return the game type selected by the user
+     */
+    public GameType getSelectedGameType() {
+
+        return mainScreenCtrl.selectedGameType;
 
     }
 
