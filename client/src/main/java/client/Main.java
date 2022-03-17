@@ -16,6 +16,7 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
+
 import com.google.inject.Injector;
 import client.scenes.*;
 
@@ -37,6 +38,7 @@ public class Main extends Application {
 
     /**
      * Starts the application by loading the fxml files/scenes and by initializing the
+     * main control with the overview/quote adding. TODO: remove quote adding
      * @param primaryStage The main application stage (i.e. window) in which all scenes are displayed
      */
     @Override
@@ -45,11 +47,13 @@ public class Main extends Application {
         var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "GeneralQuestion.fxml");
         var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
         var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
+        var mostExpensiveQ = FXML.load(MostExpensiveQuestionCtrl.class, "client", "scenes", "MostExpensiveQuestion.fxml");
         var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
-        var dynamicText = FXML.load(DynamicTextController.class, "client", "scenes", "DynamicTextSize.fxml");
+        var admin = FXML.load(AdminCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var adminEdit = FXML.load(AdminEditActivityCtrl.class, "client", "scenes", "AdminEditActivity.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, mainScreen, input, generalQ, comparisonQ, estimationQ, mostExpensiveQ, admin, adminEdit);
 
-        mainCtrl.initialize(primaryStage, mainScreen, input, generalQ, comparisonQ, estimationQ);
     }
 }

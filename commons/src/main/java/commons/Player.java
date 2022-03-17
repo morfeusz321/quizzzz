@@ -23,6 +23,15 @@ public class Player {
     }
 
     /**
+     * Creates a new Player with the specified username
+     * @param username the username of this player
+     */
+    public Player(String username) {
+        this();
+        this.username = username;
+    }
+
+    /**
      * gets the username of the player
      * @return username of the player
      */

@@ -33,4 +33,9 @@
     -fx-min-height: 131px;
 }
 
+.admin-button {
+    -fx-min-width: 100px;
+    -fx-min-height: 50px;
+    -fx-font-size: 20px;
+}
 
