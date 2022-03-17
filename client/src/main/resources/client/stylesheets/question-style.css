@@ -27,7 +27,7 @@
     -fx-border-color: #252422;
     -fx-border-width: 1px;
     -fx-font-style: none;
-    -fx-font-size: 35px;
+    -fx-font-size: 25px;
 }
 
 .set-answer-button {
@@ -49,19 +49,19 @@
 }
 
 .powers-text {
-    -fx-font-size: 46px;
+    -fx-font-size: 35px;
 }
 
 .react-text {
-    -fx-font-size: 46px;
+    -fx-font-size: 25px;
 }
 
 .smaller-info-text {
-    -fx-font-size: 36px;
+    -fx-font-size: 25px;
 }
 
 .progress-text {
-    -fx-font-size: 30px;
+    -fx-font-size: 20px;
 }
 
 .slider-text {
