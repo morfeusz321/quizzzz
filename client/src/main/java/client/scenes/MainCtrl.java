@@ -16,9 +16,19 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+
 import com.google.inject.Inject;
+
+import commons.Activity;
+import commons.GameType;
 import commons.GeneralQuestion;
 import commons.Question;
+
+import commons.gameupdate.GameUpdate;
+import commons.gameupdate.GameUpdateGameStarting;
+import commons.gameupdate.GameUpdatePlayerJoined;
+import commons.gameupdate.GameUpdatePlayerLeft;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -35,6 +45,9 @@ public class MainCtrl {
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
 
+    private MostExpensiveQuestionCtrl mostExpensiveQuestionCtrl;
+    private Scene mostExpensiveQuestion;
+
     private ComparisonQuestionCtrl comparisonQuestionCtrl;
     private Scene comparisonQuestion;
 
@@ -43,6 +56,15 @@ public class MainCtrl {
 
     private UserCtrl userCtrl;
     private Scene username;
+
+    private WaitingRoomCtrl waitingRoomCtrl;
+    private Scene waitingRoom;
+
+    private AdminCtrl adminCtrl;
+    private Scene adminScene;
+
+    private AdminEditActivityCtrl adminEditCtrl;
+    private Scene adminEditScene;
 
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
@@ -57,17 +79,26 @@ public class MainCtrl {
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
-     * @param username the name of the player
+     * @param mainScreen Pair of the control and the scene of the main screen of the game
+     * @param username Pair of the control and the scene of the username input screen
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
+     * @param waitingRoom Pair of the control and the scene of the waiting room
+     * @param adminScene Pair of the control and the scene of the admin interface
+     * @param adminEditScene Pair of the control and the scene of the admin interface's activity editor
      */
     public void initialize(Stage primaryStage,
                            Pair<MainScreenCtrl, Parent> mainScreen,
                            Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
-                           Pair<EstimationQuestionCtrl, Parent> estimationQ) {
+                           Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                           Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ,
+                           Pair<WaitingRoomCtrl, Parent> waitingRoom,
+                           Pair<AdminCtrl, Parent> adminScene,
+                           Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
 
         this.primaryStage = primaryStage;
 
@@ -77,6 +108,52 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/main-style.css"
                 ).toExternalForm());
+
+        this.userCtrl = username.getKey();
+        this.username = new Scene(username.getValue());
+
+        initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
+
+        this.waitingRoomCtrl = waitingRoom.getKey();
+        this.waitingRoom = new Scene(waitingRoom.getValue());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/waiting-room-style.css"
+                ).toExternalForm());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
+        this.adminCtrl = adminScene.getKey();
+        this.adminScene = new Scene(adminScene.getValue());
+
+        this.adminEditCtrl = adminEditScene.getKey();
+        this.adminEditScene = new Scene(adminEditScene.getValue());
+
+        initializeOnCloseEvents();
+
+        showMainScreen();
+
+        primaryStage.setResizable(false);
+        primaryStage.show();
+
+    }
+
+    /**
+     * Initializes the question controllers and their respective scenes by adding them to this
+     * class, and setting their stylesheets
+     * @param generalQ Pair of the control and the scene of the general question
+     * @param comparisonQ Pair of the control and the scene of the comparison question
+     * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
+     */
+    public void initializeQuestionControllersAndScenes(Pair<GeneralQuestionCtrl, Parent> generalQ,
+                                                     Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
+                                                     Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                                                     Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
+
+        // TODO: this definitely needs restructuring, too much code duplication
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
@@ -111,18 +188,42 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
-        this.userCtrl = username.getKey();
-        this.username = new Scene(username.getValue());
+        this.mostExpensiveQuestionCtrl = mostExpensiveQ.getKey();
+        this.mostExpensiveQuestion = new Scene(mostExpensiveQ.getValue());
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
+                ).toExternalForm());
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
 
-        showMainScreen();
-        //nextQuestion();
-
-        primaryStage.setResizable(false);
-        primaryStage.show();
     }
 
     /**
-     * Shows the general question screen and loads a new question
+     * Initializes all the events that should happen upon sending a close request to
+     * the primary stage, that is, clicking the red x button on the window
+     */
+    public void initializeOnCloseEvents() {
+
+        primaryStage.setOnCloseRequest(event -> {
+            sendLeaveMessageToServer();
+            System.exit(0);
+        });
+
+    }
+
+    /**
+     * Shows the waiting room screen
+     */
+    public void showWaitingRoom() {
+        primaryStage.setTitle("Waiting room");
+        primaryStage.setScene(waitingRoom);
+    }
+
+    /**
+     * Shows the general question screen
      */
     public void showGeneralQuestion(Question q) {
         primaryStage.setTitle("General question");
@@ -132,7 +233,7 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the comparison question screen and loads a new question
+     * Shows the comparison question screen
      */
     public void showComparisonQuestion(Question q) {
         primaryStage.setTitle("Comparison question");
@@ -142,7 +243,17 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the estimation question screen and loads a new question
+     * Shows the "most expensive" question screen
+     */
+    public void showMostExpensiveQuestion(Question q) {
+        primaryStage.setTitle("Most expensive question");
+        primaryStage.setScene(mostExpensiveQuestion);
+        mostExpensiveQuestionCtrl.loadQuestion(q);
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows the estimation question screen
      */
     public void showEstimationQuestion(Question q) {
         primaryStage.setTitle("Estimation question");
@@ -169,4 +280,79 @@ public class MainCtrl {
         }
         // TODO: other questions are not implemented yet, this has to be modified after that
     }
+
+     /**
+      * Shows the username input screen
+     */
+    public void showUsernameInputScreen() {
+
+        primaryStage.setTitle("Username input");
+        primaryStage.setScene(username);
+
+        username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
+
+    }
+
+    /**
+     * Informs the server that the client is leaving the game
+     */
+    public void sendLeaveMessageToServer() {
+
+        server.leaveGame(userCtrl.getSavedCurrentUsername(), userCtrl.getSavedGameUUID());
+
+    }
+
+    /**
+     * The handler for all incoming game updates via the WebSocket connection, such as players leaving or joining
+     * @param gameUpdate the update for this game received from the WebSocket session
+     */
+    protected void gameUpdateHandler(GameUpdate gameUpdate) {
+
+        System.out.print("Update received...\t");
+
+        if(gameUpdate instanceof GameUpdatePlayerJoined) {
+            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+            waitingRoomCtrl.addPlayerToWaitingRoom(((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
+            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+            waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdateGameStarting) {
+            System.out.print("GAME STARTING!");
+        }
+
+        System.out.println();
+
+    }
+
+    /**
+     * Returns the game type that has been selected by the user by clicking on either the singleplayer
+     * or multiplayer button
+     * @return the game type selected by the user
+     */
+    public GameType getSelectedGameType() {
+
+        return mainScreenCtrl.selectedGameType;
+
+    }
+
+    /**
+     * Show the admin screen (table with all activities)
+     */
+    public void showAdmin() {
+        primaryStage.setTitle("Admin");
+        primaryStage.setScene(adminScene);
+        adminCtrl.refresh();
+        adminCtrl.setScene(adminScene);
+    }
+
+    /**
+     * Show the edit activity screen
+     * @param activity a previously selected activity
+     */
+    public void showAdminEdit(Activity activity) {
+        primaryStage.setTitle("Admin - Edit activity");
+        primaryStage.setScene(adminEditScene);
+        adminEditCtrl.setActivity(activity);
+    }
+
 }

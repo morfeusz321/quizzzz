@@ -17,6 +17,8 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.GameType;
+import commons.gameupdate.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -24,10 +26,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
 
+import java.util.UUID;
+
 public class UserCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final WaitingRoomCtrl waitingRoomCtrl;
+
+    private String currentUsername;
+    private UUID gameUUID;
+    private String serverAddressPreFill = "localhost:8080";
 
     @FXML
     private TextField username;
@@ -41,34 +50,96 @@ public class UserCtrl {
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public UserCtrl(ServerUtils server, MainCtrl mainCtrl) {
-        this.mainCtrl = mainCtrl;
+    public UserCtrl(ServerUtils server, MainCtrl mainCtrl, WaitingRoomCtrl waitingRoomCtrl) {
         this.server = server;
-
+        this.mainCtrl = mainCtrl;
+        this.waitingRoomCtrl = waitingRoomCtrl;
     }
 
-    /**
+     /**
      * Initializes the default text for the server address
      */
     public void initialize() {
-        serverAddress.setText("localhost:8080");
+        serverAddress.setText(serverAddressPreFill);
     }
 
     /**
-     *  sends the username that the user has entered
+     * Sends the server a request to join the current game with the username specified in the TextField in
+     * the GUI, and registers for updates for that game if it can be joined.
      */
     public void join() {
-        try {
-            server.changeServer(getServer());
-            server.addUserName(getUserName());
-        } catch (WebApplicationException e) {
 
+        String un = getUserName();
+
+        GameUpdate gu;
+        try {
+
+            server.changeServer(getServer());
+
+            if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+                gu = server.joinSinglePlayerGame(un, true);
+            } else if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
+                gu = server.joinMultiplayerGame(un);
+            } else {
+                throw new IllegalArgumentException("Invalid game type!");
+            }
+
+        } catch (WebApplicationException | IllegalArgumentException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);
             alert.setContentText(e.getMessage());
             alert.showAndWait();
             return;
         }
+
+        if(gu instanceof GameUpdateNameInUse) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Name \"" + un + "\" already in use!");
+            alert.showAndWait();
+            return;
+        }
+
+        if(gu instanceof GameUpdateFullPlayerList) {
+            waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu), un);
+            this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
+        }
+
+        server.registerForGameUpdates(gameUUID, mainCtrl::gameUpdateHandler);
+
+        this.currentUsername = un;
+        this.serverAddressPreFill = getServer();
+
+        /*
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                server.startGame();
+            }
+        }, 10000);
+        */
+
+        mainCtrl.showWaitingRoom();
+
+    }
+
+    /**
+     * Returns the username entered by the player which has been used to join a game on the server
+     * @return the current username of the user registered to the server
+     */
+    public String getSavedCurrentUsername() {
+
+        return currentUsername;
+
+    }
+
+    /**
+     * Returns the UUID of the game that the user is currently in
+     * @return the UUID of the current game received from the server
+     */
+    public UUID getSavedGameUUID() {
+
+        return gameUUID;
 
     }
 

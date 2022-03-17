@@ -16,8 +16,10 @@
 package client;
 
 import static com.google.inject.Guice.createInjector;
-import com.google.inject.Injector;
+
 import client.scenes.*;
+
+import com.google.inject.Injector;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -37,18 +39,25 @@ public class Main extends Application {
 
     /**
      * Starts the application by loading the fxml files/scenes and by initializing the
+     * main control with the overview/quote adding. TODO: remove quote adding
      * @param primaryStage The main application stage (i.e. window) in which all scenes are displayed
      */
     @Override
     public void start(Stage primaryStage){
+
         var mainScreen = FXML.load(MainScreenCtrl.class, "client", "scenes", "MainScreen.fxml");
+        var username = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
         var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "GeneralQuestion.fxml");
         var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
         var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
-        var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
+        var mostExpensiveQ = FXML.load(MostExpensiveQuestionCtrl.class, "client", "scenes", "MostExpensiveQuestion.fxml");
+        var waitingRoom = FXML.load(WaitingRoomCtrl.class, "client", "scenes", "WaitingRoom.fxml");
+        var admin = FXML.load(AdminCtrl.class, "client", "scenes", "AdminOverview.fxml");
+        var adminEdit = FXML.load(AdminEditActivityCtrl.class, "client", "scenes", "AdminEditActivity.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, mainScreen, username, generalQ, comparisonQ, estimationQ, mostExpensiveQ, waitingRoom, admin, adminEdit);
 
-        mainCtrl.initialize(primaryStage, mainScreen, input, generalQ, comparisonQ, estimationQ);
     }
+
 }
