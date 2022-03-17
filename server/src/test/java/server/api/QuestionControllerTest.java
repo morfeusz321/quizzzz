@@ -138,6 +138,55 @@ public class QuestionControllerTest {
 
     }
 
+    @Test
+    public void getRandomQuestionWithLongTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999995L));
+
+        ResponseEntity<Question> q = questionController.getRandomQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+    }
+
+    @Test
+    public void getEstimationWithLongTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999999L));
+
+        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+    }
+
+    @Test
+    public void getMoreExpensiveWithLongTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9999999995L);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 9999999999L);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 9999999990L);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+
+        ResponseEntity<Question> moreExpensive = questionController.getWhichIsMoreQuestion();
+
+        assertEquals(HttpStatus.OK, moreExpensive.getStatusCode());
+        assertNotNull(moreExpensive.getBody());
+        assertEquals(moreExpensive.getBody(), questionDBController.getById(moreExpensive.getBody().questionId));
+        assertEquals(activity2.title, moreExpensive.getBody().answerOptions.get((int) moreExpensive.getBody().answer));
+        // This can be cast to an int because it is only the index, so not a long value.
+
+    }
+
 
     @Test
     public void answerTestMalformedAnswer() {
