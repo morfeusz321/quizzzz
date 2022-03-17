@@ -103,6 +103,10 @@ public class MainCtrl {
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
+        this.username.getStylesheets().add(
+                MainScreenCtrl.class.getResource(
+                        "/client/stylesheets/Input.css"
+                ).toExternalForm());
 
         initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
 
@@ -242,9 +246,11 @@ public class MainCtrl {
      */
     public void showUsernameInputScreen() {
 
-        primaryStage.setTitle("Username input");
-        primaryStage.setScene(username);
 
+        primaryStage.setTitle("Username input");
+
+        primaryStage.setScene(username);
+        userCtrl.setTextGameType();
         username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
 
     }

@@ -59,24 +59,29 @@ public class UserCtrl {
 
      /**
      * Initializes the default text for the server address
-      * and sends the type of the game for the label to the fxml file
+      *
      */
+
     public void initialize() {
-
         serverAddress.setText("localhost:8080");
-
-        if(true){
-            /* TO DO: figure out why mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER doesnt work */
-            gameType.setText("MULTI-PLAYER");
-        }
-        else gameType.setText("SINGLE-PLAYER");;
     }
 
+    /**
+     * sends the type of the game for the label to the fxml file
+     */
+
+    public void setTextGameType(){
+        if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER){
+            gameType.setText("MULTI-PLAYER");
+        }
+        else gameType.setText("SINGLE-PLAYER");
+    }
 
     /**
      * Sends the server a request to join the current game with the username specified in the TextField in
      * the GUI, and registers for updates for that game if it can be joined.
      */
+
     public void join() {
 
         String un = getUserName();

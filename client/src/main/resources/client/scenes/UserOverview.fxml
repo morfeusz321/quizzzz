@@ -16,7 +16,7 @@
          <String fx:value="text12" />
       </styleClass>
    </Label>
-      <Label alignment="CENTER" layoutX="920.0" layoutY="115.0" styleClass="text1" text="game" textAlignment="CENTER" />
+      <Label alignment="CENTER" layoutX="926.0" layoutY="115.0" styleClass="text1" text="game" textAlignment="CENTER" />
       <Label layoutX="303.0" layoutY="157.0" styleClass="text2" text="Enter your name:" />
       <Button layoutX="587.0" layoutY="556.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="94.0" text="Join" textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
