@@ -13,6 +13,7 @@
 
 .question-title {
     -fx-font-weight: bold;
+    -fx-font-size: 32px;
 }
 
 .most-expensive-title {
@@ -65,7 +66,7 @@
 }
 
 .slider-text {
-    -fx-font-size: 32px;
+    -fx-font-size: 22px;
     -fx-font-weight: bold;
 }
 
