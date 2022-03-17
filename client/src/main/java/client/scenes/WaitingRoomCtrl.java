@@ -49,6 +49,7 @@ public class WaitingRoomCtrl {
     private ImageView lightningRight;
 
     private int numPlayers;
+    private String thisUser;
 
     /**
      * Creates a WaitingRoomCtrl, which controls the display/interaction of the waiting room.
@@ -60,6 +61,7 @@ public class WaitingRoomCtrl {
         this.server = server;
         this.mainCtrl = mainCtrl;
         numPlayers = 0;
+        thisUser = "undef"; // default value, should only be displayed if something goes wrong
     }
 
     /**
@@ -155,7 +157,11 @@ public class WaitingRoomCtrl {
      */
     protected void addPlayerToWaitingRoom(Player player) {
 
-        Platform.runLater(() -> playerList.getItems().add(player.getUsername()));
+        if(!thisUser.equals(player.getUsername())){
+            Platform.runLater(() -> playerList.getItems().add(player.getUsername()));
+        } else {
+            Platform.runLater(() -> playerList.getItems().add(0, "You: " + player.getUsername()));
+        }
         numPlayers++;
         playersJoined.setText(numPlayers + " players joined:");
 
@@ -167,7 +173,11 @@ public class WaitingRoomCtrl {
      */
     protected void removePlayerFromWaitingRoom(Player player) {
 
-        Platform.runLater(() -> playerList.getItems().remove(player.getUsername()));
+        if(!thisUser.equals(player.getUsername())){
+            Platform.runLater(() -> playerList.getItems().remove(player.getUsername()));
+        } else {
+            Platform.runLater(() -> playerList.getItems().remove("\u2015 You: " + player.getUsername() + " \u2015"));
+        }
         numPlayers--;
         playersJoined.setText(numPlayers + " players joined:");
 
@@ -177,14 +187,19 @@ public class WaitingRoomCtrl {
      * Deletes all entries from the player list of the waiting room and then adds all
      * players in the player list in the game update
      * @param gameUpdateFullPlayerList the game update to load the new player list from
+     * @param username The username of this client
      */
-    protected void updateWaitingRoomPlayers(GameUpdateFullPlayerList gameUpdateFullPlayerList) {
+    protected void updateWaitingRoomPlayers(GameUpdateFullPlayerList gameUpdateFullPlayerList, String username) {
 
         playerList.getItems().clear();
-        playerList.getItems().addAll(gameUpdateFullPlayerList.getPlayerList()
-                                                                .stream()
-                                                                .map(Player::getUsername)
-                                                                .toList());
+        thisUser = username;
+        for(Player p : gameUpdateFullPlayerList.getPlayerList()){
+            if(!username.equals(p.getUsername())){
+               playerList.getItems().add(playerList.getItems().size(), p.getUsername());
+            } else {
+                playerList.getItems().add(0, "\u2015 You: " + p.getUsername() + " \u2015");
+            }
+        }
         numPlayers = gameUpdateFullPlayerList.getPlayerList().size();
         playersJoined.setText(numPlayers + " players joined:");
 

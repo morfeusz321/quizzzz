@@ -91,7 +91,7 @@ public class UserCtrl {
         }
 
         if(gu instanceof GameUpdateFullPlayerList) {
-            waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu));
+            waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu), un);
             this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
         }
 
