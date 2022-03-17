@@ -121,10 +121,6 @@ public abstract class QuestionCtrl {
         angryEmoji.setImage(new Image("/client/img/angry_lightbulb.png"));
         heartEmoji.setImage(new Image("/client/img/heart_emoji.png"));
         thumbsUpEmoji.setImage(new Image("/client/img/thumbs_up_emoji.png"));
-
-        // TODO: show the real image here or set it in another method
-        //  (right now the image is only static and inserted manually)
-        questionImg.setImage(new Image("/client/img/dishwasher.jpg"));
     }
 
     /**

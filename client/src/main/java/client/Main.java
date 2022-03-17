@@ -47,12 +47,13 @@ public class Main extends Application {
         var generalQ = FXML.load(GeneralQuestionCtrl.class, "client", "scenes", "GeneralQuestion.fxml");
         var comparisonQ = FXML.load(ComparisonQuestionCtrl.class, "client", "scenes", "ComparisonQuestion.fxml");
         var estimationQ = FXML.load(EstimationQuestionCtrl.class, "client", "scenes", "EstimationQuestion.fxml");
+        var mostExpensiveQ = FXML.load(MostExpensiveQuestionCtrl.class, "client", "scenes", "MostExpensiveQuestion.fxml");
         var input = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");
         var admin = FXML.load(AdminCtrl.class, "client", "scenes", "AdminOverview.fxml");
         var adminEdit = FXML.load(AdminEditActivityCtrl.class, "client", "scenes", "AdminEditActivity.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
+        mainCtrl.initialize(primaryStage, mainScreen, input, generalQ, comparisonQ, estimationQ, mostExpensiveQ, admin, adminEdit);
 
-        mainCtrl.initialize(primaryStage, mainScreen, input, generalQ, comparisonQ, estimationQ, admin, adminEdit);
     }
 }

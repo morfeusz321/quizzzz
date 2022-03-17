@@ -15,6 +15,11 @@
     -fx-font-weight: bold;
 }
 
+.most-expensive-title {
+    -fx-font-size: 80px;
+    -fx-font-weight: bold;
+}
+
 .question-button {
     -fx-background-radius: 50px;
     -fx-border-radius: 50px;

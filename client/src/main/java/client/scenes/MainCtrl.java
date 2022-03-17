@@ -37,6 +37,9 @@ public class MainCtrl {
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
 
+    private MostExpensiveQuestionCtrl mostExpensiveQuestionCtrl;
+    private Scene mostExpensiveQuestion;
+
     private ComparisonQuestionCtrl comparisonQuestionCtrl;
     private Scene comparisonQuestion;
 
@@ -69,6 +72,9 @@ public class MainCtrl {
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
+     * @param adminScene Pair of the control and the scene of the admin interface
+     * @param adminEditScene Pair of the control and the scene of the admin interface's activity editor
      */
 
     public void initialize(Stage primaryStage,
@@ -77,6 +83,7 @@ public class MainCtrl {
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                           Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ,
                            Pair<AdminCtrl, Parent> adminScene,
                            Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
 
@@ -88,6 +95,8 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/main-style.css"
                 ).toExternalForm());
+
+        // TODO: this definitely needs restructuring, too much code duplication
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
@@ -122,6 +131,17 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
+        this.mostExpensiveQuestionCtrl = mostExpensiveQ.getKey();
+        this.mostExpensiveQuestion = new Scene(mostExpensiveQ.getValue());
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
+                ).toExternalForm());
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
 
@@ -131,17 +151,28 @@ public class MainCtrl {
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
 
+        initializeOnCloseEvents();
+
+        showMainScreen();
+        primaryStage.show();
+
+    }
+
+    /**
+     * Initializes all the events that should happen upon sending a close request to
+     * the primary stage, that is, clicking the red x button on the window
+     */
+    public void initializeOnCloseEvents() {
+
         primaryStage.setOnCloseRequest(event -> {
             userCtrl.sendLeaveMessageToServer();
             System.exit(0);
         });
 
-        showMainScreen();
-        primaryStage.show();
     }
 
     /**
-     * Shows the general question screen and loads a new question
+     * Shows the general question screen
      */
     public void showGeneralQuestion(Question q) {
         primaryStage.setTitle("General question");
@@ -151,7 +182,7 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the comparison question screen and loads a new question
+     * Shows the comparison question screen
      */
     public void showComparisonQuestion(Question q) {
         primaryStage.setTitle("Comparison question");
@@ -161,7 +192,17 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the estimation question screen and loads a new question
+     * Shows the "most expensive" question screen
+     */
+    public void showMostExpensiveQuestion(Question q) {
+        primaryStage.setTitle("Most expensive question");
+        primaryStage.setScene(mostExpensiveQuestion);
+        mostExpensiveQuestionCtrl.loadQuestion(q);
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows the estimation question screen
      */
     public void showEstimationQuestion(Question q) {
         primaryStage.setTitle("Estimation question");
@@ -173,7 +214,6 @@ public class MainCtrl {
     /**
      * Shows the main screen scene
      */
-
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
         primaryStage.setScene(mainScreen);
