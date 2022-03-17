@@ -32,9 +32,11 @@ public class UserCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final WaitingRoomCtrl waitingRoomCtrl;
 
     private String currentUsername;
     private UUID gameUUID;
+    private String serverAddressPreFill = "localhost:8080";
 
     @FXML
     private TextField username;
@@ -48,16 +50,17 @@ public class UserCtrl {
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public UserCtrl(ServerUtils server, MainCtrl mainCtrl) {
-        this.mainCtrl = mainCtrl;
+    public UserCtrl(ServerUtils server, MainCtrl mainCtrl, WaitingRoomCtrl waitingRoomCtrl) {
         this.server = server;
+        this.mainCtrl = mainCtrl;
+        this.waitingRoomCtrl = waitingRoomCtrl;
     }
 
      /**
      * Initializes the default text for the server address
      */
     public void initialize() {
-        serverAddress.setText("localhost:8080");
+        serverAddress.setText(serverAddressPreFill);
     }
 
     /**
@@ -90,18 +93,22 @@ public class UserCtrl {
         }
 
         if(gu instanceof GameUpdateNameInUse) {
-            System.out.println("Name in use!");
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Name \"" + un + "\" already in use!");
+            alert.showAndWait();
             return;
         }
 
         if(gu instanceof GameUpdateFullPlayerList) {
-            System.out.println(((GameUpdateFullPlayerList) gu).getPlayerList());
+            waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu), un);
             this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
         }
 
-        server.registerForGameUpdates(gameUUID, this::gameUpdateHandler);
+        server.registerForGameUpdates(gameUUID, mainCtrl::gameUpdateHandler);
 
         this.currentUsername = un;
+        this.serverAddressPreFill = getServer();
 
         /*
         new Timer().schedule(new TimerTask() {
@@ -112,34 +119,27 @@ public class UserCtrl {
         }, 10000);
         */
 
-    }
-
-    /**
-     * The handler for all incoming game updates via the WebSocket connection
-     * @param gameUpdate the update for this game received from the WebSocket session
-     */
-    private void gameUpdateHandler(GameUpdate gameUpdate) {
-
-        System.out.print("Update received...\t");
-
-        if(gameUpdate instanceof GameUpdatePlayerJoined) {
-            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
-        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
-            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
-        } else if(gameUpdate instanceof GameUpdateGameStarting) {
-            System.out.print("GAME STARTING!");
-        }
-
-        System.out.println();
+        mainCtrl.showWaitingRoom();
 
     }
 
     /**
-     * Informs the server that the client is leaving the game
+     * Returns the username entered by the player which has been used to join a game on the server
+     * @return the current username of the user registered to the server
      */
-    public void sendLeaveMessageToServer() {
+    public String getSavedCurrentUsername() {
 
-        server.leaveGame(currentUsername, gameUUID);
+        return currentUsername;
+
+    }
+
+    /**
+     * Returns the UUID of the game that the user is currently in
+     * @return the UUID of the current game received from the server
+     */
+    public UUID getSavedGameUUID() {
+
+        return gameUUID;
 
     }
 
