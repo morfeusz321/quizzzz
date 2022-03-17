@@ -13,7 +13,7 @@
       <ImageView fx:id="backBtn" fitHeight="110.0" fitWidth="226.0" layoutX="20.0" layoutY="30.0" />
       <ImageView fx:id="lightbulb" fitHeight="393.0" fitWidth="338.0" layoutX="1290" layoutY="544.0" preserveRatio="true" />
       <ImageView fx:id="speechBubble" fitHeight="333.0" fitWidth="401.0" layoutX="1442.0" layoutY="252.0" preserveRatio="true" />
-      <TextFlow layoutX="1468.0" layoutY="283" prefHeight="64.0" prefWidth="350.0" textAlignment="CENTER">
+      <TextFlow fx:id="speechBubbleText" layoutX="1468.0" layoutY="283" prefHeight="64.0" prefWidth="350.0" textAlignment="CENTER">
          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Click me">
             <styleClass>
                <String fx:value="speech-bubble-text" />
@@ -38,6 +38,8 @@
       <Text id="title-2" layoutX="345.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Waiting for other players to join..." />
       <Text id="title-3" layoutX="713.0" layoutY="289.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="Use the time to recharge your energy..." />
       <ListView id="playerList" fx:id="playerList" layoutX="138.0" layoutY="431.0" prefHeight="495.0" prefWidth="960.0" />
-      <Text fx:id="playersJoined" id="players-text" layoutX="139.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="0 players joined:" textAlignment="CENTER" wrappingWidth="960.0" />
+      <Text id="players-text" fx:id="playersJoined" layoutX="139.0" layoutY="401.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="text" text="0 players joined:" textAlignment="CENTER" wrappingWidth="960.0" />
+      <ImageView fx:id="lightningLeft" fitHeight="36.0" fitWidth="73.0" layoutX="370.0" layoutY="363.0"/>
+      <ImageView fx:id="lightningRight" fitHeight="36.0" fitWidth="73.0" layoutX="798.0" layoutY="363.0"/>
    </children>
 </AnchorPane>

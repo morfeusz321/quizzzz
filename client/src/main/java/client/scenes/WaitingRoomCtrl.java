@@ -4,14 +4,23 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Player;
 import commons.gameupdate.*;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
+
+import java.util.List;
 
 public class WaitingRoomCtrl {
 
@@ -26,12 +35,18 @@ public class WaitingRoomCtrl {
 
     @FXML
     public ImageView speechBubble;
+    @FXML
+    private TextFlow speechBubbleText;
 
     @FXML
     private ListView<String> playerList;
 
     @FXML
-    public Text playersJoined;
+    private Text playersJoined;
+    @FXML
+    private ImageView lightningLeft;
+    @FXML
+    private ImageView lightningRight;
 
     private int numPlayers;
 
@@ -50,20 +65,27 @@ public class WaitingRoomCtrl {
     /**
      * Initializes the scene, i.e. handles initialization, images
      */
-    public void initialize(){
+    @FXML
+    private void initialize(){
         showImages();
         initializeBackButtonHandlers();
-        initializeLightbulbHandlers();
+        initializeStartGameHandlers();
+        initializeLightbulbAnimation();
     }
 
     /**
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
-    public void showImages(){
+    private void showImages(){
 
         backBtn.setImage(new Image("/client/img/back_btn.png"));
-        lightbulb.setImage(new Image("/client/img/lightbulb_arms_down.png"));
+        lightbulb.setImage(new Image("/client/img/animation/1.png"));
         speechBubble.setImage(new Image("/client/img/speech_bubble.png"));
+        lightningLeft.setImage(new Image("/client/img/back_btn.png"));
+        lightningLeft.setScaleX(-1);
+        lightningLeft.setRotate(5);
+        lightningRight.setImage(new Image("/client/img/back_btn.png"));
+        lightningRight.setRotate(-5);
 
     }
 
@@ -80,17 +102,50 @@ public class WaitingRoomCtrl {
                                                                     mainCtrl.sendLeaveMessageToServer();
                                                                     mainCtrl.showUsernameInputScreen();
                                                                 });
-        // TODO: when the menu screen is added, modify this
-        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
-        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.setCursor(Cursor.HAND);
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.setCursor(Cursor.DEFAULT);
+        });
     }
 
     /**
-     * Initializes the event handlers of the light bulb
+     * Initializes the event handlers for starting the game (and hovering effects)
      */
-    private void initializeLightbulbHandlers() {
+    private void initializeStartGameHandlers() {
 
-        lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> server.startGame());
+        List<Node> elements = List.of(lightbulb, speechBubble, speechBubbleText);
+        for(Node el : elements){
+            el.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> server.startGame());
+            el.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> el.setCursor(Cursor.HAND));
+            el.addEventHandler(MouseEvent.MOUSE_EXITED, e -> el.setCursor(Cursor.DEFAULT));
+        }
+
+    }
+
+    /**
+     * Initializes the waving animation of the light bulb
+     */
+    private void initializeLightbulbAnimation() {
+
+        Timeline waving = new Timeline();
+        for(int i = 1; i < 24; i++){
+            int finalI = i;
+            waving.getKeyFrames().add(
+                    new KeyFrame(Duration.millis(110 * i),
+                            e -> lightbulb.setImage(new Image("/client/img/animation/" + finalI + ".png")))
+            );
+        }
+        // 4 seconds to "starting" the next animation (i.e. displaying the waving)
+        waving.getKeyFrames().add(
+                new KeyFrame(Duration.millis(110 * 23 + 4000),
+                        e -> lightbulb.setImage(new Image("/client/img/animation/23.png")))
+        );
+        waving.setCycleCount(Animation.INDEFINITE);
+        waving.play();
 
     }
 
@@ -134,5 +189,4 @@ public class WaitingRoomCtrl {
         playersJoined.setText(numPlayers + " players joined:");
 
     }
-
 }
