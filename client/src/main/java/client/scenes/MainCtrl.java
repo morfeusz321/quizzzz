@@ -144,6 +144,10 @@ public class MainCtrl {
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
+        this.username.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/Input.css"
+                ).toExternalForm());
 
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
@@ -246,9 +250,7 @@ public class MainCtrl {
      * @return the game type selected by the user
      */
     public GameType getSelectedGameType() {
-
         return mainScreenCtrl.selectedGameType;
-
     }
 
     /**

@@ -22,6 +22,7 @@ import commons.gameupdate.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Modality;
@@ -42,6 +43,9 @@ public class UserCtrl {
     @FXML
     private TextField serverAddress;
 
+    @FXML
+    private Label gameType;
+
     /**
      * Constructor
      * @param server Utilities for communicating with the server (API endpoint)
@@ -55,10 +59,19 @@ public class UserCtrl {
 
      /**
      * Initializes the default text for the server address
+      * and sends the type of the game for the label to the fxml file
      */
     public void initialize() {
+
         serverAddress.setText("localhost:8080");
+
+        if(true){
+            /* TO DO: figure out why mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER doesnt work */
+            gameType.setText("MULTI-PLAYER");
+        }
+        else gameType.setText("SINGLE-PLAYER");;
     }
+
 
     /**
      * Sends the server a request to join the current game with the username specified in the TextField in
@@ -172,4 +185,6 @@ public class UserCtrl {
             break;
         }
     }
+
+
 }
