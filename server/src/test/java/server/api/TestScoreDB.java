@@ -13,10 +13,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+/**
+ * The TestScoreDB is used for injection instead of the ScoreDB while testing
+ */
 public class TestScoreDB implements ScoreDB {
 
     private List<Score> db;
 
+    /**
+     * Creates a TestScoreDB
+     */
     public TestScoreDB() {
         this.db = new ArrayList<>();
     }
