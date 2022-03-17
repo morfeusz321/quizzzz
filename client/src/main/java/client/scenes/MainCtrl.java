@@ -66,6 +66,14 @@ public class MainCtrl {
     private AdminEditActivityCtrl adminEditCtrl;
     private Scene adminEditScene;
 
+    private ConnectToServerCtrl connectToServerCtrl;
+    private Scene connectToServer;
+
+    private LeaderboardCtrl leaderboardCtrl;
+    private Scene leaderboard;
+
+    private String serverAddressPrefill;
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -88,6 +96,8 @@ public class MainCtrl {
      * @param waitingRoom Pair of the control and the scene of the waiting room
      * @param adminScene Pair of the control and the scene of the admin interface
      * @param adminEditScene Pair of the control and the scene of the admin interface's activity editor
+     * @param connectToServer Pair of the control and the scene of the "please connect to server" screen
+     * @param leaderboard Pair of the control and the scene of the leaderboard screen
      */
     public void initialize(Stage primaryStage,
                            Pair<MainScreenCtrl, Parent> mainScreen,
@@ -98,7 +108,9 @@ public class MainCtrl {
                            Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ,
                            Pair<WaitingRoomCtrl, Parent> waitingRoom,
                            Pair<AdminCtrl, Parent> adminScene,
-                           Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
+                           Pair<AdminEditActivityCtrl, Parent> adminEditScene,
+                           Pair<ConnectToServerCtrl, Parent> connectToServer,
+                           Pair<LeaderboardCtrl, Parent> leaderboard) {
 
         this.primaryStage = primaryStage;
 
@@ -131,7 +143,22 @@ public class MainCtrl {
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
 
+        this.connectToServerCtrl = connectToServer.getKey();
+        this.connectToServer = new Scene(connectToServer.getValue());
+        this.connectToServer.getStylesheets().add(
+                ConnectToServerCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
+        this.leaderboardCtrl = leaderboard.getKey();
+        this.leaderboard = new Scene(leaderboard.getValue());
+        this.leaderboard.getStylesheets().add(
+                LeaderboardCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
         initializeOnCloseEvents();
+        setServerAddressPrefill("localhost:8080");
 
         showMainScreen();
         primaryStage.show();
@@ -287,6 +314,7 @@ public class MainCtrl {
         primaryStage.setTitle("Username input");
         primaryStage.setScene(username);
 
+        userCtrl.updateServerAddressPrefill();
         username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
 
     }
@@ -334,13 +362,53 @@ public class MainCtrl {
     }
 
     /**
-     * Show the admin screen (table with all activities)
+     * Sets the server address prefill to be used throughout the application. The server address prefill
+     * is a String of text that is automatically entered for the user everywhere a server address
+     * can be entered, such as when joining a game. This way, the player doesn't have to remember
+     * and type in the server address everywhere.
+     * @param serverAddressPrefill the server address prefill to be used
+     */
+    public void setServerAddressPrefill(String serverAddressPrefill) {
+
+        this.serverAddressPrefill = serverAddressPrefill;
+
+    }
+
+    /**
+     * Returns the server address last entered by the player to attempt to join a server or otherwise connect
+     * to a server. Note that the server address prefill thus also changes even if the URL was invalid or if a
+     * connection could not be established.
+     * @return the current server address prefill to be used
+     */
+    public String getSavedServerAddressPrefill() {
+
+        return this.serverAddressPrefill;
+
+    }
+
+    /**
+     * Show the admin screen (table with all activities) after verifying the server address.
      */
     public void showAdmin() {
+
+        primaryStage.setTitle("Connect to server");
+        connectToServerCtrl.updateServerAddressPrefill();
+        connectToServerCtrl.setGoToScene(AdminCtrl.class.getName());
+        primaryStage.setScene(connectToServer);
+
+    }
+
+    /**
+     * This method is called by the connect to server screen. It shows the admin screen (table with all activities)
+     * after having confirmed the server address.
+     */
+    public void showAdminServerConfirmed() {
+
         primaryStage.setTitle("Admin");
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
         adminCtrl.setScene(adminScene);
+
     }
 
     /**
@@ -351,6 +419,29 @@ public class MainCtrl {
         primaryStage.setTitle("Admin - Edit activity");
         primaryStage.setScene(adminEditScene);
         adminEditCtrl.setActivity(activity);
+    }
+
+    /**
+     * Show the leaderboard screen after verifying the server address.
+     */
+    public void showLeaderboard() {
+
+        primaryStage.setTitle("Connect to server");
+        connectToServerCtrl.updateServerAddressPrefill();
+        connectToServerCtrl.setGoToScene(LeaderboardCtrl.class.getName());
+        primaryStage.setScene(connectToServer);
+
+    }
+
+    /**
+     * This method is called by the connect to server screen. It shows the leaderboard screen
+     * after having confirmed the server address.
+     */
+    public void showLeaderboardServerConfirmed() {
+
+        primaryStage.setTitle("Leaderboard");
+        primaryStage.setScene(leaderboard);
+
     }
 
 }

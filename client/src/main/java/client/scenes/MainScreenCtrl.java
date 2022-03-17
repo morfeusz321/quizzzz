@@ -84,10 +84,17 @@ public class MainScreenCtrl implements Initializable {
     }
 
     /**
-     * Opens the admin screen
+     * Opens the "please connect to server" screen, and subsequently the admin screen
      */
     public void showAdmin() {
         mainCtrl.showAdmin();
+    }
+
+    /**
+     * Opens the "please connect to server" screen, and subsequently the leaderboard screen
+     */
+    public void showLeaderboard() {
+        mainCtrl.showLeaderboard();
     }
 
     //TODO: add multiplayer and help

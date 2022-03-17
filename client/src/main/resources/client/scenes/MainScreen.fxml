@@ -10,7 +10,7 @@
    <children>
       <ImageView fx:id="lightning" fitHeight="250.0" fitWidth="500.0" layoutX="346.0" layoutY="252.0" pickOnBounds="true" preserveRatio="true" />
       <ImageView fx:id="lightbulb" fitHeight="250.0" fitWidth="500.0" layoutX="1118.0" layoutY="252.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="leaderboard" fitHeight="150.0" fitWidth="200.0" layoutX="687.0" layoutY="809.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="leaderboard" fitHeight="150.0" fitWidth="200.0" layoutX="687.0" layoutY="809.0" onMouseClicked="#showLeaderboard" pickOnBounds="true" preserveRatio="true" />
       <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="960.0" layoutY="570.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
       <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="163.0" layoutY="570.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
       <Button fx:id="singlePlayer" layoutX="969.0" layoutY="554.0" mnemonicParsing="false" onAction="#singlePlayer" prefHeight="78.0" prefWidth="224.0" text="Singleplayer">
