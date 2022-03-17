@@ -77,10 +77,12 @@ public class Game {
     }
 
     /**
-     * Adds a player to this game
+     * Adds a player to this game. Note that the Game assumes that it has been confirmed already that a
+     * player with this username is not yet in the Game, and that this is *not* checked again
+     * in this method
      * @param player the player that is joining
      */
-    public void addPlayer(Player player) {
+    protected void addPlayer(Player player) {
 
         this.players.put(player.getUsername(), player);
 
@@ -91,6 +93,8 @@ public class Game {
      * @param player the player that is leaving
      */
     public void removePlayer(Player player) {
+
+        if(player == null) return;
 
         this.players.remove(player.getUsername());
 

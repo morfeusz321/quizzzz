@@ -16,7 +16,9 @@
 package client;
 
 import client.scenes.*;
+
 import client.utils.ServerUtils;
+
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Scopes;
@@ -30,12 +32,13 @@ public class MyModule implements Module {
     public void configure(Binder binder) {
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(AddQuoteCtrl.class).in(Scopes.SINGLETON);
-        binder.bind(QuoteOverviewCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(MainScreenCtrl.class).in(Scopes.SINGLETON);
         binder.bind(GeneralQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ComparisonQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(EstimationQuestionCtrl.class).in(Scopes.SINGLETON);
         binder.bind(UserCtrl.class).in(Scopes.SINGLETON);
         binder.bind(WaitingRoomCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(AdminEditActivityCtrl.class).in(Scopes.SINGLETON);
     }
 }

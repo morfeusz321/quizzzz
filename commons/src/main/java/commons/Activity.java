@@ -13,7 +13,7 @@ import javax.persistence.Id;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
-@Entity
+@Entity(name = "activity")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Activity {
 

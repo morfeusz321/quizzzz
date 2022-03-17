@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class GameController {
 
-    private ConcurrentHashMap<UUID, Game> games;
+    private ConcurrentHashMap<UUID, Game> startedGames;
     private Game currentGame;
     private GameUpdateManager gameUpdateManager;
 
@@ -25,7 +25,7 @@ public class GameController {
      */
     public GameController(GameUpdateManager gameUpdateManager) {
 
-        this.games = new ConcurrentHashMap<>();
+        this.startedGames = new ConcurrentHashMap<>();
         this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
         this.gameUpdateManager = gameUpdateManager;
 
@@ -58,8 +58,8 @@ public class GameController {
      */
     public Game getGame(UUID uuid) {
 
-        if(this.games.containsKey(uuid)) {
-            return this.games.get(uuid);
+        if(this.startedGames.containsKey(uuid)) {
+            return this.startedGames.get(uuid);
         } else if(this.currentGame.getUUID().equals(uuid)) {
             return this.currentGame;
         } else {
@@ -86,7 +86,7 @@ public class GameController {
      */
     public boolean currentGameContains(Player player) {
 
-        return this.getCurrentGamePlayers().contains(player);
+        return this.currentGame.containsPlayer(player);
 
     }
 
@@ -98,7 +98,7 @@ public class GameController {
      */
     public boolean currentGameContains(String username) {
 
-        return this.getCurrentGamePlayers().stream().anyMatch(p -> p.getUsername().equals(username));
+        return this.currentGame.containsPlayer(username);
 
     }
 
@@ -111,7 +111,7 @@ public class GameController {
 
         gameUpdateManager.startGame(currentGameUUID);
 
-        games.put(currentGameUUID, currentGame);
+        startedGames.put(currentGameUUID, currentGame);
         this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
 
     }
@@ -142,6 +142,8 @@ public class GameController {
      * @param gameUUID the UUID of the game to remove this player from
      */
     public void removePlayerFromGame(Player player, UUID gameUUID) {
+
+        if(player == null) return;
 
         Game game = this.getGame(gameUUID);
 
@@ -199,7 +201,12 @@ public class GameController {
     }
 
     /**
-     * Creates a new single player game containing the provided player
+     * Creates a new single player game containing the provided player and starts it after
+     * a small delay. This delay is necessary because, when the client sends its POST request
+     * to join a single player game, this method will be executed pretty much immediately. However,
+     * at that point, the client has only just received its Game UUID in the POST request response,
+     * and still has to subscribe to that game's WebSocket topic. If there were no delay, this method
+     * would send the game starting message to the WS topic before the player could even subscribe.
      * @param player the player for the single player game
      */
     public GameUpdate createSinglePlayerGame(Player player) {
@@ -208,7 +215,7 @@ public class GameController {
         Game singlePlayerGame = new Game(uuid, GameType.SINGLEPLAYER);
         singlePlayerGame.addPlayer(player);
 
-        this.games.put(uuid, singlePlayerGame);
+        this.startedGames.put(uuid, singlePlayerGame);
 
         (new Timer()).schedule(new TimerTask() {
             @Override

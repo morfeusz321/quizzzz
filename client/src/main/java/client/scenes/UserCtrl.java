@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.GameType;
 import commons.gameupdate.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
@@ -72,8 +73,17 @@ public class UserCtrl {
 
         GameUpdate gu;
         try {
+
             server.changeServer(getServer());
-            gu = server.joinMultiplayerGame(un);
+
+            if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+                gu = server.joinSinglePlayerGame(un, true);
+            } else if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
+                gu = server.joinMultiplayerGame(un);
+            } else {
+                throw new IllegalArgumentException("Invalid game type!");
+            }
+
         } catch (WebApplicationException | IllegalArgumentException e) {
             var alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.APPLICATION_MODAL);

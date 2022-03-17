@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
@@ -20,13 +21,18 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
         super(server, mainCtrl, utils);
     }
 
+
     /**
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar.
      */
     public void loadQuestion(Question q) {
 
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
+        String fontFamilyQuestion = title.getFont().getFamily();
+        title.setText("");
+        DynamicText questionHandler = new DynamicText(title, 190, title.getFont().getSize(),fontFamilyQuestion );
         title.setText(q.displayQuestion());
+        questionHandler.setText(title.getText(), (int) title.getFont().getSize());
         answerBtn1.setText(q.answerOptions.get(0));
         answerBtn2.setText(q.answerOptions.get(1));
         answerBtn3.setText(q.answerOptions.get(2));

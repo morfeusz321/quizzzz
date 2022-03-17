@@ -39,7 +39,7 @@ public class GameControllerTest {
 
         try {
 
-            Field gamesField = GameController.class.getDeclaredField("games");
+            Field gamesField = GameController.class.getDeclaredField("startedGames");
             gamesField.setAccessible(true);
             assertNotNull(gamesField.get(gameController));
 

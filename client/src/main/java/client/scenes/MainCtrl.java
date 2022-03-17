@@ -16,13 +16,19 @@
 package client.scenes;
 
 import client.utils.ServerUtils;
+
 import com.google.inject.Inject;
+
+import commons.Activity;
+import commons.GameType;
 import commons.GeneralQuestion;
 import commons.Question;
+
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateGameStarting;
 import commons.gameupdate.GameUpdatePlayerJoined;
 import commons.gameupdate.GameUpdatePlayerLeft;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -33,11 +39,8 @@ public class MainCtrl {
     private final ServerUtils server;
     private Stage primaryStage;
 
-    private QuoteOverviewCtrl overviewCtrl;
-    private Scene overview;
-
-    private AddQuoteCtrl addCtrl;
-    private Scene add;
+    private MainScreenCtrl mainScreenCtrl;
+    private Scene mainScreen;
 
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
@@ -54,6 +57,12 @@ public class MainCtrl {
     private WaitingRoomCtrl waitingRoomCtrl;
     private Scene waitingRoom;
 
+    private AdminCtrl adminCtrl;
+    private Scene adminScene;
+
+    private AdminEditActivityCtrl adminEditCtrl;
+    private Scene adminEditScene;
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -67,63 +76,69 @@ public class MainCtrl {
      * Initialize the main control with the different scenes and controllers of each scene. This class
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
-     * @param overview Pair of the control and the scene of the overview
-     * @param add Pair of the control and the scene for adding quotes TODO: to remove
+     * @param mainScreen Pair of the control and the scene of the main screen of the game
+     * @param username Pair of the control and the scene of the username input screen
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
-     * @param username Pair of the control and the scene of the username input screen
      * @param waitingRoom Pair of the control and the scene of the waiting room
+     * @param adminScene Pair of the control and the scene of the admin interface
+     * @param adminEditScene Pair of the control and the scene of the admin interface's activity editor
      */
     public void initialize(Stage primaryStage,
-                           Pair<QuoteOverviewCtrl, Parent> overview,
-                           Pair<AddQuoteCtrl, Parent> add,
+                           Pair<MainScreenCtrl, Parent> mainScreen,
+                           Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ,
-                           Pair<UserCtrl, Parent> username,
-                           Pair<WaitingRoomCtrl, Parent> waitingRoom) {
+                           Pair<WaitingRoomCtrl, Parent> waitingRoom,
+                           Pair<AdminCtrl, Parent> adminScene,
+                           Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
 
         this.primaryStage = primaryStage;
 
-        this.overviewCtrl = overview.getKey();
-        this.overview = new Scene(overview.getValue());
+        this.mainScreenCtrl = mainScreen.getKey();
+        this.mainScreen = new Scene(mainScreen.getValue());
+        this.mainScreen.getStylesheets().add(
+                MainScreenCtrl.class.getResource(
+                        "/client/stylesheets/main-style.css"
+                ).toExternalForm());
+
+        this.userCtrl = username.getKey();
+        this.username = new Scene(username.getValue());
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
         this.generalQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.generalQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
         this.comparisonQuestionCtrl = comparisonQ.getKey();
         this.comparisonQuestion = new Scene(comparisonQ.getValue());
         this.comparisonQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.comparisonQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
         this.estimationQuestionCtrl = estimationQ.getKey();
         this.estimationQuestion = new Scene(estimationQ.getValue());
         this.estimationQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/general-question-style.css"
+                QuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
         this.estimationQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
+                QuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
-
-        this.userCtrl = username.getKey();
-        this.username = new Scene(username.getValue());
 
         this.waitingRoomCtrl = waitingRoom.getKey();
         this.waitingRoom = new Scene(waitingRoom.getValue());
@@ -136,26 +151,29 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
-        this.addCtrl = add.getKey();
-        this.add = new Scene(add.getValue());
+        this.adminCtrl = adminScene.getKey();
+        this.adminScene = new Scene(adminScene.getValue());
+
+        this.adminEditCtrl = adminEditScene.getKey();
+        this.adminEditScene = new Scene(adminEditScene.getValue());
+
+        initializeOnCloseEvents();
+
+        showMainScreen();
+        primaryStage.show();
+    }
+
+    /**
+     * Initializes all the events that should happen upon sending a close request to
+     * the primary stage, that is, clicking the red x button on the window
+     */
+    public void initializeOnCloseEvents() {
 
         primaryStage.setOnCloseRequest(event -> {
             sendLeaveMessageToServer();
             System.exit(0);
         });
 
-        showUsernameInputScreen();
-        primaryStage.show();
-    }
-
-    /**
-     * Shows the overview scene (table for quotes, question display, image display)
-     * TODO: remove table for quotes
-     */
-    public void showOverview() {
-        primaryStage.setTitle("Quotes: Overview");
-        primaryStage.setScene(overview);
-        overviewCtrl.refresh();
     }
 
     /**
@@ -197,12 +215,11 @@ public class MainCtrl {
     }
 
     /**
-     * TODO: to remove
+     * Shows the main screen scene
      */
-    public void showAdd() {
-        primaryStage.setTitle("Quotes: Adding Quote");
-        primaryStage.setScene(add);
-        add.setOnKeyPressed(e -> addCtrl.keyPressed(e));
+    public void showMainScreen() {
+        primaryStage.setTitle("Quizzz");
+        primaryStage.setScene(mainScreen);
     }
 
     /**
@@ -258,5 +275,36 @@ public class MainCtrl {
         System.out.println();
 
     }
-    
+
+    /**
+     * Returns the game type that has been selected by the user by clicking on either the singleplayer
+     * or multiplayer button
+     * @return the game type selected by the user
+     */
+    public GameType getSelectedGameType() {
+
+        return mainScreenCtrl.selectedGameType;
+
+    }
+
+    /**
+     * Show the admin screen (table with all activities)
+     */
+    public void showAdmin() {
+        primaryStage.setTitle("Admin");
+        primaryStage.setScene(adminScene);
+        adminCtrl.refresh();
+        adminCtrl.setScene(adminScene);
+    }
+
+    /**
+     * Show the edit activity screen
+     * @param activity a previously selected activity
+     */
+    public void showAdminEdit(Activity activity) {
+        primaryStage.setTitle("Admin - Edit activity");
+        primaryStage.setScene(adminEditScene);
+        adminEditCtrl.setActivity(activity);
+    }
+
 }
