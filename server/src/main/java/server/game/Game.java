@@ -2,9 +2,9 @@ package server.game;
 
 import commons.GameType;
 import commons.Player;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
+@Component
+@Scope("prototype")
 public class Game {
 
     private UUID uuid;
@@ -20,15 +22,29 @@ public class Game {
 
     private ConcurrentHashMap<String, Player> players;
 
+    @HashCodeExclude
+    @EqualsExclude
+    @ToStringExclude
+    private GameUpdateManager gameUpdateManager;
+
     /**
      * Creates a new game
-     * @param uuid the UUID for this new game
+     * @param gameUpdateManager the game update manager used by this game to send messages to the client
      */
-    public Game(UUID uuid, GameType gameType) {
+    public Game(GameUpdateManager gameUpdateManager) {
+
+        this.gameUpdateManager = gameUpdateManager;
+        this.players = new ConcurrentHashMap<>();
+
+    }
+
+    /**
+     * Sets this game's UUID
+     * @param uuid the UUID for this game
+     */
+    public void setUUID(UUID uuid) {
 
         this.uuid = uuid;
-        this.gameType = gameType;
-        this.players = new ConcurrentHashMap<>();
 
     }
 
@@ -39,6 +55,16 @@ public class Game {
     public UUID getUUID() {
 
         return this.uuid;
+
+    }
+
+    /**
+     * Sets this game's game type
+     * @param gameType the game type for this game
+     */
+    public void setGameType(GameType gameType) {
+
+        this.gameType = gameType;
 
     }
 

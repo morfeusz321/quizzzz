@@ -28,6 +28,8 @@ public class GameControllerTest {
         this.gameUpdateManager = new GameUpdateManager(this.simpMessagingTemplate);
 
         this.gameController = new GameController(this.gameUpdateManager);
+        this.gameController.setApplicationContext(new FakeApplicationContext());
+        this.gameController.init();
 
     }
 
