@@ -72,9 +72,9 @@ public class UserCtrl {
 
     public void setTextGameType(){
         if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER){
-            gameType.setText("MULTI-PLAYER");
+            gameType.setText("MULTIPLAYER");
         }
-        else gameType.setText("SINGLE-PLAYER");
+        else gameType.setText("SINGLEPLAYER");
     }
 
     /**
