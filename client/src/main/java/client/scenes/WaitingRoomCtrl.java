@@ -160,7 +160,7 @@ public class WaitingRoomCtrl {
         if(!thisUser.equals(player.getUsername())){
             Platform.runLater(() -> playerList.getItems().add(player.getUsername()));
         } else {
-            Platform.runLater(() -> playerList.getItems().add(0, "You: " + player.getUsername()));
+            Platform.runLater(() -> playerList.getItems().add(0, "\u2015 You: " + player.getUsername() + " \u2015"));
         }
         numPlayers++;
         playersJoined.setText(numPlayers + " players joined:");
