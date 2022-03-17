@@ -45,6 +45,9 @@ public class MainCtrl {
     private GeneralQuestionCtrl generalQuestionCtrl;
     private Scene generalQuestion;
 
+    private MostExpensiveQuestionCtrl mostExpensiveQuestionCtrl;
+    private Scene mostExpensiveQuestion;
+
     private ComparisonQuestionCtrl comparisonQuestionCtrl;
     private Scene comparisonQuestion;
 
@@ -81,6 +84,7 @@ public class MainCtrl {
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
      * @param waitingRoom Pair of the control and the scene of the waiting room
      * @param adminScene Pair of the control and the scene of the admin interface
      * @param adminEditScene Pair of the control and the scene of the admin interface's activity editor
@@ -91,6 +95,7 @@ public class MainCtrl {
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                           Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ,
                            Pair<WaitingRoomCtrl, Parent> waitingRoom,
                            Pair<AdminCtrl, Parent> adminScene,
                            Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
@@ -106,6 +111,47 @@ public class MainCtrl {
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
+
+        initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
+
+        this.waitingRoomCtrl = waitingRoom.getKey();
+        this.waitingRoom = new Scene(waitingRoom.getValue());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/waiting-room-style.css"
+                ).toExternalForm());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
+        this.adminCtrl = adminScene.getKey();
+        this.adminScene = new Scene(adminScene.getValue());
+
+        this.adminEditCtrl = adminEditScene.getKey();
+        this.adminEditScene = new Scene(adminEditScene.getValue());
+
+        initializeOnCloseEvents();
+
+        showMainScreen();
+        primaryStage.show();
+
+    }
+
+    /**
+     * Initializes the question controllers and their respective scenes by adding them to this
+     * class, and setting their stylesheets
+     * @param generalQ Pair of the control and the scene of the general question
+     * @param comparisonQ Pair of the control and the scene of the comparison question
+     * @param estimationQ Pair of the control and the scene of the estimation question
+     * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
+     */
+    public void initializeQuestionControllersAndScenes(Pair<GeneralQuestionCtrl, Parent> generalQ,
+                                                     Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
+                                                     Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                                                     Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
+
+        // TODO: this definitely needs restructuring, too much code duplication
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
@@ -140,27 +186,17 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
-        this.waitingRoomCtrl = waitingRoom.getKey();
-        this.waitingRoom = new Scene(waitingRoom.getValue());
-        this.waitingRoom.getStylesheets().add(
-                WaitingRoomCtrl.class.getResource(
-                        "/client/stylesheets/waiting-room-style.css"
+        this.mostExpensiveQuestionCtrl = mostExpensiveQ.getKey();
+        this.mostExpensiveQuestion = new Scene(mostExpensiveQ.getValue());
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
+                        "/client/stylesheets/question-style.css"
                 ).toExternalForm());
-        this.waitingRoom.getStylesheets().add(
-                WaitingRoomCtrl.class.getResource(
+        this.mostExpensiveQuestion.getStylesheets().add(
+                GeneralQuestionCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
-        this.adminCtrl = adminScene.getKey();
-        this.adminScene = new Scene(adminScene.getValue());
-
-        this.adminEditCtrl = adminEditScene.getKey();
-        this.adminEditScene = new Scene(adminEditScene.getValue());
-
-        initializeOnCloseEvents();
-
-        showMainScreen();
-        primaryStage.show();
     }
 
     /**
@@ -185,7 +221,7 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the general question screen and loads a new question
+     * Shows the general question screen
      */
     public void showGeneralQuestion(Question q) {
         primaryStage.setTitle("General question");
@@ -195,7 +231,7 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the comparison question screen and loads a new question
+     * Shows the comparison question screen
      */
     public void showComparisonQuestion(Question q) {
         primaryStage.setTitle("Comparison question");
@@ -205,7 +241,17 @@ public class MainCtrl {
     }
 
     /**
-     * Shows the estimation question screen and loads a new question
+     * Shows the "most expensive" question screen
+     */
+    public void showMostExpensiveQuestion(Question q) {
+        primaryStage.setTitle("Most expensive question");
+        primaryStage.setScene(mostExpensiveQuestion);
+        mostExpensiveQuestionCtrl.loadQuestion(q);
+        // TODO: display same question synchronously to all clients (this will probably be complicated)
+    }
+
+    /**
+     * Shows the estimation question screen
      */
     public void showEstimationQuestion(Question q) {
         primaryStage.setTitle("Estimation question");
