@@ -27,6 +27,8 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
      */
     public void loadQuestion(Question q) {
 
+        enableButtons();
+        question = q;
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         String fontFamilyQuestion = title.getFont().getFamily();
         title.setText("");

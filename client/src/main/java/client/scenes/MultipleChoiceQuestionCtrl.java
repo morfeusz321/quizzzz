@@ -2,13 +2,19 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.AnswerResponseEntity;
 import commons.CommonUtils;
+import commons.Question;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 
 import java.util.List;
 
@@ -22,6 +28,23 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     protected Button answerBtn2;
     @FXML
     protected Button answerBtn3;
+
+    @FXML
+    protected Label powersText;
+
+    @FXML
+    protected ImageView decreaseTime;
+
+    @FXML
+    protected ImageView doublePoints;
+
+    @FXML
+    protected Text correctAns;
+
+    @FXML
+    protected TextFlow fullText;
+
+    Question question;
 
     /**
      * Creates a MultipleChoiceQuestionCtrl, which controls the display/interaction of all multiple choice question
@@ -109,7 +132,81 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
         btn.getStyleClass().add("selected-answer");
 
+        buttonList.forEach(b -> {
+            long s;
+            if(btn.equals(answerBtn1)) s=1;
+            else if(btn.equals(answerBtn3)) s=2;
+            else s=3;
+            AnswerResponseEntity answer = server.sendAnswerToServer(question, s);
+            disableButtons();
+            if(answer.correct){
+                correctAns.setText("correctly");
+                fullText.setOpacity(1);
+                btn.getStyleClass().add("answerCorrect");
+            }
+            else {
+                correctAns.setText("incorrectly");
+                fullText.setOpacity(1);
+                btn.getStyleClass().add("answerIncorrect");
+                int i = 0;
+                for(Button x : buttonList){
+                    i++;
+                    if(i == answer.getAnswer()) {
+                        x.getStyleClass().add("answerCorrect");
+                        break;
+                    }
+                }
+            }
+        });
+
     }
+
+    /**
+     * Disables the answer and power buttons, makes then power buttons invisible
+     */
+    private void disableButtons(){
+        powersText.setOpacity(0);
+        decreaseTime.setOpacity(0);
+        doublePoints.setOpacity(0);
+        removeQuestion.setOpacity(0);
+        decreaseTime.setDisable(true);
+        doublePoints.setDisable(true);
+        removeQuestion.setDisable(true);
+        answerBtn1.setDisable(true);
+        answerBtn2.setDisable(true);
+        answerBtn3.setDisable(true);
+    }
+
+    /**
+     * Enables the answer and power buttons, makes then power buttons visible
+     */
+    protected void enableButtons(){
+        fullText.setOpacity(0);
+        powersText.setOpacity(1);
+        decreaseTime.setOpacity(1);
+        doublePoints.setOpacity(1);
+        removeQuestion.setOpacity(1);
+        decreaseTime.setDisable(false);
+        doublePoints.setDisable(false);
+        removeQuestion.setDisable(false);
+        answerBtn1.setDisable(false);
+        answerBtn2.setDisable(false);
+        answerBtn3.setDisable(false);
+        answerBtn1.getStyleClass().clear();
+        answerBtn1.getStyleClass().add("text");
+        answerBtn1.getStyleClass().add("question-button");
+        answerBtn1.setTextAlignment(TextAlignment.CENTER);
+        answerBtn2.getStyleClass().clear();
+        answerBtn2.getStyleClass().add("text");
+        answerBtn2.getStyleClass().add("question-button");
+        answerBtn2.setTextAlignment(TextAlignment.CENTER);
+        answerBtn3.getStyleClass().clear();
+        answerBtn3.getStyleClass().add("text");
+        answerBtn3.getStyleClass().add("question-button");
+        answerBtn3.setTextAlignment(TextAlignment.CENTER);
+    }
+
+
 
     /**
      * The event handler called when the user hovers over an answer button

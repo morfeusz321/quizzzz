@@ -222,9 +222,9 @@ public class QuestionController {
 
         if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion || q instanceof WhichIsMoreQuestion) {
             if (answer == q.answer) {
-                return ResponseEntity.ok(new AnswerResponseEntity(true));
+                return ResponseEntity.ok(new AnswerResponseEntity(true, q.answer));
             } else {
-                return ResponseEntity.ok(new AnswerResponseEntity(false));
+                return ResponseEntity.ok(new AnswerResponseEntity(false, q.answer));
             }
         }
 
