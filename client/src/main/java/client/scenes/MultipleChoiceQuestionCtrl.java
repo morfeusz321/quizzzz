@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 import java.util.List;
@@ -155,15 +154,8 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         } else {
             correctAns.setText("incorrectly");
             fullText.setOpacity(1);
-            int i = 0;
-            for(Button x : buttonList) {
-                i++;
-                if(i == answer.getAnswer()) {
-                    x.getStyleClass().add("answerCorrect");
-                } else {
-                    x.getStyleClass().add("answerIncorrect");
-                }
-            }
+            btn.getStyleClass().add("answerIncorrect");
+            buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
         }
 
     }
