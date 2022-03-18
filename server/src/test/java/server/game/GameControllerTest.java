@@ -25,10 +25,14 @@ public class GameControllerTest {
     public void setup() {
 
         this.simpMessagingTemplate = new FakeSimpMessagingTemplate();
+
+        FakeApplicationContext context = new FakeApplicationContext();
+        context.setFakeMessagingTemplate(this.simpMessagingTemplate);
+
         this.gameUpdateManager = new GameUpdateManager(this.simpMessagingTemplate);
 
         this.gameController = new GameController(this.gameUpdateManager);
-        this.gameController.setApplicationContext(new FakeApplicationContext());
+        this.gameController.setApplicationContext(context);
         this.gameController.init();
 
     }

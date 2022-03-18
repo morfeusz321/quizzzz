@@ -29,11 +29,23 @@ import java.util.Random;
  */
 public class FakeApplicationContext implements ApplicationContext {
 
+    private FakeSimpMessagingTemplate template;
+
     /**
      * Creates a new fake application context
      */
     public FakeApplicationContext() {
 
+    }
+
+    /**
+     * Sets the FakeSimpMessagingTemplate, so that the GameUpdateManagers of Game objects are initialized with the same
+     * FakeSimpMessagingTemplate. This is necessary so that it can be tested whether that messaging template has
+     * sent specific messages.
+     * @param template the FakeSimpMessagingTemplate used as an argument for all GameUpdateManagers of Game objects
+     */
+    public void setFakeMessagingTemplate(FakeSimpMessagingTemplate template){
+        this.template = template;
     }
 
     @Override
@@ -176,7 +188,7 @@ public class FakeApplicationContext implements ApplicationContext {
             ActivityDBController activityDBController = new ActivityDBController(new TestActivityDB());
             QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
             QuestionController questionController = new QuestionController(new Random(), activityDBController, questionDBController);
-            return (T) new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
+            return (T) new Game(new GameUpdateManager(template), questionController);
 
         }
 
