@@ -15,7 +15,6 @@
  */
 package server;
 
-import commons.Score;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -23,7 +22,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
-import server.database.ScoreDBController;
 
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
@@ -36,10 +34,11 @@ public class Main {
 
         ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
 
-        //context.getBean(ActivityDBController.class).setJsonSourceToActivitiesFile();
-        //context.getBean(ActivityDBController.class).forceReload();
+        context.getBean(ActivityDBController.class).setJsonSourceToActivitiesFile();
+        context.getBean(ActivityDBController.class).forceReload();
         context.getBean(QuestionDBController.class).clear();
 
+        /* Testing data for leaderboard
         ScoreDBController sdb = context.getBean(ScoreDBController.class);
         sdb.clear();
         sdb.add(new Score("Gijs", 400));
@@ -53,7 +52,7 @@ public class Main {
         sdb.add(new Score("qpweoiiop", 315));
         sdb.add(new Score("qweuuurpoi", 758));
         sdb.add(new Score("qquweoiiouo", 190));
-
+        */
 
     }
 }
