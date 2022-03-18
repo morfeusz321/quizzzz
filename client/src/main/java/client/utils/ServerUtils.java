@@ -97,6 +97,19 @@ public class ServerUtils {
     }
 
     /**
+     * Disconnects from the WebSocket session
+     */
+    private void disconnect() {
+
+        if(session != null) {
+            if(session.isConnected()) {
+                session.disconnect();
+            }
+        }
+
+    }
+
+    /**
      * Subscribes to the gameupdates WebSocket topic for the game with the specified UUID. All
      * messages published to the topic will be sent to the specified consumer.
      * @param gameUUID the UUID of the game whose topic to subscribe to
@@ -286,11 +299,7 @@ public class ServerUtils {
      */
     public String leaveGame(String username, UUID gameUUID) {
 
-        if(session != null) {
-            if(session.isConnected()) {
-                session.disconnect();
-            }
-        }
+        disconnect();
 
         if(username == null || gameUUID == null) return "";
 
@@ -298,11 +307,16 @@ public class ServerUtils {
         form.param("username", username);
         form.param("gameUUID", gameUUID.toString());
 
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/user/leave") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        try {
+            return ClientBuilder.newClient(new ClientConfig()) //
+                    .target(SERVER).path("api/user/leave") //
+                    .request(APPLICATION_JSON) //
+                    .accept(APPLICATION_JSON) //
+                    .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        } catch(Exception e) {
+            return "";
+        }
+
     }
 
     /**

@@ -153,6 +153,10 @@ public class MainCtrl {
                 ConnectToServerCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
+        this.connectToServer.getStylesheets().add(
+                ConnectToServerCtrl.class.getResource(
+                        "/client/stylesheets/connect-to-server-style.css"
+                ).toExternalForm());
 
         this.leaderboardCtrl = leaderboard.getKey();
         this.leaderboard = new Scene(leaderboard.getValue());
