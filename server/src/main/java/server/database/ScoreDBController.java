@@ -1,6 +1,7 @@
 package server.database;
 
 import commons.Score;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -57,4 +58,16 @@ public class ScoreDBController {
     public List<Score> findAll() {
         return scoreDB.findAll();
     }
+
+    /**
+     * Finds all scores that are currently stored in the database, sorted by points descending,
+     * that is, leaderboard rank ascending
+     * @return all scores that are currently stored in the database sorted by leaderboard rank ascending
+     */
+    public List<Score> findAllSorted() {
+
+        return scoreDB.findAll(Sort.by(Sort.Direction.DESC, "score"));
+
+    }
+
 }

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.image.ImageView?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fx:id="backBtn" fitHeight="110.0" fitWidth="226.0" layoutX="20.0" layoutY="30.0" />
-      <Text layoutX="639.0" layoutY="99.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Leaderboard" />
+      <Text layoutX="560.0" layoutY="101.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="leaderboard-text" text="Leaderboard" />
+      <ListView id="leaderboard" fx:id="leaderboard" layoutX="336.0" layoutY="190.0" prefHeight="347.0" prefWidth="672.0" />
    </children>
 </AnchorPane>

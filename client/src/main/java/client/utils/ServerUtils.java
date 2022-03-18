@@ -26,10 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.List;
 
-import commons.Activity;
-import commons.AnswerResponseEntity;
-import commons.GameType;
-import commons.Question;
+import commons.*;
 import commons.gameupdate.GameUpdate;
 
 import jakarta.ws.rs.core.Form;
@@ -363,6 +360,20 @@ public class ServerUtils {
         } catch(Exception e) {
             throw new IllegalArgumentException("\"" + server +  "\" - Found a Quizzz Server at the specified URL, but could not connect its WebSocket topic.");
         }
+    }
+
+    /**
+     * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
+     * @return all scores on the leaderboard sorted by rank ascending
+     */
+    public List<Score> getLeaderboard() {
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                                    .target(SERVER).path("api/scores/sorted") //
+                                    .request(APPLICATION_JSON) //
+                                    .accept(APPLICATION_JSON) //
+                                    .get(new GenericType<List<Score>>() {});
+
     }
 
 }

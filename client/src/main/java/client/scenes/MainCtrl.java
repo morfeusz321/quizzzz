@@ -164,6 +164,10 @@ public class MainCtrl {
                 LeaderboardCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
+        this.leaderboard.getStylesheets().add(
+                LeaderboardCtrl.class.getResource(
+                        "/client/stylesheets/leaderboard-style.css"
+                ).toExternalForm());
 
         initializeOnCloseEvents();
         setServerAddressPrefill("localhost:8080");
@@ -453,6 +457,8 @@ public class MainCtrl {
 
         primaryStage.setTitle("Leaderboard");
         primaryStage.setScene(leaderboard);
+
+        leaderboardCtrl.populateLeaderboard();
 
     }
 
