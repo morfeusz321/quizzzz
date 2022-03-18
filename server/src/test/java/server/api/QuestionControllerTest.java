@@ -139,6 +139,33 @@ public class QuestionControllerTest {
     }
 
     @Test
+    public void getComparisonWithLongTest() {
+
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9999999999L);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 19999999999L);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 9999999998L);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 8888888888L);
+        Activity activity5 = new Activity("5", "/path/to/image/", "Activity 5", 9999999999999L);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+        activityDBController.getInternalDB().save(activity4);
+        activityDBController.getInternalDB().save(activity5);
+
+        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+
+        assertEquals(HttpStatus.OK, q.getStatusCode());
+        assertNotNull(q.getBody());
+        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+
+        assertTrue(activity1.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer))
+                ||
+                activity3.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer)));
+
+    }
+
+    @Test
     public void getRandomQuestionWithLongTest() {
 
         activityDBController.getInternalDB().deleteAll();
