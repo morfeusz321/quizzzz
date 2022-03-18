@@ -1,0 +1,70 @@
+@font-face {
+    -fx-font-family: 'Karla';
+    -fx-src: url(https://fonts.gstatic.com/s/karla/v21/qkBIXvYC6trAT55ZBi1ueQVIjQTD-JqaHUlKd7c.woff2) format('woff2');
+    -fx-unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+.text1 {
+
+    -fx-font-family: 'Karla';
+    -fx-font-style: italic;
+    -fx-font-weight: 500;
+    -fx-font-size: 35px;
+    -fx-line-height: 58px;
+    -fx-text-align: center;
+
+    -fx-color: #403D39;
+}
+
+.text12 {
+
+    -fx-font-weight: bold;
+}
+
+.text2 {
+
+    -fx-font-family: 'Karla';
+    -fx-font-style: italic;
+    -fx-font-weight: 700;
+    -fx-font-size: 98px;
+    -fx-line-height: 164px;
+    -fx-text-align: center;
+    -fx-letter-spacing: -0.02em;
+
+    -fx-color: #252422;
+}
+
+.button{
+
+    -fx-background-color: #E1B545;
+    -fx-border-style: solid;
+    -fx-border-radius: 50px;
+    -fx-border-width: 3px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 200px;
+    -fx-min-height: 92px;
+    -fx-font-size: 50px;
+}
+
+.input{
+    -fx-background-color: #E9DEC8;
+    -fx-border-style: solid;
+    -fx-border-radius: 50px;
+    -fx-border-width: 3px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 600px;
+    -fx-min-height: 92px;
+    -fx-font-size: 50px;
+}
+
+.inbutton {
+
+    -fx-font-family: 'Karla';
+    -fx-font-style: italic;
+    -fx-font-size: 45px;
+    -fx-line-height: 94px;
+    -fx-text-align: top center;
+
+    -fx-color: #252422;
+
+}

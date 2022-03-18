@@ -111,6 +111,10 @@ public class MainCtrl {
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
+        this.username.getStylesheets().add(
+                MainScreenCtrl.class.getResource(
+                        "/client/stylesheets/Input.css"
+                ).toExternalForm());
 
         initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
 
@@ -152,6 +156,7 @@ public class MainCtrl {
                                                      Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                                                      Pair<EstimationQuestionCtrl, Parent> estimationQ,
                                                      Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
+
 
         // TODO: this definitely needs restructuring, too much code duplication
 
@@ -211,7 +216,6 @@ public class MainCtrl {
             sendLeaveMessageToServer();
             System.exit(0);
         });
-
     }
 
     /**
@@ -287,7 +291,11 @@ public class MainCtrl {
     public void showUsernameInputScreen() {
 
         primaryStage.setTitle("Username input");
+
         primaryStage.setScene(username);
+        userCtrl.setTextGameType();
+        userCtrl.showImage();
+        username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
 
         username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
 
