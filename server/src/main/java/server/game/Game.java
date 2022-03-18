@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Component
 @Scope("prototype")
-public class Game {
+public class Game extends Thread {
 
     private UUID uuid;
     private GameType gameType;
@@ -48,6 +48,14 @@ public class Game {
         this.questionController = questionController;
         this.players = new ConcurrentHashMap<>();
 
+    }
+
+    /**
+     * Starts the game and initializes the questions.
+     */
+    @Override
+    public void run(){
+        gameUpdateManager.startGame(this.uuid);
     }
 
     /**

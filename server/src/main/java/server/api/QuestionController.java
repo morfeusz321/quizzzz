@@ -13,6 +13,7 @@ import java.util.*;
 
 /**
  * The API controller for the questions. Controls everything mapped to /api/questions/...
+ * TODO: if this is indeed only used server side, we might want to consider to make this not a RestController
  */
 @RestController
 @RequestMapping("/api/questions")

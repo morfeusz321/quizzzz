@@ -137,8 +137,7 @@ public class GameController implements ApplicationContextAware {
 
         UUID currentGameUUID = currentGame.getUUID();
 
-        gameUpdateManager.startGame(currentGameUUID);
-
+        this.currentGame.start();
         startedGames.put(currentGameUUID, currentGame);
 
         this.currentGame = context.getBean(Game.class);
