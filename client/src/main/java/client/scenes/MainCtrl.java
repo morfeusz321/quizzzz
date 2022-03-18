@@ -24,6 +24,10 @@ import commons.GameType;
 import commons.GeneralQuestion;
 import commons.Question;
 
+import commons.gameupdate.GameUpdate;
+import commons.gameupdate.GameUpdateGameStarting;
+import commons.gameupdate.GameUpdatePlayerJoined;
+import commons.gameupdate.GameUpdatePlayerLeft;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -53,6 +57,8 @@ public class MainCtrl {
     private UserCtrl userCtrl;
     private Scene username;
 
+    private WaitingRoomCtrl waitingRoomCtrl;
+    private Scene waitingRoom;
 
     private AdminCtrl adminCtrl;
     private Scene adminScene;
@@ -79,6 +85,7 @@ public class MainCtrl {
      * @param comparisonQ Pair of the control and the scene of the comparison question
      * @param estimationQ Pair of the control and the scene of the estimation question
      * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
+     * @param waitingRoom Pair of the control and the scene of the waiting room
      * @param adminScene Pair of the control and the scene of the admin interface
      * @param adminEditScene Pair of the control and the scene of the admin interface's activity editor
      */
@@ -89,6 +96,7 @@ public class MainCtrl {
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
                            Pair<EstimationQuestionCtrl, Parent> estimationQ,
                            Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ,
+                           Pair<WaitingRoomCtrl, Parent> waitingRoom,
                            Pair<AdminCtrl, Parent> adminScene,
                            Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
 
@@ -110,11 +118,24 @@ public class MainCtrl {
 
         initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
 
+        this.waitingRoomCtrl = waitingRoom.getKey();
+        this.waitingRoom = new Scene(waitingRoom.getValue());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/waiting-room-style.css"
+                ).toExternalForm());
+        this.waitingRoom.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/screen-style.css"
+                ).toExternalForm());
+
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
 
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
+
+        initializeOnCloseEvents();
 
         showMainScreen();
         primaryStage.show();
@@ -130,9 +151,10 @@ public class MainCtrl {
      * @param mostExpensiveQ Pair of the control and the scene of the "most expensive" question
      */
     public void initializeQuestionControllersAndScenes(Pair<GeneralQuestionCtrl, Parent> generalQ,
-                                                       Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
-                                                       Pair<EstimationQuestionCtrl, Parent> estimationQ,
-                                                       Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
+                                                     Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
+                                                     Pair<EstimationQuestionCtrl, Parent> estimationQ,
+                                                     Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
+
 
         // TODO: this definitely needs restructuring, too much code duplication
 
@@ -180,6 +202,26 @@ public class MainCtrl {
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
 
+    }
+
+    /**
+     * Initializes all the events that should happen upon sending a close request to
+     * the primary stage, that is, clicking the red x button on the window
+     */
+    public void initializeOnCloseEvents() {
+
+        primaryStage.setOnCloseRequest(event -> {
+            sendLeaveMessageToServer();
+            System.exit(0);
+        });
+    }
+
+    /**
+     * Shows the waiting room screen
+     */
+    public void showWaitingRoom() {
+        primaryStage.setTitle("Waiting room");
+        primaryStage.setScene(waitingRoom);
     }
 
     /**
@@ -241,8 +283,8 @@ public class MainCtrl {
         // TODO: other questions are not implemented yet, this has to be modified after that
     }
 
-    /**
-     * Shows the username input screen
+     /**
+      * Shows the username input screen
      */
     public void showUsernameInputScreen() {
 
@@ -252,6 +294,39 @@ public class MainCtrl {
         userCtrl.setTextGameType();
         userCtrl.showImage();
         username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
+
+        username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
+
+    }
+
+    /**
+     * Informs the server that the client is leaving the game
+     */
+    public void sendLeaveMessageToServer() {
+
+        server.leaveGame(userCtrl.getSavedCurrentUsername(), userCtrl.getSavedGameUUID());
+
+    }
+
+    /**
+     * The handler for all incoming game updates via the WebSocket connection, such as players leaving or joining
+     * @param gameUpdate the update for this game received from the WebSocket session
+     */
+    protected void gameUpdateHandler(GameUpdate gameUpdate) {
+
+        System.out.print("Update received...\t");
+
+        if(gameUpdate instanceof GameUpdatePlayerJoined) {
+            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+            waitingRoomCtrl.addPlayerToWaitingRoom(((GameUpdatePlayerJoined) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
+            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+            waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+        } else if(gameUpdate instanceof GameUpdateGameStarting) {
+            System.out.print("GAME STARTING!");
+        }
+
+        System.out.println();
 
     }
 
