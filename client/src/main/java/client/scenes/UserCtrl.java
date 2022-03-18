@@ -23,7 +23,12 @@ import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 
 import java.util.UUID;
@@ -43,6 +48,12 @@ public class UserCtrl {
     @FXML
     private TextField serverAddress;
 
+    @FXML
+    private Text gameType;
+
+    @FXML
+    private ImageView backBtn;
+
     /**
      * Constructor
      * @param server Utilities for communicating with the server (API endpoint)
@@ -57,7 +68,9 @@ public class UserCtrl {
 
      /**
      * Initializes the default text for the server address
+      * and the back button functionality
      */
+
     public void initialize() {
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
     }
@@ -68,13 +81,26 @@ public class UserCtrl {
     public void updateServerAddressPrefill() {
 
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
+        backButtonHandler();
 
+    }
+
+    /**
+     * sends the type of the game for the label to the fxml file
+     */
+
+    public void setTextGameType(){
+        if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER){
+            gameType.setText("MULTIPLAYER");
+        }
+        else gameType.setText("SINGLEPLAYER");
     }
 
     /**
      * Sends the server a request to join the current game with the username specified in the TextField in
      * the GUI, and registers for updates for that game if it can be joined.
      */
+
     public void join() {
 
         String un = getUserName();
@@ -168,6 +194,20 @@ public class UserCtrl {
     }
 
     /**
+     *  The back button functionality
+     */
+    private void backButtonHandler() {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showMainScreen());
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+    }
+
+    /**
      *  the click of enter continues as join
      * @param e a click of the user
      */
@@ -180,4 +220,13 @@ public class UserCtrl {
             break;
         }
     }
+
+    /**
+     * Loads the back button image, i.e. initializes the image of the back button
+     */
+    protected void showImage(){
+        backBtn.setImage(new Image("/client/img/back_btn.png"));
+    }
+
+
 }
