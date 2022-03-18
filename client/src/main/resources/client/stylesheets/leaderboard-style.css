@@ -2,6 +2,28 @@
     -fx-font-size: 40px;
 }
 
+.button {
+    -fx-background-color: #E1B545;
+    -fx-border-style: solid;
+    -fx-border-radius: 50px;
+    -fx-border-width: 3px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 200px;
+    -fx-min-height: 92px;
+    -fx-font-size: 30px;
+}
+
+.input{
+    -fx-background-color: #E9DEC8;
+    -fx-border-style: solid;
+    -fx-border-radius: 50px;
+    -fx-border-width: 3px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 400px;
+    -fx-min-height: 52px;
+    -fx-font-size: 30px;
+}
+
 #leaderboard {
     -fx-font-size: 35px;
     -fx-background-insets: 0;

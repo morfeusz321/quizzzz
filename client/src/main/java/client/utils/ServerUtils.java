@@ -96,7 +96,7 @@ public class ServerUtils {
     /**
      * Disconnects from the WebSocket session
      */
-    private void disconnect() {
+    public void disconnect() {
 
         if(session != null) {
             if(session.isConnected()) {
