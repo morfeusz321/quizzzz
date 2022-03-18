@@ -23,7 +23,12 @@ import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 
 import java.util.UUID;
@@ -32,9 +37,11 @@ public class UserCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final WaitingRoomCtrl waitingRoomCtrl;
 
     private String currentUsername;
     private UUID gameUUID;
+    private String serverAddressPreFill = "localhost:8080";
 
     @FXML
     private TextField username;
@@ -42,28 +49,52 @@ public class UserCtrl {
     @FXML
     private TextField serverAddress;
 
+    @FXML
+    private Text gameType;
+
+    @FXML
+    private ImageView backBtn;
+
     /**
      * Constructor
      * @param server Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public UserCtrl(ServerUtils server, MainCtrl mainCtrl) {
-        this.mainCtrl = mainCtrl;
+    public UserCtrl(ServerUtils server, MainCtrl mainCtrl, WaitingRoomCtrl waitingRoomCtrl) {
         this.server = server;
+        this.mainCtrl = mainCtrl;
+        this.waitingRoomCtrl = waitingRoomCtrl;
     }
 
      /**
      * Initializes the default text for the server address
+      * and the back button functionality
      */
+
     public void initialize() {
-        serverAddress.setText("localhost:8080");
+
+        serverAddress.setText(serverAddressPreFill);
+        backButtonHandler();
+
+    }
+
+    /**
+     * sends the type of the game for the label to the fxml file
+     */
+
+    public void setTextGameType(){
+        if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER){
+            gameType.setText("MULTIPLAYER");
+        }
+        else gameType.setText("SINGLEPLAYER");
     }
 
     /**
      * Sends the server a request to join the current game with the username specified in the TextField in
      * the GUI, and registers for updates for that game if it can be joined.
      */
+
     public void join() {
 
         String un = getUserName();
@@ -90,18 +121,22 @@ public class UserCtrl {
         }
 
         if(gu instanceof GameUpdateNameInUse) {
-            System.out.println("Name in use!");
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Name \"" + un + "\" already in use!");
+            alert.showAndWait();
             return;
         }
 
         if(gu instanceof GameUpdateFullPlayerList) {
-            System.out.println(((GameUpdateFullPlayerList) gu).getPlayerList());
+            waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu), un);
             this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
         }
 
-        server.registerForGameUpdates(gameUUID, this::gameUpdateHandler);
+        server.registerForGameUpdates(gameUUID, mainCtrl::gameUpdateHandler);
 
         this.currentUsername = un;
+        this.serverAddressPreFill = getServer();
 
         /*
         new Timer().schedule(new TimerTask() {
@@ -112,34 +147,27 @@ public class UserCtrl {
         }, 10000);
         */
 
-    }
-
-    /**
-     * The handler for all incoming game updates via the WebSocket connection
-     * @param gameUpdate the update for this game received from the WebSocket session
-     */
-    private void gameUpdateHandler(GameUpdate gameUpdate) {
-
-        System.out.print("Update received...\t");
-
-        if(gameUpdate instanceof GameUpdatePlayerJoined) {
-            System.out.print("Player joined: " + ((GameUpdatePlayerJoined) gameUpdate).getPlayer());
-        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
-            System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
-        } else if(gameUpdate instanceof GameUpdateGameStarting) {
-            System.out.print("GAME STARTING!");
-        }
-
-        System.out.println();
+        mainCtrl.showWaitingRoom();
 
     }
 
     /**
-     * Informs the server that the client is leaving the game
+     * Returns the username entered by the player which has been used to join a game on the server
+     * @return the current username of the user registered to the server
      */
-    public void sendLeaveMessageToServer() {
+    public String getSavedCurrentUsername() {
 
-        server.leaveGame(currentUsername, gameUUID);
+        return currentUsername;
+
+    }
+
+    /**
+     * Returns the UUID of the game that the user is currently in
+     * @return the UUID of the current game received from the server
+     */
+    public UUID getSavedGameUUID() {
+
+        return gameUUID;
 
     }
 
@@ -160,6 +188,20 @@ public class UserCtrl {
     }
 
     /**
+     *  The back button functionality
+     */
+    private void backButtonHandler() {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showMainScreen());
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+    }
+
+    /**
      *  the click of enter continues as join
      * @param e a click of the user
      */
@@ -172,4 +214,13 @@ public class UserCtrl {
             break;
         }
     }
+
+    /**
+     * Loads the back button image, i.e. initializes the image of the back button
+     */
+    protected void showImage(){
+        backBtn.setImage(new Image("/client/img/back_btn.png"));
+    }
+
+
 }
