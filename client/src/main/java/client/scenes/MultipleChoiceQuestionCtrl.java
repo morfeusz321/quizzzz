@@ -128,36 +128,43 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     private void eventHandlerAnswerButtonMouseClicked(Button btn) {
 
         List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
-        buttonList.forEach(b -> b.getStyleClass().remove("selected-answer"));
-
-        btn.getStyleClass().add("selected-answer");
-
         buttonList.forEach(b -> {
-            long s;
-            if(btn.equals(answerBtn1)) s=1;
-            else if(btn.equals(answerBtn3)) s=2;
-            else s=3;
-            AnswerResponseEntity answer = server.sendAnswerToServer(question, s);
-            disableButtons();
-            if(answer.correct){
-                correctAns.setText("correctly");
-                fullText.setOpacity(1);
-                btn.getStyleClass().add("answerCorrect");
-            }
-            else {
-                correctAns.setText("incorrectly");
-                fullText.setOpacity(1);
-                btn.getStyleClass().add("answerIncorrect");
-                int i = 0;
-                for(Button x : buttonList){
-                    i++;
-                    if(i == answer.getAnswer()) {
-                        x.getStyleClass().add("answerCorrect");
-                        break;
-                    }
+                                    b.getStyleClass().remove("selected-answer");
+                                    b.getStyleClass().remove("answerCorrect");
+                                    b.getStyleClass().remove("answerIncorrect");
+                                } );
+
+        long selectedButton;
+        if(btn.equals(answerBtn1)) {
+            selectedButton = 1;
+        } else if(btn.equals(answerBtn2)) {
+            selectedButton = 2;
+        } else if(btn.equals(answerBtn3)) {
+            selectedButton = 3;
+        } else {
+            return;
+        }
+
+        AnswerResponseEntity answer = server.sendAnswerToServer(question, selectedButton);
+        disableButtons();
+
+        if(answer.correct) {
+            correctAns.setText("correctly");
+            fullText.setOpacity(1);
+            btn.getStyleClass().add("answerCorrect");
+        } else {
+            correctAns.setText("incorrectly");
+            fullText.setOpacity(1);
+            int i = 0;
+            for(Button x : buttonList) {
+                i++;
+                if(i == answer.getAnswer()) {
+                    x.getStyleClass().add("answerCorrect");
+                } else {
+                    x.getStyleClass().add("answerIncorrect");
                 }
             }
-        });
+        }
 
     }
 
@@ -195,15 +202,15 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         answerBtn1.getStyleClass().clear();
         answerBtn1.getStyleClass().add("text");
         answerBtn1.getStyleClass().add("question-button");
-        answerBtn1.setTextAlignment(TextAlignment.CENTER);
+        answerBtn1.getStyleClass().add("button");
         answerBtn2.getStyleClass().clear();
         answerBtn2.getStyleClass().add("text");
         answerBtn2.getStyleClass().add("question-button");
-        answerBtn2.setTextAlignment(TextAlignment.CENTER);
+        answerBtn2.getStyleClass().add("button");
         answerBtn3.getStyleClass().clear();
         answerBtn3.getStyleClass().add("text");
         answerBtn3.getStyleClass().add("question-button");
-        answerBtn3.setTextAlignment(TextAlignment.CENTER);
+        answerBtn3.getStyleClass().add("button");
     }
 
 
