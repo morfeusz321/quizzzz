@@ -62,7 +62,7 @@ public class QuestionControllerTest {
         activityDBController.getInternalDB().deleteAll();
         activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 0));
 
-        ResponseEntity<Question> q = questionController.getRandomQuestion();
+        ResponseEntity<Question> q = questionController.getGeneralQuestion();
 
         assertEquals(HttpStatus.OK, q.getStatusCode());
         assertNotNull(q.getBody());

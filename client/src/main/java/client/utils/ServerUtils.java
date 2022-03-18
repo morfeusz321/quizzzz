@@ -112,13 +112,13 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a random question from the server using the API endpoint (sends a get request)
+     * Gets a random general question from the server using the API endpoint (sends a get request)
      * @return Returns the retrieved question from the server
      */
     public Question getRandomQuestion() {
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/random")
+                .target(SERVER).path("api/questions/general")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(Question.class);

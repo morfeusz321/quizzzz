@@ -40,12 +40,32 @@ public class QuestionController {
 
     /**
      * Maps to /api/questions/random
-     * Returns a random question generated from a random activity selected from the database
+     * Returns a random question (of a random type) generated from a random activity selected from the database
      *
      * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
      */
     @GetMapping("/random")
     public ResponseEntity<Question> getRandomQuestion() {
+
+        int type = random.nextInt(4);
+        return switch (type) {
+            case 0 -> getGeneralQuestion();
+            case 1 -> getWhichIsMoreQuestion();
+            case 2 -> getComparisonQuestion();
+            case 3 -> getEstimationQuestion();
+            default -> ResponseEntity.internalServerError().build();
+        };
+
+    }
+
+    /**
+     * Maps to /api/questions/general
+     * Returns a random general question generated from a random activity selected from the database
+     *
+     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     */
+    @GetMapping("/general")
+    public ResponseEntity<Question> getGeneralQuestion() {
 
         CommonUtils utils = new CommonUtils();
 
