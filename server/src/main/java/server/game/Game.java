@@ -5,6 +5,7 @@ import commons.Player;
 import org.apache.commons.lang3.builder.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import server.api.QuestionController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +28,24 @@ public class Game {
     @ToStringExclude
     private GameUpdateManager gameUpdateManager;
 
+    @HashCodeExclude
+    @EqualsExclude
+    @ToStringExclude
+    private QuestionController questionController;
+
     /**
      * Creates a new game
      * @param gameUpdateManager the game update manager used by this game to send messages to the client
+     * @param questionController the question generator (so that the server does not have to send API requests to itself)
      */
-    public Game(GameUpdateManager gameUpdateManager) {
+    public Game(GameUpdateManager gameUpdateManager, QuestionController questionController) {
+
+        // TODO: not sure if the server should send requests for questions to itself via the API mapping (this does not
+        //  really make sense, and would create overhead), so I included the QuestionController as a parameter for now.
+        //  If this is not the best way of handling it, we would have to change this here.
 
         this.gameUpdateManager = gameUpdateManager;
+        this.questionController = questionController;
         this.players = new ConcurrentHashMap<>();
 
     }

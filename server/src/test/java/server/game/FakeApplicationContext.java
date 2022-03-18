@@ -11,11 +11,17 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
+import server.api.QuestionController;
+import server.api.TestActivityDB;
+import server.api.TestQuestionDB;
+import server.database.ActivityDBController;
+import server.database.QuestionDBController;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * The fake application context is used to inject in tests
@@ -166,7 +172,11 @@ public class FakeApplicationContext implements ApplicationContext {
 
         if(requiredType.equals(Game.class)) {
 
-            return (T) new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()));
+            // TODO: not sure if this is the correct way to do this
+            ActivityDBController activityDBController = new ActivityDBController(new TestActivityDB());
+            QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
+            QuestionController questionController = new QuestionController(new Random(), activityDBController, questionDBController);
+            return (T) new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
 
         }
 

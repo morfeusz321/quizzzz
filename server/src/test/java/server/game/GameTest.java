@@ -4,8 +4,14 @@ import commons.GameType;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.api.QuestionController;
+import server.api.TestActivityDB;
+import server.api.TestQuestionDB;
+import server.database.ActivityDBController;
+import server.database.QuestionDBController;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,6 +24,10 @@ public class GameTest {
     private UUID uuid;
     private Game game;
 
+    private ActivityDBController activityDBController;
+    private QuestionDBController questionDBController;
+    private QuestionController questionController;
+
     @BeforeEach
     public void setup() {
 
@@ -26,7 +36,12 @@ public class GameTest {
 
         this.uuid = UUID.randomUUID();
 
-        this.game = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()));
+        // TODO: not sure if this is the correct way to handle this
+        activityDBController = new ActivityDBController(new TestActivityDB());
+        questionDBController = new QuestionDBController(new TestQuestionDB());
+        questionController = new QuestionController(new Random(), activityDBController, questionDBController);
+
+        this.game = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
         this.game.setUUID(uuid);
         this.game.setGameType(GameType.MULTIPLAYER);
 
@@ -111,7 +126,7 @@ public class GameTest {
         assertEquals(game, game);
         assertEquals(game.hashCode(), game.hashCode());
 
-        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()));
+        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
         game2.setUUID(uuid);
         game2.setGameType(GameType.MULTIPLAYER);
         assertEquals(game, game2);
@@ -127,26 +142,26 @@ public class GameTest {
     @Test
     public void testEqualsAndHashCodeNotEqual() {
 
-        Game game0 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()));
+        Game game0 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
         game0.setUUID(uuid);
         game0.setGameType(GameType.SINGLEPLAYER);
         assertNotEquals(game, game0);
         assertNotEquals(game.hashCode(), game0.hashCode());
 
-        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()));
+        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
         game2.setUUID(UUID.randomUUID());
         game2.setGameType(GameType.MULTIPLAYER);
         assertNotEquals(game, game2);
         assertNotEquals(game.hashCode(), game2.hashCode());
 
-        Game game3 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()));
+        Game game3 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
         game3.setUUID(uuid);
         game3.setGameType(GameType.MULTIPLAYER);
         game3.addPlayer(player1);
         assertNotEquals(game, game3);
         assertNotEquals(game.hashCode(), game3.hashCode());
 
-        Game game4 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()));
+        Game game4 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
         game4.setUUID(uuid);
         game4.setGameType(GameType.MULTIPLAYER);
         game.addPlayer(player1);
