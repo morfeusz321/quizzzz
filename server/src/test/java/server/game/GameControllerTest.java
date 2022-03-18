@@ -112,6 +112,13 @@ public class GameControllerTest {
 
         gameController.startCurrentGame();
 
+        // This is needed because the game is started on a separate thread.
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         assertNotEquals(uuid, gameController.getCurrentGameUUID());
         assertEquals("/topic/gameupdates/" + uuid, simpMessagingTemplate.getMostRecentSentPayload().getLeft());
         assertEquals(new GameUpdateGameStarting(), simpMessagingTemplate.getMostRecentSentPayload().getRight());
@@ -124,6 +131,7 @@ public class GameControllerTest {
     public void testGetGame() {
 
         UUID uuid = gameController.getCurrentGameUUID();
+        // Here Thread.sleep is not needed because the actual game starting is not tested here
         gameController.startCurrentGame();
 
         UUID uuid2 = gameController.getCurrentGameUUID();
@@ -158,6 +166,7 @@ public class GameControllerTest {
         Player player1 = new Player("P1");
 
         UUID uuid = gameController.getCurrentGameUUID();
+        // Here Thread.sleep is not needed because the actual game starting is not tested here
         gameController.startCurrentGame();
 
         gameController.getGame(uuid).addPlayer(player1);
