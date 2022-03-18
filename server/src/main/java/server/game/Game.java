@@ -2,8 +2,11 @@ package server.game;
 
 import commons.GameType;
 import commons.Player;
+import commons.Question;
 import org.apache.commons.lang3.builder.*;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import server.api.QuestionController;
 
@@ -22,6 +25,7 @@ public class Game extends Thread {
     private GameType gameType;
 
     private ConcurrentHashMap<String, Player> players;
+    private List<Question> questions;
 
     @HashCodeExclude
     @EqualsExclude
@@ -47,6 +51,7 @@ public class Game extends Thread {
         this.gameUpdateManager = gameUpdateManager;
         this.questionController = questionController;
         this.players = new ConcurrentHashMap<>();
+        this.questions = new ArrayList<>(); // questions are "loaded" when game is started
 
     }
 
@@ -55,7 +60,23 @@ public class Game extends Thread {
      */
     @Override
     public void run(){
+
+        // TODO: It would make sense to also add a "ready" message, which is sent when all questions are loaded. Or only
+        //   Have that message and remove the start game one.
         gameUpdateManager.startGame(this.uuid);
+
+        // Generate the questions
+        for(int i = 0; i < 20; i++){
+            ResponseEntity<Question> generated = questionController.getRandomQuestion();
+            if(!generated.getStatusCode().equals(HttpStatus.OK)){
+                // TODO: some error handling here, maybe send an error message to client that
+                //  should then be displayed
+                return;
+            }
+            questions.add(generated.getBody());
+        }
+
+
     }
 
     /**

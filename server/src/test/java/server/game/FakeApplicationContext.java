@@ -1,5 +1,6 @@
 package server.game;
 
+import commons.Activity;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -186,6 +187,13 @@ public class FakeApplicationContext implements ApplicationContext {
 
             // TODO: not sure if this is the correct way to do this
             ActivityDBController activityDBController = new ActivityDBController(new TestActivityDB());
+
+            // Add some default activities to the database
+            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "1", 1));
+            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "2", 2));
+            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "3", 3));
+            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "4", 4));
+
             QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
             QuestionController questionController = new QuestionController(new Random(), activityDBController, questionDBController);
             return (T) new Game(new GameUpdateManager(template), questionController);
