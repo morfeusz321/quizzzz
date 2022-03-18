@@ -246,11 +246,11 @@ public class MainCtrl {
      */
     public void showUsernameInputScreen() {
 
-
         primaryStage.setTitle("Username input");
 
         primaryStage.setScene(username);
         userCtrl.setTextGameType();
+        userCtrl.showImage();
         username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
 
     }
