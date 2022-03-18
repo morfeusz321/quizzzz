@@ -4,8 +4,12 @@ import commons.GameType;
 import commons.Player;
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,11 +17,23 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class GameController {
+public class GameController implements ApplicationContextAware {
 
     private ConcurrentHashMap<UUID, Game> startedGames;
     private Game currentGame;
     private GameUpdateManager gameUpdateManager;
+
+    private ApplicationContext context;
+
+    /**
+     * Sets the application context that this class uses to get Game Beans
+     * @param applicationContext the application context
+     * @throws BeansException if thrown by application context methods
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 
     /**
      * Instantiates a game controller
@@ -26,8 +42,20 @@ public class GameController {
     public GameController(GameUpdateManager gameUpdateManager) {
 
         this.startedGames = new ConcurrentHashMap<>();
-        this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
+
         this.gameUpdateManager = gameUpdateManager;
+
+    }
+
+    /**
+     * Initializes the current game
+     */
+    @PostConstruct
+    public void init() {
+
+        this.currentGame = context.getBean(Game.class);
+        this.currentGame.setUUID(UUID.randomUUID());
+        this.currentGame.setGameType(GameType.MULTIPLAYER);
 
     }
 
@@ -112,7 +140,10 @@ public class GameController {
         gameUpdateManager.startGame(currentGameUUID);
 
         startedGames.put(currentGameUUID, currentGame);
-        this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
+
+        this.currentGame = context.getBean(Game.class);
+        this.currentGame.setUUID(UUID.randomUUID());
+        this.currentGame.setGameType(GameType.MULTIPLAYER);
 
     }
 
@@ -212,7 +243,10 @@ public class GameController {
     public GameUpdate createSinglePlayerGame(Player player) {
 
         UUID uuid = UUID.randomUUID();
-        Game singlePlayerGame = new Game(uuid, GameType.SINGLEPLAYER);
+        Game singlePlayerGame = context.getBean(Game.class);
+        singlePlayerGame.setUUID(uuid);
+        singlePlayerGame.setGameType(GameType.SINGLEPLAYER);
+
         singlePlayerGame.addPlayer(player);
 
         this.startedGames.put(uuid, singlePlayerGame);
