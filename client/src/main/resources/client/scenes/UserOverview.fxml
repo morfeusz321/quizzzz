@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="123.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserCtrl">
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" style="-fx-background-color: #F0EAD6;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserCtrl">
    <children>
-      <Button layoutX="228.0" layoutY="82.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="94.0" text="Join" />
-      <TextField fx:id="username" layoutX="109.0" layoutY="16.0" prefHeight="26.0" prefWidth="333.0" />
-      <Label layoutX="28.0" layoutY="20.0" text="Username:" />
-      <TextField fx:id="serverAddress" layoutX="109.0" layoutY="49.0" prefHeight="26.0" prefWidth="334.0" />
-      <Label layoutX="48.0" layoutY="53.0" text="Server:" />
+      <ImageView fx:id="backBtn" fitHeight="110.0" fitWidth="226.0" layoutX="20.0" layoutY="30.0">
+      </ImageView>
+      <TextFlow layoutX="320.0" layoutY="115.0" styleClass="text1" >
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You are about to enter the " ></Text>
+         <Text fx:id="gameType" strokeType="OUTSIDE" strokeWidth="0.0" text="" >
+            <styleClass>
+               <String fx:value="text1" />
+               <String fx:value="text12" />
+            </styleClass>
+         </Text>
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" game. " ></Text>
+      </TextFlow>
+      <Label layoutX="303.0" layoutY="157.0" styleClass="text2" text="Enter your name:" />
+      <Button layoutX="587.0" layoutY="556.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="94.0" text="Join" textAlignment="CENTER" textFill="#252422" wrapText="true">
+         <styleClass>
+            <String fx:value="inbutton" />
+            <String fx:value="button" />
+         </styleClass>
+      </Button>
+      <TextField fx:id="username" layoutX="411.0" layoutY="331.0" prefHeight="26.0" prefWidth="333.0" promptText="Your name..." styleClass="input" />
+      <TextField fx:id="serverAddress" layoutX="410.0" layoutY="433.0" prefHeight="26.0" prefWidth="334.0" styleClass="input" />
    </children>
 </AnchorPane>
