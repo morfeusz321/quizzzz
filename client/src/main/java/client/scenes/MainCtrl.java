@@ -31,8 +31,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-
 public class MainCtrl {
 
     private final ServerUtils server;
