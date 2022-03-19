@@ -327,6 +327,7 @@ public class GameController implements ApplicationContextAware {
         singlePlayerGame.addPlayer(player);
 
         this.runningGames.put(uuid, singlePlayerGame);
+        singlePlayerGame.start();
 
         (new Timer()).schedule(new TimerTask() {
             @Override
