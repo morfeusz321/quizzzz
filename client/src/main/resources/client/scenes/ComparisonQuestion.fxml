@@ -20,19 +20,19 @@
             <String fx:value="text" />
          </styleClass>
       </Text>
-      <Label layoutX="102.0" layoutY="188.0" text="Powers:">
+      <Label layoutX="73.0" layoutY="188.0" text="Powers:">
          <styleClass>
             <String fx:value="powers-text" />
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <ImageView fx:id="decreaseTime" fitHeight="90.0" fitWidth="104.0" layoutX="99.0" layoutY="467.0" smooth="false">
+      <ImageView fx:id="questionImg" fitHeight="355.0" fitWidth="355.0" layoutX="262.0" layoutY="219.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <ImageView fx:id="removeQuestion" fitHeight="90.0" fitWidth="104.0" layoutX="99.0" layoutY="249.0" smooth="false">
+      <ImageView fx:id="decreaseTime" fitHeight="90.0" fitWidth="104.0" layoutX="74.0" layoutY="467.0" smooth="false">
       </ImageView>
-      <ImageView fx:id="doublePoints" fitHeight="90.0" fitWidth="104.0" layoutX="99.0" layoutY="358.0" smooth="false">
+      <ImageView fx:id="removeQuestion" fitHeight="90.0" fitWidth="104.0" layoutX="74.0" layoutY="249.0" smooth="false">
       </ImageView>
-      <ImageView fx:id="questionImg" fitHeight="355.0" fitWidth="355.0" layoutX="307.0" layoutY="219.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="doublePoints" fitHeight="90.0" fitWidth="104.0" layoutX="74.0" layoutY="358.0" smooth="false">
       </ImageView>
       <Button fx:id="answerBtn1" layoutX="735.0" layoutY="221.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="400.0" text="10000 kWh" textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
