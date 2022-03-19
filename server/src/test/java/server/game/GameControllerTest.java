@@ -7,6 +7,9 @@ import commons.gameupdate.GameUpdateFullPlayerList;
 import commons.gameupdate.GameUpdateGameStarting;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.api.ScoreController;
+import server.api.TestScoreDB;
+import server.database.ScoreDBController;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -31,7 +34,8 @@ public class GameControllerTest {
 
         this.gameUpdateManager = new GameUpdateManager(this.simpMessagingTemplate);
 
-        this.gameController = new GameController(this.gameUpdateManager);
+        ScoreController scoreController = new ScoreController(new ScoreDBController(new TestScoreDB()));
+        this.gameController = new GameController(this.gameUpdateManager, scoreController);
         this.gameController.setApplicationContext(context);
         this.gameController.init();
 
@@ -45,13 +49,17 @@ public class GameControllerTest {
 
         try {
 
-            Field gamesField = GameController.class.getDeclaredField("startedGames");
+            Field gamesField = GameController.class.getDeclaredField("runningGames");
             gamesField.setAccessible(true);
             assertNotNull(gamesField.get(gameController));
 
             Field gameUpdateManagerField = GameController.class.getDeclaredField("gameUpdateManager");
             gameUpdateManagerField.setAccessible(true);
             assertNotNull(gameUpdateManagerField.get(gameController));
+
+            Field scoreControllerField = GameController.class.getDeclaredField("scoreController");
+            scoreControllerField.setAccessible(true);
+            assertNotNull(scoreControllerField.get(gameController));
 
         } catch (NoSuchFieldException | IllegalAccessException e) {
             fail();
@@ -161,21 +169,31 @@ public class GameControllerTest {
     }
 
     @Test
-    public void testRemovePlayerFromGame() {
+    public void testRemovePlayerFromGameNotEmpty() {
+        // TODO: add a test to test whether an empty game has been stopped
 
         Player player1 = new Player("P1");
+        Player player2 = new Player("P2");
 
         UUID uuid = gameController.getCurrentGameUUID();
         // Here Thread.sleep is not needed because the actual game starting is not tested here
         gameController.startCurrentGame();
 
+        // Add two players
         gameController.getGame(uuid).addPlayer(player1);
         assertTrue(gameController.getGame(uuid).containsPlayer(player1));
+        gameController.getGame(uuid).addPlayer(player2);
+        assertTrue(gameController.getGame(uuid).containsPlayer(player2));
+
+        // Test first remove method
         gameController.removePlayerFromGame(player1, uuid);
         assertFalse(gameController.getGame(uuid).containsPlayer(player1));
 
+        // Add one player back
         gameController.getGame(uuid).addPlayer(player1);
         assertTrue(gameController.getGame(uuid).containsPlayer(player1));
+
+        // Test second remove method
         gameController.removePlayerFromGame("P1", uuid);
         assertFalse(gameController.getGame(uuid).containsPlayer(player1));
 

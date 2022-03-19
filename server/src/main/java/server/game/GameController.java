@@ -8,6 +8,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import server.api.ScoreController;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -19,9 +20,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class GameController implements ApplicationContextAware {
 
-    private ConcurrentHashMap<UUID, Game> startedGames;
+    private ConcurrentHashMap<UUID, Game> runningGames;
     private Game currentGame;
     private GameUpdateManager gameUpdateManager;
+    private ScoreController scoreController;
 
     private ApplicationContext context;
 
@@ -38,12 +40,13 @@ public class GameController implements ApplicationContextAware {
     /**
      * Instantiates a game controller
      * @param gameUpdateManager the update manager for WebSocket messages
+     * @param scoreController the score controller to save scores
      */
-    public GameController(GameUpdateManager gameUpdateManager) {
+    public GameController(GameUpdateManager gameUpdateManager, ScoreController scoreController) {
 
-        this.startedGames = new ConcurrentHashMap<>();
-
+        this.runningGames = new ConcurrentHashMap<>();
         this.gameUpdateManager = gameUpdateManager;
+        this.scoreController = scoreController;
 
     }
 
@@ -86,8 +89,8 @@ public class GameController implements ApplicationContextAware {
      */
     public Game getGame(UUID uuid) {
 
-        if(this.startedGames.containsKey(uuid)) {
-            return this.startedGames.get(uuid);
+        if(this.runningGames.containsKey(uuid)) {
+            return this.runningGames.get(uuid);
         } else if(this.currentGame.getUUID().equals(uuid)) {
             return this.currentGame;
         } else {
@@ -138,7 +141,7 @@ public class GameController implements ApplicationContextAware {
         UUID currentGameUUID = currentGame.getUUID();
 
         this.currentGame.start();
-        startedGames.put(currentGameUUID, currentGame);
+        runningGames.put(currentGameUUID, currentGame);
 
         this.currentGame = context.getBean(Game.class);
         this.currentGame.setUUID(UUID.randomUUID());
@@ -184,6 +187,13 @@ public class GameController implements ApplicationContextAware {
         game.removePlayer(player);
         this.gameUpdateManager.playerLeft(player, gameUUID);
 
+        // Check if all players left, in that case stop the game. It also has to be checked whether this is the
+        // current game in the waiting room, if that is the case, the game does not have to be stopped as it has
+        // not started yet.
+        if(game != currentGame && game.getPlayers().size() == 0){
+            stopGame(game);
+        }
+
     }
 
     /**
@@ -207,6 +217,36 @@ public class GameController implements ApplicationContextAware {
 
         this.removePlayerFromGame(player, gameUUID);
 
+        // Check if all players left, in that case stop the game. It also has to be checked whether this is the
+        // current game in the waiting room, if that is the case, the game does not have to be stopped as it has
+        // not started yet.
+        if(game != currentGame && game.getPlayers().size() == 0){
+            stopGame(game);
+        }
+
+    }
+
+    /**
+     * Stops a game (removes it from the runningGames, and handles saving the scores)
+     * @param game the game to stop
+     */
+    public void stopGame(Game game) {
+        // TODO: test this method, this has not been properly tested yet
+        if(game == null || !runningGames.containsKey(game.getUUID())) {
+            return;
+        }
+        runningGames.remove(game.getUUID());
+        // Check if the game was stopped before it actually ended, in that case do nothing
+        if(!game.isDone()){
+            return;
+        }
+        // If the game ended after 20 questions, save all players scores
+        List<Player> players = game.getPlayers();
+        for(Player p: players){
+            scoreController.addScore(p.getUsername(), p.getPoints());
+        }
+        // Interrupt the game thread
+        game.interrupt();
     }
 
     /**
@@ -248,7 +288,7 @@ public class GameController implements ApplicationContextAware {
 
         singlePlayerGame.addPlayer(player);
 
-        this.startedGames.put(uuid, singlePlayerGame);
+        this.runningGames.put(uuid, singlePlayerGame);
 
         (new Timer()).schedule(new TimerTask() {
             @Override

@@ -26,6 +26,8 @@ public class Game extends Thread {
 
     private ConcurrentHashMap<String, Player> players;
     private List<Question> questions;
+    private Question currentQuestion;
+    private boolean done;
 
     @HashCodeExclude
     @EqualsExclude
@@ -52,6 +54,7 @@ public class Game extends Thread {
         this.questionController = questionController;
         this.players = new ConcurrentHashMap<>();
         this.questions = new ArrayList<>(); // questions are "loaded" when game is started
+        this.done = false;
 
     }
 
@@ -61,8 +64,6 @@ public class Game extends Thread {
     @Override
     public void run(){
 
-        // TODO: It would make sense to also add a "ready" message, which is sent when all questions are loaded. Or only
-        //   Have that message and remove the start game one.
         gameUpdateManager.startGame(this.uuid);
 
         // Generate the questions
@@ -75,8 +76,19 @@ public class Game extends Thread {
             }
             questions.add(generated.getBody());
         }
+        // Set first question
+        currentQuestion = questions.get(0);
 
+        // TODO: game loop here, after all questions, set done variable to true
 
+    }
+
+    /**
+     * Returns whether this game is done, i.e. all 20 questions have been answered/displayed
+     * @return whether this game is done
+     */
+    public boolean isDone(){
+        return done;
     }
 
     /**
@@ -164,6 +176,9 @@ public class Game extends Thread {
         if(player == null) return;
 
         this.players.remove(player.getUsername());
+
+        // It is not checked here, whether a game has 0 players. This is checked in the GameController,
+        // because in that case this Game has to be removed, this cannot be done from here.
 
     }
 

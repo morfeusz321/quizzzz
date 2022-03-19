@@ -12,9 +12,7 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
-import server.api.QuestionController;
-import server.api.TestActivityDB;
-import server.api.TestQuestionDB;
+import server.api.*;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 
@@ -193,6 +191,7 @@ public class FakeApplicationContext implements ApplicationContext {
             activityDBController.getInternalDB().save(new Activity("id", "imagePath", "2", 2));
             activityDBController.getInternalDB().save(new Activity("id", "imagePath", "3", 3));
             activityDBController.getInternalDB().save(new Activity("id", "imagePath", "4", 4));
+            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "5", 5));
 
             QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
             QuestionController questionController = new QuestionController(new Random(), activityDBController, questionDBController);
