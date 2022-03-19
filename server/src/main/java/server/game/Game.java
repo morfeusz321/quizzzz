@@ -84,6 +84,14 @@ public class Game extends Thread {
     }
 
     /**
+     * Gets the list of all questions
+     * @return the list of all questions
+     */
+    public List<Question> getQuestions(){
+        return questions;
+    }
+
+    /**
      * Returns whether this game is done, i.e. all 20 questions have been answered/displayed
      * @return whether this game is done
      */

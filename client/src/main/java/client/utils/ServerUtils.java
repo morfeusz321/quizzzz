@@ -51,6 +51,7 @@ public class ServerUtils {
     private static String SERVER = "http://localhost:8080/";
     private static String WS_SERVER = "ws://localhost:8080/websocket";
     private StompSession session;
+    private UUID gameUUID;
 
     /**
      * Attempts to establish a WebSocket connection with the server at the specified URL
@@ -122,6 +123,21 @@ public class ServerUtils {
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
                 .get(Question.class);
+
+    }
+
+    /**
+     * Gets the questions for a specific game using the API endpoint (sends a get request)
+     * @return Returns the retrieved questions from the server
+     */
+    public List<Question> getQuestions() {
+
+        System.out.println("this game's UUID is " + gameUUID);
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/questions?gameID=" + gameUUID)
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<List<Question>>() {});
 
     }
 
@@ -321,4 +337,11 @@ public class ServerUtils {
         session = connect(WS_SERVER);
     }
 
+    /**
+     * Sets the UUID of the game the client is in
+     * @param gameUUID the UUID of the corresponding game
+     */
+    public void setGameUUID(UUID gameUUID) {
+        this.gameUUID = gameUUID;
+    }
 }

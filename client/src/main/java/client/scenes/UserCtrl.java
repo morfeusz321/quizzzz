@@ -134,6 +134,7 @@ public class UserCtrl {
         }
 
         server.registerForGameUpdates(gameUUID, mainCtrl::gameUpdateHandler);
+        server.setGameUUID(gameUUID);
 
         this.currentUsername = un;
         this.serverAddressPreFill = getServer();

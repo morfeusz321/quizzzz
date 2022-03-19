@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import client.utils.GameManager;
 import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
@@ -37,6 +38,7 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private final ServerUtils server;
+    private GameManager gameManager;
     private Stage primaryStage;
 
     private MainScreenCtrl mainScreenCtrl;
@@ -324,6 +326,9 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if(gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
+            gameManager = new GameManager(); // "reset" game manager, because a new game is started
+            gameManager.setQuestions(server.getQuestions());
+            gameManager.setCurrentQuestionByIdx(0); // set the first question
         }
 
         System.out.println();
