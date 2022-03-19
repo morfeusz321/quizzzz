@@ -75,6 +75,12 @@ public abstract class QuestionCtrl {
     @FXML
     private Label timeLabel;
 
+    @FXML
+    protected ImageView correctTick;
+
+    @FXML
+    protected ImageView wrongCross;
+
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
      * is handled that is shared for all different question types. The controls of those question type screens extend
@@ -111,6 +117,10 @@ public abstract class QuestionCtrl {
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
     protected void showImages(){
+        if(correctTick!=null && wrongCross!=null) {
+            correctTick.setImage(new Image("/client/img/right_answer.png"));
+            wrongCross.setImage(new Image("/client/img/wrong_answer.png"));
+        }
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         decreaseTime.setImage(new Image("/client/img/clock_btn.png"));
         doublePoints.setImage(new Image("/client/img/2x_btn.png"));

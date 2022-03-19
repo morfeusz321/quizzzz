@@ -121,7 +121,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     * The event handler called when an answer button is clicked
+     * The event handler is called when an answer button is clicked
      * @param btn the button that was clicked
      */
     private void eventHandlerAnswerButtonMouseClicked(Button btn) {
@@ -148,22 +148,72 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         disableButtons();
 
         if(answer.correct) {
+            placingTick(selectedButton);
             correctAns.setText("correctly");
             fullText.setOpacity(1);
             btn.getStyleClass().add("answerCorrect");
         } else {
+            placingCross(selectedButton);
             correctAns.setText("incorrectly");
             fullText.setOpacity(1);
             btn.getStyleClass().add("answerIncorrect");
             buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
+            placingTick( answer.getAnswer());
         }
 
+    }
+
+    /**
+     *  places the tick next to the correct answer
+     * @param num the number of the answer
+     *            TO DO: change the text to an actual image.
+     */
+    private void placingTick(long num){
+        switch((int) num){
+            case 1:
+                correctTick.setLayoutX(918);
+                correctTick.setLayoutY(345);
+                break;
+            case 2:
+                correctTick.setLayoutX(918);
+                correctTick.setLayoutY(505);
+                break;
+            case 3:
+                correctTick.setLayoutX(918);
+                correctTick.setLayoutY(665);
+                break;
+        }
+    }
+
+    /**
+     *  places the cross next an answer
+     * @param num the number of the button
+     *            TO DO: change the text to an actual image.
+     */
+    private void placingCross(long num){
+
+        switch((int) num){
+            case 1:
+                wrongCross.setLayoutX(918);
+                wrongCross.setLayoutY(345);
+                break;
+            case 2:
+                wrongCross.setLayoutX(918);
+                wrongCross.setLayoutY(505);
+                break;
+            case 3:
+                wrongCross.setLayoutX(918);
+                wrongCross.setLayoutY(665);
+                break;
+        }
+        wrongCross.setOpacity(1);
     }
 
     /**
      * Disables the answer and power buttons, makes then power buttons invisible
      */
     private void disableButtons(){
+        correctTick.setOpacity(1);
         powersText.setOpacity(0);
         decreaseTime.setOpacity(0);
         doublePoints.setOpacity(0);
@@ -180,7 +230,9 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * Enables the answer and power buttons, makes then power buttons visible
      */
     protected void enableButtons(){
-        fullText.setOpacity(0);
+        correctTick.setOpacity(0);
+        wrongCross.setOpacity(0);
+        fullText.setOpacity(0.0);
         powersText.setOpacity(1);
         decreaseTime.setOpacity(1);
         doublePoints.setOpacity(1);

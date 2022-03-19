@@ -10,6 +10,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.text.TextFlow?>
 <AnchorPane fx:id="anchorPane" maxHeight="990.0" maxWidth="1920.0" minHeight="848.0" minWidth="1920.0" prefHeight="990.0" prefWidth="1920.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MostExpensiveQuestionCtrl">
    <children>
       <ImageView fx:id="bgImage" fitHeight="392.0" fitWidth="2846.0" layoutX="-912.0" layoutY="-148.0">
@@ -62,6 +63,16 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
+      <TextFlow fx:id="fullText" layoutX="332.0" layoutY="747.0" opacity="0" styleClass="answerDisplay">
+         <Text layoutX="388.0" layoutY="827.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You answered " />
+         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text="">
+         </Text>
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
+      </TextFlow>
+      <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      </ImageView>
+      <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      </ImageView>
       <ImageView fx:id="hoverEmoji" fitHeight="150.0" fitWidth="186.0" layoutX="1734.0" layoutY="808.0" onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis" preserveRatio="true">
       </ImageView>
       <Label fx:id="questionInfo" layoutX="111.0" layoutY="915.0" text="Question 1/20">

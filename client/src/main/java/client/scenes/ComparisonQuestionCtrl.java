@@ -26,6 +26,7 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
         // TODO: add comparison question type, and restructure this afterwards if needed
 
+        enableButtons();
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         answerBtn1.setText(q.answerOptions.get(0));

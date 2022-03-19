@@ -76,6 +76,10 @@
          </Text>
          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
       </TextFlow>
+      <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      </ImageView>
+      <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      </ImageView>
       <Label fx:id="pointsInfo" layoutX="1393.0" layoutY="915.0" text="Your points: 200">
          <styleClass>
             <String fx:value="smaller-info-text" />

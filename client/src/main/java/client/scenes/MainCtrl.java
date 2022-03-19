@@ -19,10 +19,7 @@ import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
 
-import commons.Activity;
-import commons.GameType;
-import commons.GeneralQuestion;
-import commons.Question;
+import commons.*;
 
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateGameStarting;
@@ -33,6 +30,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.util.ArrayList;
 
 public class MainCtrl {
 
