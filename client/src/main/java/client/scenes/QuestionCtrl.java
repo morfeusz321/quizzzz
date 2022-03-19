@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.Score;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -98,6 +99,7 @@ public abstract class QuestionCtrl {
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
         initializeBackButtonHandlers();
+        setScore();
     }
 
     /**
@@ -300,5 +302,12 @@ public abstract class QuestionCtrl {
      */
     public void hideEmojis() {
         emojiPane.setVisible(false);
+    }
+
+    public void setScore(){
+        String user = "tete";
+//        Score userScore = mainCtrl.getCurrentUserScore();
+        Score userScore = server.getScoreByUserName(user);
+        System.out.println(user + " " + userScore);
     }
 }

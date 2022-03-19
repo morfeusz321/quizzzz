@@ -26,10 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.List;
 
-import commons.Activity;
-import commons.AnswerResponseEntity;
-import commons.GameType;
-import commons.Question;
+import commons.*;
 import commons.gameupdate.GameUpdate;
 
 import jakarta.ws.rs.core.Form;
@@ -319,6 +316,30 @@ public class ServerUtils {
         }
         WS_SERVER = "ws://" + server + "websocket";
         session = connect(WS_SERVER);
+    }
+
+    public Score getScoreByUserName(String username){
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/scores/" + username) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<Score>() {});
+    }
+
+    public Score addScoreToDB(String username, int points){
+        Form form = new Form();
+        form.param("username", username);
+        form.param("points", String.valueOf(points));
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/scores/" + username + "/" + points) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), Score.class);
+    }
+
+    public Score addNewScoreToDB(String username){
+        return addScoreToDB(username, 0);
     }
 
 }

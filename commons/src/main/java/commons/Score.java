@@ -33,6 +33,17 @@ public class Score {
         this.score = score;
     }
 
+    public int getScore() {
+        return score;
+    }
+
+    public int addPoints(int points){
+        score+=points;
+        return score;
+    }
+
+
+
     /**
      * Checks if two score objects are equal
      * @param obj the object to which this one will be compared

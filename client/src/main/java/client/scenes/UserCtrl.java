@@ -146,7 +146,7 @@ public class UserCtrl {
             }
         }, 10000);
         */
-
+        addToDatabase(currentUsername);
         mainCtrl.showWaitingRoom();
 
     }
@@ -222,5 +222,8 @@ public class UserCtrl {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
     }
 
+    private void addToDatabase(String username){
+        server.addNewScoreToDB(username);
+    }
 
 }

@@ -19,10 +19,7 @@ import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
 
-import commons.Activity;
-import commons.GameType;
-import commons.GeneralQuestion;
-import commons.Question;
+import commons.*;
 
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateGameStarting;
@@ -359,6 +356,11 @@ public class MainCtrl {
         primaryStage.setTitle("Admin - Edit activity");
         primaryStage.setScene(adminEditScene);
         adminEditCtrl.setActivity(activity);
+    }
+
+    public Score getCurrentUserScore(){
+        String user = userCtrl.getSavedCurrentUsername();
+        return server.getScoreByUserName(user);
     }
 
 }
