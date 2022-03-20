@@ -131,9 +131,17 @@ public class MainCtrl {
 
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
+        this.adminScene.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/admin-style.css"
+                ).toExternalForm());
 
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
+        this.adminEditScene.getStylesheets().add(
+                WaitingRoomCtrl.class.getResource(
+                        "/client/stylesheets/admin-style.css"
+                ).toExternalForm());
 
         initializeOnCloseEvents();
 
@@ -358,6 +366,7 @@ public class MainCtrl {
     public void showAdminEdit(Activity activity) {
         primaryStage.setTitle("Admin - Edit activity");
         primaryStage.setScene(adminEditScene);
+        adminEditCtrl.clear();
         adminEditCtrl.setActivity(activity);
     }
 

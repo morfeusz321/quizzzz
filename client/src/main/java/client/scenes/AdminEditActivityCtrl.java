@@ -39,6 +39,16 @@ public class AdminEditActivityCtrl {
     }
 
     /**
+     * Clear the text fields whenever the screen is shown
+     */
+    public void clear() {
+        id.setText("");
+        imagePath.setText("");
+        title.setText("");
+        consumption.setText("");
+    }
+
+    /**
      * Sets the TextField values to the previously selected activity (or empty if creating a new activity)
      * @param activity selected activity
      */
