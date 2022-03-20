@@ -173,6 +173,8 @@ public class MainCtrl {
         setServerAddressPrefill("localhost:8080");
 
         showMainScreen();
+
+        primaryStage.setResizable(false);
         primaryStage.show();
 
     }

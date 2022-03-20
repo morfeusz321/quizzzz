@@ -6,34 +6,34 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1781.0" style="-fx-background-color: #F0EAD6;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainScreenCtrl">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" style="-fx-background-color: #F0EAD6;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainScreenCtrl">
    <children>
-      <ImageView fx:id="lightning" fitHeight="250.0" fitWidth="500.0" layoutX="346.0" layoutY="252.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="lightbulb" fitHeight="250.0" fitWidth="500.0" layoutX="1118.0" layoutY="252.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView fx:id="leaderboard" fitHeight="150.0" fitWidth="200.0" layoutX="687.0" layoutY="809.0" onMouseClicked="#showLeaderboard" pickOnBounds="true" preserveRatio="true" />
-      <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="960.0" layoutY="570.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
-      <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="163.0" layoutY="570.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
-      <Button fx:id="singlePlayer" layoutX="969.0" layoutY="554.0" mnemonicParsing="false" onAction="#singlePlayer" prefHeight="78.0" prefWidth="224.0" text="Singleplayer">
+      <ImageView fx:id="lightning" fitHeight="275.0" fitWidth="549.0" layoutX="242.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="lightbulb" fitHeight="206.0" fitWidth="405.0" layoutX="839.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="leaderboard" fitHeight="150.0" fitWidth="200.0" layoutX="490.0" layoutY="609.0" pickOnBounds="true" preserveRatio="true" />
+      <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="853.0" layoutY="520.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
+      <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="46.0" layoutY="520.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
+      <Button fx:id="singlePlayer" layoutX="862.0" layoutY="504.0" mnemonicParsing="false" onAction="#singlePlayer" prefHeight="78.0" prefWidth="224.0" text="Singleplayer">
          <styleClass>
             <String fx:value="text" />
             <String fx:value="button" />
          </styleClass>
       </Button>
-      <Button fx:id="multiPlayer" layoutX="177.0" layoutY="554.0" mnemonicParsing="false" onAction="#multiPlayer" prefHeight="78.0" prefWidth="224.0" text="Multiplayer">
+      <Button fx:id="multiPlayer" layoutX="60.0" layoutY="504.0" mnemonicParsing="false" onAction="#multiPlayer" prefHeight="78.0" prefWidth="224.0" text="Multiplayer">
          <styleClass>
             <String fx:value="text" />
             <String fx:value="button" />
          </styleClass>
       </Button>
-      <Label layoutX="428.0" layoutY="134.0" styleClass="title-text1" text="Welcome to the" />
-      <Label layoutX="605.0" layoutY="252.0" styleClass="title-text2" text="Quizzz" />
-      <Label layoutX="487.0" layoutY="438.0" styleClass="title-text3" text="Ready for an energetic game?" />
-      <Button fx:id="help" layoutX="836.0" layoutY="829.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="50.0" style="-fx-min-width: 188px; -fx-min-height: 110px;" text="Help">
+      <Label layoutX="287.0" layoutY="39.0" styleClass="title-text1" text="Welcome to the" />
+      <Label layoutX="480.0" layoutY="157.0" styleClass="title-text2" text="Quizzz" />
+      <Label layoutX="373.0" layoutY="369.0" styleClass="title-text3" text="Ready for an energetic game?" />
+      <Button fx:id="help" layoutX="665.0" layoutY="629.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="50.0" style="-fx-min-width: 188px; -fx-min-height: 110px;" text="Help">
          <styleClass>
             <String fx:value="text" />
             <String fx:value="button" />
          </styleClass>
       </Button>
-      <Button fx:id="admin" layoutX="1676.0" layoutY="927.0" mnemonicParsing="false" onAction="#showAdmin" prefHeight="26.0" prefWidth="51.0" styleClass="admin-button" text="Admin" />
+      <Button fx:id="admin" layoutX="1228.0" layoutY="687.0" mnemonicParsing="false" onAction="#showAdmin" prefHeight="26.0" prefWidth="51.0" styleClass="admin-button" text="Admin" />
    </children>
 </AnchorPane>
