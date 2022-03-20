@@ -31,6 +31,7 @@ import commons.gameupdate.GameUpdatePlayerLeft;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -101,6 +102,8 @@ public class MainCtrl {
                            Pair<AdminEditActivityCtrl, Parent> adminEditScene) {
 
         this.primaryStage = primaryStage;
+
+        this.primaryStage.getIcons().add(new Image("/client/img/lightbulb_icon.png"));
 
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
