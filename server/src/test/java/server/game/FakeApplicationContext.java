@@ -187,11 +187,16 @@ public class FakeApplicationContext implements ApplicationContext {
             ActivityDBController activityDBController = new ActivityDBController(new TestActivityDB());
 
             // Add some default activities to the database
-            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "1", 1));
-            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "2", 2));
-            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "3", 3));
-            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "4", 4));
-            activityDBController.getInternalDB().save(new Activity("id", "imagePath", "5", 5));
+            activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "1", 1));
+            activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "2", 2));
+            activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "3", 3));
+            activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "4", 4));
+            activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "5", 5));
+            activityDBController.getInternalDB().save(new Activity("id6", "imagePath", "6", 6));
+            activityDBController.getInternalDB().save(new Activity("id7", "imagePath", "7", 7));
+            activityDBController.getInternalDB().save(new Activity("id8", "imagePath", "8", 8));
+            activityDBController.getInternalDB().save(new Activity("id9", "imagePath", "9", 9));
+            activityDBController.getInternalDB().save(new Activity("id10", "imagePath", "10", 10));
 
             QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
             QuestionController questionController = new QuestionController(new Random(), activityDBController, questionDBController);
