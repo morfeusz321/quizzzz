@@ -130,7 +130,7 @@ public class MainCtrl {
 
         initializeOnCloseEvents();
 
-        nextQuestion();
+        showMainScreen();
         primaryStage.show();
 
     }
