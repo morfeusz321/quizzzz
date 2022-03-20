@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.async.DeferredResult;
 import server.api.QuestionController;
 
@@ -30,6 +31,9 @@ public class Game extends Thread {
     private boolean done;
 
     private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<String>>> deferredResultMap;
+
+    private StopWatch stopWatch;
+    private long lastTime;
 
     @HashCodeExclude
     @EqualsExclude
@@ -59,6 +63,9 @@ public class Game extends Thread {
         this.done = false;
         this.deferredResultMap = new ConcurrentHashMap<>();
 
+        this.stopWatch = new StopWatch();
+        this.lastTime = 0;
+
     }
 
     /**
@@ -84,6 +91,8 @@ public class Game extends Thread {
 
         // TODO: game loop here, after all questions, set done variable to true
 
+        this.stopWatch.start();
+
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -91,6 +100,7 @@ public class Game extends Thread {
                 if(currentQuestionIdx == 19) {
                     currentQuestionIdx++;
                     done = true;
+                    stopWatch.stop();
                     timer.cancel();
                 } else {
                     gameLoop();
@@ -105,11 +115,31 @@ public class Game extends Thread {
      */
     private void gameLoop() {
 
+        stopWatch.stop();
+        lastTime = stopWatch.getTotalTimeMillis();
+        stopWatch.start();
+
         currentQuestionIdx++;
         this.currentQuestion = questions.get(currentQuestionIdx);
 
         deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(String.valueOf(currentQuestionIdx))));
         deferredResultMap.clear();
+
+    }
+
+    /**
+     * Returns the amount of time that the current question has already been the current question
+     * @return the elapsed time in this round of the game
+     */
+    public long getElapsedTimeThisQuestion() {
+
+        if(!stopWatch.isRunning()) return 0L;
+
+        stopWatch.stop();
+        long ret = stopWatch.getTotalTimeMillis() - lastTime;
+        stopWatch.start();
+
+        return ret;
 
     }
 
