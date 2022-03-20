@@ -103,7 +103,7 @@ public class MainCtrl {
 
         this.primaryStage = primaryStage;
 
-        this.primaryStage.getIcons().add(new Image("/client/img/main_lightbulb.png"));
+        this.primaryStage.getIcons().add(new Image("/client/img/lightbulb_icon.png"));
 
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
