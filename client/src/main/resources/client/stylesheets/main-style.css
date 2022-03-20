@@ -8,6 +8,11 @@
     -fx-min-height: 131px;
     -fx-font-size: 50px;
 }
+
+.background {
+    -fx-background-color: #F0EAD6;
+}
+
 .text {
     -fx-text-color: #252422;
     -fx-font-style: italic;
@@ -37,5 +42,10 @@
     -fx-min-width: 100px;
     -fx-min-height: 50px;
     -fx-font-size: 20px;
+}
+
+.help-button {
+    -fx-min-width: 188px;
+    -fx-min-height: 110px;
 }
 

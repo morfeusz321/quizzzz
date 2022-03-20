@@ -54,9 +54,10 @@ public class Main extends Application {
         var waitingRoom = FXML.load(WaitingRoomCtrl.class, "client", "scenes", "WaitingRoom.fxml");
         var admin = FXML.load(AdminCtrl.class, "client", "scenes", "AdminOverview.fxml");
         var adminEdit = FXML.load(AdminEditActivityCtrl.class, "client", "scenes", "AdminEditActivity.fxml");
+        var helpScreen = FXML.load(HelpScreenCtrl.class, "client", "scenes", "HelpScreen.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, mainScreen, username, generalQ, comparisonQ, estimationQ, mostExpensiveQ, waitingRoom, admin, adminEdit);
+        mainCtrl.initialize(primaryStage, mainScreen, helpScreen, username, generalQ, comparisonQ, estimationQ, mostExpensiveQ, waitingRoom, admin, adminEdit);
 
     }
 

@@ -41,5 +41,6 @@ public class MyModule implements Module {
         binder.bind(WaitingRoomCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminCtrl.class).in(Scopes.SINGLETON);
         binder.bind(AdminEditActivityCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(HelpScreenCtrl.class).in(Scopes.SINGLETON);
     }
 }

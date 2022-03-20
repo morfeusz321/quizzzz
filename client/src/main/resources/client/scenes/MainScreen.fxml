@@ -28,7 +28,7 @@
       <Label layoutX="428.0" layoutY="134.0" styleClass="title-text1" text="Welcome to the" />
       <Label layoutX="605.0" layoutY="252.0" styleClass="title-text2" text="Quizzz" />
       <Label layoutX="487.0" layoutY="438.0" styleClass="title-text3" text="Ready for an energetic game?" />
-      <Button fx:id="help" layoutX="836.0" layoutY="829.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="50.0" style="-fx-min-width: 188px; -fx-min-height: 110px;" text="Help">
+      <Button fx:id="help" layoutX="836.0" layoutY="829.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="50.0" onAction="#showHelp" styleClass="help-button">
          <styleClass>
             <String fx:value="text" />
             <String fx:value="button" />

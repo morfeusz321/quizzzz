@@ -5,6 +5,7 @@ import commons.GameType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -19,9 +20,9 @@ public class MainScreenCtrl implements Initializable {
     /* @FXML
     private Button singlePlayer;
     @FXML
-    private Button multiPlayer; //TODO: multiplayer
+    private Button multiPlayer; //TODO: multiplayer */
     @FXML
-    private Button help; */
+    private Button help;
 
     @FXML
     private ImageView leaderboard;
@@ -57,6 +58,10 @@ public class MainScreenCtrl implements Initializable {
         leaderboard.setImage(new Image("/client/img/main_leaderboard.png"));
         lightning.setImage(new Image("/client/img/main_lightning.png"));
         lightbulb.setImage(new Image("/client/img/main_lightbulb.png"));
+        ImageView questionImage = new ImageView("/client/img/question_mark.png");
+        questionImage.setFitWidth(120);
+        questionImage.setFitHeight(90);
+        help.setGraphic(questionImage);
     }
 
     /**
@@ -90,6 +95,11 @@ public class MainScreenCtrl implements Initializable {
         mainCtrl.showAdmin();
     }
 
-    //TODO: add multiplayer and help
+    /**
+     * Opens the help screen
+     */
+    public void showHelp() {
+        mainCtrl.showHelpScreen();
+    }
 
 }

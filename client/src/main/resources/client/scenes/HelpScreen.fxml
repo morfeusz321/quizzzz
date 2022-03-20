@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" styleClass="background" prefWidth="1344.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpScreenCtrl">
+   <children>
+      <Label layoutX="523.0" layoutY="65.0" text="How to play">
+         <font>
+            <Font name="System Bold" size="45.0" />
+         </font></Label>
+      <Label layoutX="133.0" layoutY="165.0" prefHeight="95.0" prefWidth="1037.0" text="The game has 20 questions about renewable energy and energy consumption. You have 15 seconds to answer a questions, the faster you answer correctly, the more points you get!" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="21.0" />
+         </font></Label>
+      <Label layoutX="54.0" layoutY="296.0" text="Multiplayer">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font></Label>
+      <Label layoutX="80.0" layoutY="319.0" prefHeight="95.0" prefWidth="1090.0" text="Play with others and compete for the highest score in the game! Express your emotions with emojis during the game. Use jokers to bend the rules of the game in your favor." wrapText="true">
+         <font>
+            <Font size="21.0" />
+         </font></Label>
+      <Button layoutX="1222.0" layoutY="675.0" mnemonicParsing="false" onAction="#showMain" prefHeight="38.0" prefWidth="66.0" text="Back" />
+      <Label layoutX="80.0" layoutY="448.0" text="1. Halves time for everyone but you">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label layoutX="80.0" layoutY="477.0" text="2. Removes one wrong answer">
+         <font>
+            <Font size="18.0" />
+         </font></Label>
+      <Label layoutX="80.0" layoutY="506.0" text="3. Doubles your score for this question">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label layoutX="54.0" layoutY="407.0" text="Jokers">
+         <font>
+            <Font name="System Bold" size="22.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
