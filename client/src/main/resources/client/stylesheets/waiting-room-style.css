@@ -16,20 +16,20 @@
 }
 
 #title-1 {
-    -fx-font-size: 96px;
+    -fx-font-size: 67px;
     -fx-font-weight: bold;
 }
 
 #title-2 {
-    -fx-font-size: 49px;
+    -fx-font-size: 40px;
 }
 
 #title-3 {
-    -fx-font-size: 35px;
+    -fx-font-size: 30px;
 }
 
 #players-text {
-    -fx-font-size: 35px;
+    -fx-font-size: 33px;
     -fx-font-weight: bold;
 }
 
@@ -91,7 +91,7 @@
 }
 
 .speech-bubble-text {
-    -fx-font-size: 43px;
+    -fx-font-size: 35px;
 }
 
 .bold {
