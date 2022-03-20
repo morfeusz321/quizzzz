@@ -12,6 +12,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -43,7 +44,12 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
     protected TextFlow fullText;
 
+    @FXML
+    protected AnchorPane anchorPane;
+
     Question question;
+
+    List<Button> buttonList;
 
     /**
      * Creates a MultipleChoiceQuestionCtrl, which controls the display/interaction of all multiple choice question
@@ -74,6 +80,10 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @Override
     protected void showImages(){
         super.showImages();
+        if(correctTick!=null && wrongCross!=null) {
+            correctTick.setImage(new Image("/client/img/right_answer.png"));
+            wrongCross.setImage(new Image("/client/img/wrong_answer.png"));
+        }
         removeQuestion.setImage(new Image("/client/img/minus_1_btn.png"));
     }
 
@@ -125,8 +135,6 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * @param btn the button that was clicked
      */
     private void eventHandlerAnswerButtonMouseClicked(Button btn) {
-
-        List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         buttonList.forEach(b -> {
                                     b.getStyleClass().remove("selected-answer");
                                     b.getStyleClass().remove("answerCorrect");
@@ -166,21 +174,20 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      *  places the tick next to the correct answer
      * @param num the number of the answer
-     *            TO DO: change the text to an actual image.
      */
     private void placingTick(long num){
         switch((int) num){
             case 1:
-                correctTick.setLayoutX(918);
-                correctTick.setLayoutY(345);
+                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight()*0.34848);
                 break;
             case 2:
-                correctTick.setLayoutX(918);
-                correctTick.setLayoutY(505);
+                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight()*0.51010);
                 break;
             case 3:
-                correctTick.setLayoutX(918);
-                correctTick.setLayoutY(665);
+                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight()*0.67171);
                 break;
         }
     }
@@ -188,22 +195,21 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      *  places the cross next an answer
      * @param num the number of the button
-     *            TO DO: change the text to an actual image.
      */
     private void placingCross(long num){
 
         switch((int) num){
             case 1:
-                wrongCross.setLayoutX(918);
-                wrongCross.setLayoutY(345);
+                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight()*0.34848);
                 break;
             case 2:
-                wrongCross.setLayoutX(918);
-                wrongCross.setLayoutY(505);
+                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight()*0.51010);
                 break;
             case 3:
-                wrongCross.setLayoutX(918);
-                wrongCross.setLayoutY(665);
+                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight()*0.67171);
                 break;
         }
         wrongCross.setOpacity(1);
@@ -213,6 +219,10 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * Disables the answer and power buttons, makes then power buttons invisible
      */
     private void disableButtons(){
+        for(Button x : buttonList){
+            x.setDisable(true);
+        }
+
         correctTick.setOpacity(1);
         powersText.setOpacity(0);
         decreaseTime.setOpacity(0);
@@ -221,15 +231,13 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         removeQuestion.setDisable(true);
-        answerBtn1.setDisable(true);
-        answerBtn2.setDisable(true);
-        answerBtn3.setDisable(true);
     }
 
     /**
      * Enables the answer and power buttons, makes then power buttons visible
      */
     protected void enableButtons(){
+        buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         correctTick.setOpacity(0);
         wrongCross.setOpacity(0);
         fullText.setOpacity(0.0);
@@ -240,21 +248,13 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         decreaseTime.setDisable(false);
         doublePoints.setDisable(false);
         removeQuestion.setDisable(false);
-        answerBtn1.setDisable(false);
-        answerBtn2.setDisable(false);
-        answerBtn3.setDisable(false);
-        answerBtn1.getStyleClass().clear();
-        answerBtn1.getStyleClass().add("text");
-        answerBtn1.getStyleClass().add("question-button");
-        answerBtn1.getStyleClass().add("button");
-        answerBtn2.getStyleClass().clear();
-        answerBtn2.getStyleClass().add("text");
-        answerBtn2.getStyleClass().add("question-button");
-        answerBtn2.getStyleClass().add("button");
-        answerBtn3.getStyleClass().clear();
-        answerBtn3.getStyleClass().add("text");
-        answerBtn3.getStyleClass().add("question-button");
-        answerBtn3.getStyleClass().add("button");
+        for(Button x : buttonList){
+            x.setDisable(false);
+            x.getStyleClass().clear();
+            x.getStyleClass().add("text");
+            x.getStyleClass().add("question-button");
+            x.getStyleClass().add("button");
+        }
     }
 
 
