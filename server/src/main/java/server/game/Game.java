@@ -88,7 +88,7 @@ public class Game extends Thread {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                if(currentQuestionIdx == 20) {
+                if(currentQuestionIdx == 19) {
                     currentQuestionIdx++;
                     done = true;
                     timer.cancel();
@@ -120,8 +120,8 @@ public class Game extends Thread {
      */
     public void runDeferredResult(DeferredResult<ResponseEntity<String>> deferredResult) {
 
-        if(currentQuestionIdx > 20) {
-            deferredResult.setResult(ResponseEntity.ok("21"));
+        if(currentQuestionIdx >= 19) {
+            deferredResult.setResult(ResponseEntity.ok("20"));
         } else {
             this.deferredResultMap.put(UUID.randomUUID(), deferredResult);
         }

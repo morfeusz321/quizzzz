@@ -345,6 +345,11 @@ public class MainCtrl {
      */
     private void incomingQuestionHandler(String s) {
 
+        if(s.equals("20")) {
+            Platform.runLater(this::showMainScreen);
+            return;
+        }
+
         gameManager.setCurrentQuestionByIdx(Integer.parseInt(s));
         Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 

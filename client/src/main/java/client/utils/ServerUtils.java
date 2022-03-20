@@ -120,7 +120,7 @@ public class ServerUtils {
     public void registerForGameLoop(Consumer<String> consumer) {
 
         String ret = "";
-        while(!ret.equals("21")) {
+        while(!ret.equals("20")) {
             ret = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("api/game/")
                     .queryParam("gameID", gameUUID.toString())
