@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.api.ScoreController;
 
 import javax.annotation.PostConstruct;
@@ -262,6 +263,39 @@ public class GameController implements ApplicationContextAware {
         }
 
         return ResponseEntity.ok(game.getQuestions());
+    }
+
+    /**
+     * Provides game loop updates in the form of a deffered result to allow for
+     * long polling to this endpoint. Maps to api/game/
+     * @param gameIDString the UUID of the game whose updates the client wishes to
+     *                     subscribe to
+     * @return 200 OK: game loop update, or bad request if the game UUID does not exist.
+     * Can also return an internal server error in case of timeout.
+     */
+    @GetMapping("/")
+    public DeferredResult<ResponseEntity<String>> gameLongPollLoop(@RequestParam("gameID") String gameIDString) {
+
+        DeferredResult<ResponseEntity<String>> result = new DeferredResult<>(20000L, ResponseEntity.internalServerError().build());
+
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(gameIDString);
+        } catch (IllegalArgumentException e) {
+            result.setResult(ResponseEntity.badRequest().build());
+            return result;
+        }
+
+        Game game = this.getGame(uuid);
+
+        if(game == null || game == currentGame) {
+            result.setResult(ResponseEntity.badRequest().build());
+            return result;
+        }
+
+        game.runDeferredResult(result);
+        return result;
+
     }
 
     /**

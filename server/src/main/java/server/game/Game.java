@@ -8,11 +8,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.async.DeferredResult;
 import server.api.QuestionController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
@@ -27,7 +26,10 @@ public class Game extends Thread {
     private ConcurrentHashMap<String, Player> players;
     private List<Question> questions;
     private Question currentQuestion;
+    private int currentQuestionIdx;
     private boolean done;
+
+    private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<String>>> deferredResultMap;
 
     @HashCodeExclude
     @EqualsExclude
@@ -55,6 +57,7 @@ public class Game extends Thread {
         this.players = new ConcurrentHashMap<>();
         this.questions = new ArrayList<>(); // questions are "loaded" when game is started
         this.done = false;
+        this.deferredResultMap = new ConcurrentHashMap<>();
 
     }
 
@@ -75,11 +78,53 @@ public class Game extends Thread {
             questions.add(generated.getBody());
         }
         // Set first question
-        currentQuestion = questions.get(0);
+        currentQuestionIdx = -1;
 
         gameUpdateManager.startGame(this.uuid);
 
         // TODO: game loop here, after all questions, set done variable to true
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if(currentQuestionIdx == 20) {
+                    currentQuestionIdx++;
+                    done = true;
+                    timer.cancel();
+                } else {
+                    gameLoop();
+                }
+            }
+        }, 1000, 15000);
+
+    }
+
+    /**
+     * Updates the current question and informs all registered long polls of this update
+     */
+    private void gameLoop() {
+
+        currentQuestionIdx++;
+        this.currentQuestion = questions.get(currentQuestionIdx);
+
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(String.valueOf(currentQuestionIdx))));
+        deferredResultMap.clear();
+
+    }
+
+    /**
+     * Allows a long poll to be registered to this game. This game will update this
+     * long poll whenever the current question updates.
+     * @param deferredResult the long poll to inform of updates
+     */
+    public void runDeferredResult(DeferredResult<ResponseEntity<String>> deferredResult) {
+
+        if(currentQuestionIdx > 20) {
+            deferredResult.setResult(ResponseEntity.ok("21"));
+        } else {
+            this.deferredResultMap.put(UUID.randomUUID(), deferredResult);
+        }
 
     }
 

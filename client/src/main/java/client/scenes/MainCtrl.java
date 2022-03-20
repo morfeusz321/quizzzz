@@ -20,16 +20,14 @@ import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
 
-import commons.Activity;
-import commons.GameType;
-import commons.GeneralQuestion;
-import commons.Question;
+import commons.*;
 
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateGameStarting;
 import commons.gameupdate.GameUpdatePlayerJoined;
 import commons.gameupdate.GameUpdatePlayerLeft;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -277,12 +275,16 @@ public class MainCtrl {
     /**
      * Shows next question, the question type is selected randomly
      */
-    public void nextQuestion() {
-        Question q = server.getRandomQuestion();
+    public void nextQuestion(Question q) {
         if(q instanceof GeneralQuestion) {
             showGeneralQuestion(q);
+        } else if(q instanceof ComparisonQuestion) {
+            showComparisonQuestion(q);
+        } else if(q instanceof EstimationQuestion) {
+            showEstimationQuestion(q);
+        } else if(q instanceof WhichIsMoreQuestion) {
+            showMostExpensiveQuestion(q);
         }
-        // TODO: other questions are not implemented yet, this has to be modified after that
     }
 
      /**
@@ -329,9 +331,22 @@ public class MainCtrl {
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
+            server.registerForGameLoop(this::incomingQuestionHandler);
         }
 
         System.out.println();
+
+    }
+
+    /**
+     * Handles updates incoming from the game long poll loop, displaying the right question
+     * when it is necessary
+     * @param s the body of the incoming update TODO: make this not a string haha
+     */
+    private void incomingQuestionHandler(String s) {
+
+        gameManager.setCurrentQuestionByIdx(Integer.parseInt(s));
+        Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 
     }
 

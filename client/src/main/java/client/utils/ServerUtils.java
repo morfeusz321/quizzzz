@@ -113,6 +113,26 @@ public class ServerUtils {
     }
 
     /**
+     * Registers for the game loop updates with the current stored game UUID, and sends
+     * all incoming game loop updates to the provided consumer
+     * @param consumer the consumer that accepts incoming game loop updates
+     */
+    public void registerForGameLoop(Consumer<String> consumer) {
+
+        String ret = "";
+        while(!ret.equals("21")) {
+            ret = ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("api/game/")
+                    .queryParam("gameID", gameUUID.toString())
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(String.class);
+            consumer.accept(ret);
+        }
+
+    }
+
+    /**
      * Gets a random general question from the server using the API endpoint (sends a get request)
      * @return Returns the retrieved question from the server
      */
