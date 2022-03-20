@@ -29,6 +29,7 @@ public class Game extends Thread {
     private Question currentQuestion;
     private int currentQuestionIdx;
     private boolean done;
+    private int minPerQuestionType;
 
     private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<String>>> deferredResultMap;
 
@@ -61,6 +62,7 @@ public class Game extends Thread {
         this.players = new ConcurrentHashMap<>();
         this.questions = new ArrayList<>(); // questions are "loaded" when game is started
         this.done = false;
+        this.minPerQuestionType = 2; // minimum amount of questions per question type
         this.deferredResultMap = new ConcurrentHashMap<>();
 
         this.stopWatch = new StopWatch();
@@ -74,8 +76,26 @@ public class Game extends Thread {
     @Override
     public void run(){
 
-        // Generate the questions
-        for(int i = 0; i < 20; i++){
+        // Generate the minimum amount of questions per question type
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < minPerQuestionType; j++){
+                ResponseEntity<Question> generated = switch (i) {
+                    case 0 -> questionController.getGeneralQuestion();
+                    case 1 -> questionController.getComparisonQuestion();
+                    case 2 -> questionController.getEstimationQuestion();
+                    default -> questionController.getWhichIsMoreQuestion(); // is for case i = 3
+                };
+                if(!generated.getStatusCode().equals(HttpStatus.OK)){
+                    // TODO: some error handling here, maybe send an error message to client that
+                    //  should then be displayed
+                    return;
+                }
+                questions.add(generated.getBody());
+            }
+        }
+
+        // Generate the questions with random types
+        for(int i = 0; i < 20 - (4 * minPerQuestionType); i++){
             ResponseEntity<Question> generated = questionController.getRandomQuestion();
             if(!generated.getStatusCode().equals(HttpStatus.OK)){
                 // TODO: some error handling here, maybe send an error message to client that
@@ -84,6 +104,10 @@ public class Game extends Thread {
             }
             questions.add(generated.getBody());
         }
+
+        // The first questions are ordered per type, so shuffle the question list
+        Collections.shuffle(questions);
+
         // Set first question
         currentQuestionIdx = -1;
 
