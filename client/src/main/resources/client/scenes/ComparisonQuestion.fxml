@@ -11,12 +11,11 @@
 <?import javafx.scene.text.Text?>
 
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ComparisonQuestionCtrl">
 
    <children>
       <ImageView fx:id="bgImage" fitHeight="265.0" fitWidth="2034.0" layoutX="-665.0" layoutY="-108.0">
-      </ImageView>
-      <ImageView fx:id="backBtn" fitHeight="110.0" fitWidth="226.0" layoutX="20.0" layoutY="30.0">
       </ImageView>
       <Text fx:id="title" layoutX="310.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The usage of energy of showering for 5 minutes is equivalent to filler filler filler filler filler filler filler filler filler filler filler:" textAlignment="CENTER" wrappingWidth="950.0">
           <font>
@@ -76,7 +75,6 @@
       </TextFlow>
       <ImageView fx:id="hoverEmoji" fitHeight="126.0" fitWidth="114.0" layoutX="1205.0" layoutY="597.0"
                  onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis" preserveRatio="true"/>
-      </ImageView>
       <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
       <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
