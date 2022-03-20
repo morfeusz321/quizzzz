@@ -4,9 +4,9 @@
     -fx-border-radius: 50px;
     -fx-border-width: 3px;
     -fx-background-radius: 50px;
-    -fx-min-width: 531.05px;
-    -fx-min-height: 131px;
-    -fx-font-size: 50px;
+    -fx-min-width: 431.05px;
+    -fx-min-height: 101px;
+    -fx-font-size: 40px;
 }
 
 .background {
@@ -24,18 +24,20 @@
 
 .title-text2 {
     -fx-font-size: 120px;
+    /* -fx-font-weight: bold;
+    TODO: This is too bold right now, add this when we add the correct font. */
 }
 
 .title-text3 {
-    -fx-font-size: 50px;
+    -fx-font-size: 45px;
 }
 
 .button-background {
     -fx-background-color: #B3A787;
     -fx-border-radius: 50px;
     -fx-background-radius: 50px;
-    -fx-min-width: 531.05px;
-    -fx-min-height: 131px;
+    -fx-min-width: 431.05px;
+    -fx-min-height: 101px;
 }
 
 .admin-button {

@@ -149,6 +149,8 @@ public class MainCtrl {
         initializeOnCloseEvents();
 
         showMainScreen();
+
+        primaryStage.setResizable(false);
         primaryStage.show();
 
     }
