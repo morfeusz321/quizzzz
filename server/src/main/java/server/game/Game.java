@@ -64,8 +64,6 @@ public class Game extends Thread {
     @Override
     public void run(){
 
-        gameUpdateManager.startGame(this.uuid);
-
         // Generate the questions
         for(int i = 0; i < 20; i++){
             ResponseEntity<Question> generated = questionController.getRandomQuestion();
@@ -78,6 +76,8 @@ public class Game extends Thread {
         }
         // Set first question
         currentQuestion = questions.get(0);
+
+        gameUpdateManager.startGame(this.uuid);
 
         // TODO: game loop here, after all questions, set done variable to true
 

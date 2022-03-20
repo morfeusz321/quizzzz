@@ -132,12 +132,12 @@ public class ServerUtils {
      */
     public List<Question> getQuestions() {
 
-        System.out.println("this game's UUID is " + gameUUID);
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/game/questions?gameID=" + gameUUID)
+                .target(SERVER).path("api/game/questions")
+                .queryParam( "gameID", gameUUID.toString())
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<List<Question>>() {});
+                .get(new GenericType<>() {});
 
     }
 
