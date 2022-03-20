@@ -7,6 +7,7 @@ import commons.gameupdate.GameUpdateNameInUse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import commons.Player;
+import server.database.ScoreDBController;
 import server.game.GameController;
 
 import java.util.Optional;
@@ -20,13 +21,15 @@ import java.util.UUID;
 public class UserController {
 
     private GameController gameController;
+    private ScoreDBController scoreDBController;
 
     /**
      * Creates the API controller
      */
-    public UserController(GameController gameController) {
+    public UserController(GameController gameController, ScoreDBController scoreDBController) {
 
         this.gameController = gameController;
+        this.scoreDBController = scoreDBController;
 
     }
 
@@ -49,13 +52,13 @@ public class UserController {
      * parameter is not present or is not set to true. Can also return 400 Bad Request if the gametype parameter is invalid.
      */
     @PostMapping("/enter")
-    public ResponseEntity<GameUpdate> getUserName(@RequestParam("username") String username,
+    public ResponseEntity<GameUpdate> joinGame(@RequestParam("username") String username,
                                                   @RequestParam("gametype") String gametype,
                                                   @RequestParam("confirmNameInUse") Optional<String> confirmNameInUse) {
 
         if(gametype.equals(GameType.SINGLEPLAYER.name())) {
 
-            if(false /* check if the username has been used on the leaderboard here */) {
+            if(scoreDBController.getScoreByName(username) != null) {
 
                 if(confirmNameInUse.isPresent()) {
 
