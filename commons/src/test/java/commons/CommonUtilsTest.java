@@ -130,6 +130,50 @@ public class CommonUtilsTest {
 
     }
 
+    @Test
+    public void testCreateConsumptionStringDifferentAmountOfDecimals() {
+
+        String s = CommonUtils.createConsumptionString(1000, 3);
+        assertEquals("1.000 kWh", s);
+
+        s = CommonUtils.createConsumptionString(31856, 1);
+        assertEquals("31.9 kWh", s);
+
+        s = CommonUtils.createConsumptionString(-788190, 2);
+        assertEquals("-788.19 kWh", s);
+
+        s = CommonUtils.createConsumptionString(4895013, 5);
+        assertEquals("4.89501 MWh", s);
+
+        s = CommonUtils.createConsumptionString(-3750661, 0);
+        assertEquals("-4 MWh", s);
+
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.createConsumptionString(123456, -1));
+
+    }
+
+    @Test
+    public void testGetSIPrefix() {
+
+        String s = CommonUtils.getSIPrefix(0);
+        assertEquals("", s);
+
+        s = CommonUtils.getSIPrefix(1);
+        assertEquals("k", s);
+
+        s = CommonUtils.getSIPrefix(2);
+        assertEquals("M", s);
+
+        s = CommonUtils.getSIPrefix(3);
+        assertEquals("G", s);
+
+        s = CommonUtils.getSIPrefix(4);
+        assertEquals("T", s);
+
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.getSIPrefix(5));
+
+    }
+
     private class NotSoRandom extends Random {
 
         private int lastReturned;

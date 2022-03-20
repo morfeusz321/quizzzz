@@ -115,7 +115,8 @@ public class CommonUtils {
 
         if(consumption < 0) rounded *= -1;
 
-        stringBuilder.append(String.format("%.2f", rounded)).append(" ").append(getSIPrefix(steps)).append("Wh");
+        String formatString = "%." + amountOfDecimals + "f";
+        stringBuilder.append(String.format(formatString, rounded)).append(" ").append(getSIPrefix(steps)).append("Wh");
         return stringBuilder.toString();
 
     }
