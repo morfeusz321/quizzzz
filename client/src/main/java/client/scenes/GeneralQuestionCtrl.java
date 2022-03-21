@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
@@ -30,11 +29,8 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
         enableButtons();
         question = q;
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
-        String fontFamilyQuestion = title.getFont().getFamily();
-        title.setText("");
-        DynamicText questionHandler = new DynamicText(title, 190, title.getFont().getSize(),fontFamilyQuestion );
         title.setText(q.displayQuestion());
-        questionHandler.setText(title.getText(), (int) title.getFont().getSize());
+        resizeQuestionHandler.setText((int) title.getFont().getSize());
         answerBtn1.setText(q.answerOptions.get(0));
         answerBtn2.setText(q.answerOptions.get(1));
         answerBtn3.setText(q.answerOptions.get(2));

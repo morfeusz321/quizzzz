@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.animation.*;
@@ -25,6 +26,8 @@ public abstract class QuestionCtrl {
     protected final MainCtrl mainCtrl;
 
     private final CommonUtils utils;
+
+    protected DynamicText resizeQuestionHandler;
 
     @FXML
     private ImageView backBtn;
@@ -104,6 +107,8 @@ public abstract class QuestionCtrl {
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
         initializeBackButtonHandlers();
+        dynamicTextQuestion();
+
     }
 
     /**
@@ -305,5 +310,13 @@ public abstract class QuestionCtrl {
      */
     public void hideEmojis() {
         emojiPane.setVisible(false);
+    }
+
+    /**
+     * sets the maximum height a question title can have
+     */
+    private void dynamicTextQuestion(){
+        title.setText("");
+        resizeQuestionHandler = new DynamicText(title, 170, 35, "System Bold Italic" );
     }
 }

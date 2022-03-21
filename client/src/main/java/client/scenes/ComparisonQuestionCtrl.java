@@ -29,6 +29,7 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
         enableButtons();
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
+        resizeQuestionHandler.setText((int) title.getFont().getSize());
         answerBtn1.setText(q.answerOptions.get(0));
         answerBtn2.setText(q.answerOptions.get(1));
         answerBtn3.setText(q.answerOptions.get(2));

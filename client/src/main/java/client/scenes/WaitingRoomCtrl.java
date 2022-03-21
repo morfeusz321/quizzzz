@@ -163,7 +163,7 @@ public class WaitingRoomCtrl {
             Platform.runLater(() -> playerList.getItems().add(0, "\u2015 You: " + player.getUsername() + " \u2015"));
         }
         numPlayers++;
-        playersJoined.setText(numPlayers + " players joined:");
+        updatePlayersJoinedText();
 
     }
 
@@ -179,7 +179,7 @@ public class WaitingRoomCtrl {
             Platform.runLater(() -> playerList.getItems().remove("\u2015 You: " + player.getUsername() + " \u2015"));
         }
         numPlayers--;
-        playersJoined.setText(numPlayers + " players joined:");
+        updatePlayersJoinedText();
 
     }
 
@@ -201,7 +201,18 @@ public class WaitingRoomCtrl {
             }
         }
         numPlayers = gameUpdateFullPlayerList.getPlayerList().size();
-        playersJoined.setText(numPlayers + " players joined:");
+        updatePlayersJoinedText();
+    }
 
+    /**
+     * Updates the players joined label each time a player joins/leaves
+     */
+    protected void updatePlayersJoinedText() {
+        if(numPlayers == 1) {
+            playersJoined.setText(numPlayers + " player joined:");
+        }
+        else {
+            playersJoined.setText(numPlayers + " players joined:");
+        }
     }
 }

@@ -27,6 +27,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     public void initialize(){
         super.initialize();
         title.setText("What is most expensive?");
+        resizeQuestionHandler.setText((int) title.getFont().getSize());
     }
 
     /**
