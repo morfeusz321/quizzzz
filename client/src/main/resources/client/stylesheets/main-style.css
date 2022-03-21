@@ -14,6 +14,11 @@
     -fx-min-height: 101px;
     -fx-font-size: 40px;
 }
+
+.background {
+    -fx-background-color: #F0EAD6;
+}
+
 .text {
     -fx-font-family: 'Karla';
     -fx-text-color: #252422;
@@ -46,5 +51,10 @@
     -fx-min-width: 100px;
     -fx-min-height: 50px;
     -fx-font-size: 20px;
+}
+
+.help-button {
+    -fx-min-width: 188px;
+    -fx-min-height: 110px;
 }
 

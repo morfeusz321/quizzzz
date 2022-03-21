@@ -64,6 +64,9 @@ public class MainCtrl {
     private AdminEditActivityCtrl adminEditCtrl;
     private Scene adminEditScene;
 
+    private HelpScreenCtrl helpScreenCtrl;
+    private Scene helpScene;
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -89,6 +92,7 @@ public class MainCtrl {
      */
     public void initialize(Stage primaryStage,
                            Pair<MainScreenCtrl, Parent> mainScreen,
+                           Pair<HelpScreenCtrl, Parent> helpScreen,
                            Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
@@ -107,6 +111,13 @@ public class MainCtrl {
         this.mainScreen.getStylesheets().add(
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/main-style.css"
+                ).toExternalForm());
+
+        this.helpScreenCtrl = helpScreen.getKey();
+        this.helpScene = new Scene(helpScreen.getValue());
+        this.helpScene.getStylesheets().add(
+                MainScreenCtrl.class.getResource(
+                        "/client/stylesheets/help-style.css"
                 ).toExternalForm());
 
         this.userCtrl = username.getKey();
@@ -272,6 +283,14 @@ public class MainCtrl {
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
         primaryStage.setScene(mainScreen);
+    }
+
+    /**
+     * Shows the help screen scene
+     */
+    public void showHelpScreen() {
+        primaryStage.setTitle("Help");
+        primaryStage.setScene(helpScene);
     }
 
     /**
