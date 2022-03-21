@@ -149,25 +149,9 @@ public class MainCtrl {
 
         this.connectToServerCtrl = connectToServer.getKey();
         this.connectToServer = new Scene(connectToServer.getValue());
-        this.connectToServer.getStylesheets().add(
-                ConnectToServerCtrl.class.getResource(
-                        "/client/stylesheets/screen-style.css"
-                ).toExternalForm());
-        this.connectToServer.getStylesheets().add(
-                ConnectToServerCtrl.class.getResource(
-                        "/client/stylesheets/connect-to-server-style.css"
-                ).toExternalForm());
 
         this.leaderboardCtrl = leaderboard.getKey();
         this.leaderboard = new Scene(leaderboard.getValue());
-        this.leaderboard.getStylesheets().add(
-                LeaderboardCtrl.class.getResource(
-                        "/client/stylesheets/screen-style.css"
-                ).toExternalForm());
-        this.leaderboard.getStylesheets().add(
-                LeaderboardCtrl.class.getResource(
-                        "/client/stylesheets/leaderboard-style.css"
-                ).toExternalForm());
 
         initializeOnCloseEvents();
         setServerAddressPrefill("localhost:8080");
