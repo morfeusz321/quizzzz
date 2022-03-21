@@ -138,11 +138,6 @@ public class MainCtrl {
 
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
-        this.adminEditScene.getStylesheets().add(
-                WaitingRoomCtrl.class.getResource(
-                        "/client/stylesheets/admin-style.css"
-                ).toExternalForm());
-
         initializeOnCloseEvents();
 
         showMainScreen();
