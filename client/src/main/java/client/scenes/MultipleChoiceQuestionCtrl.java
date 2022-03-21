@@ -158,12 +158,14 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         if(answer.correct) {
             placingTick(selectedButton);
             correctAns.setText("correctly");
-            fullText.setOpacity(1);
             btn.getStyleClass().add("answerCorrect");
+            fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
+            fullText.setLayoutY(anchorPane.getHeight()*0.754867);
         } else {
+            fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
+            fullText.setLayoutY(anchorPane.getHeight()*0.754867);
             placingCross(selectedButton);
             correctAns.setText("incorrectly");
-            fullText.setOpacity(1);
             btn.getStyleClass().add("answerIncorrect");
             buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
             placingTick( answer.getAnswer());
@@ -222,7 +224,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         for(Button x : buttonList){
             x.setDisable(true);
         }
-
+        fullText.setOpacity(1);
         correctTick.setOpacity(1);
         powersText.setOpacity(0);
         decreaseTime.setOpacity(0);
@@ -239,8 +241,8 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     protected void enableButtons(){
         buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         correctTick.setOpacity(0);
+        fullText.setOpacity(0);
         wrongCross.setOpacity(0);
-        fullText.setOpacity(0.0);
         powersText.setOpacity(1);
         decreaseTime.setOpacity(1);
         doublePoints.setOpacity(1);
