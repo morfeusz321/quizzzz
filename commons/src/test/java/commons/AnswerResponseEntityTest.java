@@ -9,13 +9,19 @@ public class AnswerResponseEntityTest {
 
     @Test
     public void checkConstructor1() {
-        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(true);
+        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(true, 1);
         assertTrue(answerResponseEntity.correct);
     }
 
     @Test
+    public void checkGetter() {
+        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(true, 1);
+        assertEquals(1, answerResponseEntity.getAnswer());
+    }
+
+    @Test
     public void checkConstructor2() {
-        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(false, 5);
+        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(false, 5, 4);
         assertFalse(answerResponseEntity.correct);
         assertEquals(5, answerResponseEntity.proximity);
     }

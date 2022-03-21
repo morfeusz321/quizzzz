@@ -78,6 +78,12 @@ public abstract class QuestionCtrl {
     @FXML
     private Label timeLabel;
 
+    @FXML
+    protected ImageView correctTick;
+
+    @FXML
+    protected ImageView wrongCross;
+
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
      * is handled that is shared for all different question types. The controls of those question type screens extend

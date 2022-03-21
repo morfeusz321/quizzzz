@@ -25,6 +25,9 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar.
      */
     public void loadQuestion(Question q) {
+
+        enableButtons();
+        question = q;
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());

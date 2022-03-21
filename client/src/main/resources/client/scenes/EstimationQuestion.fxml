@@ -20,7 +20,7 @@
       <ImageView fx:id="backBtn" fitHeight="77.0" fitWidth="158.0" layoutX="35.0" layoutY="35.0" />
       <Text fx:id="title" layoutX="310.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The usage of energy of showering for 5 minutes is equivalent to filler filler filler filler filler filler filler filler filler filler filler:" textAlignment="CENTER" wrappingWidth="950.0">
       </Text>
-      <Label layoutX="73.0" layoutY="244.0" text="Powers:">
+      <Label fx:id="powersText" layoutX="73.0" layoutY="244.0" text="Powers:">
          <styleClass>
             <String fx:value="powers-text" />
             <String fx:value="text" />

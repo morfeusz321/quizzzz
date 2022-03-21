@@ -10,6 +10,7 @@ public class AnswerResponseEntity {
 
     public boolean correct;
     public long proximity;
+    private long answer;
 
     /**
      * Empty constructor used by object mapper
@@ -22,13 +23,22 @@ public class AnswerResponseEntity {
     }
 
     /**
+     * gets the answer number
+     * @return the number of the answer
+     */
+    public long getAnswer() {
+        return answer;
+    }
+
+    /**
      * Creates a new answer response entity (used for general and comparison questions)
      * @param correct whether the answer was correct or not
      */
-    public AnswerResponseEntity(boolean correct) {
+    public AnswerResponseEntity(boolean correct, long answer) {
 
         this.correct = correct;
         this.proximity = 0;
+        this.answer = answer;
 
     }
 
@@ -37,10 +47,11 @@ public class AnswerResponseEntity {
      * @param correct whether the answer should be displayed as correct or not
      * @param proximity the difference between the answer and the correct answer
      */
-    public AnswerResponseEntity(boolean correct, long proximity) {
+    public AnswerResponseEntity(boolean correct, long proximity, long answer) {
 
         this.correct = correct;
         this.proximity = proximity;
+        this.answer = answer;
 
     }
 
