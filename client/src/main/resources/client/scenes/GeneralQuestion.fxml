@@ -10,19 +10,11 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Text?>
 
-<?import javafx.scene.text.Font?>
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GeneralQuestionCtrl">
    <children>
       <ImageView fx:id="bgImage" fitHeight="265.0" fitWidth="2034.0" layoutX="-665.0" layoutY="-108.0">
       </ImageView>
       <Text fx:id="title" layoutX="310.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The usage of energy of showering for 5 minutes is equivalent to filler filler filler filler filler filler filler filler filler filler filler:" textAlignment="CENTER" wrappingWidth="950.0">
-         <font>
-             <Font name ="System Bold Italic" size = "40.0"/>
-         </font>
-          <styleClass>
-            <String fx:value="question-title" />
-            <String fx:value="text" />
-         </styleClass>
       </Text>
       <Label layoutX="73.0" layoutY="188.0" text="Powers:">
          <styleClass>

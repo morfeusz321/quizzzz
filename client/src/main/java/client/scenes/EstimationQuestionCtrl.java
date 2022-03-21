@@ -112,6 +112,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
+        resizeQuestionHandler.setText((int) title.getFont().getSize());
 
         // TODO: handle slider and other question-dependent objects (max/min etc.)
         slideBar.setMax(200);
