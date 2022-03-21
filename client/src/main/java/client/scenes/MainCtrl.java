@@ -19,10 +19,7 @@ import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
 
-import commons.Activity;
-import commons.GameType;
-import commons.GeneralQuestion;
-import commons.Question;
+import commons.*;
 
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateGameStarting;
@@ -31,6 +28,7 @@ import commons.gameupdate.GameUpdatePlayerLeft;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -72,6 +70,9 @@ public class MainCtrl {
     private LeaderboardCtrl leaderboardCtrl;
     private Scene leaderboard;
 
+    private HelpScreenCtrl helpScreenCtrl;
+    private Scene helpScene;
+
     private String serverAddressPrefill;
 
     /**
@@ -88,6 +89,7 @@ public class MainCtrl {
      * manages the switching between the scenes.
      * @param primaryStage The stage (i.e. window) for all scenes
      * @param mainScreen Pair of the control and the scene of the main screen of the game
+     * @param helpScreen Pair of the control and the scene of the help screen
      * @param username Pair of the control and the scene of the username input screen
      * @param generalQ Pair of the control and the scene of the general question
      * @param comparisonQ Pair of the control and the scene of the comparison question
@@ -101,6 +103,7 @@ public class MainCtrl {
      */
     public void initialize(Stage primaryStage,
                            Pair<MainScreenCtrl, Parent> mainScreen,
+                           Pair<HelpScreenCtrl, Parent> helpScreen,
                            Pair<UserCtrl, Parent> username,
                            Pair<GeneralQuestionCtrl, Parent> generalQ,
                            Pair<ComparisonQuestionCtrl, Parent> comparisonQ,
@@ -114,11 +117,20 @@ public class MainCtrl {
 
         this.primaryStage = primaryStage;
 
+        this.primaryStage.getIcons().add(new Image("/client/img/lightbulb_icon.png"));
+
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
         this.mainScreen.getStylesheets().add(
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/main-style.css"
+                ).toExternalForm());
+
+        this.helpScreenCtrl = helpScreen.getKey();
+        this.helpScene = new Scene(helpScreen.getValue());
+        this.helpScene.getStylesheets().add(
+                MainScreenCtrl.class.getResource(
+                        "/client/stylesheets/help-style.css"
                 ).toExternalForm());
 
         this.userCtrl = username.getKey();
@@ -291,6 +303,14 @@ public class MainCtrl {
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
         primaryStage.setScene(mainScreen);
+    }
+
+    /**
+     * Shows the help screen scene
+     */
+    public void showHelpScreen() {
+        primaryStage.setTitle("Help");
+        primaryStage.setScene(helpScene);
     }
 
     /**

@@ -28,12 +28,7 @@
       <Label layoutX="287.0" layoutY="39.0" styleClass="title-text1" text="Welcome to the" />
       <Label layoutX="480.0" layoutY="157.0" styleClass="title-text2" text="Quizzz" />
       <Label layoutX="373.0" layoutY="369.0" styleClass="title-text3" text="Ready for an energetic game?" />
-      <Button fx:id="help" layoutX="665.0" layoutY="629.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="50.0" style="-fx-min-width: 188px; -fx-min-height: 110px;" text="Help">
-         <styleClass>
-            <String fx:value="text" />
-            <String fx:value="button" />
-         </styleClass>
-      </Button>
       <Button fx:id="admin" layoutX="1228.0" layoutY="687.0" mnemonicParsing="false" onAction="#showAdmin" prefHeight="26.0" prefWidth="51.0" styleClass="admin-button" text="Admin" />
+      <ImageView fx:id="help" fitHeight="91.0" fitWidth="256.0" layoutX="663.0" layoutY="642.0" onMouseClicked="#showHelp" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>

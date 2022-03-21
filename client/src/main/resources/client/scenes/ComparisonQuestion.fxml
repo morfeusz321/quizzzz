@@ -11,20 +11,16 @@
 <?import javafx.scene.text.Text?>
 
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.TextFlow?>
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ComparisonQuestionCtrl">
+
    <children>
       <ImageView fx:id="bgImage" fitHeight="265.0" fitWidth="2034.0" layoutX="-665.0" layoutY="-108.0">
       </ImageView>
       <Text fx:id="title" layoutX="310.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="The usage of energy of showering for 5 minutes is equivalent to filler filler filler filler filler filler filler filler filler filler filler:" textAlignment="CENTER" wrappingWidth="950.0">
-          <font>
-              <Font name ="System Bold Italic" size = "40.0"/>
-          </font>
-          <styleClass>
-            <String fx:value="question-title" />
-            <String fx:value="text" />
-         </styleClass>
       </Text>
-      <Label layoutX="73.0" layoutY="188.0" text="Powers:">
+
+      <Label fx:id="powersText" layoutX="73.0" layoutY="188.0" text="Powers:">
          <styleClass>
             <String fx:value="powers-text" />
             <String fx:value="text" />
@@ -64,8 +60,18 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
+      <TextFlow fx:id="fullText" layoutX="332.0" layoutY="747.0" opacity="0" styleClass="answerDisplay">
+         <Text layoutX="388.0" layoutY="827.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You answered " />
+         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text="">
+         </Text>
+         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
+      </TextFlow>
       <ImageView fx:id="hoverEmoji" fitHeight="126.0" fitWidth="114.0" layoutX="1205.0" layoutY="597.0"
                  onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis" preserveRatio="true"/>
+      <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      </ImageView>
+      <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      </ImageView>
       <Label fx:id="questionInfo" layoutX="56.0" layoutY="700.0" text="Question 1/20">
          <styleClass>
             <String fx:value="smaller-info-text" />

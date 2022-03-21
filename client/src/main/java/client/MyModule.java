@@ -43,5 +43,6 @@ public class MyModule implements Module {
         binder.bind(AdminEditActivityCtrl.class).in(Scopes.SINGLETON);
         binder.bind(ConnectToServerCtrl.class).in(Scopes.SINGLETON);
         binder.bind(LeaderboardCtrl.class).in(Scopes.SINGLETON);
+        binder.bind(HelpScreenCtrl.class).in(Scopes.SINGLETON);
     }
 }

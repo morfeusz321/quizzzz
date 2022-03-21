@@ -16,12 +16,8 @@ public class MainScreenCtrl implements Initializable {
 
     protected GameType selectedGameType;
 
-    /* @FXML
-    private Button singlePlayer;
     @FXML
-    private Button multiPlayer; //TODO: multiplayer
-    @FXML
-    private Button help; */
+    private ImageView help;
 
     @FXML
     private ImageView leaderboard;
@@ -33,7 +29,6 @@ public class MainScreenCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
-    // TODO: change the size of the screen (1920x1080 required)
     /**
      * Constructor for main screen controller, which controls the interaction of the (main) overview screen
      * @param server Utilities for communicating with the server (API endpoint)
@@ -43,8 +38,6 @@ public class MainScreenCtrl implements Initializable {
     public MainScreenCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
-
-        //loadImages(); // TODO: I tried loading the images directly from the FXML file but it doesn't work, this solution is temporary until I figure out the correct path maybe?
     }
 
     /**
@@ -57,10 +50,11 @@ public class MainScreenCtrl implements Initializable {
         leaderboard.setImage(new Image("/client/img/main_leaderboard.png"));
         lightning.setImage(new Image("/client/img/main_lightning.png"));
         lightbulb.setImage(new Image("/client/img/main_lightbulb.png"));
+        help.setImage(new Image("/client/img/question_mark.png"));
     }
 
     /**
-     * Starts the single player mode of the game TODO: should be changed to show another screen when everything is merged
+     * Starts the single player mode of the game
      * @param event click on singleplayer button
      */
     @FXML
@@ -72,7 +66,7 @@ public class MainScreenCtrl implements Initializable {
     }
 
     /**
-     * Starts the multi player mode of the game TODO: should be changed to show another screen when everything is merged
+     * Starts the multi player mode of the game
      * @param event click on multiplayer button
      */
     @FXML
@@ -97,6 +91,11 @@ public class MainScreenCtrl implements Initializable {
         mainCtrl.showLeaderboard();
     }
 
-    //TODO: add multiplayer and help
+    /**
+     * Opens the help screen
+     */
+    public void showHelp() {
+        mainCtrl.showHelpScreen();
+    }
 
 }

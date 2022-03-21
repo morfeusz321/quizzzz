@@ -56,9 +56,10 @@ public class Main extends Application {
         var adminEdit = FXML.load(AdminEditActivityCtrl.class, "client", "scenes", "AdminEditActivity.fxml");
         var connectToServer = FXML.load(ConnectToServerCtrl.class, "client", "scenes", "ConnectToServer.fxml");
         var leaderboard = FXML.load(LeaderboardCtrl.class, "client", "scenes", "Leaderboard.fxml");
+        var helpScreen = FXML.load(HelpScreenCtrl.class, "client", "scenes", "HelpScreen.fxml");
 
         var mainCtrl = INJECTOR.getInstance(MainCtrl.class);
-        mainCtrl.initialize(primaryStage, mainScreen, username, generalQ, comparisonQ, estimationQ, mostExpensiveQ, waitingRoom, admin, adminEdit, connectToServer, leaderboard);
+        mainCtrl.initialize(primaryStage, mainScreen, helpScreen, username, generalQ, comparisonQ, estimationQ, mostExpensiveQ, waitingRoom, admin, adminEdit, connectToServer, leaderboard);
 
     }
 
