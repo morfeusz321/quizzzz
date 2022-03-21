@@ -64,10 +64,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     * Initializes the scene elements
+     * Initializes the scene elements and the buttonList for answer buttons
      */
     @FXML
     protected void initialize(){
+        buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         super.initialize();
         initializeAnswerEventHandlers();
     }
@@ -113,7 +114,6 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      */
     private void initializeAnswerEventHandlers(){
 
-        List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         buttonList.forEach(this::addEventHandlersToAnswerButton);
 
     }
@@ -239,7 +239,6 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * Enables the answer and power buttons, makes then power buttons visible
      */
     protected void enableButtons(){
-        buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         correctTick.setOpacity(0);
         fullText.setOpacity(0);
         wrongCross.setOpacity(0);
