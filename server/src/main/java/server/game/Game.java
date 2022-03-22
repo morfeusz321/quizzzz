@@ -359,7 +359,9 @@ public class Game extends Thread {
      */
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+
+        return uuid.hashCode() ^ gameType.hashCode() ^ players.hashCode() ^ Boolean.hashCode(done) ^ questions.hashCode();
+
     }
 
     /**
