@@ -236,14 +236,14 @@ public class GameController implements ApplicationContextAware {
             return;
         }
         runningGames.remove(game.getUUID());
-        // Check if the game was stopped before it actually ended, in that case do nothing
-        if(!game.isDone()){
-            return;
-        }
-        // If the game ended after 20 questions, save all players scores
-        List<Player> players = game.getPlayers();
-        for(Player p: players){
-            scoreController.addScore(p.getUsername(), p.getPoints());
+        // Check if the game was stopped before it actually ended, in that case only interrupt the thread, otherwise
+        // save all the scores.
+        if(game.isDone()){
+            // If the game ended after 20 questions, save all players scores
+            List<Player> players = game.getPlayers();
+            for(Player p: players){
+                scoreController.addScore(p.getUsername(), p.getPoints());
+            }
         }
         // Interrupt the game thread
         game.interrupt();
