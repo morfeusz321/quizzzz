@@ -66,7 +66,7 @@ public class QuestionController {
             aw.add( a.consumption + " Wh");
             aw.add((long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(a.consumption +" Wh"));
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh") + 1);
             questionDBController.add(toReturn);
             return ResponseEntity.ok(toReturn);
         }
@@ -230,9 +230,9 @@ public class QuestionController {
 
         if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion || q instanceof WhichIsMoreQuestion) {
             if (answer == q.answer) {
-                return ResponseEntity.ok(new AnswerResponseEntity(true));
+                return ResponseEntity.ok(new AnswerResponseEntity(true, q.answer));
             } else {
-                return ResponseEntity.ok(new AnswerResponseEntity(false));
+                return ResponseEntity.ok(new AnswerResponseEntity(false, q.answer));
             }
         }
 

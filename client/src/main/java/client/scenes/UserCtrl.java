@@ -41,7 +41,6 @@ public class UserCtrl {
 
     private String currentUsername;
     private UUID gameUUID;
-    private String serverAddressPreFill = "localhost:8080";
 
     @FXML
     private TextField username;
@@ -73,8 +72,15 @@ public class UserCtrl {
      */
 
     public void initialize() {
+        serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
+    }
 
-        serverAddress.setText(serverAddressPreFill);
+    /**
+     * Updates the server address input field to show the current server address prefill
+     */
+    public void updateServerAddressPrefill() {
+
+        serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
         backButtonHandler();
 
     }
@@ -98,6 +104,7 @@ public class UserCtrl {
     public void join() {
 
         String un = getUserName();
+        mainCtrl.setServerAddressPrefill(getServer());
 
         GameUpdate gu;
         try {
@@ -136,7 +143,6 @@ public class UserCtrl {
         server.registerForGameUpdates(gameUUID, mainCtrl::gameUpdateHandler);
 
         this.currentUsername = un;
-        this.serverAddressPreFill = getServer();
 
         /*
         new Timer().schedule(new TimerTask() {

@@ -26,10 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.List;
 
-import commons.Activity;
-import commons.AnswerResponseEntity;
-import commons.GameType;
-import commons.Question;
+import commons.*;
 import commons.gameupdate.GameUpdate;
 
 import jakarta.ws.rs.core.Form;
@@ -48,9 +45,30 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
-    private static String SERVER = "http://localhost:8080/";
-    private static String WS_SERVER = "ws://localhost:8080/websocket";
+    private static String SERVER = "";
+    private static String WS_SERVER = "";
     private StompSession session;
+
+    /**
+     * Tests the current server address to see if a connection can be established, and if
+     * it is indeed a Quizzz Server
+     * @return true if the current server could be connected to and it is a Quizzz Server, false
+     * otherwise
+     */
+    public boolean connectionTest() {
+
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("")
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(String.class)
+                    .equals("Quizzz Server");
+        } catch(Exception e) {
+            return false;
+        }
+
+    }
 
     /**
      * Attempts to establish a WebSocket connection with the server at the specified URL
@@ -72,6 +90,19 @@ public class ServerUtils {
         }
 
         throw new IllegalStateException();
+
+    }
+
+    /**
+     * Disconnects from the WebSocket session
+     */
+    public void disconnect() {
+
+        if(session != null) {
+            if(session.isConnected()) {
+                session.disconnect();
+            }
+        }
 
     }
 
@@ -265,21 +296,24 @@ public class ServerUtils {
      */
     public String leaveGame(String username, UUID gameUUID) {
 
-        if(session != null) {
-            if(session.isConnected()) {
-                session.disconnect();
-            }
-        }
+        disconnect();
+
+        if(username == null || gameUUID == null) return "";
 
         Form form = new Form();
         form.param("username", username);
         form.param("gameUUID", gameUUID.toString());
 
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/user/leave") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        try {
+            return ClientBuilder.newClient(new ClientConfig()) //
+                    .target(SERVER).path("api/user/leave") //
+                    .request(APPLICATION_JSON) //
+                    .accept(APPLICATION_JSON) //
+                    .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        } catch(Exception e) {
+            return "";
+        }
+
     }
 
     /**
@@ -317,8 +351,29 @@ public class ServerUtils {
         } catch(MalformedURLException e) {
             throw new IllegalArgumentException("Malformed URL \"" + server + "\" - " + e.getMessage());
         }
+        if(!connectionTest()) {
+            throw new IllegalArgumentException("\"" + server +  "\" - Server not found or was not a Quizzz Server.");
+        }
         WS_SERVER = "ws://" + server + "websocket";
-        session = connect(WS_SERVER);
+        try {
+            session = connect(WS_SERVER);
+        } catch(Exception e) {
+            throw new IllegalArgumentException("\"" + server +  "\" - Found a Quizzz Server at the specified URL, but could not connect its WebSocket topic.");
+        }
+    }
+
+    /**
+     * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
+     * @return all scores on the leaderboard sorted by rank ascending
+     */
+    public List<Score> getLeaderboard() {
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                                    .target(SERVER).path("api/scores/sorted") //
+                                    .request(APPLICATION_JSON) //
+                                    .accept(APPLICATION_JSON) //
+                                    .get(new GenericType<List<Score>>() {});
+
     }
 
 }

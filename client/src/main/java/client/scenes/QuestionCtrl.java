@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.animation.*;
@@ -25,6 +26,8 @@ public abstract class QuestionCtrl {
     protected final MainCtrl mainCtrl;
 
     private final CommonUtils utils;
+
+    protected DynamicText resizeQuestionHandler;
 
     @FXML
     private ImageView backBtn;
@@ -75,6 +78,12 @@ public abstract class QuestionCtrl {
     @FXML
     private Label timeLabel;
 
+    @FXML
+    protected ImageView correctTick;
+
+    @FXML
+    protected ImageView wrongCross;
+
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
      * is handled that is shared for all different question types. The controls of those question type screens extend
@@ -98,6 +107,8 @@ public abstract class QuestionCtrl {
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
         initializeBackButtonHandlers();
+        dynamicTextQuestion();
+
     }
 
     /**
@@ -202,13 +213,12 @@ public abstract class QuestionCtrl {
      * @param clickedEmoji The image view which was clicked (emoji in the emoji pane)
      */
     private void emojiAnimation(ImageView clickedEmoji){
-        // TODO: when we do dynamic resizing of the window, the hardcoded values have to be changed
 
         ImageView emoji = new ImageView(clickedEmoji.getImage());
         anchorPane.getChildren().add(emoji);
         emoji.toBack();
 
-        double sizeRatio = 0.6; // should be <= 1
+        double sizeRatio = 0.78; // should be <= 1
         emoji.setFitWidth(hoverEmoji.getFitWidth() * sizeRatio);
         emoji.setPreserveRatio(true);
         emoji.setLayoutX(hoverEmoji.getLayoutX() + 20);
@@ -266,10 +276,10 @@ public abstract class QuestionCtrl {
         displayEmojis();
 
         Line line = new Line();
-        line.setStartX(740); // width of pane
-        line.setStartY(160/2.0); // height of pane/2
-        line.setEndX(740/2.0); // width of pane/2
-        line.setEndY(160/2.0); // height of pane/2
+        line.setStartX(605); // width of pane
+        line.setStartY(132/2.0); // height of pane/2
+        line.setEndX(605/2.0); // width of pane/2
+        line.setEndY(132/2.0); // height of pane/2
 
         PathTransition pathTransition = new PathTransition();
         pathTransition.setDuration(Duration.millis(350));
@@ -300,5 +310,13 @@ public abstract class QuestionCtrl {
      */
     public void hideEmojis() {
         emojiPane.setVisible(false);
+    }
+
+    /**
+     * sets the maximum height a question title can have
+     */
+    private void dynamicTextQuestion(){
+        title.setText("");
+        resizeQuestionHandler = new DynamicText(title, 170, 35, "System Bold Italic" );
     }
 }
