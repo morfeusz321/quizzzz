@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" style="-fx-background-color: #F0EAD6;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainScreenCtrl">
+   <children>
+      <ImageView fx:id="lightning" fitHeight="275.0" fitWidth="549.0" layoutX="242.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="lightbulb" fitHeight="206.0" fitWidth="405.0" layoutX="839.0" layoutY="156.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="leaderboard" fitHeight="150.0" fitWidth="200.0" layoutX="490.0" layoutY="609.0" pickOnBounds="true" onMouseClicked="#showLeaderboard" preserveRatio="true" />
+      <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="853.0" layoutY="520.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
+      <Button accessibleRole="IMAGE_VIEW" disable="true" layoutX="46.0" layoutY="520.0" mnemonicParsing="false" opacity="0.71" prefHeight="78.0" prefWidth="224.0" styleClass="button-background" />
+      <Button fx:id="singlePlayer" layoutX="862.0" layoutY="504.0" mnemonicParsing="false" onAction="#singlePlayer" prefHeight="78.0" prefWidth="224.0" text="Singleplayer">
+         <styleClass>
+            <String fx:value="text" />
+            <String fx:value="button" />
+         </styleClass>
+      </Button>
+      <Button fx:id="multiPlayer" layoutX="60.0" layoutY="504.0" mnemonicParsing="false" onAction="#multiPlayer" prefHeight="78.0" prefWidth="224.0" text="Multiplayer">
+         <styleClass>
+            <String fx:value="text" />
+            <String fx:value="button" />
+         </styleClass>
+      </Button>
+      <Label layoutX="287.0" layoutY="39.0" styleClass="title-text1" text="Welcome to the" />
+      <Label layoutX="480.0" layoutY="157.0" styleClass="title-text2" text="Quizzz" />
+      <Label layoutX="373.0" layoutY="369.0" styleClass="title-text3" text="Ready for an energetic game?" />
+      <Button fx:id="admin" layoutX="1228.0" layoutY="687.0" mnemonicParsing="false" onAction="#showAdmin" prefHeight="26.0" prefWidth="51.0" styleClass="admin-button" text="Admin" />
+      <ImageView fx:id="help" fitHeight="91.0" fitWidth="256.0" layoutX="663.0" layoutY="642.0" onMouseClicked="#showHelp" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</AnchorPane>

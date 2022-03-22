@@ -5,9 +5,57 @@
 
 <module name = "Checker">
     <module name="TreeWalker">
+<!--        checks for any unused imports-->
         <module name="UnusedImports" />
-    </module>
+<!--        checks if array initialization is in java style-->
+        <module name="ArrayTypeStyle" />
+<!--        checks if method is under 100 lines (not counting empty lines and single line comments-->
+        <module name="MethodLength">
+            <property name="tokens" value="METHOD_DEF" />
+            <property name="max" value="60" />
+            <property name="countEmpty" value="false" />
+        </module>
+<!--        checks empty line before methods declaration-->
+        <module name="EmptyLineSeparator">
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
 
-    <!-- TODO: decide in your team with other checkers to add! -->
+        <!-- checks if class names are pascal case -->
+        <module name="TypeName" />
+
+        <!-- checks whether constants (static and/or final) are in upper snake case -->
+        <module name="ConstantName" />
+
+        <!-- checks whether instance variables are in camel case -->
+        <module name="MemberName" />
+
+
+        <!-- checks whether method names are in camel case -->
+        <module name="MethodName" />
+
+        <!-- checks whether method parameter names are in camel case -->
+        <module name="ParameterName" />
+
+        <!-- checks whether local variables are in camel case -->
+        <module name="LocalVariableName" />
+
+
+        <!-- chekcs whether pattern variable names are in camel case -->
+        <module name="PatternVariableName" />
+
+        <!-- checks whether record component names are in camel case -->
+        <module name="RecordComponentName" />
+
+        <module name="MissingJavadocMethod">
+            <property name="allowedAnnotations" value="Override,BeforeEach,Test"/>
+        </module>
+
+<!--        checks if the braces are formatted right in methods (left in the first line, right on next line)-->
+        <module name="LeftCurly"/>
+        <module name="RightCurly">
+            <property name="option" value="alone" />
+            <property name="tokens" value="METHOD_DEF" />
+        </module>
+    </module>
 
 </module>

@@ -1,0 +1,99 @@
+/*
+    Description:
+    This file is for the styling of the waiting room screen.
+*/
+
+@font-face {
+    -fx-font-family: 'Karla';
+    -fx-src: url(https://fonts.gstatic.com/s/karla/v21/qkBIXvYC6trAT55ZBi1ueQVIjQTD-JqaHUlKd7c.woff2) format('woff2');
+    -fx-unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+.text {
+    -fx-font-family: 'Karla';
+    -fx-text-color: #252422;
+    -fx-font-style: italic;
+}
+
+#title-1 {
+    -fx-font-size: 67px;
+    -fx-font-weight: bold;
+}
+
+#title-2 {
+    -fx-font-size: 40px;
+}
+
+#title-3 {
+    -fx-font-size: 30px;
+}
+
+#players-text {
+    -fx-font-size: 33px;
+    -fx-font-weight: bold;
+}
+
+#playerList {
+    -fx-font-size: 35px;
+    -fx-background-insets: 0;
+    -fx-border-width: 0px;
+    -fx-background-color: #F0EAD6;
+    -fx-padding: 0;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+#playerList .list-cell {
+    -fx-alignment: center;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+
+#playerList .list-cell:even {
+    -fx-background-color: #E9DEC8;
+    -fx-border-color: #E9DEC8;
+    -fx-border-width: 3px;
+}
+
+#playerList .list-cell:odd {
+    -fx-background-color: #F0EAD6;
+    -fx-border-color: #E9DEC8;
+    -fx-border-width: 3px;
+}
+
+#playerList .scroll-bar:vertical .increment-arrow,
+#playerList .scroll-bar:vertical .decrement-arrow {
+    -fx-opacity: 0;
+}
+
+#playerList .scroll-bar > .increment-button,
+#playerList .scroll-bar > .decrement-button {
+    -fx-pref-height: 0;
+}
+
+#playerList .scroll-bar:vertical .track-background {
+    -fx-background-color: #F0EAD6;
+}
+
+#playerList .scroll-bar:vertical .track {
+    -fx-background-color: #F0EAD6;
+}
+
+#playerList .scroll-bar:vertical .thumb {
+    -fx-background-color: #E9DEC8;
+    -fx-background-radius: 20px;
+}
+
+#playerList .list-cell:filled:selected:focused,
+#playerList .list-cell:filled:selected {
+    -fx-text-fill: #252422;
+    /* The default styling makes the text white when it is selected. */
+}
+
+.speech-bubble-text {
+    -fx-font-size: 35px;
+}
+
+.bold {
+    -fx-font-weight: bold;
+}
