@@ -263,6 +263,14 @@ public class Game extends Thread {
     }
 
     /**
+     * Returns the current question of this game
+     * @return the current question of this game
+     */
+    private Question getCurrentQuestion() {
+        return currentQuestion;
+    }
+
+    /**
      * Adds a player to this game. Note that the Game assumes that it has been confirmed already that a
      * player with this username is not yet in the Game, and that this is *not* checked again
      * in this method
@@ -328,8 +336,22 @@ public class Game extends Thread {
      */
     @Override
     public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if(obj == null){
+            return false;
+        }
+        if(obj instanceof Game){
+            Game other = (Game) obj;
+            return this.uuid.equals(other.uuid) &&
+            this.gameType.equals(other.gameType) &&
+            this.players.equals(other.players) &&
+            (done == other.done) &&
+            this.questions.equals(other.questions) &&
+            Objects.equals(this.currentQuestion, other.currentQuestion);
+        }
+        return false;
     }
+
+
 
     /**
      * Generate a hash code for this object
