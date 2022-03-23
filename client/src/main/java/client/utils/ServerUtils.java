@@ -28,9 +28,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.List;
 
-import commons.Activity;
-import commons.GameType;
-import commons.Question;
 import commons.*;
 import commons.gameupdate.GameUpdate;
 
@@ -333,15 +330,12 @@ public class ServerUtils {
      * @return the response from the server
      */
     public String leaveGame(String username, UUID gameUUID) {
-
+        
         isInGame = false;
 
-        if(session != null) {
-            if(session.isConnected()) {
-                session.disconnect();
-            }
-        }
+        disconnect();
 
+        if(username == null || gameUUID == null) return "";
 
         Form form = new Form();
         form.param("username", username);

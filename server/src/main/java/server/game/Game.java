@@ -151,7 +151,7 @@ public class Game extends Thread {
      */
     private void sendTransitionPeriod() {
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(new AnswerResponseEntity(true)))));
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(new AnswerResponseEntity(true, 1)))));
         deferredResultMap.clear();
 
         if(currentQuestionIdx == 9) {
