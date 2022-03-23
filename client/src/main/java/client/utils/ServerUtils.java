@@ -31,6 +31,7 @@ import commons.GameType;
 import commons.Question;
 import commons.gameupdate.GameUpdate;
 
+import commons.gameupdate.GameUpdateGameFinished;
 import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -119,16 +120,16 @@ public class ServerUtils {
      * by this method that no further updates will be accepted by the provided consumer after leaving the game.
      * @param consumer the consumer that accepts incoming game loop updates
      */
-    public void registerForGameLoop(Consumer<String> consumer) {
+    public void registerForGameLoop(Consumer<GameUpdate> consumer) {
 
-        String ret = "";
-        while(!ret.equals("20") && isInGame) {
+        GameUpdate ret = null;
+        while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
             ret = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("api/game/")
                     .queryParam("gameID", gameUUID.toString())
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
-                    .get(String.class);
+                    .get(GameUpdate.class);
             if(isInGame) consumer.accept(ret);
         }
 
