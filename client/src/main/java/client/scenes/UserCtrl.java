@@ -72,7 +72,9 @@ public class UserCtrl {
      */
 
     public void initialize() {
+
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
+        backButtonHandler();
     }
 
     /**
@@ -81,7 +83,15 @@ public class UserCtrl {
     public void updateServerAddressPrefill() {
 
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
-        backButtonHandler();
+
+    }
+
+    /**
+     * Updates the username input field to show the current username prefill
+     */
+    public void updateUsernamePrefill() {
+
+        username.setText(mainCtrl.getSavedUsernamePrefill());
 
     }
 
@@ -104,6 +114,8 @@ public class UserCtrl {
     public void join() {
 
         String un = getUserName();
+
+        mainCtrl.setUsernamePrefill(un);
         mainCtrl.setServerAddressPrefill(getServer());
 
         GameUpdate gu;
