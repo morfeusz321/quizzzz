@@ -50,10 +50,6 @@ public class Game extends Thread {
      */
     public Game(GameUpdateManager gameUpdateManager, QuestionGenerator questionGenerator) {
 
-        // TODO: not sure if the server should send requests for questions to itself via the API mapping (this does not
-        //  really make sense, and would create overhead), so I included the QuestionController as a parameter for now.
-        //  If this is not the best way of handling it, we would have to change this here.
-
         this.gameUpdateManager = gameUpdateManager;
         this.questionGenerator = questionGenerator;
         this.players = new ConcurrentHashMap<>();
