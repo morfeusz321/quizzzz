@@ -21,6 +21,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -243,7 +245,9 @@ public class ServerUtils {
      */
     public static String getImageURL(String imagePath) {
 
-        return SERVER + "api/img/" + imagePath;
+        String[] split = imagePath.split("/");
+        return SERVER + "api/img/"  + URLEncoder.encode(split[0], StandardCharsets.UTF_8) + "/"
+                                    + URLEncoder.encode(split[1], StandardCharsets.UTF_8);
 
     }
 
