@@ -101,7 +101,7 @@ public class Game extends Thread {
                     done = true;
                     stopWatch.stop();
                     timer.cancel();
-                    deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateGameFinished())));
+                    deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateGameFinished(new ArrayList<>()))));
                     deferredResultMap.clear();
                 } else {
                     gameLoop();
