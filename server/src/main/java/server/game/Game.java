@@ -68,7 +68,12 @@ public class Game extends Thread {
     @Override
     public void run(){
         // Minimum amount of questions per question type is set to 2 here
-        questions = questionGenerator.generateGameQuestions(2);
+        try {
+            questions = questionGenerator.generateGameQuestions(2);
+        } catch (IllegalArgumentException e) {
+            // This will only be the case, if minPerQuestionType is not valid.
+            return;
+        }
 
         // Something went wrong when trying to generate the questions
         if(questions == null){

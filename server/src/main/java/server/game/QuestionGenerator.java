@@ -191,9 +191,15 @@ public class QuestionGenerator {
     /**
      * Generates 20 questions for a game, with a minimum amount of questions per question type.
      * @param minPerQuestionType The minimum amount of questions per question type
+     * @throws IllegalArgumentException Throws an exception if the minimum amount of questions per type
+     * is not valid (i.e. > 5 because we only have 20 questions, or < 0)
      * @return The generated list of questions, or null if something went wrong
      */
-    public List<Question> generateGameQuestions(int minPerQuestionType) {
+    public List<Question> generateGameQuestions(int minPerQuestionType) throws IllegalArgumentException {
+        if(minPerQuestionType > 5 || minPerQuestionType < 0) {
+            throw new IllegalArgumentException();
+        }
+
         List<Question> questions = new ArrayList<>();
 
         // Generate the minimum amount of questions per question type
@@ -203,7 +209,8 @@ public class QuestionGenerator {
                     case 0 -> getGeneralQuestion();
                     case 1 -> getComparisonQuestion();
                     case 2 -> getEstimationQuestion();
-                    default -> getWhichIsMoreQuestion(); // is for case i = 3
+                    case 3 -> getWhichIsMoreQuestion();
+                    default -> null; // This is only executed if something went wrong, it should not be called.
                 };
                 if(generated == null){
                     // Something went wrong
