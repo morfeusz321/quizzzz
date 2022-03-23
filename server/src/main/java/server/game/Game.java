@@ -3,6 +3,9 @@ package server.game;
 import commons.GameType;
 import commons.Player;
 import commons.Question;
+import commons.gameupdate.GameUpdate;
+import commons.gameupdate.GameUpdateGameFinished;
+import commons.gameupdate.GameUpdateNextQuestion;
 import org.apache.commons.lang3.builder.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -31,7 +34,7 @@ public class Game extends Thread {
     private boolean done;
     private int minPerQuestionType;
 
-    private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<String>>> deferredResultMap;
+    private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
 
     private StopWatch stopWatch;
     private long lastTime;
@@ -126,6 +129,8 @@ public class Game extends Thread {
                     done = true;
                     stopWatch.stop();
                     timer.cancel();
+                    deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateGameFinished())));
+                    deferredResultMap.clear();
                 } else {
                     gameLoop();
                 }
@@ -146,7 +151,7 @@ public class Game extends Thread {
         currentQuestionIdx++;
         this.currentQuestion = questions.get(currentQuestionIdx);
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(String.valueOf(currentQuestionIdx))));
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateNextQuestion(currentQuestionIdx))));
         deferredResultMap.clear();
 
     }
@@ -172,13 +177,9 @@ public class Game extends Thread {
      * long poll whenever the current question updates.
      * @param deferredResult the long poll to inform of updates
      */
-    public void runDeferredResult(DeferredResult<ResponseEntity<String>> deferredResult) {
+    public void runDeferredResult(DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
 
-        if(currentQuestionIdx >= 19) {
-            deferredResult.setResult(ResponseEntity.ok("20"));
-        } else {
-            this.deferredResultMap.put(UUID.randomUUID(), deferredResult);
-        }
+        this.deferredResultMap.put(UUID.randomUUID(), deferredResult);
 
     }
 

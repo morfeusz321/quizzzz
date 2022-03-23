@@ -1,6 +1,7 @@
 package server.api;
 
 import commons.Question;
+import commons.gameupdate.GameUpdate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,9 +73,9 @@ public class APIGameController {
      * Can also return an internal server error in case of timeout.
      */
     @GetMapping("/")
-    public DeferredResult<ResponseEntity<String>> gameLongPollLoop(@RequestParam("gameID") String gameIDString) {
+    public DeferredResult<ResponseEntity<GameUpdate>> gameLongPollLoop(@RequestParam("gameID") String gameIDString) {
 
-        DeferredResult<ResponseEntity<String>> result = new DeferredResult<>(20000L, ResponseEntity.internalServerError().build());
+        DeferredResult<ResponseEntity<GameUpdate>> result = new DeferredResult<>(40000L, ResponseEntity.internalServerError().build());
 
         UUID uuid;
         try {
