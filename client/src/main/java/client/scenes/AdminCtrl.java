@@ -10,6 +10,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 
@@ -42,6 +45,8 @@ public class AdminCtrl implements Initializable {
     private Button edit;
     @FXML
     private Button delete;
+    @FXML
+    private ImageView backBtn;
 
     private Activity currentActivity;
     private Scene adminScene;
@@ -63,6 +68,15 @@ public class AdminCtrl implements Initializable {
         imagePath.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().imagePath));
         title.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
         consumption.setCellValueFactory(q -> new SimpleStringProperty(String.valueOf(q.getValue().consumption)));
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showMainScreen());
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+        backBtn.setImage(new Image("/client/img/back_btn.png"));
     }
 
     /**
@@ -153,4 +167,5 @@ public class AdminCtrl implements Initializable {
         edit.setDisable(false);
         delete.setDisable(false);
     }
+
 }

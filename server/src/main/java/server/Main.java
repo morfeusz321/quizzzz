@@ -38,5 +38,21 @@ public class Main {
         context.getBean(ActivityDBController.class).forceReload();
         context.getBean(QuestionDBController.class).clear();
 
+        /* Testing data for leaderboard
+        ScoreDBController sdb = context.getBean(ScoreDBController.class);
+        sdb.clear();
+        sdb.add(new Score("Gijs", 400));
+        sdb.add(new Score("Some guy", 200));
+        sdb.add(new Score("Pro Gamer", 600));
+        sdb.add(new Score("Not pro gamer", 100));
+        sdb.add(new Score("YEah", 500));
+        sdb.add(new Score("asdasd", 130));
+        sdb.add(new Score("aasasdfdsgf", 130));
+        sdb.add(new Score("jfaodsiupq", 225));
+        sdb.add(new Score("qpweoiiop", 315));
+        sdb.add(new Score("qweuuurpoi", 758));
+        sdb.add(new Score("qquweoiiouo", 190));
+        */
+
     }
 }

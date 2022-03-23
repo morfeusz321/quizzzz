@@ -4,11 +4,19 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Activity;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
-public class AdminEditActivityCtrl {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class AdminEditActivityCtrl  implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
 
@@ -24,6 +32,8 @@ public class AdminEditActivityCtrl {
     private Button create;
     @FXML
     private Button save;
+    @FXML
+    private ImageView backBtn;
 
     private Activity activity;
 
@@ -36,6 +46,29 @@ public class AdminEditActivityCtrl {
     public AdminEditActivityCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showAdmin());
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+        backBtn.setImage(new Image("/client/img/back_btn.png"));
+    }
+
+    /**
+     * Clear the text fields whenever the screen is shown
+     */
+    public void clear() {
+        id.setText("");
+        imagePath.setText("");
+        title.setText("");
+        consumption.setText("");
     }
 
     /**
@@ -109,4 +142,6 @@ public class AdminEditActivityCtrl {
             alert.showAndWait();
         }
     }
+
+
 }
