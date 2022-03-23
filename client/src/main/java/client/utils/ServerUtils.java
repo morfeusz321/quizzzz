@@ -115,7 +115,9 @@ public class ServerUtils {
 
     /**
      * Registers for the game loop updates with the current stored game UUID, and sends
-     * all incoming game loop updates to the provided consumer
+     * all incoming game loop updates to the provided consumer. The long poll loop is automatically
+     * cancelled upon leaving the game by clicking the back button or closing the window, and it is guaranteed
+     * by this method that no further updates will be accepted by the provided consumer after leaving the game.
      * @param consumer the consumer that accepts incoming game loop updates
      */
     public void registerForGameLoop(Consumer<String> consumer) {
