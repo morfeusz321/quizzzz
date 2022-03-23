@@ -52,6 +52,7 @@ public class ServerUtils {
     private static String WS_SERVER = "ws://localhost:8080/websocket";
     private StompSession session;
     private UUID gameUUID;
+    private boolean isInGame = false;
 
     /**
      * Attempts to establish a WebSocket connection with the server at the specified URL
@@ -120,14 +121,14 @@ public class ServerUtils {
     public void registerForGameLoop(Consumer<String> consumer) {
 
         String ret = "";
-        while(!ret.equals("20")) {
+        while(!ret.equals("20") && isInGame) {
             ret = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("api/game/")
                     .queryParam("gameID", gameUUID.toString())
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
                     .get(String.class);
-            consumer.accept(ret);
+            if(isInGame) consumer.accept(ret);
         }
 
     }
@@ -301,6 +302,8 @@ public class ServerUtils {
      */
     public String leaveGame(String username, UUID gameUUID) {
 
+        isInGame = false;
+
         if(session != null) {
             if(session.isConnected()) {
                 session.disconnect();
@@ -364,4 +367,16 @@ public class ServerUtils {
     public void setGameUUID(UUID gameUUID) {
         this.gameUUID = gameUUID;
     }
+
+    /**
+     * Stores the fact that the client is in a game in this class by setting a boolean to true.
+     * This allows the long polling begin and to be cancelled upon clicking the back button by
+     * setting this variable to false again.
+     */
+    public void setInGameTrue() {
+
+        isInGame = true;
+
+    }
+
 }
