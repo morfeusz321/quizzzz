@@ -407,7 +407,6 @@ public class MainCtrl {
         } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
 
             // TODO: display transition screen, this gameupdate already contains an answer response entity w/ the necessary information for the screen
-            // TODO: the answer response entity has been updated by Tadas to include the correct answer, not in this branch yet
 
             System.out.println("transition period");
 
