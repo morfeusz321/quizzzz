@@ -432,4 +432,12 @@ public class ServerUtils {
 
     }
 
+    /**
+     *
+     * @return true if the game is still going
+     */
+    public boolean getIsInTheGame(){
+        return isInGame;
+    }
+
 }

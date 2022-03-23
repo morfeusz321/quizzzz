@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.TextFlow;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class LeaderboardCtrl {
     private MainCtrl mainCtrl;
 
     private List<String> usernameListInternal;
+    private boolean isEndLeaderboard;
 
     @FXML
     private ImageView backBtn;
@@ -33,7 +34,7 @@ public class LeaderboardCtrl {
     @FXML
     public ImageView speechBubble;
     @FXML
-    private TextFlow speechBubbleText;
+    private Text speechBubbleText;
 
     @FXML
     private ListView<String> leaderboard;
@@ -64,14 +65,9 @@ public class LeaderboardCtrl {
         });
 
         lightbulb.setImage(new Image("/client/img/animation/1.png"));
-        lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            server.disconnect();
-            mainCtrl.showMainScreen();
-        });
-        lightbulb.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> lightbulb.setCursor(Cursor.HAND));
-        lightbulb.addEventHandler(MouseEvent.MOUSE_EXITED, e -> lightbulb.setCursor(Cursor.DEFAULT));
 
         speechBubble.setImage(new Image("/client/img/speech_bubble.png"));
+        this.isEndLeaderboard = false;
     }
 
     /**
@@ -122,4 +118,37 @@ public class LeaderboardCtrl {
 
     }
 
+    /**
+     * if the game is ended the button for leaving the game should be enabled and the text should be adjusted
+     */
+    public void initializeButtonsForMainScreen(){
+        if (isEndLeaderboard){
+            lightbulb.setDisable(false);
+            lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+                server.disconnect();
+                mainCtrl.showMainScreen();
+            });
+            lightbulb.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> lightbulb.setCursor(Cursor.HAND));
+            lightbulb.addEventHandler(MouseEvent.MOUSE_EXITED, e -> lightbulb.setCursor(Cursor.DEFAULT));
+            speechBubbleText.setText(" If you want to join another game, CLICK ON ME!");
+        }
+    }
+
+    /**
+     * if the game is still going the buttons should be disabled
+     */
+    public void disableButtonsForMainScreen(){
+        if (!isEndLeaderboard){
+            lightbulb.setDisable(true);
+            speechBubbleText.setText(" You're already halfway there!");
+        }
+    }
+
+    /**
+     * sets the variable isEndLeaderboard to true
+     * which indicates that the last leaderboard is shown
+     */
+    public void setIsEndLeaderBoardTrue(boolean isGameFinished) {
+        this.isEndLeaderboard = isGameFinished;
+    }
 }

@@ -21,7 +21,7 @@
       <ListView id="leaderboard" fx:id="leaderboard" layoutX="336.0" layoutY="190.0" prefHeight="347.0" prefWidth="672.0" />
       <ImageView fx:id="lightbulb" fitHeight="369.0" fitWidth="292.0" layoutX="1022.0" layoutY="339.0" preserveRatio="true" />
       <ImageView fx:id="speechBubble" fitHeight="274.0" fitWidth="335.0" layoutX="1009.0" layoutY="64.0" preserveRatio="true" />
-      <TextFlow fx:id="speechBubbleText" layoutX="1037.0" layoutY="88.0" prefHeight="192.0" prefWidth="291.0" textAlignment="CENTER">
+      <TextFlow layoutX="1037.0" layoutY="88.0" prefHeight="192.0" prefWidth="291.0" textAlignment="CENTER">
          <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Good job!">
             <styleClass>
                <String fx:value="speech-bubble-text" />
@@ -32,7 +32,7 @@
                <Font size="43.0" />
             </font>
          </Text>
-         <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" If you want to join another game, CLICK ON ME!">
+         <Text fx:id="speechBubbleText" strokeType="OUTSIDE" strokeWidth="0.0" text=" You're already halfway there!">
             <styleClass>
                <String fx:value="speech-bubble-text" />
                <String fx:value="text" />

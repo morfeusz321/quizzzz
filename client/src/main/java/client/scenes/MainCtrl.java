@@ -397,7 +397,9 @@ public class MainCtrl {
             // This game update can later contain metadata about the game like scores or anything
             // else the client would want to display after the game ends
             // TODO: for now this just goes to the main screen
-            Platform.runLater(this::showMainScreen);
+            leaderboardCtrl.setIsEndLeaderBoardTrue(true);
+            leaderboardCtrl.initializeButtonsForMainScreen();
+            Platform.runLater(this::showLeaderboard);
 
         } else if(gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
 
@@ -411,11 +413,13 @@ public class MainCtrl {
             System.out.println("transition period");
 
         } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
+            leaderboardCtrl.setIsEndLeaderBoardTrue(false);
+            leaderboardCtrl.disableButtonsForMainScreen();
+            Platform.runLater(this::showLeaderboard);
 
             // TODO: display the transition leaderboard, this gameupdate contains the score list
 
             System.out.println("leaderboard");
-
         }
 
     }
@@ -512,7 +516,6 @@ public class MainCtrl {
 
         primaryStage.setTitle("Leaderboard");
         primaryStage.setScene(leaderboard);
-
         leaderboardCtrl.populateLeaderboard();
 
     }
