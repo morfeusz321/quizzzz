@@ -93,27 +93,27 @@ public class CommonUtils {
      * Creates a string from a given consumption in Wh that is rounded to the provided amount of decimals
      * and uses SI prefixes such as k (kilo, i.e. 1 000) and M (Mega, i.e. 1 000 000) to make it easier to read
      * @param consumption the consumption in Wh
-     * @return a string of the consumption using SI prefixes and rounded to the provided amount of decimals
+     * @return a string of the consumption using SI prefixes and rounded to the provided amount of decimals, or an
+     * IllegalArgumentException if the amount of decimals or the consumption is negative
      */
-    public static String createConsumptionString(long consumption, int amountOfDecimals) {
+    public static String createConsumptionString(long consumption, int amountOfDecimals) throws IllegalArgumentException {
 
         if(amountOfDecimals < 0) throw new IllegalArgumentException("Amount of decimals cannot be negative!");
+        if(consumption < 0) throw new IllegalArgumentException("Consumption cannot be negative!");
 
-        if(consumption < 1000 && consumption > -1000) return consumption + " Wh";
+        if(consumption < 1000) return consumption + " Wh";
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        double absoluteConsumption = (double) Math.abs(consumption);
+        double doubleConsumption = (double) consumption;
         int steps = 0;
-        while(absoluteConsumption >= 1000.0 && steps < 4) {
-            absoluteConsumption /= 1000.0;
+        while(doubleConsumption >= 1000.0 && steps < 4) {
+            doubleConsumption /= 1000.0;
             steps++;
         }
 
         double roundingFactor = Math.pow(10, amountOfDecimals);
-        double rounded = ((double) Math.round(absoluteConsumption * roundingFactor)) / roundingFactor;
-
-        if(consumption < 0) rounded *= -1;
+        double rounded = ((double) Math.round(doubleConsumption * roundingFactor)) / roundingFactor;
 
         String formatString = "%." + amountOfDecimals + "f";
         stringBuilder.append(String.format(formatString, rounded)).append(" ").append(getSIPrefix(steps)).append("Wh");
@@ -128,7 +128,7 @@ public class CommonUtils {
      * @return the appropriate prefix for the amount of division steps by 1 000, or an IllegalArgumentException
      * in case the amount of steps is greater than 4
      */
-    public static String getSIPrefix(int step) {
+    public static String getSIPrefix(int step) throws IllegalArgumentException {
 
         if(step <= 0) {
             return "";
