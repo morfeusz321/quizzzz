@@ -10,6 +10,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
@@ -62,7 +63,31 @@ public abstract class Question {
      */
     @Override
     public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if(obj == null){
+            return false;
+        }
+        if(obj instanceof Question){
+            Question other = (Question) obj;
+            // Check if one of the question lists is null (in that case not equal)
+            boolean oneIsNull =
+                    (this.answerOptions == null && other.answerOptions != null) ||
+                    (this.answerOptions != null && other.answerOptions == null);
+            // Check if they are both null (then they are equal). Otherwise, check if the sizes are the same,
+            // and the contents, but not necessarily the order.
+            boolean answerListsEqual =
+                    (this.answerOptions == null && other.answerOptions == null) ||
+                    (!oneIsNull &&
+                    this.answerOptions.size() == other.answerOptions.size() &&
+                    this.answerOptions.containsAll(other.answerOptions));
+            // Check all other attributes
+            return answerListsEqual &&
+                    this.questionId.equals(other.questionId) &&
+                    Objects.equals(this.activityTitle, other.activityTitle) &&
+                    Objects.equals(this.activityImagePath, other.activityImagePath) &&
+                    this.answer == other.answer;
+
+        }
+        return false;
     }
 
     /**
