@@ -8,7 +8,7 @@ import java.util.List;
  * This GameUpdate is sent to a client to inform it of the fact that it should be displaying the leaderboard
  * that divides the game into two phases
  */
-public class GameUpdateDisplayLeaderboard {
+public class GameUpdateDisplayLeaderboard extends GameUpdate {
 
     private List<Score> leaderboard;
 
