@@ -3,12 +3,14 @@ package server.game;
 import commons.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Component;
 import server.database.ActivityDB;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 
 import java.util.*;
 
+@Component
 public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
@@ -184,6 +186,46 @@ public class QuestionGenerator {
 
         return null;
 
+    }
+
+    /**
+     * Generates 20 questions for a game, with a minimum amount of questions per question type.
+     * @param minPerQuestionType The minimum amount of questions per question type
+     * @return The generated list of questions, or null if something went wrong
+     */
+    public List<Question> generateGameQuestions(int minPerQuestionType) {
+        List<Question> questions = new ArrayList<>();
+
+        // Generate the minimum amount of questions per question type
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < minPerQuestionType; j++){
+                Question generated = switch (i) {
+                    case 0 -> getGeneralQuestion();
+                    case 1 -> getComparisonQuestion();
+                    case 2 -> getEstimationQuestion();
+                    default -> getWhichIsMoreQuestion(); // is for case i = 3
+                };
+                if(generated == null){
+                    // Something went wrong
+                    return null;
+                }
+                questions.add(generated);
+            }
+        }
+
+        // Generate the questions with random types
+        for(int i = 0; i < 20 - (4 * minPerQuestionType); i++){
+            Question generated = getRandomQuestion();
+            if(generated == null){
+                // Something went wrong
+                return null;
+            }
+            questions.add(generated);
+        }
+
+        // The first questions are ordered per type, so shuffle the question list
+        Collections.shuffle(questions);
+        return questions;
     }
 
     // TODO: the following section is commented out so that we still have a reference for receiving answers. As

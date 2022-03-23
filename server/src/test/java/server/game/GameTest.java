@@ -26,7 +26,7 @@ public class GameTest {
 
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
-    private QuestionController questionController;
+    private QuestionGenerator questionGenerator;
 
     @BeforeEach
     public void setup() {
@@ -39,9 +39,9 @@ public class GameTest {
         // TODO: not sure if this is the correct way to handle this
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionController = new QuestionController(new Random(), activityDBController, questionDBController);
+        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController);
 
-        this.game = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
+        this.game = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         this.game.setUUID(uuid);
         this.game.setGameType(GameType.MULTIPLAYER);
 
@@ -123,59 +123,51 @@ public class GameTest {
     @Test
     public void testEqualsAndHashCodeEqual() {
 
-        // TODO: this test does not work completely anymore as Game now extends from Thread. The problem
-        //  is the hashing method (Game extends from Thread). We have to think about how to change the hashing method
-        //  accordingly.
-
         assertEquals(game, game);
-        // assertEquals(game.hashCode(), game.hashCode());
+        assertEquals(game.hashCode(), game.hashCode());
 
-        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
+        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         game2.setUUID(uuid);
         game2.setGameType(GameType.MULTIPLAYER);
         assertEquals(game, game2);
-        // assertEquals(game.hashCode(), game2.hashCode());
+        assertEquals(game.hashCode(), game2.hashCode());
 
         game.addPlayer(player1);
         game2.addPlayer(player1);
         assertEquals(game, game2);
-        // assertEquals(game.hashCode(), game2.hashCode());
+        assertEquals(game.hashCode(), game2.hashCode());
 
     }
 
     @Test
     public void testEqualsAndHashCodeNotEqual() {
 
-        // TODO: this test does not work completely anymore as Game now extends from Thread. The problem
-        //  is the hashing method (Game extends from Thread). We have to think about how to change the hashing method
-        //  accordingly.
-
-        Game game0 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
+        Game game0 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         game0.setUUID(uuid);
         game0.setGameType(GameType.SINGLEPLAYER);
         assertNotEquals(game, game0);
-        // assertNotEquals(game.hashCode(), game0.hashCode());
+        assertNotEquals(game.hashCode(), game0.hashCode());
 
-        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
+        Game game2 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         game2.setUUID(UUID.randomUUID());
         game2.setGameType(GameType.MULTIPLAYER);
         assertNotEquals(game, game2);
-        // assertNotEquals(game.hashCode(), game2.hashCode());
+        assertNotEquals(game.hashCode(), game2.hashCode());
 
-        Game game3 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
+        Game game3 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         game3.setUUID(uuid);
         game3.setGameType(GameType.MULTIPLAYER);
         game3.addPlayer(player1);
         assertNotEquals(game, game3);
-        // assertNotEquals(game.hashCode(), game3.hashCode());
+        assertNotEquals(game.hashCode(), game3.hashCode());
 
-        Game game4 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionController);
+        Game game4 = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         game4.setUUID(uuid);
         game4.setGameType(GameType.MULTIPLAYER);
         game.addPlayer(player1);
         game4.addPlayer(player2);
         assertNotEquals(game, game4);
-        // assertNotEquals(game.hashCode(), game4.hashCode());
+        assertNotEquals(game.hashCode(), game4.hashCode());
 
     }
 

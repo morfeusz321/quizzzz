@@ -29,7 +29,6 @@ public class Game extends Thread {
     private Question currentQuestion;
     private int currentQuestionIdx;
     private boolean done;
-    private int minPerQuestionType;
 
     private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<String>>> deferredResultMap;
 
@@ -44,25 +43,24 @@ public class Game extends Thread {
     @HashCodeExclude
     @EqualsExclude
     @ToStringExclude
-    private QuestionController questionController;
+    private QuestionGenerator questionGenerator;
 
     /**
      * Creates a new game
      * @param gameUpdateManager the game update manager used by this game to send messages to the client
-     * @param questionController the question generator (so that the server does not have to send API requests to itself)
+     * @param questionGenerator the question generator
      */
-    public Game(GameUpdateManager gameUpdateManager, QuestionController questionController) {
+    public Game(GameUpdateManager gameUpdateManager, QuestionGenerator questionGenerator) {
 
         // TODO: not sure if the server should send requests for questions to itself via the API mapping (this does not
         //  really make sense, and would create overhead), so I included the QuestionController as a parameter for now.
         //  If this is not the best way of handling it, we would have to change this here.
 
         this.gameUpdateManager = gameUpdateManager;
-        this.questionController = questionController;
+        this.questionGenerator = questionGenerator;
         this.players = new ConcurrentHashMap<>();
         this.questions = new ArrayList<>(); // questions are "loaded" when game is started
         this.done = false;
-        this.minPerQuestionType = 2; // minimum amount of questions per question type
         this.deferredResultMap = new ConcurrentHashMap<>();
 
         this.stopWatch = new StopWatch();
@@ -75,45 +73,20 @@ public class Game extends Thread {
      */
     @Override
     public void run(){
+        // Minimum amount of questions per question type is set to 2 here
+        questions = questionGenerator.generateGameQuestions(2);
 
-        // Generate the minimum amount of questions per question type
-        for(int i = 0; i < 4; i++){
-            for(int j = 0; j < minPerQuestionType; j++){
-                ResponseEntity<Question> generated = switch (i) {
-                    case 0 -> questionController.getGeneralQuestion();
-                    case 1 -> questionController.getComparisonQuestion();
-                    case 2 -> questionController.getEstimationQuestion();
-                    default -> questionController.getWhichIsMoreQuestion(); // is for case i = 3
-                };
-                if(!generated.getStatusCode().equals(HttpStatus.OK)){
-                    // TODO: some error handling here, maybe send an error message to client that
-                    //  should then be displayed
-                    return;
-                }
-                questions.add(generated.getBody());
-            }
+        // Something went wrong when trying to generate the questions
+        if(questions == null){
+            // TODO: some error handling here, maybe send an error message to client that
+            //  should then be displayed
+            return;
         }
-
-        // Generate the questions with random types
-        for(int i = 0; i < 20 - (4 * minPerQuestionType); i++){
-            ResponseEntity<Question> generated = questionController.getRandomQuestion();
-            if(!generated.getStatusCode().equals(HttpStatus.OK)){
-                // TODO: some error handling here, maybe send an error message to client that
-                //  should then be displayed
-                return;
-            }
-            questions.add(generated.getBody());
-        }
-
-        // The first questions are ordered per type, so shuffle the question list
-        Collections.shuffle(questions);
 
         // Set first question
         currentQuestionIdx = -1;
 
         gameUpdateManager.startGame(this.uuid);
-
-        // TODO: game loop here, after all questions, set done variable to true
 
         this.stopWatch.start();
 

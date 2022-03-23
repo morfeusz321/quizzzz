@@ -199,8 +199,8 @@ public class FakeApplicationContext implements ApplicationContext {
             activityDBController.getInternalDB().save(new Activity("id10", "imagePath", "10", 10));
 
             QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
-            QuestionController questionController = new QuestionController(new Random(), activityDBController, questionDBController);
-            return (T) new Game(new GameUpdateManager(template), questionController);
+            QuestionGenerator questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController);
+            return (T) new Game(new GameUpdateManager(template), questionGenerator);
 
         }
 
