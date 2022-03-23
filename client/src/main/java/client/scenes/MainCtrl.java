@@ -258,6 +258,7 @@ public class MainCtrl {
      */
     public void showWaitingRoom() {
         primaryStage.setTitle("Waiting room");
+        waitingRoomCtrl.fadeInWait();
         primaryStage.setScene(waitingRoom);
     }
 
@@ -306,6 +307,7 @@ public class MainCtrl {
      */
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
+        mainScreenCtrl.fadeInMain();
         primaryStage.setScene(mainScreen);
     }
 
@@ -314,6 +316,7 @@ public class MainCtrl {
      */
     public void showHelpScreen() {
         primaryStage.setTitle("Help");
+        helpScreenCtrl.fadeInHelp();
         primaryStage.setScene(helpScene);
     }
 
@@ -335,6 +338,7 @@ public class MainCtrl {
 
         primaryStage.setTitle("Username input");
 
+        userCtrl.fadeInUser();
         primaryStage.setScene(username);
         userCtrl.setTextGameType();
         userCtrl.showImage();
@@ -420,6 +424,7 @@ public class MainCtrl {
         primaryStage.setTitle("Connect to server");
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(AdminCtrl.class.getName());
+        connectToServerCtrl.fadeInServer();
         primaryStage.setScene(connectToServer);
 
     }
@@ -431,6 +436,7 @@ public class MainCtrl {
     public void showAdminServerConfirmed() {
 
         primaryStage.setTitle("Admin");
+        adminCtrl.fadeInAdmin();
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
         adminCtrl.setScene(adminScene);
@@ -456,6 +462,7 @@ public class MainCtrl {
         primaryStage.setTitle("Connect to server");
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(LeaderboardCtrl.class.getName());
+        connectToServerCtrl.fadeInServer();
         primaryStage.setScene(connectToServer);
 
     }
@@ -468,7 +475,7 @@ public class MainCtrl {
 
         primaryStage.setTitle("Leaderboard");
         primaryStage.setScene(leaderboard);
-
+        leaderboardCtrl.fadeInLeaderboard();
         leaderboardCtrl.populateLeaderboard();
 
     }

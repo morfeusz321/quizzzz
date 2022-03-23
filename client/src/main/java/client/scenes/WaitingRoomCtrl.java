@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Player;
@@ -16,9 +17,11 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class WaitingRoomCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final AnimationUtils animation;
 
     @FXML
     private ImageView backBtn;
@@ -48,6 +52,9 @@ public class WaitingRoomCtrl {
     @FXML
     private ImageView lightningRight;
 
+    @FXML
+    private AnchorPane anchorPane;
+
     private int numPlayers;
     private String thisUser;
 
@@ -62,6 +69,7 @@ public class WaitingRoomCtrl {
         this.mainCtrl = mainCtrl;
         numPlayers = 0;
         thisUser = "undef"; // default value, should only be displayed if something goes wrong
+        this.animation = new AnimationUtils();
     }
 
     /**
@@ -102,7 +110,7 @@ public class WaitingRoomCtrl {
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                                                                     mainCtrl.sendLeaveMessageToServer();
-                                                                    mainCtrl.showUsernameInputScreen();
+                                                                    goBackButton();
                                                                 });
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             backBtn.setEffect(hover);
@@ -214,5 +222,27 @@ public class WaitingRoomCtrl {
         else {
             playersJoined.setText(numPlayers + " players joined:");
         }
+    }
+
+    /**
+     * when clicking back button the user is redirected to the main page
+     */
+    public void goBackButton(){
+        fadeOutWait("user");
+    }
+
+    /**
+     * goes to the given scene and does fading animation
+     * @param nextScene
+     */
+    public void fadeOutWait(String nextScene){
+        animation.fadeOut(anchorPane, mainCtrl, nextScene);
+    }
+
+    /**
+     * when entering the scene it does fading animation
+     */
+    public void fadeInWait(){
+        animation.fadeIn(anchorPane);
     }
 }

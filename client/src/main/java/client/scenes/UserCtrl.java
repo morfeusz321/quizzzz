@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.GameType;
@@ -28,6 +29,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 
@@ -38,6 +40,7 @@ public class UserCtrl {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private final WaitingRoomCtrl waitingRoomCtrl;
+    public final AnimationUtils animation;
 
     private String currentUsername;
     private UUID gameUUID;
@@ -54,6 +57,9 @@ public class UserCtrl {
     @FXML
     private ImageView backBtn;
 
+    @FXML
+    private AnchorPane anchorPane;
+
     /**
      * Constructor
      * @param server Utilities for communicating with the server (API endpoint)
@@ -64,13 +70,13 @@ public class UserCtrl {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.waitingRoomCtrl = waitingRoomCtrl;
+        this.animation = new AnimationUtils();
     }
 
      /**
      * Initializes the default text for the server address
       * and the back button functionality
      */
-
     public void initialize() {
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
     }
@@ -153,7 +159,7 @@ public class UserCtrl {
         }, 10000);
         */
 
-        mainCtrl.showWaitingRoom();
+        fadeOutUser("wait");
 
     }
 
@@ -202,7 +208,7 @@ public class UserCtrl {
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
-        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showMainScreen());
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> goBackButton());
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
         backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
     }
@@ -228,5 +234,26 @@ public class UserCtrl {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
     }
 
+    /**
+     * when clicking back button the user is redirected to the main page
+     */
+    public void goBackButton(){
+        fadeOutUser("main");
+    }
+
+    /**
+     * goes to the given scene and does fading animation
+     * @param nextScene
+     */
+    public void fadeOutUser(String nextScene){
+        animation.fadeOut(anchorPane, mainCtrl, nextScene);
+    }
+
+    /**
+     * when entering the scene it does fading animation
+     */
+    public void fadeInUser(){
+        animation.fadeIn(anchorPane);
+    }
 
 }
