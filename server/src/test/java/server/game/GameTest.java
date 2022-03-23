@@ -4,7 +4,6 @@ import commons.GameType;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import server.api.QuestionController;
 import server.api.TestActivityDB;
 import server.api.TestQuestionDB;
 import server.database.ActivityDBController;
