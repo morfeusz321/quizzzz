@@ -1,11 +1,7 @@
 package server.game;
 
-import commons.GameType;
-import commons.Player;
-import commons.Question;
-import commons.gameupdate.GameUpdate;
-import commons.gameupdate.GameUpdateGameFinished;
-import commons.gameupdate.GameUpdateNextQuestion;
+import commons.*;
+import commons.gameupdate.*;
 import org.apache.commons.lang3.builder.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +18,11 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 @Scope("prototype")
 public class Game extends Thread {
 
+    private static final long initialGameStartDelayMilliseconds = 1000L;
+    private static final long questionTimeMilliseconds = 15000L;
+    private static final long transitionTimeMilliseconds = 5000L;
+    private static final long leaderboardTimeMilliseconds = 10000L;
+
     private UUID uuid;
     private GameType gameType;
 
@@ -35,6 +36,8 @@ public class Game extends Thread {
 
     private StopWatch stopWatch;
     private long lastTime;
+
+    private ConcurrentHashMap<String, Score> leaderboard;
 
     @HashCodeExclude
     @EqualsExclude
@@ -62,6 +65,8 @@ public class Game extends Thread {
 
         this.stopWatch = new StopWatch();
         this.lastTime = 0;
+
+        this.leaderboard = new ConcurrentHashMap<>();
 
     }
 
@@ -92,22 +97,12 @@ public class Game extends Thread {
 
         this.stopWatch.start();
 
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        (new Timer()).schedule(new TimerTask() {
             @Override
             public void run() {
-                if(currentQuestionIdx == 19) {
-                    currentQuestionIdx++;
-                    done = true;
-                    stopWatch.stop();
-                    timer.cancel();
-                    deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateGameFinished(new ArrayList<>()))));
-                    deferredResultMap.clear();
-                } else {
-                    gameLoop();
-                }
+                gameLoop();
             }
-        }, 1000, 15000);
+        }, Game.initialGameStartDelayMilliseconds);
 
     }
 
@@ -117,6 +112,22 @@ public class Game extends Thread {
     private void gameLoop() {
 
         stopWatch.stop();
+
+        if(currentQuestionIdx == 19) {
+
+            currentQuestionIdx++;
+            done = true;
+            deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(
+                    new GameUpdateGameFinished(
+                            createLeaderboardList()
+                    )
+            )));
+            deferredResultMap.clear();
+
+            return;
+
+        }
+
         lastTime = stopWatch.getTotalTimeMillis();
         stopWatch.start();
 
@@ -125,6 +136,62 @@ public class Game extends Thread {
 
         deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateNextQuestion(currentQuestionIdx))));
         deferredResultMap.clear();
+
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sendTransitionPeriod();
+            }
+        }, Game.questionTimeMilliseconds);
+
+    }
+
+    /**
+     * Informs all registered long poll requests that the current game is entering the transition period
+     */
+    private void sendTransitionPeriod() {
+
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(new AnswerResponseEntity(true)))));
+        deferredResultMap.clear();
+
+        if(currentQuestionIdx == 9) {
+            (new Timer()).schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    sendLeaderboard();
+                }
+            }, Game.transitionTimeMilliseconds);
+        } else {
+            (new Timer()).schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    gameLoop();
+                }
+            }, Game.transitionTimeMilliseconds);
+        }
+
+    }
+
+    /**
+     * Informs all registered long polls that the intermediate leaderboard should be displayed
+     */
+    private void sendLeaderboard() {
+
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
+        deferredResultMap.clear();
+
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                gameLoop();
+            }
+        }, Game.leaderboardTimeMilliseconds);
+
+    }
+
+    private List<Score> createLeaderboardList() {
+
+        return new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
 
     }
 
