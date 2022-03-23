@@ -169,20 +169,6 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a random general question from the server using the API endpoint (sends a get request)
-     * @return Returns the retrieved question from the server
-     */
-    public Question getRandomQuestion() {
-
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/general")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Question.class);
-
-    }
-
-    /**
      * Gets the questions for a specific game using the API endpoint (sends a get request)
      * @return Returns the retrieved questions from the server
      */
@@ -197,13 +183,17 @@ public class ServerUtils {
 
     }
 
-    /**
+    // TODO: the following section is commented out so that we still have a reference for sending answers. As
+    //  soon as sending answers is implemented, we should remove this.
+
+    /*
      * Sends the answer to a question to the server
      * @param question the question to answer
      * @param answer the answer to send to the server
      * @return An AnswerResponseEntity which contains information about whether the answer was correct,
      * as well as the proximity to the correct answer for estimation questions
      */
+    /*
     public AnswerResponseEntity sendAnswerToServer(Question question, long answer) {
 
         Form postVariables = new Form();
@@ -217,6 +207,7 @@ public class ServerUtils {
                 .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
 
     }
+    */
 
     /**
      * Gets all activities from the server using the API endpoint

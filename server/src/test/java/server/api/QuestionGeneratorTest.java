@@ -3,27 +3,26 @@ package server.api;
 import commons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
+import server.game.QuestionGenerator;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class QuestionControllerTest {
+public class QuestionGeneratorTest {
 
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
-    private QuestionController questionController;
+    private QuestionGenerator questionGenerator;
 
     @BeforeEach
     public void setup() {
 
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionController = new QuestionController(new Random(), activityDBController, questionDBController);
+        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController);
 
     }
 
@@ -38,21 +37,20 @@ public class QuestionControllerTest {
         activityDBController.getInternalDB().save(activity2);
         activityDBController.getInternalDB().save(activity3);
 
-        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
+        Question q = questionGenerator.getWhichIsMoreQuestion();
 
-        assertEquals(HttpStatus.OK, q.getStatusCode());
-        assertNotNull(q.getBody());
-        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
-        assertEquals(activity2.title, q.getBody().answerOptions.get((int) q.getBody().answer));
+        assertNotNull(q);
+        assertEquals(q, questionDBController.getById(q.questionId));
+        assertEquals(activity2.title, q.answerOptions.get((int) q.answer));
 
     }
 
     @Test
     public void getRandomQuestionTestNoActivities() {
 
-        ResponseEntity<Question> q = questionController.getRandomQuestion();
+        Question q = questionGenerator.getRandomQuestion();
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+        assertNull(q);
 
     }
 
@@ -62,11 +60,10 @@ public class QuestionControllerTest {
         activityDBController.getInternalDB().deleteAll();
         activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 0));
 
-        ResponseEntity<Question> q = questionController.getGeneralQuestion();
+        Question q = questionGenerator.getGeneralQuestion();
 
-        assertEquals(HttpStatus.OK, q.getStatusCode());
-        assertNotNull(q.getBody());
-        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertNotNull(q);
+        assertEquals(q, questionDBController.getById(q.questionId));
 
     }
 
@@ -74,9 +71,9 @@ public class QuestionControllerTest {
     public void getWhichIsMoreQuestionNoActivities() {
 
         activityDBController.getInternalDB().deleteAll();
-        ResponseEntity<Question> q = questionController.getWhichIsMoreQuestion();
+        Question q = questionGenerator.getWhichIsMoreQuestion();
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+        assertNull(q);
 
     }
 
@@ -95,23 +92,23 @@ public class QuestionControllerTest {
         activityDBController.getInternalDB().save(activity4);
         activityDBController.getInternalDB().save(activity5);
 
-        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+        Question q = questionGenerator.getComparisonQuestion();
 
-        assertEquals(HttpStatus.OK, q.getStatusCode());
-        assertNotNull(q.getBody());
-        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertNotNull(q);
+        assertEquals(q, questionDBController.getById(q.questionId));
 
-        assertTrue(activity1.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer))
+        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer))
                         ||
-                activity3.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer)));
+                activity3.title.equals(q.answerOptions.get((int) q.answer)));
 
     }
 
     @Test
     public void getComparisonNoActivities() {
         activityDBController.getInternalDB().deleteAll();
-        ResponseEntity<Question> q = questionController.getComparisonQuestion();
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+        Question q = questionGenerator.getComparisonQuestion();
+
+        assertNull(q);
     }
 
     @Test
@@ -120,11 +117,10 @@ public class QuestionControllerTest {
         activityDBController.getInternalDB().deleteAll();
         activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 0));
 
-        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+        Question q = questionGenerator.getEstimationQuestion();
 
-        assertEquals(HttpStatus.OK, q.getStatusCode());
-        assertNotNull(q.getBody());
-        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertNotNull(q);
+        assertEquals(q, questionDBController.getById(q.questionId));
 
     }
 
@@ -132,9 +128,9 @@ public class QuestionControllerTest {
     public void getEstimationNoActivities() {
 
         activityDBController.getInternalDB().deleteAll();
-        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+        Question q = questionGenerator.getEstimationQuestion();
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, q.getStatusCode());
+        assertNull(q);
 
     }
 
@@ -153,15 +149,14 @@ public class QuestionControllerTest {
         activityDBController.getInternalDB().save(activity4);
         activityDBController.getInternalDB().save(activity5);
 
-        ResponseEntity<Question> q = questionController.getComparisonQuestion();
+        Question q = questionGenerator.getComparisonQuestion();
 
-        assertEquals(HttpStatus.OK, q.getStatusCode());
-        assertNotNull(q.getBody());
-        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertNotNull(q);
+        assertEquals(q, questionDBController.getById(q.questionId));
 
-        assertTrue(activity1.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer))
+        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer))
                 ||
-                activity3.title.equals(q.getBody().answerOptions.get((int) q.getBody().answer)));
+                activity3.title.equals(q.answerOptions.get((int) q.answer)));
 
     }
 
@@ -169,13 +164,16 @@ public class QuestionControllerTest {
     public void getRandomQuestionWithLongTest() {
 
         activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999995L));
+        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999999L));
 
-        ResponseEntity<Question> q = questionController.getRandomQuestion();
+        Question q = questionGenerator.getRandomQuestion();
 
-        assertEquals(HttpStatus.OK, q.getStatusCode());
-        assertNotNull(q.getBody());
-        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertNotNull(q);
+        assertEquals(q, questionDBController.getById(q.questionId));
 
     }
 
@@ -183,13 +181,12 @@ public class QuestionControllerTest {
     public void getEstimationWithLongTest() {
 
         activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999995L));
 
-        ResponseEntity<Question> q = questionController.getEstimationQuestion();
+        Question q = questionGenerator.getEstimationQuestion();
 
-        assertEquals(HttpStatus.OK, q.getStatusCode());
-        assertNotNull(q.getBody());
-        assertEquals(q.getBody(), questionDBController.getById(q.getBody().questionId));
+        assertNotNull(q);
+        assertEquals(q, questionDBController.getById(q.questionId));
 
     }
 
@@ -204,17 +201,19 @@ public class QuestionControllerTest {
         activityDBController.getInternalDB().save(activity2);
         activityDBController.getInternalDB().save(activity3);
 
-        ResponseEntity<Question> moreExpensive = questionController.getWhichIsMoreQuestion();
+        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
 
-        assertEquals(HttpStatus.OK, moreExpensive.getStatusCode());
-        assertNotNull(moreExpensive.getBody());
-        assertEquals(moreExpensive.getBody(), questionDBController.getById(moreExpensive.getBody().questionId));
-        assertEquals(activity2.title, moreExpensive.getBody().answerOptions.get((int) moreExpensive.getBody().answer));
+        assertNotNull(moreExpensive);
+        assertEquals(moreExpensive, questionDBController.getById(moreExpensive.questionId));
+        assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer));
         // This can be cast to an int because it is only the index, so not a long value.
 
     }
 
+    // TODO: the following section is commented out so that we still have a reference for testing receiving answers. As
+    //  soon as receiving answers is implemented, we should remove this.
 
+    /*
     @Test
     public void answerTestMalformedAnswer() {
 
@@ -340,4 +339,6 @@ public class QuestionControllerTest {
         assertEquals(new AnswerResponseEntity(false, 10), s.getBody());
 
     }
+    */
+
 }
