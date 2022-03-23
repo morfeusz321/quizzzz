@@ -328,6 +328,7 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if(gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
+            server.setInGameTrue();
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
