@@ -18,10 +18,10 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 @Scope("prototype")
 public class Game extends Thread {
 
-    private static final long initialGameStartDelayMilliseconds = 1000L;
-    private static final long questionTimeMilliseconds = 15000L;
-    private static final long transitionTimeMilliseconds = 5000L;
-    private static final long leaderboardTimeMilliseconds = 10000L;
+    private static final long INITIAL_GAME_START_DELAY_MILLISECONDS = 1000L;
+    private static final long QUESTION_TIME_MILLISECONDS = 15000L;
+    private static final long TRANSITION_TIME_MILLISECONDS = 5000L;
+    private static final long LEADERBOARD_TIME_MILLISECONDS = 10000L;
 
     private UUID uuid;
     private GameType gameType;
@@ -102,7 +102,7 @@ public class Game extends Thread {
             public void run() {
                 gameLoop();
             }
-        }, Game.initialGameStartDelayMilliseconds);
+        }, Game.INITIAL_GAME_START_DELAY_MILLISECONDS);
 
     }
 
@@ -142,7 +142,7 @@ public class Game extends Thread {
             public void run() {
                 sendTransitionPeriod();
             }
-        }, Game.questionTimeMilliseconds);
+        }, Game.QUESTION_TIME_MILLISECONDS);
 
     }
 
@@ -160,14 +160,14 @@ public class Game extends Thread {
                 public void run() {
                     sendLeaderboard();
                 }
-            }, Game.transitionTimeMilliseconds);
+            }, Game.TRANSITION_TIME_MILLISECONDS);
         } else {
             (new Timer()).schedule(new TimerTask() {
                 @Override
                 public void run() {
                     gameLoop();
                 }
-            }, Game.transitionTimeMilliseconds);
+            }, Game.TRANSITION_TIME_MILLISECONDS);
         }
 
     }
@@ -185,7 +185,7 @@ public class Game extends Thread {
             public void run() {
                 gameLoop();
             }
-        }, Game.leaderboardTimeMilliseconds);
+        }, Game.LEADERBOARD_TIME_MILLISECONDS);
 
     }
 
