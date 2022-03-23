@@ -27,6 +27,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     public void initialize(){
         super.initialize();
         title.setText("What is most expensive?");
+        resizeQuestionHandler.setText((int) title.getFont().getSize());
     }
 
     /**
@@ -36,6 +37,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
         // TODO: add "more expensive" question type, and restructure this afterwards
 
+        enableButtons();
         questionImg.setImage(new Image("/client/img/question_mark.png"));
         answerBtn1.setText(q.answerOptions.get(0));
         answerBtn2.setText(q.answerOptions.get(1));

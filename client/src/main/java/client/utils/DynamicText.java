@@ -40,11 +40,9 @@ public class DynamicText {
     /**
      * Sets the text of the Text object to a given string, while considering the resizing of the text (keeping the
      * height below the maximum height).
-     * @param text The string to set the text to
      * @param fontSize Size of the font (maximum it can set it to, while keeping the bounds)
      */
-    public void setText(String text, int fontSize){
-        outTxt.setText(text);
+    public void setText(int fontSize){
         outTxt.setFont(new Font(fontFamily, fontSize));
         double newHeight = outTxt.getBoundsInLocal().getHeight();
         if(newHeight > maxHeight*0.9){
@@ -53,8 +51,8 @@ public class DynamicText {
 
             double maxFontSize = maxLineHeight / pixelsPerSize;
             outTxt.setFont(new Font (fontFamily,maxFontSize));
-
         }
+        outTxt.setY(middleY-outTxt.getBoundsInLocal().getHeight()/2*0.8);
 
     }
 

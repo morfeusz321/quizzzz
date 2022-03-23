@@ -70,11 +70,11 @@ public class QuestionGenerator {
         if (page.hasContent()) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
-            aw.add((int) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
+            aw.add((long) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
             aw.add( a.consumption + " Wh");
-            aw.add((int) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
+            aw.add((long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh"));
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh") + 1);
             questionDBController.add(toReturn);
             return toReturn;
         }
@@ -129,23 +129,31 @@ public class QuestionGenerator {
             Collections.sort(activities, new Comparator<Activity>() {
                 @Override
                 public int compare(Activity o1, Activity o2) {
-                    return (int) (o1.consumption - o2.consumption);
+                    // this cannot simply return the difference as the difference can be a long
+                    long diff = o1.consumption - o2.consumption;
+                    if(diff < 0){
+                        return -1;
+                    } else if (diff > 0){
+                        return 1;
+                    }
+                    return 0;
                 }
             });
 
             //Now we search in the List
             Activity firstActivity = null;
             Activity secondActivity = null;
-            int difference = Integer.MAX_VALUE;
+            long difference = Long.MAX_VALUE;
             for (int i = 0; i < activities.size() - 1; i++) {
                 if (activities.get(i + 1).consumption - activities.get(i).consumption < difference) {
-                    difference = (int) (activities.get(i + 1).consumption - activities.get(i).consumption);
+                    difference = activities.get(i + 1).consumption - activities.get(i).consumption;
                     firstActivity = activities.get(i + 1);
                     secondActivity = activities.get(i);
                 }
             }
 
-            //If difference is bigger than 10% of the original activity we search again
+            // If difference is bigger than 10% of the original activity we search again
+            // Note: Here casting to double is fine, because doubles have a bigger range than longs
             if (((double) difference / firstActivity.consumption) > 0.1) {
                 return getComparisonQuestion();
             }
@@ -276,9 +284,9 @@ public class QuestionGenerator {
 
         if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion || q instanceof WhichIsMoreQuestion) {
             if (answer == q.answer) {
-                return ResponseEntity.ok(new AnswerResponseEntity(true));
+                return ResponseEntity.ok(new AnswerResponseEntity(true, q.answer));
             } else {
-                return ResponseEntity.ok(new AnswerResponseEntity(false));
+                return ResponseEntity.ok(new AnswerResponseEntity(false, q.answer));
             }
         }
 

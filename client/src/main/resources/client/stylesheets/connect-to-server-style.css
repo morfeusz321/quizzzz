@@ -1,0 +1,25 @@
+.button{
+    -fx-background-color: #E1B545;
+    -fx-border-style: solid;
+    -fx-border-radius: 50px;
+    -fx-border-width: 3px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 200px;
+    -fx-min-height: 92px;
+    -fx-font-size: 50px;
+}
+
+.input{
+    -fx-background-color: #E9DEC8;
+    -fx-border-style: solid;
+    -fx-border-radius: 50px;
+    -fx-border-width: 3px;
+    -fx-background-radius: 50px;
+    -fx-min-width: 600px;
+    -fx-min-height: 92px;
+    -fx-font-size: 50px;
+}
+
+.main-text {
+    -fx-font-size: 30px;
+}
