@@ -4,12 +4,14 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Score;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 
 import java.util.ArrayList;
@@ -24,6 +26,14 @@ public class LeaderboardCtrl {
 
     @FXML
     private ImageView backBtn;
+
+    @FXML
+    private ImageView lightbulb;
+
+    @FXML
+    public ImageView speechBubble;
+    @FXML
+    private TextFlow speechBubbleText;
 
     @FXML
     private ListView<String> leaderboard;
@@ -52,6 +62,16 @@ public class LeaderboardCtrl {
             server.disconnect();
             mainCtrl.showMainScreen();
         });
+
+        lightbulb.setImage(new Image("/client/img/animation/1.png"));
+        lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            server.disconnect();
+            mainCtrl.showMainScreen();
+        });
+        lightbulb.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> lightbulb.setCursor(Cursor.HAND));
+        lightbulb.addEventHandler(MouseEvent.MOUSE_EXITED, e -> lightbulb.setCursor(Cursor.DEFAULT));
+
+        speechBubble.setImage(new Image("/client/img/speech_bubble.png"));
     }
 
     /**
