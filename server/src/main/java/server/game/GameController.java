@@ -4,8 +4,13 @@ import commons.GameType;
 import commons.Player;
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import server.api.ScoreController;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,21 +18,47 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class GameController {
+public class GameController implements ApplicationContextAware {
 
-    private ConcurrentHashMap<UUID, Game> startedGames;
+    private ConcurrentHashMap<UUID, Game> runningGames;
     private Game currentGame;
     private GameUpdateManager gameUpdateManager;
+    private ScoreController scoreController;
+
+    private ApplicationContext context;
+
+    /**
+     * Sets the application context that this class uses to get Game Beans
+     * @param applicationContext the application context
+     * @throws BeansException if thrown by application context methods
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.context = applicationContext;
+    }
 
     /**
      * Instantiates a game controller
      * @param gameUpdateManager the update manager for WebSocket messages
+     * @param scoreController the score controller to save scores
      */
-    public GameController(GameUpdateManager gameUpdateManager) {
+    public GameController(GameUpdateManager gameUpdateManager, ScoreController scoreController) {
 
-        this.startedGames = new ConcurrentHashMap<>();
-        this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
+        this.runningGames = new ConcurrentHashMap<>();
         this.gameUpdateManager = gameUpdateManager;
+        this.scoreController = scoreController;
+
+    }
+
+    /**
+     * Initializes the current game
+     */
+    @PostConstruct
+    public void init() {
+
+        this.currentGame = context.getBean(Game.class);
+        this.currentGame.setUUID(UUID.randomUUID());
+        this.currentGame.setGameType(GameType.MULTIPLAYER);
 
     }
 
@@ -58,8 +89,8 @@ public class GameController {
      */
     public Game getGame(UUID uuid) {
 
-        if(this.startedGames.containsKey(uuid)) {
-            return this.startedGames.get(uuid);
+        if(this.runningGames.containsKey(uuid)) {
+            return this.runningGames.get(uuid);
         } else if(this.currentGame.getUUID().equals(uuid)) {
             return this.currentGame;
         } else {
@@ -109,10 +140,12 @@ public class GameController {
 
         UUID currentGameUUID = currentGame.getUUID();
 
-        gameUpdateManager.startGame(currentGameUUID);
+        this.currentGame.start();
+        runningGames.put(currentGameUUID, currentGame);
 
-        startedGames.put(currentGameUUID, currentGame);
-        this.currentGame = new Game(UUID.randomUUID(), GameType.MULTIPLAYER);
+        this.currentGame = context.getBean(Game.class);
+        this.currentGame.setUUID(UUID.randomUUID());
+        this.currentGame.setGameType(GameType.MULTIPLAYER);
 
     }
 
@@ -154,6 +187,13 @@ public class GameController {
         game.removePlayer(player);
         this.gameUpdateManager.playerLeft(player, gameUUID);
 
+        // Check if all players left, in that case stop the game. It also has to be checked whether this is the
+        // current game in the waiting room, if that is the case, the game does not have to be stopped as it has
+        // not started yet.
+        if(game != currentGame && game.getPlayers().size() == 0){
+            stopGame(game);
+        }
+
     }
 
     /**
@@ -177,6 +217,36 @@ public class GameController {
 
         this.removePlayerFromGame(player, gameUUID);
 
+        // Check if all players left, in that case stop the game. It also has to be checked whether this is the
+        // current game in the waiting room, if that is the case, the game does not have to be stopped as it has
+        // not started yet.
+        if(game != currentGame && game.getPlayers().size() == 0){
+            stopGame(game);
+        }
+
+    }
+
+    /**
+     * Stops a game (removes it from the runningGames, and handles saving the scores)
+     * @param game the game to stop
+     */
+    public void stopGame(Game game) {
+        // TODO: test this method, this has not been properly tested yet
+        if(game == null || !runningGames.containsKey(game.getUUID())) {
+            return;
+        }
+        runningGames.remove(game.getUUID());
+        // Check if the game was stopped before it actually ended, in that case only interrupt the thread, otherwise
+        // save all the scores.
+        if(game.isDone()){
+            // If the game ended after 20 questions, save all players scores
+            List<Player> players = game.getPlayers();
+            for(Player p: players){
+                scoreController.addScore(p.getUsername(), p.getPoints());
+            }
+        }
+        // Interrupt the game thread
+        game.interrupt();
     }
 
     /**
@@ -212,15 +282,18 @@ public class GameController {
     public GameUpdate createSinglePlayerGame(Player player) {
 
         UUID uuid = UUID.randomUUID();
-        Game singlePlayerGame = new Game(uuid, GameType.SINGLEPLAYER);
+        Game singlePlayerGame = context.getBean(Game.class);
+        singlePlayerGame.setUUID(uuid);
+        singlePlayerGame.setGameType(GameType.SINGLEPLAYER);
+
         singlePlayerGame.addPlayer(player);
 
-        this.startedGames.put(uuid, singlePlayerGame);
+        this.runningGames.put(uuid, singlePlayerGame);
 
         (new Timer()).schedule(new TimerTask() {
             @Override
             public void run() {
-                gameUpdateManager.startGame(uuid);
+                singlePlayerGame.start();
             }
         }, 1500);
 

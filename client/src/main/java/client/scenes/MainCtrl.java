@@ -15,17 +15,16 @@
  */
 package client.scenes;
 
+import client.utils.GameManager;
 import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
 
 import commons.*;
 
-import commons.gameupdate.GameUpdate;
-import commons.gameupdate.GameUpdateGameStarting;
-import commons.gameupdate.GameUpdatePlayerJoined;
-import commons.gameupdate.GameUpdatePlayerLeft;
+import commons.gameupdate.*;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -35,6 +34,7 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private final ServerUtils server;
+    private GameManager gameManager;
     private Stage primaryStage;
 
     private MainScreenCtrl mainScreenCtrl;
@@ -320,12 +320,16 @@ public class MainCtrl {
     /**
      * Shows next question, the question type is selected randomly
      */
-    public void nextQuestion() {
-        Question q = server.getRandomQuestion();
+    public void nextQuestion(Question q) {
         if(q instanceof GeneralQuestion) {
             showGeneralQuestion(q);
+        } else if(q instanceof ComparisonQuestion) {
+            showComparisonQuestion(q);
+        } else if(q instanceof EstimationQuestion) {
+            showEstimationQuestion(q);
+        } else if(q instanceof WhichIsMoreQuestion) {
+            showMostExpensiveQuestion(q);
         }
-        // TODO: other questions are not implemented yet, this has to be modified after that
     }
 
      /**
@@ -370,9 +374,50 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if(gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
+            server.setInGameTrue();
+            gameManager = new GameManager(); // "reset" game manager, because a new game is started
+            gameManager.setQuestions(server.getQuestions());
+            gameManager.setCurrentQuestionByIdx(0); // set the first question
+            server.registerForGameLoop(this::incomingQuestionHandler);
         }
 
         System.out.println();
+
+    }
+
+    /**
+     * Handles updates incoming from the game long poll loop, displaying the right question or other screens
+     * when it is necessary
+     * @param gameUpdate the incoming game update
+     */
+    private void incomingQuestionHandler(GameUpdate gameUpdate) {
+
+        if(gameUpdate instanceof GameUpdateGameFinished gameUpdateGameFinished) {
+
+            // This game update can later contain metadata about the game like scores or anything
+            // else the client would want to display after the game ends
+            // TODO: for now this just goes to the main screen
+            Platform.runLater(this::showMainScreen);
+
+        } else if(gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
+
+            gameManager.setCurrentQuestionByIdx(gameUpdateNextQuestion.getQuestionIdx());
+            Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
+
+        } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+
+            // TODO: display transition screen, this gameupdate already contains an answer response entity w/ the necessary information for the screen
+            // TODO: the answer response entity has been updated by Tadas to include the correct answer, not in this branch yet
+
+            System.out.println("transition period");
+
+        } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
+
+            // TODO: display the transition leaderboard, this gameupdate contains the score list
+
+            System.out.println("leaderboard");
+
+        }
 
     }
 

@@ -1,35 +1,28 @@
-package server.api;
+package server.game;
 
 import commons.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
 import server.database.ActivityDB;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 
 import java.util.*;
 
-/**
- * The API controller for the questions. Controls everything mapped to /api/questions/...
- */
-@RestController
-@RequestMapping("/api/questions")
-public class QuestionController {
-
+@Component
+public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
 
     /**
-     * Creates the API controller
-     *
-     * @param random               the random to be used by this controller
-     * @param activityDBController the interface with the activity database to be used by this controller
-     * @param questionDBController the interface with the question database to be used by this controller
+     * Creates the question generator
+     * @param random               the random number generator to be used by this controller
+     * @param activityDBController the interface with the activity database to be used for generation
+     * @param questionDBController the interface with the question database to be used for generation
      */
-    public QuestionController(Random random, ActivityDBController activityDBController, QuestionDBController questionDBController) {
+    public QuestionGenerator(Random random, ActivityDBController activityDBController, QuestionDBController questionDBController) {
 
         this.random = random;
         this.activityDBController = activityDBController;
@@ -38,13 +31,28 @@ public class QuestionController {
     }
 
     /**
-     * Maps to /api/questions/random
-     * Returns a random question generated from a random activity selected from the database
-     *
-     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     * Returns a random question (of a random type) generated from a random activity selected from the database
+     * @return A Question, or null if no question can be generated
      */
-    @GetMapping("/random")
-    public ResponseEntity<Question> getRandomQuestion() {
+    public Question getRandomQuestion() {
+
+        int type = random.nextInt(4);
+        return switch (type) {
+            case 0 -> getGeneralQuestion();
+            case 1 -> getWhichIsMoreQuestion();
+            case 2 -> getComparisonQuestion();
+            case 3 -> getEstimationQuestion();
+            default -> null;
+        };
+
+    }
+
+    /**
+     * Returns a random general question generated from a random activity selected from the database
+     *
+     * @return A GeneralQuestion, or null if no question can be generated
+     */
+    public Question getGeneralQuestion() {
 
         CommonUtils utils = new CommonUtils();
 
@@ -55,7 +63,7 @@ public class QuestionController {
         try {
             index = random.nextInt((int) count);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.internalServerError().build();
+            return null;
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
@@ -68,21 +76,19 @@ public class QuestionController {
             Collections.shuffle(aw);
             Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh") + 1);
             questionDBController.add(toReturn);
-            return ResponseEntity.ok(toReturn);
+            return toReturn;
         }
 
-        return ResponseEntity.internalServerError().build();
+        return null;
 
     }
 
     /**
-     * Maps to /api/questions/random/which
      * Returns a which is more question generated from a random activities selected from the database
      *
-     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     * @return A WhichIsMoreQuestion, or null if no question can be generated
      */
-    @GetMapping("/random/which")
-    public ResponseEntity<Question> getWhichIsMoreQuestion() {
+    public Question getWhichIsMoreQuestion() {
 
         try {
             List<Activity> activities = activityDBController.getThreeRandomActivities();
@@ -96,21 +102,19 @@ public class QuestionController {
 
             Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1));
             questionDBController.add(toReturn);
-            return ResponseEntity.ok(toReturn);
+            return toReturn;
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
+            return null;
         }
     }
 
     /**
-     * Maps to /api/questions/random/comparison
      * Returns a comparison question generated from a random activity selected from the database
      *
-     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     * @return A ComparisonQuestion, or null if no question can be generated
      */
-    @GetMapping("/random/comparison")
-    public ResponseEntity<Question> getComparisonQuestion() {
+    public Question getComparisonQuestion() {
         try{
             //We search for the smallest difference between two consumptions
 
@@ -119,7 +123,7 @@ public class QuestionController {
             List<Activity> activities = activityDBController.getFiveRandomActivities();
 
             if(activities.size() < 5) {
-                return ResponseEntity.internalServerError().build();
+                return null;
             }
 
             Collections.sort(activities, new Comparator<Activity>() {
@@ -157,20 +161,18 @@ public class QuestionController {
             //We return the question
             Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
             questionDBController.add(toReturn);
-            return ResponseEntity.ok(toReturn);
-        }catch (StackOverflowError e){
-            return ResponseEntity.internalServerError().build();
+            return toReturn;
+        } catch (StackOverflowError e){
+            return null;
         }
     }
 
     /**
-     * Maps to /api/questions/random/estimation
-     * Returns a random question generated from a random activity selected from the database
+     * Returns a random estimation question generated from a random activity selected from the database
      *
-     * @return 200 OK: Question, 500 Internal Server Error if no question can be generated
+     * @return An EstimationQuestion, or null if no question can be generated
      */
-    @GetMapping("/random/estimation")
-    public ResponseEntity<Question> getEstimationQuestion() {
+    public Question getEstimationQuestion() {
 
         ActivityDB activityDB = activityDBController.getInternalDB();
 
@@ -179,7 +181,7 @@ public class QuestionController {
         try {
             index = random.nextInt((int) count);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.internalServerError().build();
+            return null;
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
@@ -187,14 +189,64 @@ public class QuestionController {
             Activity a = page.getContent().get(0);
             Question toReturn = new EstimationQuestion(a);
             questionDBController.add(toReturn);
-            return ResponseEntity.ok(toReturn);
+            return toReturn;
         }
 
-        return ResponseEntity.internalServerError().build();
+        return null;
 
     }
 
     /**
+     * Generates 20 questions for a game, with a minimum amount of questions per question type.
+     * @param minPerQuestionType The minimum amount of questions per question type
+     * @throws IllegalArgumentException Throws an exception if the minimum amount of questions per type
+     * is not valid (i.e. > 5 because we only have 20 questions, or < 0)
+     * @return The generated list of questions, or null if something went wrong
+     */
+    public List<Question> generateGameQuestions(int minPerQuestionType) throws IllegalArgumentException {
+        if(minPerQuestionType > 5 || minPerQuestionType < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        List<Question> questions = new ArrayList<>();
+
+        // Generate the minimum amount of questions per question type
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < minPerQuestionType; j++){
+                Question generated = switch (i) {
+                    case 0 -> getGeneralQuestion();
+                    case 1 -> getComparisonQuestion();
+                    case 2 -> getEstimationQuestion();
+                    case 3 -> getWhichIsMoreQuestion();
+                    default -> null; // This is only executed if something went wrong, it should not be called.
+                };
+                if(generated == null){
+                    // Something went wrong
+                    return null;
+                }
+                questions.add(generated);
+            }
+        }
+
+        // Generate the questions with random types
+        for(int i = 0; i < 20 - (4 * minPerQuestionType); i++){
+            Question generated = getRandomQuestion();
+            if(generated == null){
+                // Something went wrong
+                return null;
+            }
+            questions.add(generated);
+        }
+
+        // The first questions are ordered per type, so shuffle the question list
+        Collections.shuffle(questions);
+        return questions;
+    }
+
+    // TODO: the following section is commented out so that we still have a reference for receiving answers. As
+    //  soon as receiving answers is implemented, we should remove this.
+
+    /*
      * Maps to /api/questions/answer?questionID=id&answer=answer
      *
      * @param questionIDString the unique ID of the question being answered (post variable questionID)
@@ -205,6 +257,8 @@ public class QuestionController {
      * 400 Bad Request if the POST request is malformed,
      * or 500 Internal Server Error if the operation cannot be completed for any other reason
      */
+
+    /*
     @PostMapping("/answer")
     public ResponseEntity<AnswerResponseEntity> answer(@RequestParam("questionID") String questionIDString,
                                                        @RequestParam("answer") String answerString) {
@@ -243,5 +297,5 @@ public class QuestionController {
         return ResponseEntity.internalServerError().build();
 
     }
-
+    */
 }

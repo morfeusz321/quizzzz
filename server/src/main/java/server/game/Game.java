@@ -1,34 +1,250 @@
 package server.game;
 
-import commons.GameType;
-import commons.Player;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import commons.*;
+import commons.gameupdate.*;
+import org.apache.commons.lang3.builder.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
+import org.springframework.web.context.request.async.DeferredResult;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
-public class Game {
+@Component
+@Scope("prototype")
+public class Game extends Thread {
+
+    private static final long INITIAL_GAME_START_DELAY_MILLISECONDS = 1000L;
+    private static final long QUESTION_TIME_MILLISECONDS = 15000L;
+    private static final long TRANSITION_TIME_MILLISECONDS = 5000L;
+    private static final long LEADERBOARD_TIME_MILLISECONDS = 10000L;
 
     private UUID uuid;
     private GameType gameType;
 
     private ConcurrentHashMap<String, Player> players;
+    private List<Question> questions;
+    private Question currentQuestion;
+    private int currentQuestionIdx;
+    private boolean done;
+
+    private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
+
+    private StopWatch stopWatch;
+    private long lastTime;
+
+    private ConcurrentHashMap<String, Score> leaderboard;
+
+    @HashCodeExclude
+    @EqualsExclude
+    @ToStringExclude
+    private GameUpdateManager gameUpdateManager;
+
+    @HashCodeExclude
+    @EqualsExclude
+    @ToStringExclude
+    private QuestionGenerator questionGenerator;
 
     /**
      * Creates a new game
-     * @param uuid the UUID for this new game
+     * @param gameUpdateManager the game update manager used by this game to send messages to the client
+     * @param questionGenerator the question generator
      */
-    public Game(UUID uuid, GameType gameType) {
+    public Game(GameUpdateManager gameUpdateManager, QuestionGenerator questionGenerator) {
+
+        this.gameUpdateManager = gameUpdateManager;
+        this.questionGenerator = questionGenerator;
+        this.players = new ConcurrentHashMap<>();
+        this.questions = new ArrayList<>(); // questions are "loaded" when game is started
+        this.done = false;
+        this.deferredResultMap = new ConcurrentHashMap<>();
+
+        this.stopWatch = new StopWatch();
+        this.lastTime = 0;
+
+        this.leaderboard = new ConcurrentHashMap<>();
+
+    }
+
+    /**
+     * Starts the game and initializes the questions.
+     */
+    @Override
+    public void run(){
+        // Minimum amount of questions per question type is set to 2 here
+        try {
+            questions = questionGenerator.generateGameQuestions(2);
+        } catch (IllegalArgumentException e) {
+            // This will only be the case, if minPerQuestionType is not valid.
+            return;
+        }
+
+        // Something went wrong when trying to generate the questions
+        if(questions == null){
+            // TODO: some error handling here, maybe send an error message to client that
+            //  should then be displayed
+            return;
+        }
+
+        // Set first question
+        currentQuestionIdx = -1;
+
+        gameUpdateManager.startGame(this.uuid);
+
+        this.stopWatch.start();
+
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                gameLoop();
+            }
+        }, Game.INITIAL_GAME_START_DELAY_MILLISECONDS);
+
+    }
+
+    /**
+     * Updates the current question and informs all registered long polls of this update
+     */
+    private void gameLoop() {
+
+        stopWatch.stop();
+
+        if(currentQuestionIdx == 19) {
+
+            currentQuestionIdx++;
+            done = true;
+            deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(
+                    new GameUpdateGameFinished(
+                            createLeaderboardList()
+                    )
+            )));
+            deferredResultMap.clear();
+
+            return;
+
+        }
+
+        lastTime = stopWatch.getTotalTimeMillis();
+        stopWatch.start();
+
+        currentQuestionIdx++;
+        this.currentQuestion = questions.get(currentQuestionIdx);
+
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateNextQuestion(currentQuestionIdx))));
+        deferredResultMap.clear();
+
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sendTransitionPeriod();
+            }
+        }, Game.QUESTION_TIME_MILLISECONDS);
+
+    }
+
+    /**
+     * Informs all registered long poll requests that the current game is entering the transition period
+     */
+    private void sendTransitionPeriod() {
+
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(new AnswerResponseEntity(true)))));
+        deferredResultMap.clear();
+
+        if(currentQuestionIdx == 9) {
+            (new Timer()).schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    sendLeaderboard();
+                }
+            }, Game.TRANSITION_TIME_MILLISECONDS);
+        } else {
+            (new Timer()).schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    gameLoop();
+                }
+            }, Game.TRANSITION_TIME_MILLISECONDS);
+        }
+
+    }
+
+    /**
+     * Informs all registered long polls that the intermediate leaderboard should be displayed
+     */
+    private void sendLeaderboard() {
+
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
+        deferredResultMap.clear();
+
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                gameLoop();
+            }
+        }, Game.LEADERBOARD_TIME_MILLISECONDS);
+
+    }
+
+    private List<Score> createLeaderboardList() {
+
+        return new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
+
+    }
+
+    /**
+     * Returns the amount of time that the current question has already been the current question
+     * @return the elapsed time in this round of the game
+     */
+    public long getElapsedTimeThisQuestion() {
+
+        if(!stopWatch.isRunning()) return 0L;
+
+        stopWatch.stop();
+        long ret = stopWatch.getTotalTimeMillis() - lastTime;
+        stopWatch.start();
+
+        return ret;
+
+    }
+
+    /**
+     * Allows a long poll to be registered to this game. This game will update this
+     * long poll whenever the current question updates.
+     * @param deferredResult the long poll to inform of updates
+     */
+    public void runDeferredResult(DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
+
+        this.deferredResultMap.put(UUID.randomUUID(), deferredResult);
+
+    }
+
+    /**
+     * Gets the list of all questions
+     * @return the list of all questions
+     */
+    public List<Question> getQuestions(){
+        return questions;
+    }
+
+    /**
+     * Returns whether this game is done, i.e. all 20 questions have been answered/displayed
+     * @return whether this game is done
+     */
+    public boolean isDone(){
+        return done;
+    }
+
+    /**
+     * Sets this game's UUID
+     * @param uuid the UUID for this game
+     */
+    public void setUUID(UUID uuid) {
 
         this.uuid = uuid;
-        this.gameType = gameType;
-        this.players = new ConcurrentHashMap<>();
 
     }
 
@@ -39,6 +255,16 @@ public class Game {
     public UUID getUUID() {
 
         return this.uuid;
+
+    }
+
+    /**
+     * Sets this game's game type
+     * @param gameType the game type for this game
+     */
+    public void setGameType(GameType gameType) {
+
+        this.gameType = gameType;
 
     }
 
@@ -77,6 +303,14 @@ public class Game {
     }
 
     /**
+     * Returns the current question of this game
+     * @return the current question of this game
+     */
+    private Question getCurrentQuestion() {
+        return currentQuestion;
+    }
+
+    /**
      * Adds a player to this game. Note that the Game assumes that it has been confirmed already that a
      * player with this username is not yet in the Game, and that this is *not* checked again
      * in this method
@@ -97,6 +331,9 @@ public class Game {
         if(player == null) return;
 
         this.players.remove(player.getUsername());
+
+        // It is not checked here, whether a game has 0 players. This is checked in the GameController,
+        // because in that case this Game has to be removed, this cannot be done from here.
 
     }
 
@@ -139,8 +376,22 @@ public class Game {
      */
     @Override
     public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if(obj == null){
+            return false;
+        }
+        if(obj instanceof Game){
+            Game other = (Game) obj;
+            return this.uuid.equals(other.uuid) &&
+            this.gameType.equals(other.gameType) &&
+            this.players.equals(other.players) &&
+            (done == other.done) &&
+            this.questions.equals(other.questions) &&
+            Objects.equals(this.currentQuestion, other.currentQuestion);
+        }
+        return false;
     }
+
+
 
     /**
      * Generate a hash code for this object
@@ -148,7 +399,9 @@ public class Game {
      */
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+
+        return uuid.hashCode() ^ gameType.hashCode() ^ players.hashCode() ^ Boolean.hashCode(done) ^ questions.hashCode();
+
     }
 
     /**

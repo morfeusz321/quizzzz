@@ -24,7 +24,7 @@ public class GameUpdateIncomingControllerTest {
 
         public FakeGameController() {
 
-            super(null);
+            super(null, null);
 
             this.gameStarted = false;
 
