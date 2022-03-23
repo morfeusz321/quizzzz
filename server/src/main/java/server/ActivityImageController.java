@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 /**
  * An API controller for the activity images. Handles everything mapped to /api/img/...
@@ -34,7 +36,7 @@ public class ActivityImageController {
 
         URI imageURI = null;
         try {
-            imageURI = ActivityImageController.class.getClassLoader().getResource("activities/" + imagePathGroup + "/" + imagePathFileName).toURI();
+            imageURI = ActivityImageController.class.getClassLoader().getResource("activities/" + URLDecoder.decode(imagePathGroup, StandardCharsets.UTF_8) + "/" + URLDecoder.decode(imagePathFileName, StandardCharsets.UTF_8)).toURI();
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();

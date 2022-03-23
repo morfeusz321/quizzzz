@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
@@ -29,6 +30,15 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     private Button setAnswerBtn;
     @FXML
     private TextField answerTxtField;
+
+    @FXML
+    protected Label powersText;
+
+    @FXML
+    protected ImageView decreaseTime;
+
+    @FXML
+    protected ImageView doublePoints;
 
     private boolean answerSet;
 
@@ -98,6 +108,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                 slideBar.setDisable(true);
                 answerTxtField.setDisable(true);
                 // TODO: send answer to server here
+
             }
         });
         setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> setAnswerBtn.getStyleClass().add("hover-button"));
@@ -112,6 +123,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
+        resizeQuestionHandler.setText((int) title.getFont().getSize());
 
         // TODO: handle slider and other question-dependent objects (max/min etc.)
         slideBar.setMax(200);
@@ -130,6 +142,17 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
         refreshProgressBar();
 
+    }
+
+    /**
+     * Disables the answer and power buttons, makes then power buttons invisible
+     */
+    private void disableButtons(){
+        powersText.setOpacity(0);
+        decreaseTime.setOpacity(0);
+        doublePoints.setOpacity(0);
+        decreaseTime.setDisable(true);
+        doublePoints.setDisable(true);
     }
 
 }
