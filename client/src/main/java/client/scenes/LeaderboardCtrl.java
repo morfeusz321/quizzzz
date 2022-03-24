@@ -13,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-=======
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 
@@ -160,6 +159,7 @@ public class LeaderboardCtrl {
         this.isEndLeaderboard = isGameFinished;
     }
 
+    /**
      * when clicking back button the user is redirected to the main page
      */
     public void goBackButton(){
