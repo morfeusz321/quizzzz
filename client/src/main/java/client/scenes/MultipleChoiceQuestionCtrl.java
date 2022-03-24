@@ -154,7 +154,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
         // TODO: change when sendAnswerToServer method is updated for the new back end
 
-        AnswerResponseEntity answer = server.sendAnswerToServer(selectedButton, );
+        AnswerResponseEntity answer = server.sendAnswerToServer(selectedButton, mainCtrl.getSavedUsernamePrefill());
         disableButtons();
 
         if(answer.correct) {
