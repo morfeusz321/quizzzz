@@ -12,6 +12,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,6 +35,9 @@ public class AdminEditActivityCtrl  implements Initializable {
     private Button save;
     @FXML
     private ImageView backBtn;
+
+    @FXML
+    private AnchorPane anchorPane;
 
     private Activity activity;
 

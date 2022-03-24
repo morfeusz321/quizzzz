@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
@@ -8,12 +9,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 
 public class ConnectToServerCtrl {
 
     private ServerUtils server;
     private MainCtrl mainCtrl;
+    private AnimationUtils animation;
 
     private String goToScene;
 
@@ -22,6 +25,9 @@ public class ConnectToServerCtrl {
 
     @FXML
     private TextField serverAddress;
+
+    @FXML
+    private AnchorPane anchorPane;
 
     /**
      * Constructor for this controller
@@ -32,6 +38,7 @@ public class ConnectToServerCtrl {
     public ConnectToServerCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.animation = new AnimationUtils();
     }
 
     /**
@@ -40,7 +47,7 @@ public class ConnectToServerCtrl {
     public void initialize() {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            mainCtrl.showMainScreen();
+            goBackButton();
         });
     }
 
@@ -86,18 +93,40 @@ public class ConnectToServerCtrl {
 
         if(goToScene.equals(AdminCtrl.class.getName())) {
 
-            mainCtrl.showAdminServerConfirmed();
+            fadeOutServer("adminEdit");
 
         } else if(goToScene.equals(LeaderboardCtrl.class.getName())) {
 
-            mainCtrl.showLeaderboardServerConfirmed();
+            fadeOutServer("leaderboard");
 
         } else {
 
-            mainCtrl.showMainScreen();
+            fadeOutServer("main");
 
         }
 
+    }
+
+    /**
+     * when clicking back button the user is redirected to the main page
+     */
+    public void goBackButton(){
+        fadeOutServer("main");
+    }
+
+    /**
+     * goes to the given scene and does fading animation
+     * @param nextScene
+     */
+    public void fadeOutServer(String nextScene){
+        animation.fadeOut(anchorPane, mainCtrl, nextScene);
+    }
+
+    /**
+     * when entering the scene it does fading animation
+     */
+    public void fadeInServer(){
+        animation.fadeIn(anchorPane);
     }
 
 }

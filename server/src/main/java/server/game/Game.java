@@ -191,7 +191,9 @@ public class Game extends Thread {
 
     private List<Score> createLeaderboardList() {
 
-        return new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
+        List<Score> result = new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
+        Collections.reverse(result);
+        return result;
 
     }
 

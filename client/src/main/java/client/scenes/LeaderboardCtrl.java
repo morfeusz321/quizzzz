@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Score;
@@ -12,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
+=======
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ public class LeaderboardCtrl {
 
     private ServerUtils server;
     private MainCtrl mainCtrl;
+    private AnimationUtils animation;
 
     private List<String> usernameListInternal;
     private boolean isEndLeaderboard;
@@ -42,6 +46,9 @@ public class LeaderboardCtrl {
     @FXML
     private TextField username;
 
+    @FXML
+    private AnchorPane anchorPane;
+
     /**
      * Constructor for this controller
      * @param server Utilities for communicating with the server (API endpoint)
@@ -52,6 +59,7 @@ public class LeaderboardCtrl {
         this.server = server;
         this.mainCtrl = mainCtrl;
         this.usernameListInternal = new ArrayList<>();
+        this.animation = new AnimationUtils();
     }
 
     /**
@@ -61,7 +69,7 @@ public class LeaderboardCtrl {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             server.disconnect();
-            mainCtrl.showMainScreen();
+            goBackButton();
         });
 
         lightbulb.setImage(new Image("/client/img/animation/1.png"));
@@ -151,4 +159,26 @@ public class LeaderboardCtrl {
     public void setIsEndLeaderBoardTrue(boolean isGameFinished) {
         this.isEndLeaderboard = isGameFinished;
     }
+
+     * when clicking back button the user is redirected to the main page
+     */
+    public void goBackButton(){
+        fadeOutLeaderboard("main");
+    }
+
+    /**
+     * goes to the given scene and does fading animation
+     * @param nextScene
+     */
+    public void fadeOutLeaderboard(String nextScene){
+        animation.fadeOut(anchorPane, mainCtrl, nextScene);
+    }
+
+    /**
+     * when entering the scene it does fading animation
+     */
+    public void fadeInLeaderboard(){
+        animation.fadeIn(anchorPane);
+    }
+
 }
