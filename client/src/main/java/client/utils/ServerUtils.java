@@ -53,7 +53,6 @@ public class ServerUtils {
     private StompSession session;
     private UUID gameUUID;
     private boolean isInGame = false;
-    private String username;
 
     /**
      * Tests the current server address to see if a connection can be established, and if
@@ -155,7 +154,7 @@ public class ServerUtils {
      * by this method that no further updates will be accepted by the provided consumer after leaving the game.
      * @param consumer the consumer that accepts incoming game loop updates
      */
-    public void registerForGameLoop(Consumer<GameUpdate> consumer) {
+    public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
         GameUpdate ret = null;
         while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
@@ -193,19 +192,18 @@ public class ServerUtils {
      * @return An AnswerResponseEntity which contains information about whether the answer was correct,
      * as well as the proximity to the correct answer for estimation questions, and the correct answer
      */
-    public AnswerResponseEntity sendAnswerToServer(long answer, String playerName) {
+    public void sendAnswerToServer(long answer, String playerName) {
 
         Form postVariables = new Form();
         postVariables.param("gameID", gameUUID.toString());
         postVariables.param("playerName", playerName);
         postVariables.param("answer", String.valueOf(answer));
-        username = playerName;
 
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/answer")
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/answer")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
+                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), String.class);
 
     }
 

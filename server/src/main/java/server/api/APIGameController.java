@@ -5,12 +5,10 @@ import commons.gameupdate.GameUpdate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
-import server.database.QuestionDBController;
 import server.game.Game;
 import server.game.GameController;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -21,16 +19,14 @@ import java.util.UUID;
 public class APIGameController {
 
     private GameController gameController;
-    private final QuestionDBController questionDBController;
 
     /**
      * Creates the API controller
      */
-    public APIGameController(GameController gameController, QuestionDBController questionDBController) {
+    public APIGameController(GameController gameController) {
 
         this.gameController = gameController;
 
-        this.questionDBController = questionDBController;
     }
 
     /**
@@ -94,6 +90,11 @@ public class APIGameController {
             return result;
         }
 
+        if(!game.containsPlayer(username)) {
+            result.setResult(ResponseEntity.badRequest().build());
+            return result;
+        }
+
         game.runDeferredResult(username, result);
         return result;
 
@@ -104,25 +105,18 @@ public class APIGameController {
      * saves the answer to the Concurrent map in the game class, answers the http request
      * @param gameIDString the UUID string of the game
      * @param playerName the username of the player
-     * @param questionIDString the UUID string of the question
      * @param answerString the chosen answer by the player
      * @return response entity containing information about the answer: whether the answer was correct,
      *  the answer, and proximity to the correct answer for the estimation question
      */
     @PostMapping("/answer")
-    public ResponseEntity<String> answer(@RequestParam("gameID") String gameIDString, @RequestParam("playerName") String playerName,
-                                                       @RequestParam("questionID") String questionIDString, @RequestParam("answer") String answerString){
+    public ResponseEntity<String> answer(@RequestParam("gameID") String gameIDString,
+                                         @RequestParam("playerName") String playerName,
+                                         @RequestParam("answer") String answerString) {
         long answer;
         try {
             answer = Long.parseLong(answerString);
         } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        UUID questionID;
-        try {
-            questionID = UUID.fromString(questionIDString);
-        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -133,17 +127,20 @@ public class APIGameController {
             return ResponseEntity.badRequest().build();
         }
 
-        Question q = questionDBController.getById(questionID);
-        if (Objects.isNull(q)) {
-            return ResponseEntity.noContent().build();
+        Game game = gameController.getGame(gameID);
+
+        if(game == null || game.equals(gameController.getCurrentGame())) {
+            return ResponseEntity.badRequest().build();
         }
 
-        gameController.getGame(gameID).saveAnswer(playerName, answerString);
-
-        if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion || q instanceof WhichIsMoreQuestion || q instanceof EstimationQuestion) {
-                return ResponseEntity.ok("200 OK");
+        if(!game.containsPlayer(playerName)) {
+            return ResponseEntity.badRequest().build();
         }
-        else return ResponseEntity.internalServerError().build();
+
+        game.saveAnswer(playerName, answer);
+
+        return ResponseEntity.ok().build();
+
     }
 
 

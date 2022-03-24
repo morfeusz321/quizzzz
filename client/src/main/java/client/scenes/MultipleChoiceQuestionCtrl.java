@@ -2,7 +2,6 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.AnswerResponseEntity;
 import commons.CommonUtils;
 import commons.Question;
 import javafx.fxml.FXML;
@@ -152,11 +151,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
             return;
         }
 
-        // TODO: change when sendAnswerToServer method is updated for the new back end
+        server.sendAnswerToServer(selectedButton, mainCtrl.getSavedUsernamePrefill());
+        //disableButtons();
 
-        AnswerResponseEntity answer = server.sendAnswerToServer(selectedButton, mainCtrl.getSavedUsernamePrefill());
-        disableButtons();
-
+        // TODO: use this when transition is implemented?
+        /*
         if(answer.correct) {
             placingTick(selectedButton);
             correctAns.setText("correctly");
@@ -172,6 +171,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
             buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
             placingTick( answer.getAnswer());
         }
+         */
 
 
     }

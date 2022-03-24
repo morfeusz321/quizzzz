@@ -56,6 +56,24 @@ public class AnswerResponseEntity {
     }
 
     /**
+     * Convenience factory method to automatically generate an AnswerResponseEntity for a given question
+     * and answer
+     * @param q the question that is being answered
+     * @param answer the answer given
+     * @return an applicable AnswerResponseEntity for the given question and answer
+     * @return an applicable AnswerResponseEntity for the given question and answer
+     */
+    public static AnswerResponseEntity generateAnswerResponseEntity(Question q, long answer) {
+
+        if(q instanceof EstimationQuestion) {
+            return new AnswerResponseEntity(answer == q.answer, q.answer - answer, q.answer);
+        } else {
+            return new AnswerResponseEntity(answer == q.answer, q.answer);
+        }
+
+    }
+
+    /**
      * Checks if 2 answer response entity objects are equal
      * @param obj the object that will be compared
      * @return true or false, whether the objects are equal or not

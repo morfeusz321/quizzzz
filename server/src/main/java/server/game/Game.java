@@ -34,7 +34,7 @@ public class Game extends Thread {
 
     private ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
 
-    private ConcurrentHashMap<String, String> answerMap;
+    private ConcurrentHashMap<String, Long> answerMap;
 
     private StopWatch stopWatch;
     private long lastTime;
@@ -155,7 +155,7 @@ public class Game extends Thread {
      * @param answer the answer the user chose for the question
      */
 
-    public void saveAnswer(String username, String answer) {
+    public void saveAnswer(String username, long answer) {
         this.answerMap.put(username, answer);
     }
 
@@ -165,13 +165,20 @@ public class Game extends Thread {
      */
     private void sendTransitionPeriod() {
 
-        if(currentQuestion instanceof EstimationQuestion)
-            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(
-                    new AnswerResponseEntity(Long.parseLong(answerMap.get(username))==currentQuestion.answer,
-                             currentQuestion.answer - Long.parseLong(answerMap.get(username)), currentQuestion.answer)))));
-        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(
-                new AnswerResponseEntity(Long.parseLong(answerMap.get(username))==currentQuestion.answer, currentQuestion.answer)))));
-        deferredResultMap.clear();
+        for(Map.Entry<String, DeferredResult<ResponseEntity<GameUpdate>>> openRequest : deferredResultMap.entrySet()) {
+
+            String username = openRequest.getKey();
+            DeferredResult<ResponseEntity<GameUpdate>> req = openRequest.getValue();
+            deferredResultMap.remove(username);
+
+            long answer = answerMap.get(username);
+
+            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer))));
+
+            // TODO: Save scores to leaderboard here, calculate points
+
+        }
+
         answerMap.clear();
 
         if(currentQuestionIdx == 9) {
@@ -210,8 +217,8 @@ public class Game extends Thread {
     }
 
     /**
-     * TODO: ADD JAVADOC
-     * @return
+     * Creates a list of Scores from the internal HashMap used to hold the scores by this game, sorted by scores descending
+     * @return a list of scores for players in this game sorted by scores descending
      */
     private List<Score> createLeaderboardList() {
 
@@ -239,10 +246,11 @@ public class Game extends Thread {
 
     /**
      * Allows a long poll to be registered to this game. This game will update this
-     * long poll whenever the current question updates.
-     * @param deferredResult the long poll to inform of updates
+     * long poll whenever the game phase changes.
+     * @param username the username of the player that this long poll request was sent by
+     * @param deferredResult the long poll request to inform of updates
      */
-    public void runDeferredResult( String username, DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
+    public void runDeferredResult(String username, DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
 
         this.deferredResultMap.put(username, deferredResult);
 

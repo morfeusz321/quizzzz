@@ -389,7 +389,7 @@ public class MainCtrl {
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
-            server.registerForGameLoop(this::incomingQuestionHandler);
+            server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
         }
 
         System.out.println();
