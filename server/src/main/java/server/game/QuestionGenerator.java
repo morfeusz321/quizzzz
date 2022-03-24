@@ -224,6 +224,12 @@ public class QuestionGenerator {
                     // Something went wrong
                     return null;
                 }
+                // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
+                // that it is very unlikely that questions are ever equal.
+                if(questions.contains(generated)){
+                    j--;
+                    continue;
+                }
                 questions.add(generated);
             }
         }
@@ -234,6 +240,12 @@ public class QuestionGenerator {
             if(generated == null){
                 // Something went wrong
                 return null;
+            }
+            // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
+            // that it is very unlikely that questions are ever equal.
+            if(questions.contains(generated)){
+                i--;
+                continue;
             }
             questions.add(generated);
         }
