@@ -171,7 +171,12 @@ public class Game extends Thread {
             DeferredResult<ResponseEntity<GameUpdate>> req = openRequest.getValue();
             deferredResultMap.remove(username);
 
-            long answer = answerMap.get(username);
+            long answer;
+            if(!answerMap.containsKey(username)) {
+                answer = -1;
+            } else {
+                answer = answerMap.get(username);
+            }
 
             req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer))));
 

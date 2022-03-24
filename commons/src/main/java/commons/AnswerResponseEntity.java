@@ -61,7 +61,6 @@ public class AnswerResponseEntity {
      * @param q the question that is being answered
      * @param answer the answer given
      * @return an applicable AnswerResponseEntity for the given question and answer
-     * @return an applicable AnswerResponseEntity for the given question and answer
      */
     public static AnswerResponseEntity generateAnswerResponseEntity(Question q, long answer) {
 
