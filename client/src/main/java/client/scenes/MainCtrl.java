@@ -29,6 +29,7 @@ import commons.gameupdate.GameUpdatePlayerLeft;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -125,6 +126,7 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/main-style.css"
                 ).toExternalForm());
+        this.mainScreen.setFill(Color.valueOf("#F0EAD6"));
 
         this.helpScreenCtrl = helpScreen.getKey();
         this.helpScene = new Scene(helpScreen.getValue());
@@ -139,6 +141,7 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/Input.css"
                 ).toExternalForm());
+        this.username.setFill(Color.valueOf("#F0EAD6"));
 
         initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
 
