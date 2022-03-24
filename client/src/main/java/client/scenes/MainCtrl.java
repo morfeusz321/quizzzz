@@ -28,6 +28,7 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -134,6 +135,7 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/main-style.css"
                 ).toExternalForm());
+        this.mainScreen.setFill(Color.valueOf("#F0EAD6"));
 
         this.helpScreenCtrl = helpScreen.getKey();
         this.helpScene = new Scene(helpScreen.getValue());
@@ -141,6 +143,7 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/help-style.css"
                 ).toExternalForm());
+        this.helpScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
@@ -148,6 +151,7 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/Input.css"
                 ).toExternalForm());
+        this.username.setFill(Color.valueOf("#F0EAD6"));
 
         initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
 
@@ -161,6 +165,7 @@ public class MainCtrl {
                 WaitingRoomCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
+        this.waitingRoom.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
@@ -168,15 +173,19 @@ public class MainCtrl {
                 WaitingRoomCtrl.class.getResource(
                         "/client/stylesheets/admin-style.css"
                 ).toExternalForm());
+        this.adminScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
+        this.adminEditScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.connectToServerCtrl = connectToServer.getKey();
         this.connectToServer = new Scene(connectToServer.getValue());
+        this.connectToServer.setFill(Color.valueOf("#F0EAD6"));
 
         this.leaderboardCtrl = leaderboard.getKey();
         this.leaderboard = new Scene(leaderboard.getValue());
+        this.leaderboard.setFill(Color.valueOf("#F0EAD6"));
 
         initializeOnCloseEvents();
         setUsernamePrefill(getUsernamePrefillFromFile());
@@ -269,6 +278,7 @@ public class MainCtrl {
      */
     public void showWaitingRoom() {
         primaryStage.setTitle("Waiting room");
+        waitingRoomCtrl.fadeInWait();
         primaryStage.setScene(waitingRoom);
     }
 
@@ -317,6 +327,7 @@ public class MainCtrl {
      */
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
+        mainScreenCtrl.fadeInMain();
         primaryStage.setScene(mainScreen);
     }
 
@@ -325,6 +336,7 @@ public class MainCtrl {
      */
     public void showHelpScreen() {
         primaryStage.setTitle("Help");
+        helpScreenCtrl.fadeInHelp();
         primaryStage.setScene(helpScene);
     }
 
@@ -350,6 +362,7 @@ public class MainCtrl {
 
         primaryStage.setTitle("Username input");
 
+        userCtrl.fadeInUser();
         primaryStage.setScene(username);
         userCtrl.setTextGameType();
         userCtrl.showImage();
@@ -498,6 +511,7 @@ public class MainCtrl {
         primaryStage.setTitle("Connect to server");
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(AdminCtrl.class.getName());
+        connectToServerCtrl.fadeInServer();
         primaryStage.setScene(connectToServer);
 
     }
@@ -509,6 +523,7 @@ public class MainCtrl {
     public void showAdminServerConfirmed() {
 
         primaryStage.setTitle("Admin");
+        adminCtrl.fadeInAdmin();
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
         adminCtrl.setScene(adminScene);
@@ -534,6 +549,7 @@ public class MainCtrl {
         primaryStage.setTitle("Connect to server");
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(LeaderboardCtrl.class.getName());
+        connectToServerCtrl.fadeInServer();
         primaryStage.setScene(connectToServer);
 
     }
@@ -546,7 +562,7 @@ public class MainCtrl {
 
         primaryStage.setTitle("Leaderboard");
         primaryStage.setScene(leaderboard);
-
+        leaderboardCtrl.fadeInLeaderboard();
         leaderboardCtrl.populateLeaderboard();
 
     }
