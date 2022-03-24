@@ -22,10 +22,7 @@ import com.google.inject.Inject;
 
 import commons.*;
 
-import commons.gameupdate.GameUpdate;
-import commons.gameupdate.GameUpdateGameStarting;
-import commons.gameupdate.GameUpdatePlayerJoined;
-import commons.gameupdate.GameUpdatePlayerLeft;
+import commons.gameupdate.*;
 
 import javafx.application.Platform;
 import javafx.scene.Parent;
@@ -389,19 +386,37 @@ public class MainCtrl {
     }
 
     /**
-     * Handles updates incoming from the game long poll loop, displaying the right question
+     * Handles updates incoming from the game long poll loop, displaying the right question or other screens
      * when it is necessary
-     * @param s the body of the incoming update TODO: make this not a string haha
+     * @param gameUpdate the incoming game update
      */
-    private void incomingQuestionHandler(String s) {
+    private void incomingQuestionHandler(GameUpdate gameUpdate) {
 
-        if(s.equals("20")) {
+        if(gameUpdate instanceof GameUpdateGameFinished gameUpdateGameFinished) {
+
+            // This game update can later contain metadata about the game like scores or anything
+            // else the client would want to display after the game ends
+            // TODO: for now this just goes to the main screen
             Platform.runLater(this::showMainScreen);
-            return;
-        }
 
-        gameManager.setCurrentQuestionByIdx(Integer.parseInt(s));
-        Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
+        } else if(gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
+
+            gameManager.setCurrentQuestionByIdx(gameUpdateNextQuestion.getQuestionIdx());
+            Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
+
+        } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+
+            // TODO: display transition screen, this gameupdate already contains an answer response entity w/ the necessary information for the screen
+
+            System.out.println("transition period");
+
+        } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
+
+            // TODO: display the transition leaderboard, this gameupdate contains the score list
+
+            System.out.println("leaderboard");
+
+        }
 
     }
 
