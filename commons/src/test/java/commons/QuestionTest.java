@@ -103,6 +103,22 @@ class QuestionTest {
     }
 
     @Test
+    void testEqualsDifferentAnswerOrder() {
+        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("10 Wh", "200 Wh", "5 Wh"), 2);
+        generalQuestion2.questionId = generalQuestion.questionId;
+
+        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity3, activity4, activity2), 2);
+        comparisonQuestion2.questionId = comparisonQuestion.questionId;
+
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity2, activity1),2);
+        whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
+
+        assertEquals(generalQuestion, generalQuestion2);
+        assertEquals(comparisonQuestion, comparisonQuestion2);
+        assertEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+    }
+
+    @Test
     void testNotEquals() {
         Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);

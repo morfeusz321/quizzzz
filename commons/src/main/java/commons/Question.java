@@ -26,6 +26,7 @@ public abstract class Question {
 
     @ElementCollection
     public List<String> answerOptions;
+    // Note: the answer starts from 1, and not from 0.
     @JsonIgnore
     public long answer;
 
@@ -71,19 +72,40 @@ public abstract class Question {
             boolean oneIsNull =
                     (this.answerOptions == null && other.answerOptions != null) ||
                     (this.answerOptions != null && other.answerOptions == null);
+            if(oneIsNull){
+                return false;
+            }
+            // Check if both of the question lists are null (in that case not equal)
+            boolean bothNull = this.answerOptions == null && other.answerOptions == null;
+            // TODO: Intellij says that other.answerOptions == null is always true when reached?
             // Check if they are both null (then they are equal). Otherwise, check if the sizes are the same,
             // and the contents, but not necessarily the order.
             boolean answerListsEqual =
-                    (this.answerOptions == null && other.answerOptions == null) ||
-                    (!oneIsNull &&
-                    this.answerOptions.size() == other.answerOptions.size() &&
+                    bothNull ||
+                    (this.answerOptions.size() == other.answerOptions.size() &&
                     this.answerOptions.containsAll(other.answerOptions));
+            // For safety, it has to be checked whether the answer options are in the correct range
+            boolean thisOutOfRange = this.answer > this.answerOptions.size() || this.answer <= 0;
+            boolean otherOutOfRange = other.answer > other.answerOptions.size() || other.answer <= 0;
+            if(thisOutOfRange || otherOutOfRange){
+                if(!thisOutOfRange || !otherOutOfRange){
+                    // Only one of the answer options is out of range -> not equal
+                    return false;
+                }
+            }
+            // Check if the answer is the same - this cannot be simply done by checking the index, but it has to
+            // be the element at the index.
+            // For simplicity, two answer options that are both out of range are counted as equal.
+            boolean answersEqual =
+                    bothNull ||
+                    (thisOutOfRange && otherOutOfRange) ||
+                    this.answerOptions.get((int) this.answer - 1).equals(other.answerOptions.get((int) other.answer - 1));
             // Check all other attributes
             return answerListsEqual &&
                     this.questionId.equals(other.questionId) &&
                     Objects.equals(this.activityTitle, other.activityTitle) &&
                     Objects.equals(this.activityImagePath, other.activityImagePath) &&
-                    this.answer == other.answer;
+                    answersEqual;
 
         }
         return false;
