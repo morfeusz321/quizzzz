@@ -1,17 +1,16 @@
 package server.api;
 
-import commons.Question;
+import commons.*;
 import commons.gameupdate.GameUpdate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
+import server.database.QuestionDBController;
 import server.game.Game;
 import server.game.GameController;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -22,14 +21,16 @@ import java.util.UUID;
 public class APIGameController {
 
     private GameController gameController;
+    private final QuestionDBController questionDBController;
 
     /**
      * Creates the API controller
      */
-    public APIGameController(GameController gameController) {
+    public APIGameController(GameController gameController, QuestionDBController questionDBController) {
 
         this.gameController = gameController;
 
+        this.questionDBController = questionDBController;
     }
 
     /**
@@ -69,11 +70,12 @@ public class APIGameController {
      * long polling to this endpoint. Maps to api/game/
      * @param gameIDString the UUID of the game whose updates the client wishes to
      *                     subscribe to
+     * @param username the name of the player
      * @return 200 OK: game loop update, or bad request if the game UUID does not exist.
      * Can also return an internal server error in case of timeout.
      */
     @GetMapping("/")
-    public DeferredResult<ResponseEntity<GameUpdate>> gameLongPollLoop(@RequestParam("gameID") String gameIDString) {
+    public DeferredResult<ResponseEntity<GameUpdate>> gameLongPollLoop(@RequestParam("gameID") String gameIDString, @RequestParam("username") String username) {
 
         DeferredResult<ResponseEntity<GameUpdate>> result = new DeferredResult<>(40000L, ResponseEntity.internalServerError().build());
 
@@ -92,9 +94,57 @@ public class APIGameController {
             return result;
         }
 
-        game.runDeferredResult(result);
+        game.runDeferredResult(username, result);
         return result;
 
     }
+
+    /**
+     * maps to /api/game/answer
+     * saves the answer to the Concurrent map in the game class, answers the http request
+     * @param gameIDString the UUID string of the game
+     * @param playerName the username of the player
+     * @param questionIDString the UUID string of the question
+     * @param answerString the chosen answer by the player
+     * @return response entity containing information about the answer: whether the answer was correct,
+     *  the answer, and proximity to the correct answer for the estimation question
+     */
+    @PostMapping("/answer")
+    public ResponseEntity<String> answer(@RequestParam("gameID") String gameIDString, @RequestParam("playerName") String playerName,
+                                                       @RequestParam("questionID") String questionIDString, @RequestParam("answer") String answerString){
+        long answer;
+        try {
+            answer = Long.parseLong(answerString);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UUID questionID;
+        try {
+            questionID = UUID.fromString(questionIDString);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UUID gameID;
+        try {
+            gameID = UUID.fromString(gameIDString);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Question q = questionDBController.getById(questionID);
+        if (Objects.isNull(q)) {
+            return ResponseEntity.noContent().build();
+        }
+
+        gameController.getGame(gameID).saveAnswer(playerName, answerString);
+
+        if (q instanceof ComparisonQuestion || q instanceof GeneralQuestion || q instanceof WhichIsMoreQuestion || q instanceof EstimationQuestion) {
+                return ResponseEntity.ok("200 OK");
+        }
+        else return ResponseEntity.internalServerError().build();
+    }
+
 
 }

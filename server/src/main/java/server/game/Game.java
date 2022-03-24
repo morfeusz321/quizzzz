@@ -32,7 +32,9 @@ public class Game extends Thread {
     private int currentQuestionIdx;
     private boolean done;
 
-    private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
+    private ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
+
+    private ConcurrentHashMap<String, String> answerMap;
 
     private StopWatch stopWatch;
     private long lastTime;
@@ -62,6 +64,7 @@ public class Game extends Thread {
         this.questions = new ArrayList<>(); // questions are "loaded" when game is started
         this.done = false;
         this.deferredResultMap = new ConcurrentHashMap<>();
+        this.answerMap = new ConcurrentHashMap<>();
 
         this.stopWatch = new StopWatch();
         this.lastTime = 0;
@@ -117,7 +120,7 @@ public class Game extends Thread {
 
             currentQuestionIdx++;
             done = true;
-            deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(
+            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
                     new GameUpdateGameFinished(
                             createLeaderboardList()
                     )
@@ -134,7 +137,7 @@ public class Game extends Thread {
         currentQuestionIdx++;
         this.currentQuestion = questions.get(currentQuestionIdx);
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateNextQuestion(currentQuestionIdx))));
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateNextQuestion(currentQuestionIdx))));
         deferredResultMap.clear();
 
         (new Timer()).schedule(new TimerTask() {
@@ -147,12 +150,29 @@ public class Game extends Thread {
     }
 
     /**
+     *  sets the answer in the ConcurrentHashMap
+     * @param username the username of the Player
+     * @param answer the answer the user chose for the question
+     */
+
+    public void saveAnswer(String username, String answer) {
+        this.answerMap.put(username, answer);
+    }
+
+
+    /**
      * Informs all registered long poll requests that the current game is entering the transition period
      */
     private void sendTransitionPeriod() {
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(new AnswerResponseEntity(true, 1)))));
+        if(currentQuestion instanceof EstimationQuestion)
+            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(
+                    new AnswerResponseEntity(Long.parseLong(answerMap.get(username))==currentQuestion.answer,
+                             currentQuestion.answer - Long.parseLong(answerMap.get(username)), currentQuestion.answer)))));
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(
+                new AnswerResponseEntity(Long.parseLong(answerMap.get(username))==currentQuestion.answer, currentQuestion.answer)))));
         deferredResultMap.clear();
+        answerMap.clear();
 
         if(currentQuestionIdx == 9) {
             (new Timer()).schedule(new TimerTask() {
@@ -177,7 +197,7 @@ public class Game extends Thread {
      */
     private void sendLeaderboard() {
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
         deferredResultMap.clear();
 
         (new Timer()).schedule(new TimerTask() {
@@ -189,6 +209,10 @@ public class Game extends Thread {
 
     }
 
+    /**
+     * TODO: ADD JAVADOC
+     * @return
+     */
     private List<Score> createLeaderboardList() {
 
         List<Score> result = new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
@@ -218,9 +242,9 @@ public class Game extends Thread {
      * long poll whenever the current question updates.
      * @param deferredResult the long poll to inform of updates
      */
-    public void runDeferredResult(DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
+    public void runDeferredResult( String username, DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
 
-        this.deferredResultMap.put(UUID.randomUUID(), deferredResult);
+        this.deferredResultMap.put(username, deferredResult);
 
     }
 
