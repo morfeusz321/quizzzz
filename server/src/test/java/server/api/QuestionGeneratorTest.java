@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
+import server.game.GameTestUtils;
 import server.game.QuestionGenerator;
 
 import java.util.*;
@@ -207,6 +208,70 @@ public class QuestionGeneratorTest {
         assertEquals(moreExpensive, questionDBController.getById(moreExpensive.questionId));
         assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer));
         // This can be cast to an int because it is only the index, so not a long value.
+
+    }
+
+    @Test
+    public void testMinPerQuestionType() {
+
+        // TODO: this is not the best way to test this, as randomness is involved.
+
+        activityDBController.getInternalDB().deleteAll();
+        GameTestUtils utils = new GameTestUtils();
+        utils.initActivityDB(activityDBController);
+
+        List<Question> questions = questionGenerator.generateGameQuestions(3);
+
+        // Count the occurrences per question type
+        int[] count = new int[4];
+        for(Question q : questions) {
+            if(q instanceof GeneralQuestion){
+                count[0]++;
+            } else if(q instanceof ComparisonQuestion){
+                count[1]++;
+            } else if(q instanceof EstimationQuestion){
+                count[2]++;
+            } else{
+                count[3]++;
+            }
+        }
+
+        // Check if the number of questions per type are sufficient
+        for(int i = 0; i < 4; i++){
+            if(count[i] < 3){
+                fail();
+            }
+        }
+
+    }
+
+    @Test
+    public void testNoDuplicatesQuestionGeneration() {
+
+        // TODO: this is not the best way to test this, as randomness is involved.
+
+        activityDBController.getInternalDB().deleteAll();
+        GameTestUtils utils = new GameTestUtils();
+        utils.initActivityDB(activityDBController);
+
+        List<Question> questions = questionGenerator.generateGameQuestions(3);
+        Set<Question> setQuestions = new HashSet<>(questions);
+
+        // If the set size and the list size are equal, that means that there are no duplicates.
+        assertEquals(20, questions.size());
+        assertEquals(20, setQuestions.size());
+
+    }
+
+    @Test
+    public void testGenerateGameQuestionsThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            questionGenerator.generateGameQuestions(6);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            questionGenerator.generateGameQuestions(-1);
+        });
 
     }
 
