@@ -31,6 +31,14 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Scanner;
+
 public class MainCtrl {
 
     private final ServerUtils server;
@@ -73,6 +81,7 @@ public class MainCtrl {
     private HelpScreenCtrl helpScreenCtrl;
     private Scene helpScene;
 
+    private String usernamePrefill;
     private String serverAddressPrefill;
 
     /**
@@ -170,6 +179,7 @@ public class MainCtrl {
         this.leaderboard = new Scene(leaderboard.getValue());
 
         initializeOnCloseEvents();
+        setUsernamePrefill(getUsernamePrefillFromFile());
         setServerAddressPrefill("localhost:8080");
 
         showMainScreen();
@@ -249,6 +259,7 @@ public class MainCtrl {
 
         primaryStage.setOnCloseRequest(event -> {
             sendLeaveMessageToServer();
+            saveUsernamePrefillToFile(usernamePrefill);
             System.exit(0);
         });
     }
@@ -345,7 +356,7 @@ public class MainCtrl {
         username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
 
         userCtrl.updateServerAddressPrefill();
-        username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
+        userCtrl.updateUsernamePrefill();
 
     }
 
@@ -432,6 +443,29 @@ public class MainCtrl {
     }
 
     /**
+     * Sets the username prefill to be used throughout the application. The username prefill
+     * is a String of text that is automatically entered for the user everywhere a username
+     * can be entered, such as when joining a game. This way, the player doesn't have to re-enter
+     * their username every time
+     * @param usernamePrefill the username prefill to be used
+     */
+    public void setUsernamePrefill(String usernamePrefill) {
+
+        this.usernamePrefill = usernamePrefill;
+
+    }
+
+    /**
+     * Returns the username last entered by the player to join a server.
+     * @return the current username prefill to be used
+     */
+    public String getSavedUsernamePrefill() {
+
+        return this.usernamePrefill;
+
+    }
+
+    /**
      * Sets the server address prefill to be used throughout the application. The server address prefill
      * is a String of text that is automatically entered for the user everywhere a server address
      * can be entered, such as when joining a game. This way, the player doesn't have to remember
@@ -514,6 +548,59 @@ public class MainCtrl {
         primaryStage.setScene(leaderboard);
 
         leaderboardCtrl.populateLeaderboard();
+
+    }
+
+    /**
+     * Loads the last used username by the player from a file that was created when
+     * the application was last closed
+     * @return the username loaded from the file
+     */
+    public String getUsernamePrefillFromFile() {
+
+        Scanner fileReader;
+
+        try {
+            URI uri = MainCtrl.class.getResource("/client/data/data.quizzz").toURI();
+            File data = new File(uri);
+            fileReader = new Scanner(data);
+        } catch (NullPointerException | URISyntaxException | FileNotFoundException e) {
+            return "";
+        }
+
+        while(fileReader.hasNextLine()) {
+            String line = fileReader.nextLine();
+            if(line.startsWith("username: ")) {
+                return line.split(": ")[1];
+            }
+        }
+
+        return "";
+
+    }
+
+    /**
+     * Saves the currently stored username prefill to a file, to be loaded again
+     * when the application next starts up
+     * @param username the username to store in the file
+     */
+    public void saveUsernamePrefillToFile(String username) {
+
+        try {
+
+            String filePath = MainCtrl.class.getResource("/client/data/").toExternalForm();
+            filePath += "data.quizzz";
+            URI uri = URI.create(filePath);
+
+            File data = new File(uri);
+
+            FileWriter fileWriter = new FileWriter(data, false);
+            fileWriter.write("username: " + username);
+            fileWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
