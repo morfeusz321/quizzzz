@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
@@ -130,11 +131,18 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         long min = Long.parseLong(q.answerOptions.get(0));
         long max = Long.parseLong(q.answerOptions.get(1));
         System.out.println(min + " " + max + " " + q.answerOptions.get(2));
-
+        Text maxText = new Text();
+        Text minText = new Text();
+        maxText.setText(String.valueOf(max));
+        minText.setText(String.valueOf(min));
+        DynamicText maxTextDynamic = new DynamicText(maxText, 25, 10, "Karla");
+        DynamicText minTextDynamic = new DynamicText(minText, 25, 10, "Karla");
+        maxTextDynamic.setText((int)maxText.getFont().getSize());
+        minTextDynamic.setText((int)minText.getFont().getSize());
         slideBar.setMax(max);
-        maxLabel.setText(String.valueOf(max));
+        maxLabel.setText(maxText.getText());
         slideBar.setMin(min);
-        minLabel.setText(String.valueOf(min));
+        minLabel.setText(minText.getText());
         answerTxtField.setText(String.valueOf(min));
         slideBar.setValue(slideBar.getMin());
         answerSet = false;
