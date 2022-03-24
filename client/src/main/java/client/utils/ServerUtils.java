@@ -53,6 +53,7 @@ public class ServerUtils {
     private StompSession session;
     private UUID gameUUID;
     private boolean isInGame = false;
+    private String username;
 
     /**
      * Tests the current server address to see if a connection can be established, and if
@@ -161,6 +162,7 @@ public class ServerUtils {
             ret = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("api/game/")
                     .queryParam("gameID", gameUUID.toString())
+                    .queryParam("username", username)
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
                     .get(GameUpdate.class);
@@ -197,6 +199,7 @@ public class ServerUtils {
         postVariables.param("gameID", gameUUID.toString());
         postVariables.param("playerName", playerName);
         postVariables.param("answer", String.valueOf(answer));
+        username = playerName;
 
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/questions/answer")
