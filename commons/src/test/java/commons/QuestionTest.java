@@ -24,10 +24,10 @@ class QuestionTest {
     @BeforeEach
     public void setup() {
 
-        this.activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        this.activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        this.activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        this.activity4 = new Activity("4","/path/to/image/","Activity", 200);
+        this.activity1 = new Activity("1","/path/to/image/","Activity1", 200);
+        this.activity2 = new Activity("2","/path/to/image/","Activity2", 200);
+        this.activity3 = new Activity("3","/path/to/image/","Activity3", 200);
+        this.activity4 = new Activity("4","/path/to/image/","Activity4", 200);
 
         this.generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         this.comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
@@ -82,10 +82,10 @@ class QuestionTest {
 
     @Test
     void testEquals2() {
-        Activity activity12 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity22 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity32 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity42 = new Activity("4","/path/to/image/","Activity", 200);
+        Activity activity12 = new Activity("1","/path/to/image/","Activity1", 200);
+        Activity activity22 = new Activity("2","/path/to/image/","Activity2", 200);
+        Activity activity32 = new Activity("3","/path/to/image/","Activity3", 200);
+        Activity activity42 = new Activity("4","/path/to/image/","Activity4", 200);
 
         Question generalQuestion2 = new GeneralQuestion(activity12, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         generalQuestion2.questionId = generalQuestion.questionId;
@@ -116,6 +116,47 @@ class QuestionTest {
         assertEquals(generalQuestion, generalQuestion2);
         assertEquals(comparisonQuestion, comparisonQuestion2);
         assertEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+    }
+
+    @Test
+    void testNotEqualsDifferentAnswerOrderAndAnswer() {
+        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("10 Wh", "200 Wh", "5 Wh"), 3);
+        generalQuestion2.questionId = generalQuestion.questionId;
+
+        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity4, activity3), 3);
+        comparisonQuestion2.questionId = comparisonQuestion.questionId;
+
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity2, activity1, activity4),3);
+        whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
+
+        assertNotEquals(generalQuestion, generalQuestion2);
+        assertNotEquals(comparisonQuestion, comparisonQuestion2);
+        assertNotEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+    }
+
+    @Test
+    void testNotEqualsAnswersOutOfRange() {
+        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 4);
+        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 4);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),4);
+
+        assertNotEquals(generalQuestion, generalQuestion2);
+        assertNotEquals(comparisonQuestion, comparisonQuestion2);
+        assertNotEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+    }
+
+    @Test
+    void testEqualsAnswersOutOfRange() {
+        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 4);
+        Question generalQuestion3 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "10 Wh"), 6);
+        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 4);
+        Question comparisonQuestion3 = new ComparisonQuestion(activity1, List.of(activity2, activity2, activity3), 6);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity3,activity2),4);
+        Question whichIsMoreQuestion3 = new WhichIsMoreQuestion(List.of(activity2,activity3,activity1),6);
+
+        assertNotEquals(generalQuestion3, generalQuestion2);
+        assertNotEquals(comparisonQuestion3, comparisonQuestion2);
+        assertNotEquals(whichIsMoreQuestion3,whichIsMoreQuestion2);
     }
 
     @Test

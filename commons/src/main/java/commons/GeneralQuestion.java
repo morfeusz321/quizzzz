@@ -28,6 +28,8 @@ public class GeneralQuestion extends Question {
      */
     public GeneralQuestion(Activity mainActivity, List<String> answerOptions, long answer) {
 
+        // TODO: it might be safe to add null checks here and in the other question types?
+
         this.activityTitle = mainActivity.title;
         this.activityImagePath = mainActivity.imagePath;
 
