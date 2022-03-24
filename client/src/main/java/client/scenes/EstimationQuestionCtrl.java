@@ -126,12 +126,17 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         resizeQuestionHandler.setText((int) title.getFont().getSize());
 
         // TODO: handle slider and other question-dependent objects (max/min etc.)
-        slideBar.setMax(200);
-        maxLabel.setText("200");
-        slideBar.setMin(0);
-        minLabel.setText("0");
-        answerTxtField.setText("0");
-        slideBar.setValue(0);
+
+        long min = Long.parseLong(q.answerOptions.get(0));
+        long max = Long.parseLong(q.answerOptions.get(1));
+        System.out.println(min + " " + max + " " + q.answerOptions.get(2));
+
+        slideBar.setMax(max);
+        maxLabel.setText(String.valueOf(max));
+        slideBar.setMin(min);
+        minLabel.setText(String.valueOf(min));
+        answerTxtField.setText(String.valueOf(min));
+        slideBar.setValue(slideBar.getMin());
         answerSet = false;
         setAnswerBtn.setText("Set as answer");
         slideBar.setDisable(false);

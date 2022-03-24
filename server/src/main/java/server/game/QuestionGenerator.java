@@ -187,7 +187,27 @@ public class QuestionGenerator {
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if (page.hasContent()) {
             Activity a = page.getContent().get(0);
-            Question toReturn = new EstimationQuestion(a);
+            if(a.consumption>10000) return getEstimationQuestion(); // values bigger than 10k will not be displayed properly
+            List<String> aw = new ArrayList<>();
+
+
+            long min = a.consumption - 100;
+            long max = a.consumption + 100;
+
+            int shift = random.nextInt(200) - 100;
+
+            min = min + shift;
+            max = max + shift;
+
+            if(min < 0) {
+                max = max - min;
+                min = 0;
+            }
+
+            aw.add(Long.toString(min));
+            aw.add(Long.toString(max));
+            aw.add(Long.toString(a.consumption));
+            Question toReturn = new EstimationQuestion(a, aw);
             questionDBController.add(toReturn);
             return toReturn;
         }
