@@ -187,7 +187,7 @@ public class QuestionGenerator {
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if (page.hasContent()) {
             Activity a = page.getContent().get(0);
-            if(a.consumption>10000) return getEstimationQuestion(); // values bigger than 10k will not be displayed properly
+            if(a.consumption>9999999995L) return getEstimationQuestion(); // values bigger than 10k will not be displayed properly
             List<String> aw = new ArrayList<>();
 
 
