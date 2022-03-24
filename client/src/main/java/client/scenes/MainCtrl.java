@@ -15,6 +15,7 @@
  */
 package client.scenes;
 
+import client.utils.GameManager;
 import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
@@ -26,6 +27,7 @@ import commons.gameupdate.GameUpdateGameStarting;
 import commons.gameupdate.GameUpdatePlayerJoined;
 import commons.gameupdate.GameUpdatePlayerLeft;
 
+import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -35,6 +37,7 @@ import javafx.util.Pair;
 public class MainCtrl {
 
     private final ServerUtils server;
+    private GameManager gameManager;
     private Stage primaryStage;
 
     private MainScreenCtrl mainScreenCtrl;
@@ -320,12 +323,16 @@ public class MainCtrl {
     /**
      * Shows next question, the question type is selected randomly
      */
-    public void nextQuestion() {
-        Question q = server.getRandomQuestion();
+    public void nextQuestion(Question q) {
         if(q instanceof GeneralQuestion) {
             showGeneralQuestion(q);
+        } else if(q instanceof ComparisonQuestion) {
+            showComparisonQuestion(q);
+        } else if(q instanceof EstimationQuestion) {
+            showEstimationQuestion(q);
+        } else if(q instanceof WhichIsMoreQuestion) {
+            showMostExpensiveQuestion(q);
         }
-        // TODO: other questions are not implemented yet, this has to be modified after that
     }
 
      /**
@@ -370,9 +377,31 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if(gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
+            server.setInGameTrue();
+            gameManager = new GameManager(); // "reset" game manager, because a new game is started
+            gameManager.setQuestions(server.getQuestions());
+            gameManager.setCurrentQuestionByIdx(0); // set the first question
+            server.registerForGameLoop(this::incomingQuestionHandler);
         }
 
         System.out.println();
+
+    }
+
+    /**
+     * Handles updates incoming from the game long poll loop, displaying the right question
+     * when it is necessary
+     * @param s the body of the incoming update TODO: make this not a string haha
+     */
+    private void incomingQuestionHandler(String s) {
+
+        if(s.equals("20")) {
+            Platform.runLater(this::showMainScreen);
+            return;
+        }
+
+        gameManager.setCurrentQuestionByIdx(Integer.parseInt(s));
+        Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 
     }
 

@@ -50,6 +50,8 @@ public class ServerUtils {
     private static String SERVER = "";
     private static String WS_SERVER = "";
     private StompSession session;
+    private UUID gameUUID;
+    private boolean isInGame = false;
 
     /**
      * Tests the current server address to see if a connection can be established, and if
@@ -145,26 +147,53 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a random question from the server using the API endpoint (sends a get request)
-     * @return Returns the retrieved question from the server
+     * Registers for the game loop updates with the current stored game UUID, and sends
+     * all incoming game loop updates to the provided consumer. The long poll loop is automatically
+     * cancelled upon leaving the game by clicking the back button or closing the window, and it is guaranteed
+     * by this method that no further updates will be accepted by the provided consumer after leaving the game.
+     * @param consumer the consumer that accepts incoming game loop updates
      */
-    public Question getRandomQuestion() {
+    public void registerForGameLoop(Consumer<String> consumer) {
 
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/random")
-                .request(APPLICATION_JSON)
-                .accept(APPLICATION_JSON)
-                .get(Question.class);
+        String ret = "";
+        while(!ret.equals("20") && isInGame) {
+            ret = ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("api/game/")
+                    .queryParam("gameID", gameUUID.toString())
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(String.class);
+            if(isInGame) consumer.accept(ret);
+        }
 
     }
 
     /**
+     * Gets the questions for a specific game using the API endpoint (sends a get request)
+     * @return Returns the retrieved questions from the server
+     */
+    public List<Question> getQuestions() {
+
+        return ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/questions")
+                .queryParam( "gameID", gameUUID.toString())
+                .request(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .get(new GenericType<>() {});
+
+    }
+
+    // TODO: the following section is commented out so that we still have a reference for sending answers. As
+    //  soon as sending answers is implemented, we should remove this.
+
+    /*
      * Sends the answer to a question to the server
      * @param question the question to answer
      * @param answer the answer to send to the server
      * @return An AnswerResponseEntity which contains information about whether the answer was correct,
      * as well as the proximity to the correct answer for estimation questions
      */
+    /*
     public AnswerResponseEntity sendAnswerToServer(Question question, long answer) {
 
         Form postVariables = new Form();
@@ -178,6 +207,7 @@ public class ServerUtils {
                 .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
 
     }
+    */
 
     /**
      * Gets all activities from the server using the API endpoint
@@ -299,6 +329,8 @@ public class ServerUtils {
      * @return the response from the server
      */
     public String leaveGame(String username, UUID gameUUID) {
+        
+        isInGame = false;
 
         disconnect();
 
@@ -377,6 +409,25 @@ public class ServerUtils {
                                     .request(APPLICATION_JSON) //
                                     .accept(APPLICATION_JSON) //
                                     .get(new GenericType<List<Score>>() {});
+
+    }
+
+    /**
+     * Sets the UUID of the game the client is in
+     * @param gameUUID the UUID of the corresponding game
+     */
+    public void setGameUUID(UUID gameUUID) {
+        this.gameUUID = gameUUID;
+    }
+
+    /**
+     * Stores the fact that the client is in a game in this class by setting a boolean to true.
+     * This allows the long polling begin and to be cancelled upon clicking the back button by
+     * setting this variable to false again.
+     */
+    public void setInGameTrue() {
+
+        isInGame = true;
 
     }
 

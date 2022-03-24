@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import server.database.ScoreDBController;
+import server.game.FakeApplicationContext;
 import server.game.FakeSimpMessagingTemplate;
 import server.game.GameController;
 import server.game.GameUpdateManager;
@@ -30,8 +31,9 @@ public class UserControllerTest {
     public void setup() {
 
         this.fakeSimpMessagingTemplate = new FakeSimpMessagingTemplate();
-        this.testGameController = new TestGameController(this.fakeSimpMessagingTemplate);
         this.scoreDBController = new ScoreDBController(new TestScoreDB());
+        this.testGameController = new TestGameController(this.fakeSimpMessagingTemplate,
+                new ScoreController(scoreDBController));
 
         this.userController = new UserController(this.testGameController, this.scoreDBController);
 
@@ -196,9 +198,13 @@ public class UserControllerTest {
 
     private class TestGameController extends GameController {
 
-        public TestGameController(FakeSimpMessagingTemplate messagingTemplate) {
+        public TestGameController(FakeSimpMessagingTemplate messagingTemplate, ScoreController scoreController) {
 
-            super(new GameUpdateManager(messagingTemplate));
+            super(new GameUpdateManager(messagingTemplate), scoreController);
+            FakeApplicationContext context = new FakeApplicationContext();
+            context.setFakeMessagingTemplate(messagingTemplate);
+            super.setApplicationContext(context);
+            super.init();
 
         }
 
