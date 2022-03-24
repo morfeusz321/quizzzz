@@ -134,6 +134,7 @@ public class MainCtrl {
                 MainScreenCtrl.class.getResource(
                         "/client/stylesheets/help-style.css"
                 ).toExternalForm());
+        this.helpScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
@@ -155,6 +156,7 @@ public class MainCtrl {
                 WaitingRoomCtrl.class.getResource(
                         "/client/stylesheets/screen-style.css"
                 ).toExternalForm());
+        this.waitingRoom.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
@@ -162,15 +164,19 @@ public class MainCtrl {
                 WaitingRoomCtrl.class.getResource(
                         "/client/stylesheets/admin-style.css"
                 ).toExternalForm());
+        this.adminScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
+        this.adminEditScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.connectToServerCtrl = connectToServer.getKey();
         this.connectToServer = new Scene(connectToServer.getValue());
+        this.connectToServer.setFill(Color.valueOf("#F0EAD6"));
 
         this.leaderboardCtrl = leaderboard.getKey();
         this.leaderboard = new Scene(leaderboard.getValue());
+        this.leaderboard.setFill(Color.valueOf("#F0EAD6"));
 
         initializeOnCloseEvents();
         setServerAddressPrefill("localhost:8080");
