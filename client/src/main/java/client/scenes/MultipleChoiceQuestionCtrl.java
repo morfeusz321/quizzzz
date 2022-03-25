@@ -2,8 +2,10 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.AnswerResponseEntity;
 import commons.CommonUtils;
 import commons.Question;
+import commons.gameupdate.GameUpdateTransitionPeriodEntered;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
@@ -49,6 +52,10 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     Question question;
 
     List<Button> buttonList;
+
+    Button lastSelectedButton;
+    protected UUID lastQuestion;
+
 
     /**
      * Creates a MultipleChoiceQuestionCtrl, which controls the display/interaction of all multiple choice question
@@ -134,12 +141,12 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * @param btn the button that was clicked
      */
     private void eventHandlerAnswerButtonMouseClicked(Button btn) {
+        this.lastSelectedButton = btn;
         buttonList.forEach(b -> {
                                     b.getStyleClass().remove("selected-answer");
                                     b.getStyleClass().remove("answerCorrect");
                                     b.getStyleClass().remove("answerIncorrect");
                                 } );
-
         long selectedButton;
         if(btn.equals(answerBtn1)) {
             selectedButton = 1;
@@ -150,16 +157,43 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         } else {
             return;
         }
-
+        btn.getStyleClass().add("selected-answer");
         server.sendAnswerToServer(selectedButton, mainCtrl.getSavedUsernamePrefill());
-        //disableButtons();
-
         // TODO: use this when transition is implemented?
-        /*
+
+
+    }
+
+    /**
+     * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
+     * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
+     */
+    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate, UUID id){
+        if(lastQuestion == null){
+            lastQuestion = id;
+        }
+        else{
+            if(lastQuestion == id){
+                return;
+            }
+        }
+        disableButtons();
+        AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
+        long correct = answer.getAnswer();
+        long selectedButton;
+        if(lastSelectedButton.equals(answerBtn1)) {
+            selectedButton = 1;
+        } else if(lastSelectedButton.equals(answerBtn2)) {
+            selectedButton = 2;
+        } else if(lastSelectedButton.equals(answerBtn3)) {
+            selectedButton = 3;
+        } else {
+            return;
+        }
         if(answer.correct) {
             placingTick(selectedButton);
             correctAns.setText("correctly");
-            btn.getStyleClass().add("answerCorrect");
+            lastSelectedButton.getStyleClass().add("answerCorrect");
             fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
             fullText.setLayoutY(anchorPane.getHeight()*0.754867);
         } else {
@@ -167,13 +201,10 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
             fullText.setLayoutY(anchorPane.getHeight()*0.754867);
             placingCross(selectedButton);
             correctAns.setText("incorrectly");
-            btn.getStyleClass().add("answerIncorrect");
+            lastSelectedButton.getStyleClass().add("answerIncorrect");
             buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
-            placingTick( answer.getAnswer());
+            placingTick(correct);
         }
-         */
-
-
     }
 
     /**
@@ -181,19 +212,19 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * @param num the number of the answer
      */
     private void placingTick(long num){
-        switch((int) num){
-            case 1:
-                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
-                correctTick.setLayoutY(anchorPane.getHeight()*0.34848);
-                break;
-            case 2:
-                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
-                correctTick.setLayoutY(anchorPane.getHeight()*0.51010);
-                break;
-            case 3:
-                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
-                correctTick.setLayoutY(anchorPane.getHeight()*0.67171);
-                break;
+        switch ((int) num) {
+            case 1 -> {
+                correctTick.setLayoutX(anchorPane.getWidth() * 0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight() * 0.34848);
+            }
+            case 2 -> {
+                correctTick.setLayoutX(anchorPane.getWidth() * 0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight() * 0.51010);
+            }
+            case 3 -> {
+                correctTick.setLayoutX(anchorPane.getWidth() * 0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight() * 0.67171);
+            }
         }
     }
 
@@ -203,19 +234,19 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      */
     private void placingCross(long num){
 
-        switch((int) num){
-            case 1:
-                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
-                wrongCross.setLayoutY(anchorPane.getHeight()*0.34848);
-                break;
-            case 2:
-                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
-                wrongCross.setLayoutY(anchorPane.getHeight()*0.51010);
-                break;
-            case 3:
-                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
-                wrongCross.setLayoutY(anchorPane.getHeight()*0.67171);
-                break;
+        switch ((int) num) {
+            case 1 -> {
+                wrongCross.setLayoutX(anchorPane.getWidth() * 0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight() * 0.34848);
+            }
+            case 2 -> {
+                wrongCross.setLayoutX(anchorPane.getWidth() * 0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight() * 0.51010);
+            }
+            case 3 -> {
+                wrongCross.setLayoutX(anchorPane.getWidth() * 0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight() * 0.67171);
+            }
         }
         wrongCross.setOpacity(1);
     }
@@ -229,10 +260,10 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         }
         fullText.setOpacity(1);
         correctTick.setOpacity(1);
-        powersText.setOpacity(0);
-        decreaseTime.setOpacity(0);
-        doublePoints.setOpacity(0);
-        removeQuestion.setOpacity(0);
+        powersText.setOpacity(0.3);
+        decreaseTime.setOpacity(0.3);
+        doublePoints.setOpacity(0.3);
+        removeQuestion.setOpacity(0.3);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         removeQuestion.setDisable(true);

@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class MainCtrl {
 
@@ -429,9 +430,19 @@ public class MainCtrl {
             Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 
         } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
-
-            // TODO: display transition screen, this gameupdate already contains an answer response entity w/ the necessary information for the screen
-
+            UUID id = gameManager.getCurrentQuestion().questionId;
+            if(gameManager.getCurrentQuestion() instanceof GeneralQuestion){
+                generalQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered, id);
+            }
+            else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion){
+                mostExpensiveQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered, id);
+            }
+            else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion){
+                comparisonQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered, id);
+            }
+            else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion){
+                estimationQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
+            }
             System.out.println("transition period");
 
         } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
