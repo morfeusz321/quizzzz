@@ -17,6 +17,7 @@ package client;
 
 import client.scenes.*;
 
+import client.utils.GameManager;
 import client.utils.ServerUtils;
 
 import com.google.inject.Binder;
@@ -31,6 +32,7 @@ public class MyModule implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(ServerUtils.class).in(Scopes.SINGLETON);
+        binder.bind(GameManager.class).in(Scopes.SINGLETON);
         binder.bind(MainCtrl.class).in(Scopes.SINGLETON);
         binder.bind(MainScreenCtrl.class).in(Scopes.SINGLETON);
         binder.bind(GeneralQuestionCtrl.class).in(Scopes.SINGLETON);

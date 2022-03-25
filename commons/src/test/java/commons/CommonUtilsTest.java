@@ -75,6 +75,110 @@ public class CommonUtilsTest {
 
     }
 
+    @Test
+    public void testCreateConsumptionStringNoPrefix() {
+
+        String s = CommonUtils.createConsumptionString(4);
+        assertEquals("4 Wh", s);
+
+        s = CommonUtils.createConsumptionString(0);
+        assertEquals("0 Wh", s);
+
+        s = CommonUtils.createConsumptionString(36);
+        assertEquals("36 Wh", s);
+
+        s = CommonUtils.createConsumptionString(68);
+        assertEquals("68 Wh", s);
+
+        s = CommonUtils.createConsumptionString(215);
+        assertEquals("215 Wh", s);
+
+        s = CommonUtils.createConsumptionString(999);
+        assertEquals("999 Wh", s);
+
+    }
+
+    @Test
+    public void testCreateConsumptionStringPrefix() {
+
+        String s = CommonUtils.createConsumptionString(1000);
+        assertEquals("1.00 kWh", s);
+
+        s = CommonUtils.createConsumptionString(1895);
+        assertEquals("1.90 kWh", s);
+
+        s = CommonUtils.createConsumptionString(3750);
+        assertEquals("3.75 kWh", s);
+
+        s = CommonUtils.createConsumptionString(31856);
+        assertEquals("31.86 kWh", s);
+
+        s = CommonUtils.createConsumptionString(788190);
+        assertEquals("788.19 kWh", s);
+
+        s = CommonUtils.createConsumptionString(4895013);
+        assertEquals("4.90 MWh", s);
+
+        s = CommonUtils.createConsumptionString(3750661);
+        assertEquals("3.75 MWh", s);
+
+        s = CommonUtils.createConsumptionString(3456013524L);
+        assertEquals("3.46 GWh", s);
+
+        s = CommonUtils.createConsumptionString(6910838019923L);
+        assertEquals("6.91 TWh", s);
+
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.createConsumptionString(-50, 1));
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.createConsumptionString(-50000, 1));
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.createConsumptionString(-50, -1));
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.createConsumptionString(-50000, -1));
+
+    }
+
+    @Test
+    public void testCreateConsumptionStringDifferentAmountOfDecimals() {
+
+        String s = CommonUtils.createConsumptionString(1000, 3);
+        assertEquals("1.000 kWh", s);
+
+        s = CommonUtils.createConsumptionString(31856, 1);
+        assertEquals("31.9 kWh", s);
+
+        s = CommonUtils.createConsumptionString(788190, 2);
+        assertEquals("788.19 kWh", s);
+
+        s = CommonUtils.createConsumptionString(4895013, 5);
+        assertEquals("4.89501 MWh", s);
+
+        s = CommonUtils.createConsumptionString(3750661, 0);
+        assertEquals("4 MWh", s);
+
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.createConsumptionString(123456, -1));
+
+    }
+
+    @Test
+    public void testGetSIPrefix() {
+
+        String s = CommonUtils.getSIPrefix(0);
+        assertEquals("", s);
+
+        s = CommonUtils.getSIPrefix(1);
+        assertEquals("k", s);
+
+        s = CommonUtils.getSIPrefix(2);
+        assertEquals("M", s);
+
+        s = CommonUtils.getSIPrefix(3);
+        assertEquals("G", s);
+
+        s = CommonUtils.getSIPrefix(4);
+        assertEquals("T", s);
+
+        assertThrows(IllegalArgumentException.class, () -> CommonUtils.getSIPrefix(5));
+
+    }
+
     private class NotSoRandom extends Random {
 
         private int lastReturned;
