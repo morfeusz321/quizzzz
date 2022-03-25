@@ -152,6 +152,13 @@ public class LeaderboardCtrl {
     }
 
     /**
+     * if the leaderboard is opened from main screen the text in the bubble should be changed
+     */
+    public void changeTextMainScreen(){
+        speechBubbleText.setText(" You can see all the scores now");
+    }
+
+    /**
      * sets the variable isEndLeaderboard to true
      * which indicates that the last leaderboard is shown
      */

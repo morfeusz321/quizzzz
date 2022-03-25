@@ -559,6 +559,14 @@ public class MainCtrl {
     }
 
     /**
+     * if the leaderboard is opened from main screen the text in the bubble should be changed
+      */
+    public void changeLeaderboardText(){
+        leaderboardCtrl.disableButtonsForMainScreen();
+        leaderboardCtrl.changeTextMainScreen();
+    }
+
+    /**
      * This method is called by the connect to server screen. It shows the leaderboard screen
      * after having confirmed the server address.
      */

@@ -118,6 +118,7 @@ public class MainScreenCtrl implements Initializable {
      * Opens the "please connect to server" screen, and subsequently the leaderboard screen
      */
     public void showLeaderboard() {
+        mainCtrl.changeLeaderboardText();
         mainCtrl.showLeaderboard();
     }
 

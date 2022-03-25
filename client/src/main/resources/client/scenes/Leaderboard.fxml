@@ -32,7 +32,7 @@
                <Font size="43.0" />
             </font>
          </Text>
-         <Text fx:id="speechBubbleText" strokeType="OUTSIDE" strokeWidth="0.0" text=" You're already halfway there!">
+         <Text fx:id="speechBubbleText" strokeType="OUTSIDE" strokeWidth="0.0" text=" You can see all the scores now">
             <styleClass>
                <String fx:value="speech-bubble-text" />
                <String fx:value="text" />
