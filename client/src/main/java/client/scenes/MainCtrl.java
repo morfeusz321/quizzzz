@@ -587,7 +587,11 @@ public class MainCtrl {
         while(fileReader.hasNextLine()) {
             String line = fileReader.nextLine();
             if(line.startsWith("username: ")) {
-                return line.split(": ")[1];
+                try {
+                    return line.split(": ")[1];
+                } catch(IndexOutOfBoundsException e) {
+                    return "";
+                }
             }
         }
 
