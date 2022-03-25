@@ -2,7 +2,6 @@ package commons;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.ElementCollection;
@@ -57,7 +56,8 @@ public abstract class Question {
     }
 
     /**
-     * Checks if 2 question objects are equal
+     * Checks if 2 question objects are equal. They are considered as equal, if they are of the same question type and
+     * if they have the same main activity.
      * @param obj the object that will be compared
      * @return true or false, whether the objects are equal or not
      */
@@ -74,42 +74,25 @@ public abstract class Question {
             // non-null parameters. (See comment in Question class constructors). The empty constructor is private,
             // so that cannot be called anyways.
 
-            // Check if the sizes of the answer options are the same, and the contents, but not necessarily the order.
-            boolean answerListsEqual =
-                    (this.answerOptions.size() == other.answerOptions.size() &&
-                    this.answerOptions.containsAll(other.answerOptions));
-
-            boolean answersEqual;
-            if(!this.getClass().equals(EstimationQuestion.class)){
-                // Check if the answer is the same - this cannot be simply done by checking the index, but it has to
-                // be the element at the index.
-                answersEqual =
-                        this.answerOptions.get((int) this.answer - 1).equals(other.answerOptions.get((int) other.answer - 1));
-            } else {
-                // If this is an EstimationQuestion (and other therefore too, because it was checked before), only
-                // the actual answer has to be checked, because there are no answer options.
-                answersEqual = this.answer == other.answer;
-            }
-
-            // Check all other attributes. The id should not be checked, because this would make questions
-            // appear as not equal, even if they are (according to the other conditions). Reason is that each question
-            // has an individual id.
-            return answerListsEqual &&
-                    Objects.equals(this.activityTitle, other.activityTitle) &&
-                    Objects.equals(this.activityImagePath, other.activityImagePath) &&
-                    answersEqual;
+            // We only check whether the main activity is equal, this makes the most sense in the game context. The
+            // main activity determines the activityTitle and the activityImagePath.
+            // The id should not be checked, because this would make questions appear as not equal, even if they
+            // are (according to the other conditions). Reason is that each question has an individual id.
+            return Objects.equals(this.activityTitle, other.activityTitle) &&
+                    Objects.equals(this.activityImagePath, other.activityImagePath);
 
         }
         return false;
     }
 
     /**
-     * Generate a hash code for this object
+     * Generate a hash code for this object. Two objects have the same hash code, if their main activity is the same,
+     * and if they are of the same sub-class, so the class is hashed too.
      * @return hash code
      */
     @Override
     public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
+        return getClass().hashCode() ^ activityTitle.hashCode() ^ activityImagePath.hashCode();
     }
 
     /**
