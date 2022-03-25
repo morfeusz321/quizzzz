@@ -154,13 +154,14 @@ public class ServerUtils {
      * by this method that no further updates will be accepted by the provided consumer after leaving the game.
      * @param consumer the consumer that accepts incoming game loop updates
      */
-    public void registerForGameLoop(Consumer<GameUpdate> consumer) {
+    public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
         GameUpdate ret = null;
         while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
             ret = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("api/game/")
                     .queryParam("gameID", gameUUID.toString())
+                    .queryParam("username", username)
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
                     .get(GameUpdate.class);
@@ -184,31 +185,28 @@ public class ServerUtils {
 
     }
 
-    // TODO: the following section is commented out so that we still have a reference for sending answers. As
-    //  soon as sending answers is implemented, we should remove this.
-
-    /*
+    /**
      * Sends the answer to a question to the server
-     * @param question the question to answer
      * @param answer the answer to send to the server
+     * @param playerName the username of the player
      * @return An AnswerResponseEntity which contains information about whether the answer was correct,
-     * as well as the proximity to the correct answer for estimation questions
+     * as well as the proximity to the correct answer for estimation questions, and the correct answer
      */
-    /*
-    public AnswerResponseEntity sendAnswerToServer(Question question, long answer) {
+    public void sendAnswerToServer(long answer, String playerName) {
 
         Form postVariables = new Form();
-        postVariables.param("questionID", question.questionId.toString());
+        postVariables.param("gameID", gameUUID.toString());
+        postVariables.param("playerName", playerName);
         postVariables.param("answer", String.valueOf(answer));
 
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/answer")
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/answer")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
+                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), String.class);
 
     }
-    */
+
 
     /**
      * Gets all activities from the server using the API endpoint
