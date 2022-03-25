@@ -282,6 +282,10 @@ public class MainCtrl {
         primaryStage.setScene(waitingRoom);
     }
 
+    public void showWaitRoomFromTheEndScreen(){
+        userCtrl.join();
+    }
+
     /**
      * Shows the general question screen
      */

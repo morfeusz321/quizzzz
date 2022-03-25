@@ -133,11 +133,11 @@ public class LeaderboardCtrl {
             lightbulb.setDisable(false);
             lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 server.disconnect();
-                mainCtrl.showMainScreen();
+                fadeOutLeaderboard("gameAgain");
             });
             lightbulb.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> lightbulb.setCursor(Cursor.HAND));
             lightbulb.addEventHandler(MouseEvent.MOUSE_EXITED, e -> lightbulb.setCursor(Cursor.DEFAULT));
-            speechBubbleText.setText(" If you want to join another game, CLICK ON ME!");
+            speechBubbleText.setText(" CLICK on me and join another game!");
         }
     }
 
