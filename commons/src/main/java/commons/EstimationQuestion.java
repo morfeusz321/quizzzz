@@ -24,6 +24,8 @@ public class EstimationQuestion extends Question {
      * @param mainActivity the main activity of this question (i.e. the title of the question)
      */
     public EstimationQuestion(Activity mainActivity) {
+        // Note: we can assume that the question is initialized with non-null parameters. Questions are only initialized
+        // in the QuestionGenerator (server-side), where null-checks are done to make that sure.
 
         this.activityTitle = mainActivity.title;
         this.activityImagePath = mainActivity.imagePath;

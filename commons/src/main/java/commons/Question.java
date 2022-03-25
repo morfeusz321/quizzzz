@@ -66,43 +66,35 @@ public abstract class Question {
         if(obj == null){
             return false;
         }
-        if(obj instanceof Question){
+        // First check if it is an instance of class Question the correct sub-class of Question.
+        if(obj instanceof Question && this.getClass().equals(obj.getClass())){
+
             Question other = (Question) obj;
-            // Check if one of the question lists is null (in that case not equal)
-            boolean oneIsNull =
-                    (this.answerOptions == null && other.answerOptions != null) ||
-                    (this.answerOptions != null && other.answerOptions == null);
-            if(oneIsNull){
-                return false;
-            }
-            // Check if both of the question lists are null (in that case not equal)
-            boolean bothNull = this.answerOptions == null && other.answerOptions == null;
-            // TODO: Intellij says that other.answerOptions == null is always true when reached?
-            // Check if they are both null (then they are equal). Otherwise, check if the sizes are the same,
-            // and the contents, but not necessarily the order.
+            // Note: We assume that all Question objects have a valid answer, and that they were initialized with
+            // non-null parameters. (See comment in Question class constructors). The empty constructor is private,
+            // so that cannot be called anyways.
+
+            // Check if the sizes of the answer options are the same, and the contents, but not necessarily the order.
             boolean answerListsEqual =
-                    bothNull ||
                     (this.answerOptions.size() == other.answerOptions.size() &&
                     this.answerOptions.containsAll(other.answerOptions));
-            // For safety, it has to be checked whether the answer options are in the correct range
-            boolean thisOutOfRange = this.answer > this.answerOptions.size() || this.answer <= 0;
-            boolean otherOutOfRange = other.answer > other.answerOptions.size() || other.answer <= 0;
-            if(thisOutOfRange || otherOutOfRange){
-                if(!thisOutOfRange || !otherOutOfRange){
-                    // Only one of the answer options is out of range -> not equal
-                    return false;
-                }
+
+            boolean answersEqual;
+            if(!this.getClass().equals(EstimationQuestion.class)){
+                // Check if the answer is the same - this cannot be simply done by checking the index, but it has to
+                // be the element at the index.
+                answersEqual =
+                        this.answerOptions.get((int) this.answer - 1).equals(other.answerOptions.get((int) other.answer - 1));
+            } else {
+                // If this is an EstimationQuestion (and other therefore too, because it was checked before), only
+                // the actual answer has to be checked, because there are no answer options.
+                answersEqual = this.answer == other.answer;
             }
-            // Check if the answer is the same - this cannot be simply done by checking the index, but it has to
-            // be the element at the index.
-            // For simplicity, two answer options that are both out of range are counted as equal.
-            boolean answersEqual =
-                    bothNull ||
-                    (thisOutOfRange && otherOutOfRange) ||
-                    this.answerOptions.get((int) this.answer - 1).equals(other.answerOptions.get((int) other.answer - 1));
-            // Check all other attributes
+
+            // Check all other attributes. The id should not be checked, because this would make questions
+            // appear as not equal, even if they are (according to the other conditions). Reason is that each question
+            // has an individual id.
             return answerListsEqual &&
-                    this.questionId.equals(other.questionId) &&
                     Objects.equals(this.activityTitle, other.activityTitle) &&
                     Objects.equals(this.activityImagePath, other.activityImagePath) &&
                     answersEqual;

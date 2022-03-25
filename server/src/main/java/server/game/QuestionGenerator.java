@@ -67,7 +67,7 @@ public class QuestionGenerator {
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent()) {
+        if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
             aw.add((long) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
@@ -92,6 +92,12 @@ public class QuestionGenerator {
 
         try {
             List<Activity> activities = activityDBController.getThreeRandomActivities();
+
+            // Check for more safety whether there is an activity that is null, if so, something went
+            // wrong, so null is returned.
+            if(activities.contains(null)) {
+                return null;
+            }
 
             Activity a1 = activities.get(0);
             for(int i=1;i<3;i++){
@@ -122,7 +128,7 @@ public class QuestionGenerator {
             //First we sort the list of returned activities
             List<Activity> activities = activityDBController.getFiveRandomActivities();
 
-            if(activities.size() < 5) {
+            if(activities.size() < 5 || activities.contains(null)) {
                 return null;
             }
 
@@ -185,7 +191,7 @@ public class QuestionGenerator {
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent()) {
+        if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             Question toReturn = new EstimationQuestion(a);
             questionDBController.add(toReturn);

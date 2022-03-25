@@ -144,51 +144,31 @@ class QuestionTest {
     }
 
     @Test
-    void testNotEqualsAnswersOutOfRange() {
-        // Tests IN-equality for when the answer index is out of range.
-
-        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 4);
-        generalQuestion2.questionId = generalQuestion.questionId;
-        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 4);
-        comparisonQuestion2.questionId = comparisonQuestion.questionId;
-        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),4);
-        whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
-
-        assertNotEquals(generalQuestion, generalQuestion2);
-        assertNotEquals(comparisonQuestion, comparisonQuestion2);
-        assertNotEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
-    }
-
-    @Test
-    void testEqualsAnswersOutOfRange() {
-        // Tests equality for when the answer index is out of range.
-
-        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 4);
-        generalQuestion2.questionId = generalQuestion.questionId;
-        Question generalQuestion3 = new GeneralQuestion(activity1, List.of("5 Wh", "200 Wh", "10 Wh"), 6);
-        generalQuestion3.questionId = generalQuestion.questionId;
-        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 4);
-        comparisonQuestion2.questionId = comparisonQuestion.questionId;
-        Question comparisonQuestion3 = new ComparisonQuestion(activity1, List.of(activity2, activity4, activity3), 6);
-        comparisonQuestion3.questionId = comparisonQuestion.questionId;
-        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity3,activity2),4);
-        whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
-        Question whichIsMoreQuestion3 = new WhichIsMoreQuestion(List.of(activity2,activity3,activity1),6);
-        whichIsMoreQuestion3.questionId = whichIsMoreQuestion.questionId;
-
-        assertEquals(generalQuestion3, generalQuestion2);
-        assertEquals(comparisonQuestion3, comparisonQuestion2);
-        assertEquals(whichIsMoreQuestion3,whichIsMoreQuestion2);
-    }
-
-    @Test
-    void testNotEquals() {
-        // Test general IN-equality (the ids are not equal).
+    void testEqualsDifferentId() {
+        // Test equality when the ids are not equal, but everything else is (the id should not influence
+        // whether Questions are equal).
 
         Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
         Question estimationQuestion2 = new EstimationQuestion(activity1);
         Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),1);
+
+        assertNotEquals(generalQuestion, generalQuestion2);
+        assertNotEquals(comparisonQuestion, comparisonQuestion2);
+        assertNotEquals(estimationQuestion, estimationQuestion2);
+        assertNotEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+    }
+
+    @Test
+    void testNotEquals() {
+        // Test general IN-equality (not the same activities).
+
+        Activity activity5 = new Activity("5","/path/to/image/","Activity5", 200);
+
+        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "12 Wh", "200 Wh"), 3);
+        Question comparisonQuestion2 = new ComparisonQuestion(activity5, List.of(activity2, activity3, activity4), 3);
+        Question estimationQuestion2 = new EstimationQuestion(activity2);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity4,activity2,activity3),1);
 
         assertNotEquals(generalQuestion, generalQuestion2);
         assertNotEquals(comparisonQuestion, comparisonQuestion2);
