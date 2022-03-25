@@ -42,7 +42,7 @@ public class QuestionGeneratorTest {
 
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
-        assertEquals(activity2.title, q.answerOptions.get((int) q.answer));
+        assertEquals(activity2.title, q.answerOptions.get((int) q.answer-1));
 
     }
 
@@ -206,7 +206,7 @@ public class QuestionGeneratorTest {
 
         assertNotNull(moreExpensive);
         assertEquals(moreExpensive, questionDBController.getById(moreExpensive.questionId));
-        assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer));
+        assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer-1));
         // This can be cast to an int because it is only the index, so not a long value.
 
     }

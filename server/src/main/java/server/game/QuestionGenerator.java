@@ -106,7 +106,7 @@ public class QuestionGenerator {
                 }
             }
 
-            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1));
+            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1)+1);
             questionDBController.add(toReturn);
             return toReturn;
         } catch (Exception e) {
@@ -165,7 +165,7 @@ public class QuestionGenerator {
             }
 
             //We return the question
-            Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
+            Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity)+1);
             questionDBController.add(toReturn);
             return toReturn;
         } catch (StackOverflowError e){
