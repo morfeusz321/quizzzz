@@ -282,6 +282,10 @@ public class MainCtrl {
         primaryStage.setScene(waitingRoom);
     }
 
+    /**
+     * if the user is entering the waiting room from the end leaderboard the username scene doesnt have to be shown
+     * and the joining is done here automatically with the pre-filled username
+     */
     public void showWaitRoomFromTheEndScreen(){
         userCtrl.join();
     }
