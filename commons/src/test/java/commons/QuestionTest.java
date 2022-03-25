@@ -153,10 +153,10 @@ class QuestionTest {
         Question estimationQuestion2 = new EstimationQuestion(activity1);
         Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),1);
 
-        assertNotEquals(generalQuestion, generalQuestion2);
-        assertNotEquals(comparisonQuestion, comparisonQuestion2);
-        assertNotEquals(estimationQuestion, estimationQuestion2);
-        assertNotEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+        assertEquals(generalQuestion, generalQuestion2);
+        assertEquals(comparisonQuestion, comparisonQuestion2);
+        assertEquals(estimationQuestion, estimationQuestion2);
+        assertEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
     }
 
     @Test
