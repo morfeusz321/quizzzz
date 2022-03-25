@@ -34,8 +34,27 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
         answerBtn1.setText(q.answerOptions.get(0));
         answerBtn2.setText(q.answerOptions.get(1));
         answerBtn3.setText(q.answerOptions.get(2));
+        System.out.println(q.questionId + " " + q.answer + " " + q.answerOptions.get(0) + " " + q.answerOptions.get(1) + " " + q.answerOptions.get(2));
         refreshProgressBar();
 
+    }
+
+    /**
+     * Disables joker buttons (if already used)
+     */
+    public void disableJokers() {
+        if(mainCtrl.getJokerStatus(1)) {
+            removeQuestion.setDisable(true);
+            removeQuestion.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(2)) {
+            doublePoints.setDisable(true);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
     }
 
 }

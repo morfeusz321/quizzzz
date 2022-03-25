@@ -85,6 +85,10 @@ public class MainCtrl {
     private String usernamePrefill;
     private String serverAddressPrefill;
 
+    private boolean usedDouble = false;
+    private boolean usedTime = false;
+    private boolean usedRemove = false;
+
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      * @param server Utilities for communicating with the server (API endpoint)
@@ -289,6 +293,7 @@ public class MainCtrl {
         primaryStage.setTitle("General question");
         primaryStage.setScene(generalQuestion);
         generalQuestionCtrl.loadQuestion(q);
+        generalQuestionCtrl.disableJokers();
         // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
@@ -299,6 +304,7 @@ public class MainCtrl {
         primaryStage.setTitle("Comparison question");
         primaryStage.setScene(comparisonQuestion);
         comparisonQuestionCtrl.loadQuestion(q);
+        comparisonQuestionCtrl.disableJokers();
         // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
@@ -309,6 +315,7 @@ public class MainCtrl {
         primaryStage.setTitle("Most expensive question");
         primaryStage.setScene(mostExpensiveQuestion);
         mostExpensiveQuestionCtrl.loadQuestion(q);
+        mostExpensiveQuestionCtrl.disableJokers();
         // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
@@ -398,6 +405,7 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if(gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
+            resetJokers();
             server.setInGameTrue();
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
@@ -618,6 +626,47 @@ public class MainCtrl {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Disables a joker button for the current game
+     * @param number the number of the button (1 - remove one wrong answer joker, 2 - double points joker, 3 - time joker)
+     */
+    public void disableJoker(int number) {
+        switch (number) {
+            case 1 -> usedRemove = true;
+            case 2 -> usedDouble = true;
+            case 3 -> usedTime = true;
+        }
+    }
+
+    /**
+     * Returns whether the selected joker button was used or not
+     * @param number the number of the button (1 - remove one wrong answer joker, 2 - double points joker, 3 - time joker)
+     * @return true if already used, false otherwise
+     */
+    public boolean getJokerStatus(int number) {
+        switch (number) {
+            case 1 -> {
+                return usedRemove;
+            }
+            case 2 -> {
+                return usedDouble;
+            }
+            case 3 -> {
+                return usedTime;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Resets the joker buttons (called every time when a new game is started)
+     */
+    public void resetJokers() {
+        this.usedRemove = false;
+        this.usedDouble = false;
+        this.usedTime = false;
     }
 
 }

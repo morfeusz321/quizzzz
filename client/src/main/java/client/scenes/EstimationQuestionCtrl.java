@@ -155,4 +155,8 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         doublePoints.setDisable(true);
     }
 
+    @Override
+    void removeQuestion() {
+        
+    }
 }

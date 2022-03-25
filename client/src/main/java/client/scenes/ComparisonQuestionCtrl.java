@@ -27,6 +27,7 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
         // TODO: add comparison question type, and restructure this afterwards if needed
 
         enableButtons();
+        question = q;
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());
@@ -35,6 +36,24 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
         answerBtn3.setText(q.answerOptions.get(2));
         refreshProgressBar();
 
+    }
+
+    /**
+     * Disables joker buttons (if already used)
+     */
+    public void disableJokers() {
+        if(mainCtrl.getJokerStatus(1)) {
+            removeQuestion.setDisable(true);
+            removeQuestion.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(2)) {
+            doublePoints.setDisable(true);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
     }
 
 }

@@ -41,7 +41,7 @@ public abstract class QuestionCtrl {
     @FXML
     protected ImageView decreaseTime;
     @FXML
-    private ImageView doublePoints;
+    protected ImageView doublePoints;
 
     @FXML
     private ProgressBar timeBar;
@@ -269,6 +269,32 @@ public abstract class QuestionCtrl {
         System.out.println(power + " was clicked.");
         // TODO: add (private) methods here for handling powers (which are for example called in a switch-statement).
         //  Alternatively we can also create classes for handling the powers and call methods of those classes here.
+
+        switch (power) {
+            case "remove question" -> removeQuestion();
+            case "double points" -> doublePoints();
+            case "decrease time" -> decreaseTime();
+        }
+    }
+
+    /**
+     * Handling method for double points joker TODO: implement this once scores are working
+     */
+    private void doublePoints() {
+        doublePoints.setDisable(true);
+        doublePoints.setOpacity(0.3);
+        mainCtrl.disableJoker(2);
+    }
+
+    abstract void removeQuestion();
+
+    /**
+     * Handling method for decrease time joker TODO: implement (this one is more tricky)
+     */
+    private void decreaseTime() {
+        decreaseTime.setDisable(true);
+        decreaseTime.setOpacity(0.3);
+        mainCtrl.disableJoker(3);
     }
 
     /**

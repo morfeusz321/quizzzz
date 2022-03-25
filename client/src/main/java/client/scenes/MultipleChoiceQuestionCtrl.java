@@ -16,10 +16,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.util.List;
+import java.util.Random;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
-    private ImageView removeQuestion;
+    protected ImageView removeQuestion;
 
     @FXML
     protected Button answerBtn1;
@@ -281,4 +282,33 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         btn.getStyleClass().remove("hover-button");
 
     }
+
+    /**
+     * Method for removing a wrong answer from the answer list (implementation for the remove answer joker)
+     */
+    @Override
+    void removeQuestion() {
+        removeQuestion.setDisable(true);
+        removeQuestion.setOpacity(0.3);
+        mainCtrl.disableJoker(1);
+
+        long correctQuestion = question.answer;
+        CommonUtils utils = new CommonUtils();
+        Random random = new Random();
+        switch ((int) correctQuestion) {
+            case 1: disableQuestionButton(utils.randomIntInRange(1,2,random) + 1); break;
+            case 2: if(utils.randomIntInRange(1,2,random) == 1) disableQuestionButton(3); else disableQuestionButton(1); break;
+            case 3: disableQuestionButton(utils.randomIntInRange(1,2,random)); break;
+        }
+    }
+
+    /**
+     * Disables an answer button
+     * @param buttonNumber number of the button (1, 2, 3)
+     */
+    private void disableQuestionButton(int buttonNumber) {
+        buttonList.get(buttonNumber-1).setDisable(true);
+
+    }
+
 }

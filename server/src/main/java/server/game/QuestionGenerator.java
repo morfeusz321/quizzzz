@@ -74,7 +74,7 @@ public class QuestionGenerator {
             aw.add( a.consumption + " Wh");
             aw.add((long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh") + 1);
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(a.consumption +" Wh") + 1);
             questionDBController.add(toReturn);
             return toReturn;
         }
@@ -100,7 +100,7 @@ public class QuestionGenerator {
                 }
             }
 
-            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1));
+            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1)+1);
             questionDBController.add(toReturn);
             return toReturn;
         } catch (Exception e) {
