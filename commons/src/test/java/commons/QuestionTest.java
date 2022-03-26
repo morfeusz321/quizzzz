@@ -24,15 +24,15 @@ class QuestionTest {
     @BeforeEach
     public void setup() {
 
-        this.activity1 = new Activity("1","/path/to/image/","Activity", 200);
-        this.activity2 = new Activity("2","/path/to/image/","Activity", 200);
-        this.activity3 = new Activity("3","/path/to/image/","Activity", 200);
-        this.activity4 = new Activity("4","/path/to/image/","Activity", 200);
+        this.activity1 = new Activity("1","/path/to/image/","Activity1", 200);
+        this.activity2 = new Activity("2","/path/to/image/","Activity2", 200);
+        this.activity3 = new Activity("3","/path/to/image/","Activity3", 200);
+        this.activity4 = new Activity("4","/path/to/image/","Activity4", 200);
 
         this.generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         this.comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
         this.estimationQuestion = new EstimationQuestion(activity1);
-        this.whichIsMoreQuestion = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
+        this.whichIsMoreQuestion = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),1);
 
     }
 
@@ -59,7 +59,9 @@ class QuestionTest {
     }
 
     @Test
-    void testEquals() {
+    void testEqualsSame() {
+        // Tests equality with the same attributes and instantiation.
+
         assertEquals(generalQuestion, generalQuestion);
         assertEquals(comparisonQuestion, comparisonQuestion);
         assertEquals(estimationQuestion, estimationQuestion);
@@ -71,7 +73,7 @@ class QuestionTest {
         comparisonQuestion2.questionId = comparisonQuestion.questionId;
         Question estimationQuestion2 = new EstimationQuestion(activity1);
         estimationQuestion2.questionId = estimationQuestion.questionId;
-        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),1);
         whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
 
         assertEquals(generalQuestion, generalQuestion2);
@@ -81,11 +83,13 @@ class QuestionTest {
     }
 
     @Test
-    void testEquals2() {
-        Activity activity12 = new Activity("1","/path/to/image/","Activity", 200);
-        Activity activity22 = new Activity("2","/path/to/image/","Activity", 200);
-        Activity activity32 = new Activity("3","/path/to/image/","Activity", 200);
-        Activity activity42 = new Activity("4","/path/to/image/","Activity", 200);
+    void testEqualsNewActivities() {
+        // Tests equality with new Activity objects, apart from that the Question objects are the same.
+
+        Activity activity12 = new Activity("1","/path/to/image/","Activity1", 200);
+        Activity activity22 = new Activity("2","/path/to/image/","Activity2", 200);
+        Activity activity32 = new Activity("3","/path/to/image/","Activity3", 200);
+        Activity activity42 = new Activity("4","/path/to/image/","Activity4", 200);
 
         Question generalQuestion2 = new GeneralQuestion(activity12, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         generalQuestion2.questionId = generalQuestion.questionId;
@@ -93,8 +97,24 @@ class QuestionTest {
         comparisonQuestion2.questionId = comparisonQuestion.questionId;
         Question estimationQuestion2 = new EstimationQuestion(activity12);
         estimationQuestion2.questionId = estimationQuestion.questionId;
-        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity12,activity22,activity32),1);
         whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
+
+        assertEquals(generalQuestion, generalQuestion2);
+        assertEquals(comparisonQuestion, comparisonQuestion2);
+        assertEquals(estimationQuestion, estimationQuestion2);
+        assertEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+    }
+
+    @Test
+    void testEqualsDifferentId() {
+        // Test equality when the ids are not equal, but everything else is (the id should not influence
+        // whether Questions are equal).
+
+        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
+        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
+        Question estimationQuestion2 = new EstimationQuestion(activity1);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),1);
 
         assertEquals(generalQuestion, generalQuestion2);
         assertEquals(comparisonQuestion, comparisonQuestion2);
@@ -104,15 +124,33 @@ class QuestionTest {
 
     @Test
     void testNotEquals() {
-        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
-        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion2 = new EstimationQuestion(activity1);
-        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
+        // Test general IN-equality (not the same main activity).
+
+        Question generalQuestion2 = new GeneralQuestion(activity2, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
+        Question comparisonQuestion2 = new ComparisonQuestion(activity2, List.of(activity1, activity3, activity4), 3);
+        Question estimationQuestion2 = new EstimationQuestion(activity3);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity4,activity2,activity3),1);
 
         assertNotEquals(generalQuestion, generalQuestion2);
         assertNotEquals(comparisonQuestion, comparisonQuestion2);
         assertNotEquals(estimationQuestion, estimationQuestion2);
         assertNotEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
+    }
+
+
+    @Test
+    void testEqualsDifferentAnswers() {
+        // Test that questions are considered equal as long as the main activity is equal.
+
+        Activity activity5 = new Activity("5","/path/to/image/","Activity5", 200);
+
+        Question generalQuestion2 = new GeneralQuestion(activity1, List.of("200 Wh", "1 Wh", "30 Wh"), 1);
+        Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity4, activity2, activity5), 1);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity5,activity4),1);
+
+        assertEquals(generalQuestion, generalQuestion2);
+        assertEquals(comparisonQuestion, comparisonQuestion2);
+        assertEquals(whichIsMoreQuestion,whichIsMoreQuestion2);
     }
 
     @Test
@@ -123,13 +161,51 @@ class QuestionTest {
         comparisonQuestion2.questionId = comparisonQuestion.questionId;
         Question estimationQuestion2 = new EstimationQuestion(activity1);
         estimationQuestion2.questionId = estimationQuestion.questionId;
-        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2,activity3),1);
         whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
 
         assertEquals(generalQuestion.hashCode(), generalQuestion2.hashCode());
         assertEquals(comparisonQuestion.hashCode(), comparisonQuestion2.hashCode());
         assertEquals(estimationQuestion.hashCode(), estimationQuestion2.hashCode());
         assertEquals(whichIsMoreQuestion.hashCode(),whichIsMoreQuestion2.hashCode());
+    }
+
+    @Test
+    void testNotEqualsDifferentClass() {
+        // Test IN-equality for when the main activity is the same, but the sub-class is not.
+        // Note that this tests all combinations of classes.
+
+        assertNotEquals(generalQuestion, comparisonQuestion);
+        assertNotEquals(generalQuestion, estimationQuestion);
+        assertNotEquals(generalQuestion, whichIsMoreQuestion);
+
+        assertNotEquals(comparisonQuestion, estimationQuestion);
+        assertNotEquals(comparisonQuestion, whichIsMoreQuestion);
+
+        assertNotEquals(estimationQuestion, whichIsMoreQuestion);
+    }
+
+    @Test
+    void testHashNotEqualsClass() {
+        assertNotEquals(generalQuestion.hashCode(), comparisonQuestion.hashCode());
+        assertNotEquals(generalQuestion.hashCode(), estimationQuestion.hashCode());
+        assertNotEquals(generalQuestion.hashCode(), whichIsMoreQuestion.hashCode());
+        assertNotEquals(comparisonQuestion.hashCode(), estimationQuestion.hashCode());
+        assertNotEquals(comparisonQuestion.hashCode(), whichIsMoreQuestion.hashCode());
+        assertNotEquals(estimationQuestion.hashCode(), whichIsMoreQuestion.hashCode());
+    }
+
+    @Test
+    void testHashNotEqualsActivity() {
+        Question generalQuestion2 = new GeneralQuestion(activity2, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
+        Question comparisonQuestion2 = new ComparisonQuestion(activity2, List.of(activity1, activity3, activity4), 3);
+        Question estimationQuestion2 = new EstimationQuestion(activity3);
+        Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity4,activity2,activity3),1);
+
+        assertNotEquals(generalQuestion.hashCode(), generalQuestion2.hashCode());
+        assertNotEquals(comparisonQuestion.hashCode(), comparisonQuestion2.hashCode());
+        assertNotEquals(estimationQuestion.hashCode(), estimationQuestion2.hashCode());
+        assertNotEquals(whichIsMoreQuestion.hashCode(),whichIsMoreQuestion2.hashCode());
     }
 
     @Test
