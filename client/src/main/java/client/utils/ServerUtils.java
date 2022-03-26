@@ -210,6 +210,17 @@ public class ServerUtils {
     }
     */
 
+    public String useTimeJoker(String username) {
+        Form form = new Form();
+        form.param("username", username);
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/jokers/time") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
+
     /**
      * Gets all activities from the server using the API endpoint
      * @return a list of activities

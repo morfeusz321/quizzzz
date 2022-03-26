@@ -294,6 +294,7 @@ public abstract class QuestionCtrl {
     private void decreaseTime() {
         decreaseTime.setDisable(true);
         decreaseTime.setOpacity(0.3);
+        server.useTimeJoker(mainCtrl.getSavedUsernamePrefill());
         mainCtrl.disableJoker(3);
     }
 
