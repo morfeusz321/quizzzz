@@ -1,5 +1,6 @@
 package commons;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class CommonUtils {
@@ -116,7 +117,7 @@ public class CommonUtils {
         double rounded = ((double) Math.round(doubleConsumption * roundingFactor)) / roundingFactor;
 
         String formatString = "%." + amountOfDecimals + "f";
-        stringBuilder.append(String.format(formatString, rounded)).append(" ").append(getSIPrefix(steps)).append("Wh");
+        stringBuilder.append(String.format(Locale.ENGLISH, formatString, rounded)).append(" ").append(getSIPrefix(steps)).append("Wh");
         return stringBuilder.toString();
 
     }
