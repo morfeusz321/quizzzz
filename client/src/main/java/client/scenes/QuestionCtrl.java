@@ -180,8 +180,14 @@ public abstract class QuestionCtrl {
                                                                     mainCtrl.showMainScreen();
                                                                 });
         // TODO: when the menu screen is added, modify this
-        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
-        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**

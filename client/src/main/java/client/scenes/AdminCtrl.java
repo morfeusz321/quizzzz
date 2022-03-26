@@ -20,6 +20,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -49,6 +50,10 @@ public class AdminCtrl implements Initializable {
     @FXML
     private Button delete;
     @FXML
+    private Button add;
+    @FXML
+    private Button imports;
+    @FXML
     private ImageView backBtn;
 
     @FXML
@@ -56,6 +61,7 @@ public class AdminCtrl implements Initializable {
 
     private Activity currentActivity;
     private Scene adminScene;
+    private List<Button> buttonList;
 
     /**
      * Constructor for a AdminCtrl, which controls the display/interaction of managing the activities
@@ -75,15 +81,31 @@ public class AdminCtrl implements Initializable {
         imagePath.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().imagePath));
         title.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
         consumption.setCellValueFactory(q -> new SimpleStringProperty(String.valueOf(q.getValue().consumption)));
+        buttonList = List.of(edit, delete, imports, add);
+        initializeEventHandlers();
+
+        backButtonHandler();
+        backBtn.setImage(new Image("/client/img/back_btn.png"));
+    }
+
+    /**
+     *  The back button functionality
+     */
+    private void backButtonHandler() {
         ColorAdjust hover = new ColorAdjust();
         hover.setBrightness(-0.05);
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> goBackButton());
-        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
-        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
-        backBtn.setImage(new Image("/client/img/back_btn.png"));
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -195,6 +217,47 @@ public class AdminCtrl implements Initializable {
      */
     public void fadeInAdmin(){
         animation.fadeIn(anchorPane);
+    }
+
+    /**
+     * Gives a button its event handlers
+     * @param btn the button to give event handlers to
+     */
+    private void addEventHandlersToButton(Button btn) {
+
+        btn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> eventHandlerButtonMouseEntered(btn));
+        btn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> eventHandlerButtonMouseExited(btn));
+
+    }
+
+    /**
+     * The event handler called when the user hovers over a button
+     * @param btn the button that was hovered over
+     */
+    private void eventHandlerButtonMouseEntered(Button btn) {
+
+        btn.getStyleClass().add("hover-buttonDark");
+        btn.getStyleClass().add("hover-cursor");
+    }
+
+    /**
+     * The event handler called when the user stops hovering over a button
+     * @param btn the button that was stopped hovering over
+     */
+    private void eventHandlerButtonMouseExited(Button btn) {
+
+        btn.getStyleClass().remove("hover-buttonDark");
+        btn.getStyleClass().remove("hover-cursor");
+
+    }
+
+    /**
+     * Initializes the event handlers of all buttons
+     */
+    private void initializeEventHandlers(){
+
+        buttonList.forEach(this::addEventHandlersToButton);
+
     }
 
 }

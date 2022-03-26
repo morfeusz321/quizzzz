@@ -147,10 +147,6 @@ public class MainCtrl {
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
-        this.username.getStylesheets().add(
-                MainScreenCtrl.class.getResource(
-                        "/client/stylesheets/Input.css"
-                ).toExternalForm());
         this.username.setFill(Color.valueOf("#F0EAD6"));
 
         initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
