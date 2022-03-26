@@ -22,17 +22,23 @@ import com.google.inject.Inject;
 
 import commons.*;
 
-import commons.gameupdate.GameUpdate;
-import commons.gameupdate.GameUpdateGameStarting;
-import commons.gameupdate.GameUpdatePlayerJoined;
-import commons.gameupdate.GameUpdatePlayerLeft;
+import commons.gameupdate.*;
 
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Scanner;
 
 public class MainCtrl {
 
@@ -76,6 +82,7 @@ public class MainCtrl {
     private HelpScreenCtrl helpScreenCtrl;
     private Scene helpScene;
 
+    private String usernamePrefill;
     private String serverAddressPrefill;
 
     /**
@@ -124,31 +131,40 @@ public class MainCtrl {
 
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
+        this.mainScreen.setFill(Color.valueOf("#F0EAD6"));
 
         this.helpScreenCtrl = helpScreen.getKey();
         this.helpScene = new Scene(helpScreen.getValue());
+        this.helpScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.userCtrl = username.getKey();
         this.username = new Scene(username.getValue());
+        this.username.setFill(Color.valueOf("#F0EAD6"));
 
         initializeQuestionControllersAndScenes(generalQ, comparisonQ, estimationQ, mostExpensiveQ);
 
         this.waitingRoomCtrl = waitingRoom.getKey();
         this.waitingRoom = new Scene(waitingRoom.getValue());
+        this.waitingRoom.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
+        this.adminScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminEditCtrl = adminEditScene.getKey();
         this.adminEditScene = new Scene(adminEditScene.getValue());
+        this.adminEditScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.connectToServerCtrl = connectToServer.getKey();
         this.connectToServer = new Scene(connectToServer.getValue());
+        this.connectToServer.setFill(Color.valueOf("#F0EAD6"));
 
         this.leaderboardCtrl = leaderboard.getKey();
         this.leaderboard = new Scene(leaderboard.getValue());
+        this.leaderboard.setFill(Color.valueOf("#F0EAD6"));
 
         initializeOnCloseEvents();
+        setUsernamePrefill(getUsernamePrefillFromFile());
         setServerAddressPrefill("localhost:8080");
 
         showMainScreen();
@@ -197,6 +213,7 @@ public class MainCtrl {
 
         primaryStage.setOnCloseRequest(event -> {
             sendLeaveMessageToServer();
+            saveUsernamePrefillToFile(usernamePrefill);
             System.exit(0);
         });
     }
@@ -206,6 +223,7 @@ public class MainCtrl {
      */
     public void showWaitingRoom() {
         primaryStage.setTitle("Waiting room");
+        waitingRoomCtrl.fadeInWait();
         primaryStage.setScene(waitingRoom);
     }
 
@@ -254,6 +272,7 @@ public class MainCtrl {
      */
     public void showMainScreen() {
         primaryStage.setTitle("Quizzz");
+        mainScreenCtrl.fadeInMain();
         primaryStage.setScene(mainScreen);
     }
 
@@ -262,6 +281,7 @@ public class MainCtrl {
      */
     public void showHelpScreen() {
         primaryStage.setTitle("Help");
+        helpScreenCtrl.fadeInHelp();
         primaryStage.setScene(helpScene);
     }
 
@@ -287,13 +307,14 @@ public class MainCtrl {
 
         primaryStage.setTitle("Username input");
 
+        userCtrl.fadeInUser();
         primaryStage.setScene(username);
         userCtrl.setTextGameType();
         userCtrl.showImage();
         username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
 
         userCtrl.updateServerAddressPrefill();
-        username.setOnKeyPressed(e -> userCtrl.keyPressed(e));
+        userCtrl.updateUsernamePrefill();
 
     }
 
@@ -334,19 +355,37 @@ public class MainCtrl {
     }
 
     /**
-     * Handles updates incoming from the game long poll loop, displaying the right question
+     * Handles updates incoming from the game long poll loop, displaying the right question or other screens
      * when it is necessary
-     * @param s the body of the incoming update TODO: make this not a string haha
+     * @param gameUpdate the incoming game update
      */
-    private void incomingQuestionHandler(String s) {
+    private void incomingQuestionHandler(GameUpdate gameUpdate) {
 
-        if(s.equals("20")) {
+        if(gameUpdate instanceof GameUpdateGameFinished gameUpdateGameFinished) {
+
+            // This game update can later contain metadata about the game like scores or anything
+            // else the client would want to display after the game ends
+            // TODO: for now this just goes to the main screen
             Platform.runLater(this::showMainScreen);
-            return;
-        }
 
-        gameManager.setCurrentQuestionByIdx(Integer.parseInt(s));
-        Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
+        } else if(gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
+
+            gameManager.setCurrentQuestionByIdx(gameUpdateNextQuestion.getQuestionIdx());
+            Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
+
+        } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+
+            // TODO: display transition screen, this gameupdate already contains an answer response entity w/ the necessary information for the screen
+
+            System.out.println("transition period");
+
+        } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
+
+            // TODO: display the transition leaderboard, this gameupdate contains the score list
+
+            System.out.println("leaderboard");
+
+        }
 
     }
 
@@ -358,6 +397,29 @@ public class MainCtrl {
     public GameType getSelectedGameType() {
 
         return mainScreenCtrl.selectedGameType;
+
+    }
+
+    /**
+     * Sets the username prefill to be used throughout the application. The username prefill
+     * is a String of text that is automatically entered for the user everywhere a username
+     * can be entered, such as when joining a game. This way, the player doesn't have to re-enter
+     * their username every time
+     * @param usernamePrefill the username prefill to be used
+     */
+    public void setUsernamePrefill(String usernamePrefill) {
+
+        this.usernamePrefill = usernamePrefill;
+
+    }
+
+    /**
+     * Returns the username last entered by the player to join a server.
+     * @return the current username prefill to be used
+     */
+    public String getSavedUsernamePrefill() {
+
+        return this.usernamePrefill;
 
     }
 
@@ -394,6 +456,7 @@ public class MainCtrl {
         primaryStage.setTitle("Connect to server");
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(AdminCtrl.class.getName());
+        connectToServerCtrl.fadeInServer();
         primaryStage.setScene(connectToServer);
 
     }
@@ -405,6 +468,7 @@ public class MainCtrl {
     public void showAdminServerConfirmed() {
 
         primaryStage.setTitle("Admin");
+        adminCtrl.fadeInAdmin();
         primaryStage.setScene(adminScene);
         adminCtrl.refresh();
         adminCtrl.setScene(adminScene);
@@ -430,6 +494,7 @@ public class MainCtrl {
         primaryStage.setTitle("Connect to server");
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(LeaderboardCtrl.class.getName());
+        connectToServerCtrl.fadeInServer();
         primaryStage.setScene(connectToServer);
 
     }
@@ -442,8 +507,65 @@ public class MainCtrl {
 
         primaryStage.setTitle("Leaderboard");
         primaryStage.setScene(leaderboard);
-
+        leaderboardCtrl.fadeInLeaderboard();
         leaderboardCtrl.populateLeaderboard();
+
+    }
+
+    /**
+     * Loads the last used username by the player from a file that was created when
+     * the application was last closed
+     * @return the username loaded from the file
+     */
+    public String getUsernamePrefillFromFile() {
+
+        Scanner fileReader;
+
+        try {
+            URI uri = MainCtrl.class.getResource("/client/data/data.quizzz").toURI();
+            File data = new File(uri);
+            fileReader = new Scanner(data);
+        } catch (NullPointerException | URISyntaxException | FileNotFoundException e) {
+            return "";
+        }
+
+        while(fileReader.hasNextLine()) {
+            String line = fileReader.nextLine();
+            if(line.startsWith("username: ")) {
+                try {
+                    return line.split(": ")[1];
+                } catch(IndexOutOfBoundsException e) {
+                    return "";
+                }
+            }
+        }
+
+        return "";
+
+    }
+
+    /**
+     * Saves the currently stored username prefill to a file, to be loaded again
+     * when the application next starts up
+     * @param username the username to store in the file
+     */
+    public void saveUsernamePrefillToFile(String username) {
+
+        try {
+
+            String filePath = MainCtrl.class.getResource("/client/data/").toExternalForm();
+            filePath += "data.quizzz";
+            URI uri = URI.create(filePath);
+
+            File data = new File(uri);
+
+            FileWriter fileWriter = new FileWriter(data, false);
+            fileWriter.write("username: " + username);
+            fileWriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 

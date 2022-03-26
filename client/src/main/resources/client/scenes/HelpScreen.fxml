@@ -7,7 +7,7 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import java.lang.String?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" styleClass="background" prefWidth="1344.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpScreenCtrl">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" styleClass="background" prefWidth="1344.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpScreenCtrl">
    <stylesheets>
       <String fx:value="/client/stylesheets/help-style.css" />
    </stylesheets>

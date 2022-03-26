@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Activity;
@@ -14,6 +15,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -24,6 +26,7 @@ import java.util.ResourceBundle;
 public class AdminCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final AnimationUtils animation;
 
     private ObservableList<Activity> data;
 
@@ -48,6 +51,9 @@ public class AdminCtrl implements Initializable {
     @FXML
     private ImageView backBtn;
 
+    @FXML
+    private AnchorPane anchorPane;
+
     private Activity currentActivity;
     private Scene adminScene;
 
@@ -60,6 +66,7 @@ public class AdminCtrl implements Initializable {
     public AdminCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.animation = new AnimationUtils();
     }
 
     @Override
@@ -73,7 +80,7 @@ public class AdminCtrl implements Initializable {
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
-        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> mainCtrl.showMainScreen());
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> goBackButton());
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
         backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
         backBtn.setImage(new Image("/client/img/back_btn.png"));
@@ -166,6 +173,28 @@ public class AdminCtrl implements Initializable {
         currentActivity = activity;
         edit.setDisable(false);
         delete.setDisable(false);
+    }
+
+    /**
+     * when clicking back button the user is redirected to the main page
+     */
+    public void goBackButton(){
+        fadeOutAdmin("main");
+    }
+
+    /**
+     * goes to the given scene and does fading animation
+     * @param nextScene
+     */
+    public void fadeOutAdmin(String nextScene){
+        animation.fadeOut(anchorPane, mainCtrl, nextScene);
+    }
+
+    /**
+     * when entering the scene it does fading animation
+     */
+    public void fadeInAdmin(){
+        animation.fadeIn(anchorPane);
     }
 
 }
