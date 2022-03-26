@@ -17,13 +17,15 @@ public class QuestionGeneratorTest {
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
     private QuestionGenerator questionGenerator;
+    private CommonUtils utils;
 
     @BeforeEach
     public void setup() {
 
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController);
+        utils = new CommonUtils();
+        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController, utils);
 
     }
 
