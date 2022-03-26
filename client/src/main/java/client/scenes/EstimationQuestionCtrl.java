@@ -69,9 +69,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         answerTxtField.textProperty().addListener(
                 (observableValue, oldValue, newValue) -> {
                     // special case of empty string (interpreted as 0)
-                    if(newValue.equals("")){
-                        answerTxtField.setText("0");
-                        slideBar.setValue(0);
+                    if(newValue.equals("") && 0 >= slideBar.getMin()){
+                        answerTxtField.setText(String.valueOf(slideBar.getMin()));
+                        slideBar.setValue(slideBar.getMin());
                         return;
                     }
                     // check whether it is an integer
