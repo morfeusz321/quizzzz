@@ -74,11 +74,17 @@ public class QuestionGenerator {
         if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
-            aw.add((long) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
-            aw.add( a.consumption + " Wh");
-            aw.add((long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
+
+            long tmpConsumption = (long) (utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption);
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            tmpConsumption = (long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption)));
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            String mainConsumptionString = utils.createConsumptionString(a.consumption);
+            aw.add(mainConsumptionString);
+
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh") + 1);
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(mainConsumptionString) + 1);
+
             questionDBController.add(toReturn);
             return toReturn;
         }
