@@ -2,6 +2,7 @@ package client.scenes;
 
 import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
+import javafx.scene.effect.ColorAdjust;
 import commons.GameType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -207,9 +208,21 @@ public class MainScreenCtrl implements Initializable {
      */
     private void leaderboardHandler() {
 
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation( 0.1);
+        hover.setHue(-0.02);
+
+
         leaderboard.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showLeaderboard());
-        leaderboard.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> leaderboard.getStyleClass().add("hover-cursor"));
-        leaderboard.addEventHandler(MouseEvent.MOUSE_EXITED, e -> leaderboard.getStyleClass().remove("hover-cursor"));
+        leaderboard.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            leaderboard.getStyleClass().add("hover-cursor");
+            leaderboard.setEffect(hover);
+        });
+        leaderboard.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            leaderboard.getStyleClass().remove("hover-cursor");
+            leaderboard.setEffect(null);
+        });
     }
 
     /**
@@ -217,9 +230,20 @@ public class MainScreenCtrl implements Initializable {
      */
     private void helpHandler() {
 
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness( -0.1);
+        hover.setSaturation(0.15);
+        hover.setHue(-0.03);
+
         help.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showHelp());
-        help.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> help.getStyleClass().add("hover-cursor"));
-        help.addEventHandler(MouseEvent.MOUSE_EXITED, e -> help.getStyleClass().remove("hover-cursor"));
+        help.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            help.getStyleClass().add("hover-cursor");
+            help.setEffect(hover);
+        });
+        help.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            help.getStyleClass().remove("hover-cursor");
+            help.setEffect(null);
+        });
     }
 
 }
