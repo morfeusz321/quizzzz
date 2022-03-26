@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
@@ -126,12 +127,24 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         resizeQuestionHandler.setText((int) title.getFont().getSize());
 
         // TODO: handle slider and other question-dependent objects (max/min etc.)
-        slideBar.setMax(200);
-        maxLabel.setText("200");
-        slideBar.setMin(0);
-        minLabel.setText("0");
-        answerTxtField.setText("0");
-        slideBar.setValue(0);
+
+        long min = Long.parseLong(q.answerOptions.get(0));
+        long max = Long.parseLong(q.answerOptions.get(1));
+        System.out.println(min + " " + max + " " + q.answerOptions.get(2));
+        Text maxText = new Text();
+        Text minText = new Text();
+        maxText.setText(String.valueOf(max));
+        minText.setText(String.valueOf(min));
+        DynamicText maxTextDynamic = new DynamicText(maxText, 25, 10, "Karla");
+        DynamicText minTextDynamic = new DynamicText(minText, 25, 10, "Karla");
+        maxTextDynamic.setText((int)maxText.getFont().getSize());
+        minTextDynamic.setText((int)minText.getFont().getSize());
+        slideBar.setMax(max);
+        maxLabel.setText(maxText.getText());
+        slideBar.setMin(min);
+        minLabel.setText(minText.getText());
+        answerTxtField.setText(String.valueOf(min));
+        slideBar.setValue(slideBar.getMin());
         answerSet = false;
         setAnswerBtn.setText("Set as answer");
         slideBar.setDisable(false);

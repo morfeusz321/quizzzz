@@ -9,6 +9,9 @@ build/
 
 **/*.swp
 
+### Client persistent data ###
+client/src/main/resources/data/data.quizzz
+
 ### Activity repo ###
 server/src/main/resources/activities
 
