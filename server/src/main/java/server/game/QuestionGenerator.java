@@ -15,18 +15,24 @@ public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
+    private final CommonUtils utils;
 
     /**
      * Creates the question generator
      * @param random               the random number generator to be used by this controller
      * @param activityDBController the interface with the activity database to be used for generation
      * @param questionDBController the interface with the question database to be used for generation
+     * @param utils                an instance of the CommonUtils used for the SI prefixes
      */
-    public QuestionGenerator(Random random, ActivityDBController activityDBController, QuestionDBController questionDBController) {
+    public QuestionGenerator(Random random,
+                             ActivityDBController activityDBController,
+                             QuestionDBController questionDBController,
+                             CommonUtils utils) {
 
         this.random = random;
         this.activityDBController = activityDBController;
         this.questionDBController = questionDBController;
+        this.utils = utils;
 
     }
 
@@ -53,8 +59,6 @@ public class QuestionGenerator {
      * @return A GeneralQuestion, or null if no question can be generated
      */
     public Question getGeneralQuestion() {
-
-        CommonUtils utils = new CommonUtils();
 
         ActivityDB activityDB = activityDBController.getInternalDB();
 
