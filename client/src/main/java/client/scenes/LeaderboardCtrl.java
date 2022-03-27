@@ -7,8 +7,10 @@ import commons.Score;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -48,6 +50,9 @@ public class LeaderboardCtrl {
     @FXML
     private AnchorPane anchorPane;
 
+    @FXML
+    private Button find;
+
     /**
      * Constructor for this controller
      * @param server Utilities for communicating with the server (API endpoint)
@@ -66,6 +71,19 @@ public class LeaderboardCtrl {
      */
     public void initialize() {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
+        backButtonHandler();
+        findHandler();
+    }
+
+    /**
+     * Back Button functionality
+     */
+    private void backButtonHandler() {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             server.disconnect();
             goBackButton();
@@ -75,6 +93,15 @@ public class LeaderboardCtrl {
 
         speechBubble.setImage(new Image("/client/img/speech_bubble.png"));
         this.isEndLeaderboard = false;
+
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -186,6 +213,20 @@ public class LeaderboardCtrl {
      */
     public void fadeInLeaderboard(){
         animation.fadeIn(anchorPane);
+    }
+
+    /**
+     * find Button hover effects
+     */
+    private void findHandler() {
+        find.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            find.getStyleClass().add("hover-cursor");
+            find.getStyleClass().add("hover-buttonDark");
+        });
+        find.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            find.getStyleClass().remove("hover-cursor");
+            find.getStyleClass().remove("hover-buttonDark");
+        });
     }
 
 }

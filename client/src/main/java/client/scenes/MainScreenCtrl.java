@@ -2,16 +2,20 @@ package client.scenes;
 
 import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
+import javafx.scene.effect.ColorAdjust;
 import commons.GameType;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.control.Button;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainScreenCtrl implements Initializable {
@@ -20,6 +24,15 @@ public class MainScreenCtrl implements Initializable {
 
     @FXML
     private ImageView help;
+
+    @FXML
+    private Button singlePlayer;
+
+    @FXML
+    private Button multiPlayer;
+
+    @FXML
+    private Button admin;
 
     @FXML
     private ImageView leaderboard;
@@ -35,6 +48,8 @@ public class MainScreenCtrl implements Initializable {
     private final MainCtrl mainCtrl;
     private boolean lightOn;
     public final AnimationUtils animation;
+    private List<Button> buttonList;
+    private List<ImageView> imageList;
 
     /**
      * Constructor for main screen controller, which controls the interaction of the (main) overview screen
@@ -59,8 +74,12 @@ public class MainScreenCtrl implements Initializable {
         lightning.setImage(new Image("/client/img/main_lightning.png"));
         lightbulb.setImage(new Image("/client/img/main_lightbulb.png"));
         help.setImage(new Image("/client/img/question_mark.png"));
-
+        buttonList = List.of(singlePlayer, multiPlayer, admin);
+        imageList = List.of(leaderboard, help);
         setLightBulbEventHandlers();
+        initializeEventHandlers();
+        leaderboardHandler();
+        helpHandler();
     }
 
     /**
@@ -143,4 +162,89 @@ public class MainScreenCtrl implements Initializable {
     public void fadeInMain(){
         animation.fadeIn(anchorPane);
     }
+
+    /**
+     * Gives a button its event handlers
+     * @param btn the button to give event handlers to
+     */
+    private void addEventHandlersToButton(Button btn) {
+
+        btn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> eventHandlerButtonMouseEntered(btn));
+        btn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> eventHandlerButtonMouseExited(btn));
+
+    }
+
+    /**
+     * The event handler called when the user hovers over a button
+     * @param btn the button that was hovered over
+     */
+    private void eventHandlerButtonMouseEntered(Button btn) {
+
+        btn.getStyleClass().add("hover-buttonDark");
+        btn.getStyleClass().add("hover-cursor");
+    }
+
+    /**
+     * The event handler called when the user stops hovering over a button
+     * @param btn the button that was stopped hovering over
+     */
+    private void eventHandlerButtonMouseExited(Button btn) {
+
+        btn.getStyleClass().remove("hover-buttonDark");
+        btn.getStyleClass().remove("hover-cursor");
+
+    }
+
+    /**
+     * Initializes the event handlers of all buttons
+     */
+    private void initializeEventHandlers(){
+
+        buttonList.forEach(this::addEventHandlersToButton);
+
+    }
+
+    /**
+     *  The leaderboard button functionality
+     */
+    private void leaderboardHandler() {
+
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation( 0.1);
+        hover.setHue(-0.02);
+
+
+        leaderboard.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showLeaderboard());
+        leaderboard.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            leaderboard.getStyleClass().add("hover-cursor");
+            leaderboard.setEffect(hover);
+        });
+        leaderboard.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            leaderboard.getStyleClass().remove("hover-cursor");
+            leaderboard.setEffect(null);
+        });
+    }
+
+    /**
+     *  The help button functionality
+     */
+    private void helpHandler() {
+
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness( -0.1);
+        hover.setSaturation(0.15);
+        hover.setHue(-0.03);
+
+        help.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> showHelp());
+        help.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            help.getStyleClass().add("hover-cursor");
+            help.setEffect(hover);
+        });
+        help.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            help.getStyleClass().remove("hover-cursor");
+            help.setEffect(null);
+        });
+    }
+
 }

@@ -14,6 +14,7 @@
    <stylesheets>
       <String fx:value="client/stylesheets/leaderboard-style.css" />
       <String fx:value="client/stylesheets/screen-style.css" />
+      <String fx:value="client/stylesheets/Input.css" />
    </stylesheets>
    <children>
       <ImageView fx:id="backBtn" fitHeight="110.0" fitWidth="226.0" layoutX="20.0" layoutY="30.0" />
@@ -43,6 +44,6 @@
          </Text>
       </TextFlow>
       <TextField fx:id="username" layoutX="336.0" layoutY="573.0" promptText="Username" styleClass="input" />
-      <Button layoutX="783.0" layoutY="563.0" mnemonicParsing="false" onAction="#find" text="Find" />
+      <Button fx:id = "find" layoutX="783.0" layoutY="563.0" mnemonicParsing="false" onAction="#find" text="Find" />
    </children>
 </AnchorPane>

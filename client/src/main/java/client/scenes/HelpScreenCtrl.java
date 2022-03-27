@@ -39,15 +39,29 @@ public class HelpScreenCtrl implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        backButtonHandler();
+        backBtn.setImage(new Image("/client/img/back_btn.png"));
+    }
+
+    /**
+     *  The back button functionality
+     */
+    private void backButtonHandler() {
         ColorAdjust hover = new ColorAdjust();
         hover.setBrightness(-0.05);
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> fadeOutHelp("main"));
-        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
-        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
-        backBtn.setImage(new Image("/client/img/back_btn.png"));
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**

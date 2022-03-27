@@ -12,7 +12,10 @@
 
 <?import javafx.scene.text.TextFlow?>
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ComparisonQuestionCtrl">
-
+   <stylesheets>
+      <String fx:value="/client/stylesheets/question-style.css" />
+      <String fx:value="/client/stylesheets/screen-style.css" />
+   </stylesheets>
    <children>
       <ImageView fx:id="bgImage" fitHeight="265.0" fitWidth="2034.0" layoutX="-665.0" layoutY="-108.0">
       </ImageView>
