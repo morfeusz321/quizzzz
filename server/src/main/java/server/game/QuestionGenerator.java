@@ -164,8 +164,24 @@ public class QuestionGenerator {
                 return getComparisonQuestion();
             }
 
+            // Create answer options list (activities can not be used as answer options list, as it contains 5
+            // activities, including the actual answer and the title. The actual answer should be guaranteed to be in
+            // the answer options, and the title should never be in it.
+            List<Activity> answerOptions = new ArrayList<>();
+            // Do not add the first activity as this is the title (should not be a selectable answer)
+            answerOptions.add(secondActivity);
+            activities.remove(firstActivity);
+            activities.remove(secondActivity);
+            // Get two random activities from the remaining one's
+            int randomIdx = random.nextInt(3);
+            answerOptions.add(activities.remove(randomIdx));
+            randomIdx = random.nextInt(2);
+            answerOptions.add(activities.remove(randomIdx));
+            // Shuffle for random order
+            Collections.shuffle(answerOptions);
+
             //We return the question
-            Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity)+1);
+            Question toReturn = new ComparisonQuestion(firstActivity, answerOptions, answerOptions.indexOf(secondActivity)+1);
             questionDBController.add(toReturn);
             return toReturn;
         } catch (StackOverflowError e){
