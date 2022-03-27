@@ -284,6 +284,50 @@ public class QuestionGeneratorTest {
 
     }
 
+
+    @Test
+    public void getMoreExpensiveIsNull() {
+
+        // It should not be possible to generate a WhichIsMore question if the consumptions are identical.
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 10);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 10);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+
+        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
+        assertNull(moreExpensive);
+
+    }
+
+    @Test
+    public void getMoreExpensiveRangeTest() {
+
+        // The question should not contain an "obvious" answer, i.e. 4 as an answer. The consumption is out of the
+        // desired range. This is checked in this test.
+        // TODO: when Random with seed is added, change this test. This is testing with randomness, so not desired.
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 11);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 999999999);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+        activityDBController.getInternalDB().save(activity4);
+
+        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
+        List<String> allActivities = new ArrayList<>();
+        allActivities.add(moreExpensive.activityTitle);
+        allActivities.addAll(moreExpensive.answerOptions);
+
+        assertNotNull(moreExpensive);
+        assertFalse(allActivities.contains(activity4.title));
+
+    }
+
     // TODO: the following section is commented out so that we still have a reference for testing receiving answers. As
     //  soon as receiving answers is implemented, we should remove this.
 
