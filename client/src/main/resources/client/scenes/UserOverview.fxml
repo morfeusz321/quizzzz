@@ -25,13 +25,13 @@
          <Text strokeType="OUTSIDE" strokeWidth="0.0" text=" game. " ></Text>
       </TextFlow>
       <Label layoutX="303.0" layoutY="157.0" styleClass="text2" text="Enter your name:" />
-      <Button layoutX="587.0" layoutY="556.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="94.0" text="Join" textAlignment="CENTER" textFill="#252422" wrapText="true">
+      <Button fx:id="join" layoutX="587.0" layoutY="556.0" mnemonicParsing="false" onAction="#join" prefHeight="26.0" prefWidth="94.0" text="Join" textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="inbutton" />
-            <String fx:value="button" />
+            <String fx:value="buttonInput" />
          </styleClass>
       </Button>
-      <TextField fx:id="username" layoutX="411.0" layoutY="331.0" prefHeight="26.0" prefWidth="333.0" promptText="Your name..." styleClass="input" />
-      <TextField fx:id="serverAddress" layoutX="410.0" layoutY="433.0" prefHeight="26.0" prefWidth="334.0" styleClass="input" />
+      <TextField fx:id="username" layoutX="411.0" layoutY="331.0" prefHeight="26.0" prefWidth="333.0" promptText="Your name..." styleClass="inputTextField" />
+      <TextField fx:id="serverAddress" layoutX="410.0" layoutY="433.0" prefHeight="26.0" prefWidth="334.0" styleClass="inputTextField" />
    </children>
 </AnchorPane>

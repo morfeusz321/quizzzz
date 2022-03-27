@@ -51,6 +51,18 @@
     -fx-background-color: #e5d8b2;
 }
 
+.hover-cursor {
+    -fx-cursor: hand;
+}
+
+.hover-cursor-grab{
+    -fx-cursor: grab;
+}
+
+.hover-buttonDark {
+    -fx-background-color: #d6a048;
+}
+
 .selected-answer {
     -fx-background-color: #dabb78;
 }

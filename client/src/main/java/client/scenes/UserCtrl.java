@@ -23,6 +23,7 @@ import commons.gameupdate.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -60,6 +61,9 @@ public class UserCtrl {
     @FXML
     private AnchorPane anchorPane;
 
+    @FXML
+    private Button join;
+
     /**
      * Constructor
      * @param server Utilities for communicating with the server (API endpoint)
@@ -81,6 +85,7 @@ public class UserCtrl {
 
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
         backButtonHandler();
+        joinHandler();
     }
 
     /**
@@ -222,8 +227,14 @@ public class UserCtrl {
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> goBackButton());
-        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
-        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -267,6 +278,22 @@ public class UserCtrl {
      */
     public void fadeInUser(){
         animation.fadeIn(anchorPane);
+    }
+
+    /**
+     *  join button hover effects
+     */
+    private void joinHandler() {
+
+        join.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> join());
+        join.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            join.getStyleClass().add("hover-cursor");
+            join.getStyleClass().add("hover-buttonDark");
+        });
+        join.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            join.getStyleClass().remove("hover-cursor");
+            join.getStyleClass().remove("hover-buttonDark");
+        });
     }
 
 }

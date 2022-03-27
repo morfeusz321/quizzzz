@@ -111,8 +111,15 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
             }
         });
-        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> setAnswerBtn.getStyleClass().add("hover-button"));
-        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> setAnswerBtn.getStyleClass().remove("hover-button"));
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            setAnswerBtn.getStyleClass().add("hover-button");
+            setAnswerBtn.getStyleClass().add("hover-cursor");
+
+        });
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            setAnswerBtn.getStyleClass().remove("hover-button");
+            setAnswerBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
