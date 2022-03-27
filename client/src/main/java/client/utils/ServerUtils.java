@@ -189,8 +189,6 @@ public class ServerUtils {
      * Sends the answer to a question to the server
      * @param answer the answer to send to the server
      * @param playerName the username of the player
-     * @return An AnswerResponseEntity which contains information about whether the answer was correct,
-     * as well as the proximity to the correct answer for estimation questions, and the correct answer
      */
     public void sendAnswerToServer(long answer, String playerName) {
 
