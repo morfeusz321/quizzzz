@@ -44,8 +44,8 @@ public interface ActivityDB extends JpaRepository<Activity, String> {
             "AND CONSUMPTION NOT IN :consumptions\n" +
             "ORDER BY RAND() LIMIT 1",nativeQuery = true)
     public Activity getActivityExclAndInRange(@Param("ids") Collection<String> ids,
-                                              @Param("consumptions") Collection<Integer> consumptions,
-                                              @Param("lower") Integer lower,
-                                              @Param("upper") Integer upper);
-    
+                                              @Param("consumptions") Collection<Long> consumptions,
+                                              @Param("lower") long lower,
+                                              @Param("upper") long upper);
+
 }
