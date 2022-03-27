@@ -7,7 +7,11 @@
 
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.text.Text?>
+
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" style="-fx-background-color: #F0EAD6;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.UserCtrl">
+   <stylesheets>
+      <String fx:value="/client/stylesheets/Input.css" />
+   </stylesheets>
    <children>
       <ImageView fx:id="backBtn" fitHeight="77.0" fitWidth="158.0" layoutX="30.0" layoutY="25.0" />
       <TextFlow layoutX="320.0" layoutY="115.0" styleClass="text1" >

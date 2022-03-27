@@ -7,8 +7,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import java.lang.String?>
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="background" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
-   <children>
+    <stylesheets>
+        <String fx:value="/client/stylesheets/admin-style.css" />
+    </stylesheets>
+    <children>
       <TableView fx:id="table" layoutX="38.0" layoutY="28.0" onMouseClicked="#handleClickTableView" prefHeight="534.0" prefWidth="1275.0">
         <columns>
             <TableColumn fx:id="id" prefWidth="137.0" text="ID" />
