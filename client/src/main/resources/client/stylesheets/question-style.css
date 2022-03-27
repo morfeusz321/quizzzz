@@ -55,6 +55,10 @@
     -fx-cursor: hand;
 }
 
+.hover-cursor-grab{
+    -fx-cursor: grab;
+}
+
 .hover-buttonDark {
     -fx-background-color: #d6a048;
 }
