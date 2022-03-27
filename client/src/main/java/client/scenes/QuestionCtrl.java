@@ -5,8 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.animation.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -91,9 +90,10 @@ public abstract class QuestionCtrl {
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
      * is handled that is shared for all different question types. The controls of those question type screens extend
      * from this class.
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
-     * @param utils Common utilities (for server- and client-side)
+     * @param utils    Common utilities (for server- and client-side)
      */
     @Inject
     public QuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
@@ -119,14 +119,14 @@ public abstract class QuestionCtrl {
     /**
      * Refreshes the progressbar
      */
-    protected void refreshProgressBar(){
+    protected void refreshProgressBar() {
         startProgressbar(15000);
     }
 
     /**
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
-    protected void showImages(){
+    protected void showImages() {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         decreaseTime.setImage(new Image("/client/img/clock_btn.png"));
         doublePoints.setImage(new Image("/client/img/2x_btn.png"));
@@ -142,7 +142,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the event handlers of all emojis
      */
-    private void initializeEmojiEventHandlers(){
+    private void initializeEmojiEventHandlers() {
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         happyEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(happyEmoji));
         sadEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(sadEmoji));
@@ -154,7 +154,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the event handlers of the powers
      */
-    protected void initializePowerEventHandlers(){
+    protected void initializePowerEventHandlers() {
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("decrease time"));
         doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("double points"));
@@ -193,9 +193,8 @@ public abstract class QuestionCtrl {
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                                                                    mainCtrl.sendLeaveMessageToServer();
-                                                                    mainCtrl.showMainScreen();
-                                                                });
+            mainCtrl.exitWhileInTheGame();
+        });
         // TODO: when the menu screen is added, modify this
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             backBtn.setEffect(hover);
@@ -209,9 +208,10 @@ public abstract class QuestionCtrl {
 
     /**
      * This handles the animation of the time-bar and the setting of the time-label ("time left: ", "time ran out").
+     *
      * @param timeInMillis The time in milliseconds which the time-bar should take until the "time runs out"
      */
-    private void startProgressbar(int timeInMillis){
+    private void startProgressbar(int timeInMillis) {
         timeBar.setProgress(1);
         int remainingTime = timeInMillis / 1000; // in seconds
 
@@ -219,7 +219,7 @@ public abstract class QuestionCtrl {
                 new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
         );
         Timeline changeLabel = new Timeline();
-        for(int i = 0; i <= remainingTime; i++){
+        for (int i = 0; i <= remainingTime; i++) {
             int finalI = i;
             changeLabel.getKeyFrames().add(
                     new KeyFrame(Duration.seconds(remainingTime - i),
@@ -235,9 +235,10 @@ public abstract class QuestionCtrl {
 
     /**
      * Displays an emoji animation for a specific emoji
+     *
      * @param clickedEmoji The image view which was clicked (emoji in the emoji pane)
      */
-    private void emojiAnimation(ImageView clickedEmoji){
+    private void emojiAnimation(ImageView clickedEmoji) {
 
         ImageView emoji = new ImageView(clickedEmoji.getImage());
         anchorPane.getChildren().add(emoji);
@@ -286,6 +287,7 @@ public abstract class QuestionCtrl {
 
     /**
      * TODO: handle powers here
+     *
      * @param power A string describing the power that was clicked
      */
     public void handlePower(String power) {
@@ -302,9 +304,9 @@ public abstract class QuestionCtrl {
 
         Line line = new Line();
         line.setStartX(605); // width of pane
-        line.setStartY(132/2.0); // height of pane/2
-        line.setEndX(605/2.0); // width of pane/2
-        line.setEndY(132/2.0); // height of pane/2
+        line.setStartY(132 / 2.0); // height of pane/2
+        line.setEndX(605 / 2.0); // width of pane/2
+        line.setEndY(132 / 2.0); // height of pane/2
 
         PathTransition pathTransition = new PathTransition();
         pathTransition.setDuration(Duration.millis(350));
@@ -340,9 +342,9 @@ public abstract class QuestionCtrl {
     /**
      * sets the maximum height a question title can have
      */
-    private void dynamicTextQuestion(){
+    private void dynamicTextQuestion() {
         title.setText("");
-        resizeQuestionHandler = new DynamicText(title, 170, 35, "System Bold Italic" );
+        resizeQuestionHandler = new DynamicText(title, 170, 35, "System Bold Italic");
     }
 
     /**
