@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
 import commons.GameType;
 import javafx.event.ActionEvent;
@@ -33,6 +34,7 @@ public class MainScreenCtrl implements Initializable {
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
     private boolean lightOn;
+    public final AnimationUtils animation;
 
     /**
      * Constructor for main screen controller, which controls the interaction of the (main) overview screen
@@ -43,6 +45,7 @@ public class MainScreenCtrl implements Initializable {
     public MainScreenCtrl(ServerUtils server, MainCtrl mainCtrl) {
         this.server = server;
         this.mainCtrl = mainCtrl;
+        this.animation = new AnimationUtils();
     }
 
     /**
@@ -87,10 +90,9 @@ public class MainScreenCtrl implements Initializable {
      * @param event click on singleplayer button
      */
     @FXML
-    private void singlePlayer(ActionEvent event){
-
+    private void singlePlayer(ActionEvent event) throws InterruptedException {
         this.selectedGameType = GameType.SINGLEPLAYER;
-        mainCtrl.showUsernameInputScreen();
+        fadeOutMain("user");
 
     }
 
@@ -100,9 +102,8 @@ public class MainScreenCtrl implements Initializable {
      */
     @FXML
     private void multiPlayer(ActionEvent event) {
-
         this.selectedGameType = GameType.MULTIPLAYER;
-        mainCtrl.showUsernameInputScreen();
+        fadeOutMain("user");
 
     }
 
@@ -110,7 +111,7 @@ public class MainScreenCtrl implements Initializable {
      * Opens the "please connect to server" screen, and subsequently the admin screen
      */
     public void showAdmin() {
-        mainCtrl.showAdmin();
+        fadeOutMain("admin");
     }
 
     /**
@@ -124,7 +125,21 @@ public class MainScreenCtrl implements Initializable {
      * Opens the help screen
      */
     public void showHelp() {
-        mainCtrl.showHelpScreen();
+        fadeOutMain("help");
     }
 
+    /**
+     * goes to the given scene and does fading animation
+     * @param nextScene
+     */
+    public void fadeOutMain(String nextScene){
+        animation.fadeOut(anchorPane, mainCtrl, nextScene);
+    }
+
+    /**
+     * when entering the scene it does fading animation
+     */
+    public void fadeInMain(){
+        animation.fadeIn(anchorPane);
+    }
 }
