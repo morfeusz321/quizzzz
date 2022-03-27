@@ -31,7 +31,7 @@ class QuestionTest {
 
         this.generalQuestion = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         this.comparisonQuestion = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        this.estimationQuestion = new EstimationQuestion(activity1);
+        this.estimationQuestion = new EstimationQuestion(activity1, List.of("0", "200", "20"));
         this.whichIsMoreQuestion = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
 
     }
@@ -50,7 +50,7 @@ class QuestionTest {
 
         Question generalQuestion = new GeneralQuestion(activityNamed, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         Question comparisonQuestion = new ComparisonQuestion(activityNamed, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion = new EstimationQuestion(activityNamed);
+        Question estimationQuestion = new EstimationQuestion(activityNamed, List.of("0", "200", "20"));
 
         assertEquals("How much energy does taking a shower for 2 minutes take?", generalQuestion.displayQuestion());
         assertEquals("Instead of taking a shower for 2 minutes, you could use the same amount of energy for...", comparisonQuestion.displayQuestion());
@@ -69,7 +69,7 @@ class QuestionTest {
         generalQuestion2.questionId = generalQuestion.questionId;
         Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
         comparisonQuestion2.questionId = comparisonQuestion.questionId;
-        Question estimationQuestion2 = new EstimationQuestion(activity1);
+        Question estimationQuestion2 = new EstimationQuestion(activity1, List.of("0", "200", "20"));
         estimationQuestion2.questionId = estimationQuestion.questionId;
         Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
         whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
@@ -91,7 +91,7 @@ class QuestionTest {
         generalQuestion2.questionId = generalQuestion.questionId;
         Question comparisonQuestion2 = new ComparisonQuestion(activity12, List.of(activity22, activity32, activity42), 3);
         comparisonQuestion2.questionId = comparisonQuestion.questionId;
-        Question estimationQuestion2 = new EstimationQuestion(activity12);
+        Question estimationQuestion2 = new EstimationQuestion(activity12, List.of("0", "200", "20"));
         estimationQuestion2.questionId = estimationQuestion.questionId;
         Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
         whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
@@ -106,7 +106,7 @@ class QuestionTest {
     void testNotEquals() {
         Question generalQuestion2 = new GeneralQuestion(activity1, List.of("5 Wh", "10 Wh", "200 Wh"), 3);
         Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
-        Question estimationQuestion2 = new EstimationQuestion(activity1);
+        Question estimationQuestion2 = new EstimationQuestion(activity1, List.of("0", "200", "20"));
         Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
 
         assertNotEquals(generalQuestion, generalQuestion2);
@@ -121,7 +121,7 @@ class QuestionTest {
         generalQuestion2.questionId = generalQuestion.questionId;
         Question comparisonQuestion2 = new ComparisonQuestion(activity1, List.of(activity2, activity3, activity4), 3);
         comparisonQuestion2.questionId = comparisonQuestion.questionId;
-        Question estimationQuestion2 = new EstimationQuestion(activity1);
+        Question estimationQuestion2 = new EstimationQuestion(activity1, List.of("0", "200", "20"));
         estimationQuestion2.questionId = estimationQuestion.questionId;
         Question whichIsMoreQuestion2 = new WhichIsMoreQuestion(List.of(activity1,activity2),1);
         whichIsMoreQuestion2.questionId = whichIsMoreQuestion.questionId;
