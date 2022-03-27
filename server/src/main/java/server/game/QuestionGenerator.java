@@ -67,7 +67,7 @@ public class QuestionGenerator {
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent()) {
+        if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
             aw.add((long) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
@@ -93,6 +93,12 @@ public class QuestionGenerator {
         try {
             List<Activity> activities = activityDBController.getThreeRandomActivities();
 
+            // Check for more safety whether there is an activity that is null, if so, something went
+            // wrong, so null is returned.
+            if(activities.contains(null)) {
+                return null;
+            }
+
             Activity a1 = activities.get(0);
             for(int i=1;i<3;i++){
                 if(a1.consumption<activities.get(i).consumption){
@@ -100,7 +106,7 @@ public class QuestionGenerator {
                 }
             }
 
-            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1));
+            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1)+1);
             questionDBController.add(toReturn);
             return toReturn;
         } catch (Exception e) {
@@ -122,7 +128,7 @@ public class QuestionGenerator {
             //First we sort the list of returned activities
             List<Activity> activities = activityDBController.getFiveRandomActivities();
 
-            if(activities.size() < 5) {
+            if(activities.size() < 5 || activities.contains(null)) {
                 return null;
             }
 
@@ -159,7 +165,7 @@ public class QuestionGenerator {
             }
 
             //We return the question
-            Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
+            Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity)+1);
             questionDBController.add(toReturn);
             return toReturn;
         } catch (StackOverflowError e){
@@ -185,7 +191,7 @@ public class QuestionGenerator {
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent()) {
+        if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
 
@@ -242,6 +248,12 @@ public class QuestionGenerator {
                     // Something went wrong
                     return null;
                 }
+                // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
+                // that it is very unlikely that questions are ever equal.
+                if(questions.contains(generated)){
+                    j--;
+                    continue;
+                }
                 questions.add(generated);
             }
         }
@@ -252,6 +264,12 @@ public class QuestionGenerator {
             if(generated == null){
                 // Something went wrong
                 return null;
+            }
+            // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
+            // that it is very unlikely that questions are ever equal.
+            if(questions.contains(generated)){
+                i--;
+                continue;
             }
             questions.add(generated);
         }
