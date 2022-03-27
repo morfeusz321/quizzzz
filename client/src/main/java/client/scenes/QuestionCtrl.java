@@ -84,6 +84,9 @@ public abstract class QuestionCtrl {
     @FXML
     protected ImageView wrongCross;
 
+    private Timeline changeLabel;
+    private Timeline timeAnim;
+
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
      * is handled that is shared for all different question types. The controls of those question type screens extend
@@ -192,10 +195,10 @@ public abstract class QuestionCtrl {
         timeBar.setProgress(1);
         int remainingTime = timeInMillis / 1000; // in seconds
 
-        Timeline timeAnim = new Timeline(
+        timeAnim = new Timeline(
                 new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
         );
-        Timeline changeLabel = new Timeline();
+        changeLabel = new Timeline();
         for(int i = 0; i <= remainingTime; i++){
             int finalI = i;
             changeLabel.getKeyFrames().add(
@@ -209,6 +212,38 @@ public abstract class QuestionCtrl {
         timeAnim.play();
         changeLabel.play();
     }
+
+    /**
+     * This handles the animation of the time-bar and the setting of the time-label after a time joker has been used
+     */
+    public void handleTimeJoker() {
+        timeAnim.getKeyFrames().clear();
+        changeLabel.getKeyFrames().clear();
+        int remainingTime = 5;
+
+        timeAnim = new Timeline(
+                new KeyFrame(Duration.millis(5000), new KeyValue(timeBar.progressProperty(), 0))
+        );
+        changeLabel = new Timeline();
+        for(int i = 0; i <= remainingTime; i++){
+            int finalI = i;
+            changeLabel.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(remainingTime - i),
+                            finished -> timeLabel.setText("Time left: 00:" + utils.addPrependingZero(finalI))));
+        }
+        changeLabel.setOnFinished(finished -> {
+            timeLabel.setText("Question is over!");
+            disableButtons();
+        });
+
+        timeAnim.play();
+        changeLabel.play();
+    }
+
+    /**
+     * Disables the answer and power buttons, makes then power buttons invisible (overridden by child classes
+     */
+    public abstract void disableButtons();
 
     /**
      * Displays an emoji animation for a specific emoji
@@ -294,7 +329,7 @@ public abstract class QuestionCtrl {
     private void decreaseTime() {
         decreaseTime.setDisable(true);
         decreaseTime.setOpacity(0.3);
-        server.useTimeJoker(mainCtrl.getSavedUsernamePrefill());
+        server.useTimeJoker(mainCtrl.getSavedUsernamePrefill(), mainCtrl.getGameUUID());
         mainCtrl.disableJoker(3);
     }
 

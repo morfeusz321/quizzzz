@@ -5,17 +5,43 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import server.game.Game;
+import server.game.GameController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/jokers")
 public class JokerController {
+    private GameController gameController;
+
     /**
-     * empty
-     * @param username empty
+     * Creates the API controller
+     */
+    public JokerController(GameController gameController) {
+        this.gameController = gameController;
+    }
+
+    /**
+     * Maps to /api/jokers/time. Used for triggering the timer joker for all players except the player who used the joker
+     * @param username the player who used the joker
+     * @param gameIDString The UUID of the current game
+     * @return 400 Bad request: the UUID is wrong or the game does not exist, 200 OK: the username is returned to the client
      */
     @PostMapping("/time")
-    public ResponseEntity<String> test(@RequestParam("username") String username) {
-        System.out.println(username);
+    public ResponseEntity<String> useTimeJoker(@RequestParam("username") String username, @RequestParam("gameUUID") String gameIDString) {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(gameIDString);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game game = gameController.getGame(uuid);
+        if(game == null) return ResponseEntity.badRequest().build();
+
+        game.useTimeJoker(game.getPlayersExcludingCurrent(username));
+
         return ResponseEntity.ok(username);
     }
 }

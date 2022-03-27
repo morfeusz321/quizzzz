@@ -38,7 +38,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class MainCtrl {
 
@@ -88,6 +90,7 @@ public class MainCtrl {
     private boolean usedDouble = false;
     private boolean usedTime = false;
     private boolean usedRemove = false;
+    private Question currentQuestion;
 
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
@@ -326,6 +329,7 @@ public class MainCtrl {
         primaryStage.setTitle("Estimation question");
         primaryStage.setScene(estimationQuestion);
         estimationQuestionCtrl.loadQuestion(q);
+        estimationQuestionCtrl.disableJokers();
         // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
@@ -351,6 +355,7 @@ public class MainCtrl {
      * Shows next question, the question type is selected randomly
      */
     public void nextQuestion(Question q) {
+        currentQuestion = q;
         if(q instanceof GeneralQuestion) {
             showGeneralQuestion(q);
         } else if(q instanceof ComparisonQuestion) {
@@ -448,8 +453,32 @@ public class MainCtrl {
 
             System.out.println("leaderboard");
 
+        } else if(gameUpdate instanceof GameUpdateTimerJoker) {
+            GameUpdateTimerJoker update = (GameUpdateTimerJoker) gameUpdate;
+            List<Player> playerList = update.getPlayerList();
+            for(Player player: playerList) {
+                if(player.getUsername().equals(userCtrl.getSavedCurrentUsername())) {
+                    System.out.println("hello timer joker has been used");
+                    handleTimerJoker();
+                }
+            }
         }
 
+    }
+
+    /**
+     * Method for handling the time joker for each question type.
+     */
+    public void handleTimerJoker() {
+        if(currentQuestion instanceof GeneralQuestion) {
+            generalQuestionCtrl.handleTimeJoker();
+        } else if(currentQuestion instanceof ComparisonQuestion) {
+            comparisonQuestionCtrl.handleTimeJoker();
+        } else if(currentQuestion instanceof EstimationQuestion) {
+            estimationQuestionCtrl.handleTimeJoker();
+        } else if(currentQuestion instanceof WhichIsMoreQuestion) {
+            mostExpensiveQuestionCtrl.handleTimeJoker();
+        }
     }
 
     /**
@@ -667,6 +696,14 @@ public class MainCtrl {
         this.usedRemove = false;
         this.usedDouble = false;
         this.usedTime = false;
+    }
+
+    /**
+     * Method for getting the current game UUID
+     * @return UUID of the current game
+     */
+    public UUID getGameUUID() {
+        return userCtrl.getSavedGameUUID();
     }
 
 }

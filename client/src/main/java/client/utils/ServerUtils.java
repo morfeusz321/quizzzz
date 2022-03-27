@@ -210,9 +210,16 @@ public class ServerUtils {
     }
     */
 
-    public String useTimeJoker(String username) {
+    /**
+     * Informs the server that a time joker has been used using the API endpoint
+     * @param username the player that used the time joker
+     * @param gameUUID UUID of the current game
+     * @return The username of the player if the request was successful
+     */
+    public String useTimeJoker(String username, UUID gameUUID) {
         Form form = new Form();
         form.param("username", username);
+        form.param("gameUUID", gameUUID.toString());
 
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("/api/jokers/time") //

@@ -223,16 +223,16 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      * Disables the answer and power buttons, makes then power buttons invisible
      */
-    private void disableButtons(){
+    @Override
+    public void disableButtons(){
         for(Button x : buttonList){
             x.setDisable(true);
         }
-        fullText.setOpacity(1);
-        correctTick.setOpacity(1);
-        powersText.setOpacity(0);
-        decreaseTime.setOpacity(0);
-        doublePoints.setOpacity(0);
-        removeQuestion.setOpacity(0);
+        //fullText.setOpacity(1);
+        powersText.setOpacity(0.2);
+        decreaseTime.setOpacity(0.2);
+        doublePoints.setOpacity(0.2);
+        removeQuestion.setOpacity(0.2);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         removeQuestion.setDisable(true);

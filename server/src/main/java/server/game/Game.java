@@ -294,6 +294,26 @@ public class Game extends Thread {
     }
 
     /**
+     * Returns a list of all players in this game excluding the player who made the request for this method (time joker)
+     * @return a list of players
+     */
+    public List<Player> getPlayersExcludingCurrent(String username) {
+        Player currentPlayer = this.players.getOrDefault(username, null);
+        List<Player> playerList = new ArrayList<>(players.values());
+        playerList.remove(currentPlayer);
+        return playerList;
+    }
+
+    /**
+     * Informs all registered long polls that a time joker has been used
+     * @param playerList the list of players excluding one
+     */
+    public void useTimeJoker(List<Player> playerList) {
+        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTimerJoker(playerList))));
+        deferredResultMap.clear();
+    }
+
+    /**
      * Returns a player in this game with the specified username
      * @param username the username of the player to retrieve
      * @return the player with that username if it can be found, or null if it can't
