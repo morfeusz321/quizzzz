@@ -90,7 +90,8 @@ public class QuestionGenerator {
      */
     public Question getWhichIsMoreQuestion() {
         try {
-            List<Activity> activities = new ArrayList<>();
+            List<Activity> activities = activityDBController.getThreeRandomActivities();
+            /*List<Activity> activities = new ArrayList<>();
             // Get first activity
             Activity first = activityDBController.getRandomActivity();
             if(first == null) {
@@ -118,7 +119,7 @@ public class QuestionGenerator {
             ));
             if(activities.get(2) == null) {
                 return null; // Something went wrong
-            }
+            }*/
 
             Activity a1 = activities.get(0);
             for(int i=1;i<3;i++){
