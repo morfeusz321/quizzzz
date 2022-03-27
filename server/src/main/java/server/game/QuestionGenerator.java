@@ -89,14 +89,35 @@ public class QuestionGenerator {
      * @return A WhichIsMoreQuestion, or null if no question can be generated
      */
     public Question getWhichIsMoreQuestion() {
-
         try {
-            List<Activity> activities = activityDBController.getThreeRandomActivities();
-
-            // Check for more safety whether there is an activity that is null, if so, something went
-            // wrong, so null is returned.
-            if(activities.contains(null)) {
-                return null;
+            List<Activity> activities = new ArrayList<>();
+            // Get first activity
+            Activity first = activityDBController.getRandomActivity();
+            if(first == null) {
+                return null; // Something went wrong
+            }
+            activities.add(first);
+            // Second activity (exclude first one, consumption +- random percentage value)
+            long[] bounds = getLowerUpperBound(first.consumption);
+            activities.add(activityDBController.getActivityExclAndInRange(
+                    List.of(first.id),
+                    List.of(first.consumption),
+                    bounds[0],
+                    bounds[1]
+            ));
+            if(activities.get(1) == null) {
+                return null; // Something went wrong
+            }
+            // Third activity (exclude first one, consumption +- random percentage value)
+            bounds = getLowerUpperBound((first.consumption + activities.get(1).consumption)/2);
+            activities.add(activityDBController.getActivityExclAndInRange(
+                    List.of(first.id, activities.get(1).id),
+                    List.of(first.consumption, activities.get(1).consumption),
+                    bounds[0],
+                    bounds[1]
+            ));
+            if(activities.get(2) == null) {
+                return null; // Something went wrong
             }
 
             Activity a1 = activities.get(0);
@@ -112,6 +133,53 @@ public class QuestionGenerator {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Generates a (random) upper/lower bound for a given consumption, which is used to generate the new activities
+     * with a close consumption to this one. The bound is dependent on the "scale" of the given consumption.
+     * @param consumption the consumption from which to generate a range
+     * @return an array with two longs, the lower bound (idx 0) and the upper bound (idx 1)
+     */
+    private long[] getLowerUpperBound(long consumption){
+        CommonUtils utils = new CommonUtils();
+
+        if(consumption <= 1000){
+            return new long[]{
+                    0,
+                    (long) (utils.getRandomWithExclusion(random, 3, 5, 1) * consumption)
+            };
+        } else if(consumption <= 10000){
+            return new long[]{
+                    1000,
+                    (long) (utils.getRandomWithExclusion(random, 2, 4, 1) * consumption)
+            };
+        } else if(consumption <= 100000){
+            return new long[]{
+                    10000,
+                    (long) (utils.getRandomWithExclusion(random, 2, 4, 1) * consumption)
+            };
+        } else if(consumption <= 10000000L){
+            return new long[]{
+                    100000,
+                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
+            };
+        } else if(consumption <= 1000000000L){
+            return new long[]{
+                    10000000L,
+                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
+            };
+        } else if(consumption <= 100000000000L){
+            return new long[]{
+                    1000000000L,
+                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
+            };
+        } else {
+            return new long[]{
+                    100000000000L,
+                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
+            };
         }
     }
 
