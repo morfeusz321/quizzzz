@@ -131,18 +131,10 @@ public class MainCtrl {
 
         this.mainScreenCtrl = mainScreen.getKey();
         this.mainScreen = new Scene(mainScreen.getValue());
-        this.mainScreen.getStylesheets().add(
-                MainScreenCtrl.class.getResource(
-                        "/client/stylesheets/main-style.css"
-                ).toExternalForm());
         this.mainScreen.setFill(Color.valueOf("#F0EAD6"));
 
         this.helpScreenCtrl = helpScreen.getKey();
         this.helpScene = new Scene(helpScreen.getValue());
-        this.helpScene.getStylesheets().add(
-                MainScreenCtrl.class.getResource(
-                        "/client/stylesheets/help-style.css"
-                ).toExternalForm());
         this.helpScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.userCtrl = username.getKey();
@@ -153,22 +145,10 @@ public class MainCtrl {
 
         this.waitingRoomCtrl = waitingRoom.getKey();
         this.waitingRoom = new Scene(waitingRoom.getValue());
-        this.waitingRoom.getStylesheets().add(
-                WaitingRoomCtrl.class.getResource(
-                        "/client/stylesheets/waiting-room-style.css"
-                ).toExternalForm());
-        this.waitingRoom.getStylesheets().add(
-                WaitingRoomCtrl.class.getResource(
-                        "/client/stylesheets/screen-style.css"
-                ).toExternalForm());
         this.waitingRoom.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminCtrl = adminScene.getKey();
         this.adminScene = new Scene(adminScene.getValue());
-        this.adminScene.getStylesheets().add(
-                WaitingRoomCtrl.class.getResource(
-                        "/client/stylesheets/admin-style.css"
-                ).toExternalForm());
         this.adminScene.setFill(Color.valueOf("#F0EAD6"));
 
         this.adminEditCtrl = adminEditScene.getKey();
@@ -212,47 +192,16 @@ public class MainCtrl {
 
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
-        this.generalQuestion.getStylesheets().add(
-                QuestionCtrl.class.getResource(
-                        "/client/stylesheets/question-style.css"
-                ).toExternalForm());
-        this.generalQuestion.getStylesheets().add(
-                QuestionCtrl.class.getResource(
-                        "/client/stylesheets/screen-style.css"
-                ).toExternalForm());
+
 
         this.comparisonQuestionCtrl = comparisonQ.getKey();
         this.comparisonQuestion = new Scene(comparisonQ.getValue());
-        this.comparisonQuestion.getStylesheets().add(
-                QuestionCtrl.class.getResource(
-                        "/client/stylesheets/question-style.css"
-                ).toExternalForm());
-        this.comparisonQuestion.getStylesheets().add(
-                QuestionCtrl.class.getResource(
-                        "/client/stylesheets/screen-style.css"
-                ).toExternalForm());
 
         this.estimationQuestionCtrl = estimationQ.getKey();
         this.estimationQuestion = new Scene(estimationQ.getValue());
-        this.estimationQuestion.getStylesheets().add(
-                QuestionCtrl.class.getResource(
-                        "/client/stylesheets/question-style.css"
-                ).toExternalForm());
-        this.estimationQuestion.getStylesheets().add(
-                QuestionCtrl.class.getResource(
-                        "/client/stylesheets/screen-style.css"
-                ).toExternalForm());
 
         this.mostExpensiveQuestionCtrl = mostExpensiveQ.getKey();
         this.mostExpensiveQuestion = new Scene(mostExpensiveQ.getValue());
-        this.mostExpensiveQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/question-style.css"
-                ).toExternalForm());
-        this.mostExpensiveQuestion.getStylesheets().add(
-                GeneralQuestionCtrl.class.getResource(
-                        "/client/stylesheets/screen-style.css"
-                ).toExternalForm());
 
     }
 
