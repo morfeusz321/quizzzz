@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import commons.CommonUtils;
 
+import java.util.List;
 import java.util.Random;
 
 public abstract class QuestionCtrl {
@@ -84,6 +85,8 @@ public abstract class QuestionCtrl {
     @FXML
     protected ImageView wrongCross;
 
+    private List<ImageView> emojiList;
+
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
      * is handled that is shared for all different question types. The controls of those question type screens extend
@@ -103,10 +106,12 @@ public abstract class QuestionCtrl {
      * Initializes the scene, i.e. handles initialization, images
      */
     protected void initialize(){
+        emojiList = List.of(happyEmoji, sadEmoji, angryEmoji, heartEmoji, thumbsUpEmoji);
         showImages();
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
         initializeBackButtonHandlers();
+        initializEmojiHoverHandlers();
         dynamicTextQuestion();
 
     }
@@ -159,11 +164,23 @@ public abstract class QuestionCtrl {
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
-        decreaseTime.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> decreaseTime.setEffect(hover));
-        doublePoints.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> doublePoints.setEffect(hover));
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            decreaseTime.setEffect(hover);
+            decreaseTime.getStyleClass().add("hover-cursor");
+        });
+        doublePoints.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            doublePoints.setEffect(hover);
+            doublePoints.getStyleClass().add("hover-cursor");
+        });
 
-        decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e -> decreaseTime.setEffect(null));
-        doublePoints.addEventHandler(MouseEvent.MOUSE_EXITED, e -> doublePoints.setEffect(null));
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e ->{
+            decreaseTime.setEffect(null);
+            decreaseTime.getStyleClass().remove("hover-cursor");
+        });
+        doublePoints.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            doublePoints.setEffect(null);
+            doublePoints.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -326,5 +343,55 @@ public abstract class QuestionCtrl {
     private void dynamicTextQuestion(){
         title.setText("");
         resizeQuestionHandler = new DynamicText(title, 170, 35, "System Bold Italic" );
+    }
+
+    /**
+     * Initializes the hover handlers for all emojis
+     */
+    private void initializEmojiHoverHandlers(){
+
+        emojiList.forEach(this::addEventHandlersEmoji);
+
+    }
+
+    /**
+     * Gives emojis its event handlers
+     * @param emoji the emoji which is hovered
+     */
+    private void addEventHandlersEmoji(ImageView emoji) {
+
+        emoji.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> eventHandlerEmojiMouseEntered(emoji));
+        emoji.addEventHandler(MouseEvent.MOUSE_EXITED, e -> eventHandlerEmojiMouseExited(emoji));
+
+    }
+
+    /**
+     * The event handler called when the user hovers over an emoji
+     * @param emoji the emoji which the mouse has entered
+     */
+    private void eventHandlerEmojiMouseEntered(ImageView emoji) {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        emoji.setEffect(hover);
+        emoji.getStyleClass().add("hover-cursor");
+
+    }
+
+    /**
+     * The event handler called when the user stops hovering over an emoji
+     * @param emoji the emoji that was stopped hovering over
+     */
+    private void eventHandlerEmojiMouseExited(ImageView emoji) {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        emoji.setEffect(null);
+        emoji.getStyleClass().remove("hover-cursor");
+
     }
 }

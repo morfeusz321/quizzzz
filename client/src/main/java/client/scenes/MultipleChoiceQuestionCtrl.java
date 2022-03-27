@@ -104,8 +104,14 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
-        removeQuestion.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> removeQuestion.setEffect(hover));
-        removeQuestion.addEventHandler(MouseEvent.MOUSE_EXITED, e -> removeQuestion.setEffect(null));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            removeQuestion.setEffect(hover);
+            removeQuestion.getStyleClass().add("hover-cursor");
+        });
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            removeQuestion.setEffect(null);
+            removeQuestion.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -269,6 +275,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     private void eventHandlerAnswerButtonMouseEntered(Button btn) {
 
         btn.getStyleClass().add("hover-button");
+        btn.getStyleClass().add("hover-cursor");
 
     }
 
@@ -279,6 +286,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     private void eventHandlerAnswerButtonMouseExited(Button btn) {
 
         btn.getStyleClass().remove("hover-button");
+        btn.getStyleClass().remove("hover-cursor");
 
     }
 }
