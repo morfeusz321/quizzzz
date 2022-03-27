@@ -90,16 +90,16 @@ public class QuestionGenerator {
      */
     public Question getWhichIsMoreQuestion() {
         try {
-            List<Activity> activities = activityDBController.getThreeRandomActivities();
-            /*List<Activity> activities = new ArrayList<>();
-            // Get first activity
+            List<Activity> activities = new ArrayList<>();
+            // Get first activity: No conditions.
             Activity first = activityDBController.getRandomActivity();
             if(first == null) {
-                return null; // Something went wrong
+                return null; // Something went wrong when trying to retrieve an activity.
             }
             activities.add(first);
-            // Second activity (exclude first one, consumption +- random percentage value)
-            long[] bounds = getLowerUpperBound(first.consumption);
+            // Second activity: Bounds depend on first activity added. The id and consumption of the first activity are
+            // excluded.
+            long[] bounds = getLowerUpperBoundSmall(first.consumption);
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id),
                     List.of(first.consumption),
@@ -107,10 +107,11 @@ public class QuestionGenerator {
                     bounds[1]
             ));
             if(activities.get(1) == null) {
-                return null; // Something went wrong
+                return getWhichIsMoreQuestion(); // The boundaries did not include a fitting activity. Try again.
             }
-            // Third activity (exclude first one, consumption +- random percentage value)
-            bounds = getLowerUpperBound((first.consumption + activities.get(1).consumption)/2);
+            // Third activity: Bounds depend on the average of the first and second activity. The ids and consumptions
+            // of the previous activities are excluded.
+            bounds = getLowerUpperBoundSmall((first.consumption + activities.get(1).consumption)/2);
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id, activities.get(1).id),
                     List.of(first.consumption, activities.get(1).consumption),
@@ -118,8 +119,8 @@ public class QuestionGenerator {
                     bounds[1]
             ));
             if(activities.get(2) == null) {
-                return null; // Something went wrong
-            }*/
+                return getWhichIsMoreQuestion(); // The boundaries did not include a fitting activity. Try again.
+            }
 
             Activity a1 = activities.get(0);
             for(int i=1;i<3;i++){
@@ -131,6 +132,9 @@ public class QuestionGenerator {
             Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1)+1);
             questionDBController.add(toReturn);
             return toReturn;
+        } catch (StackOverflowError e){
+            System.out.println("Error: No valid question could be generated from the database.");
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -143,44 +147,25 @@ public class QuestionGenerator {
      * @param consumption the consumption from which to generate a range
      * @return an array with two longs, the lower bound (idx 0) and the upper bound (idx 1)
      */
-    private long[] getLowerUpperBound(long consumption){
-        CommonUtils utils = new CommonUtils();
-
+    private long[] getLowerUpperBoundSmall(long consumption){
+        // This is a method that creates a "small" range, that is closer to the initial value.
+        // The range does not have to be generated randomly, as the activity itself is chosen randomly
+        // within that range.
+        // TODO: add method with bigger range, so that different "difficulties" can be generated
         if(consumption <= 1000){
-            return new long[]{
-                    0,
-                    (long) (utils.getRandomWithExclusion(random, 3, 5, 1) * consumption)
-            };
+            return new long[]{0, 10000};
         } else if(consumption <= 10000){
-            return new long[]{
-                    1000,
-                    (long) (utils.getRandomWithExclusion(random, 2, 4, 1) * consumption)
-            };
+            return new long[]{1000,10000};
         } else if(consumption <= 100000){
-            return new long[]{
-                    10000,
-                    (long) (utils.getRandomWithExclusion(random, 2, 4, 1) * consumption)
-            };
+            return new long[]{10000,10000000L};
         } else if(consumption <= 10000000L){
-            return new long[]{
-                    100000,
-                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
-            };
+            return new long[]{100000,1000000000L};
         } else if(consumption <= 1000000000L){
-            return new long[]{
-                    10000000L,
-                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
-            };
+            return new long[]{10000000L,100000000000L};
         } else if(consumption <= 100000000000L){
-            return new long[]{
-                    1000000000L,
-                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
-            };
+            return new long[]{1000000000L,100000000000L};
         } else {
-            return new long[]{
-                    100000000000L,
-                    (long) (utils.getRandomWithExclusion(random, 2, 3, 1) * consumption)
-            };
+            return new long[]{100000000000L,Long.MAX_VALUE};
         }
     }
 
