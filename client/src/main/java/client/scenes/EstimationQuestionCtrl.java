@@ -89,15 +89,6 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                     slideBar.setValue(newInt);
                 }
         );
-        slideBar.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
-            slideBar.getStyleClass().add("hover-button");
-            slideBar.getStyleClass().add("hover-cursor-grab");
-
-        });
-        slideBar.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
-            slideBar.getStyleClass().remove("hover-button");
-            slideBar.getStyleClass().remove("hover-cursor-grab");
-        });
         initializeAnswerBtnEventHandlers();
     }
 
