@@ -69,9 +69,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         answerTxtField.textProperty().addListener(
                 (observableValue, oldValue, newValue) -> {
                     // special case of empty string (interpreted as 0)
-                    if(newValue.equals("")){
-                        answerTxtField.setText("0");
-                        slideBar.setValue(0);
+                    if(newValue.equals("") && 0 <= slideBar.getMin()){
+                        answerTxtField.setText(String.valueOf(slideBar.getMin()));
+                        slideBar.setValue(slideBar.getMin());
                         return;
                     }
                     // check whether it is an integer
@@ -112,8 +112,15 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
             }
         });
-        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> setAnswerBtn.getStyleClass().add("hover-button"));
-        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> setAnswerBtn.getStyleClass().remove("hover-button"));
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            setAnswerBtn.getStyleClass().add("hover-button");
+            setAnswerBtn.getStyleClass().add("hover-cursor");
+
+        });
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            setAnswerBtn.getStyleClass().remove("hover-button");
+            setAnswerBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
