@@ -383,7 +383,6 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if (gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
-            QuestionCtrl.questionNumber = 0;
             server.setInGameTrue();
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
@@ -505,6 +504,14 @@ public class MainCtrl {
 
         return this.serverAddressPrefill;
 
+    }
+
+    /**
+     * Returns the game manager (to be used for current question number)
+     * @return the game manager
+     */
+    public GameManager getGameManager() {
+        return gameManager;
     }
 
     /**

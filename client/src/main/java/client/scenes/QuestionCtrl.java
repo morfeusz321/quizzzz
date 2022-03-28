@@ -85,7 +85,6 @@ public abstract class QuestionCtrl {
     protected ImageView wrongCross;
 
     private List<ImageView> emojiList;
-    public static int questionNumber;
 
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
@@ -331,8 +330,7 @@ public abstract class QuestionCtrl {
      * Updates the current number of question label
      */
     private void updateQuestionNumber() {
-        questionNumber++;
-        questionInfo.setText("Question " + questionNumber + "/20");
+        questionInfo.setText("Question " + (mainCtrl.getGameManager().getQuestions().indexOf(mainCtrl.getGameManager().getCurrentQuestion()) + 1) + "/20");
     }
 
     /**
