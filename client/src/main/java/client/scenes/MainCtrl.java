@@ -569,6 +569,10 @@ public class MainCtrl {
 
     }
 
+    /**
+     * Displays the leaderboard with the given list of scores
+     * @param scoreList the list of scores to display
+     */
     public void showLeaderboardWithPresetScores(List<Score> scoreList) {
 
         primaryStage.setTitle("Leaderboard");

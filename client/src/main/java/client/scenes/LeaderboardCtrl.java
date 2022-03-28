@@ -127,6 +127,10 @@ public class LeaderboardCtrl {
 
     }
 
+    /**
+     * Populates the leaderboard with a given list of scores
+     * @param scores the list of scores to display
+     */
     public void populateLeaderboard(List<Score> scores) {
 
         leaderboard.getItems().clear();
