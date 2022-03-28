@@ -47,6 +47,8 @@ import java.util.Scanner;
 
 public class MainCtrl {
 
+    protected static final int MAXIMUM_USERNAME_SIZE = 15;
+
     private final ServerUtils server;
     private GameManager gameManager;
     private Stage primaryStage;
@@ -631,7 +633,11 @@ public class MainCtrl {
             String line = fileReader.nextLine();
             if (line.startsWith("username: ")) {
                 try {
-                    return line.split(": ")[1];
+                    String toReturn = line.split(": ")[1];
+                    if(toReturn.length() > MAXIMUM_USERNAME_SIZE) {
+                        toReturn = toReturn.substring(0, MAXIMUM_USERNAME_SIZE);
+                    }
+                    return toReturn;
                 } catch (IndexOutOfBoundsException e) {
                     return "";
                 }
