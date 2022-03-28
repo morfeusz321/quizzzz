@@ -68,9 +68,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         );
         answerTxtField.textProperty().addListener(
                 (observableValue, oldValue, newValue) -> {
-                    // special case of empty string (interpreted as 0)
+                    // special case of empty string (interpreted as minimum)
                     if(newValue.equals("") && 0 <= slideBar.getMin()){
-                        answerTxtField.setText(String.valueOf(slideBar.getMin()));
+                        answerTxtField.setText(String.valueOf((int) slideBar.getMin()));
                         slideBar.setValue(slideBar.getMin());
                         return;
                     }
