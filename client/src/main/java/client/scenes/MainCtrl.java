@@ -42,6 +42,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainCtrl {
@@ -405,9 +406,9 @@ public class MainCtrl {
             // This game update can later contain metadata about the game like scores or anything
             // else the client would want to display after the game ends
             // TODO: for now this just goes to the main screen
-            leaderboardCtrl.setIsEndLeaderBoardTrue(true);
+            leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.END_GAME_LEADERBOARD);
             leaderboardCtrl.initializeButtonsForMainScreen();
-            Platform.runLater(this::showLeaderboard);
+            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
 
         } else if (gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
 
@@ -422,9 +423,9 @@ public class MainCtrl {
 
         } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
 
-            leaderboardCtrl.setIsEndLeaderBoardTrue(false);
+            leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.MID_GAME_LEADERBOARD);
             leaderboardCtrl.disableButtonsForMainScreen();
-            Platform.runLater(this::showLeaderboardServerConfirmed);
+            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
 
         }
 
@@ -542,6 +543,7 @@ public class MainCtrl {
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(LeaderboardCtrl.class.getName());
         connectToServerCtrl.fadeInServer();
+        leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.MAIN_LEADERBOARD);
         primaryStage.setScene(connectToServer);
 
     }
@@ -564,6 +566,15 @@ public class MainCtrl {
         primaryStage.setScene(leaderboard);
         leaderboardCtrl.fadeInLeaderboard();
         leaderboardCtrl.populateLeaderboard();
+
+    }
+
+    public void showLeaderboardWithPresetScores(List<Score> scoreList) {
+
+        primaryStage.setTitle("Leaderboard");
+        primaryStage.setScene(leaderboard);
+        leaderboardCtrl.fadeInLeaderboard();
+        leaderboardCtrl.populateLeaderboard(scoreList);
 
     }
 

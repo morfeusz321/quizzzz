@@ -23,12 +23,18 @@ import java.util.List;
 
 public class LeaderboardCtrl {
 
+    public enum LeaderboardCtrlState {
+        MAIN_LEADERBOARD,
+        MID_GAME_LEADERBOARD,
+        END_GAME_LEADERBOARD
+    }
+
     private ServerUtils server;
     private MainCtrl mainCtrl;
     private AnimationUtils animation;
 
     private List<String> usernameListInternal;
-    private boolean isEndLeaderboard;
+    private LeaderboardCtrlState state;
 
     @FXML
     private ImageView backBtn;
@@ -92,7 +98,7 @@ public class LeaderboardCtrl {
         lightbulb.setImage(new Image("/client/img/animation/1.png"));
 
         speechBubble.setImage(new Image("/client/img/speech_bubble.png"));
-        this.isEndLeaderboard = false;
+        this.state = LeaderboardCtrlState.MAIN_LEADERBOARD;
 
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             backBtn.setEffect(hover);
@@ -113,6 +119,18 @@ public class LeaderboardCtrl {
         leaderboard.getItems().clear();
 
         List<Score> scores = server.getLeaderboard();
+        for(int i = 0; i < scores.size(); i++) {
+            Score s = scores.get(i);
+            leaderboard.getItems().add((i + 1) + ". " + s.username + " (" + s.score + " pts)");
+            usernameListInternal.add(s.username);
+        }
+
+    }
+
+    public void populateLeaderboard(List<Score> scores) {
+
+        leaderboard.getItems().clear();
+
         for(int i = 0; i < scores.size(); i++) {
             Score s = scores.get(i);
             leaderboard.getItems().add((i + 1) + ". " + s.username + " (" + s.score + " pts)");
@@ -156,7 +174,7 @@ public class LeaderboardCtrl {
      * if the game is ended the button for leaving the game should be enabled and the text should be adjusted
      */
     public void initializeButtonsForMainScreen(){
-        if (isEndLeaderboard){
+        if (state == LeaderboardCtrlState.END_GAME_LEADERBOARD){
             lightbulb.setDisable(false);
             lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 server.disconnect();
@@ -172,7 +190,7 @@ public class LeaderboardCtrl {
      * if the game is still going the buttons should be disabled
      */
     public void disableButtonsForMainScreen(){
-        if (!isEndLeaderboard){
+        if (state == LeaderboardCtrlState.MID_GAME_LEADERBOARD){
             lightbulb.setDisable(true);
             speechBubbleText.setText(" You're already halfway there!");
         }
@@ -182,15 +200,18 @@ public class LeaderboardCtrl {
      * if the leaderboard is opened from main screen the text in the bubble should be changed
      */
     public void changeTextMainScreen(){
-        speechBubbleText.setText(" You can see all the scores now");
+        if(state == LeaderboardCtrlState.MAIN_LEADERBOARD) {
+            speechBubbleText.setText(" You can see all the scores now");
+        }
     }
 
     /**
-     * sets the variable isEndLeaderboard to true
-     * which indicates that the last leaderboard is shown
+     * Sets the state of this controller which indicates which leaderboard should be shown (singleplayer or
+     * multiplayer)
+     * @param state     the desired leaderboard to display
      */
-    public void setIsEndLeaderBoardTrue(boolean isGameFinished) {
-        this.isEndLeaderboard = isGameFinished;
+    public void setLeaderboardCtrlState(LeaderboardCtrlState state) {
+        this.state = state;
     }
 
     /**
