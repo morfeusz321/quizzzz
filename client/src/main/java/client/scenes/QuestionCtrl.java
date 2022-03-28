@@ -327,6 +327,9 @@ public abstract class QuestionCtrl {
         pathTransition.play();
     }
 
+    /**
+     * Updates the current number of question label
+     */
     private void updateQuestionNumber() {
         questionNumber++;
         questionInfo.setText("Question " + questionNumber + "/20");
