@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Player;
@@ -16,6 +17,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
@@ -26,6 +28,7 @@ public class WaitingRoomCtrl {
 
     private final ServerUtils server;
     private final MainCtrl mainCtrl;
+    private final AnimationUtils animation;
 
     @FXML
     private ImageView backBtn;
@@ -48,12 +51,16 @@ public class WaitingRoomCtrl {
     @FXML
     private ImageView lightningRight;
 
+    @FXML
+    private AnchorPane anchorPane;
+
     private int numPlayers;
     private String thisUser;
 
     /**
      * Creates a WaitingRoomCtrl, which controls the display/interaction of the waiting room.
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
@@ -62,13 +69,14 @@ public class WaitingRoomCtrl {
         this.mainCtrl = mainCtrl;
         numPlayers = 0;
         thisUser = "undef"; // default value, should only be displayed if something goes wrong
+        this.animation = new AnimationUtils();
     }
 
     /**
      * Initializes the scene, i.e. handles initialization, images
      */
     @FXML
-    private void initialize(){
+    private void initialize() {
         showImages();
         initializeBackButtonHandlers();
         initializeStartGameHandlers();
@@ -78,7 +86,7 @@ public class WaitingRoomCtrl {
     /**
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
-    private void showImages(){
+    private void showImages() {
 
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         lightbulb.setImage(new Image("/client/img/animation/1.png"));
@@ -101,9 +109,8 @@ public class WaitingRoomCtrl {
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                                                                    mainCtrl.sendLeaveMessageToServer();
-                                                                    mainCtrl.showUsernameInputScreen();
-                                                                });
+            mainCtrl.exitWhileInTheGame();
+        });
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             backBtn.setEffect(hover);
             backBtn.setCursor(Cursor.HAND);
@@ -120,7 +127,7 @@ public class WaitingRoomCtrl {
     private void initializeStartGameHandlers() {
 
         List<Node> elements = List.of(lightbulb, speechBubble, speechBubbleText);
-        for(Node el : elements){
+        for (Node el : elements) {
             el.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> server.startGame());
             el.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> el.setCursor(Cursor.HAND));
             el.addEventHandler(MouseEvent.MOUSE_EXITED, e -> el.setCursor(Cursor.DEFAULT));
@@ -134,7 +141,7 @@ public class WaitingRoomCtrl {
     private void initializeLightbulbAnimation() {
 
         Timeline waving = new Timeline();
-        for(int i = 1; i < 24; i++){
+        for (int i = 1; i < 24; i++) {
             int finalI = i;
             waving.getKeyFrames().add(
                     new KeyFrame(Duration.millis(110 * i),
@@ -153,55 +160,90 @@ public class WaitingRoomCtrl {
 
     /**
      * Adds a player to the list of players displayed in the waiting room
+     *
      * @param player the player to add to the list
      */
     protected void addPlayerToWaitingRoom(Player player) {
 
-        if(!thisUser.equals(player.getUsername())){
+        if (!thisUser.equals(player.getUsername())) {
             Platform.runLater(() -> playerList.getItems().add(player.getUsername()));
         } else {
             Platform.runLater(() -> playerList.getItems().add(0, "\u2015 You: " + player.getUsername() + " \u2015"));
         }
         numPlayers++;
-        playersJoined.setText(numPlayers + " players joined:");
+        updatePlayersJoinedText();
 
     }
 
     /**
      * Removes a player from the list of players displayed in the waiting room
+     *
      * @param player the player to remove from the list
      */
     protected void removePlayerFromWaitingRoom(Player player) {
 
-        if(!thisUser.equals(player.getUsername())){
+        if (!thisUser.equals(player.getUsername())) {
             Platform.runLater(() -> playerList.getItems().remove(player.getUsername()));
         } else {
             Platform.runLater(() -> playerList.getItems().remove("\u2015 You: " + player.getUsername() + " \u2015"));
         }
         numPlayers--;
-        playersJoined.setText(numPlayers + " players joined:");
+        updatePlayersJoinedText();
 
     }
 
     /**
      * Deletes all entries from the player list of the waiting room and then adds all
      * players in the player list in the game update
+     *
      * @param gameUpdateFullPlayerList the game update to load the new player list from
-     * @param username The username of this client
+     * @param username                 The username of this client
      */
     protected void updateWaitingRoomPlayers(GameUpdateFullPlayerList gameUpdateFullPlayerList, String username) {
 
         playerList.getItems().clear();
         thisUser = username;
-        for(Player p : gameUpdateFullPlayerList.getPlayerList()){
-            if(!username.equals(p.getUsername())){
-               playerList.getItems().add(playerList.getItems().size(), p.getUsername());
+        for (Player p : gameUpdateFullPlayerList.getPlayerList()) {
+            if (!username.equals(p.getUsername())) {
+                playerList.getItems().add(playerList.getItems().size(), p.getUsername());
             } else {
                 playerList.getItems().add(0, "\u2015 You: " + p.getUsername() + " \u2015");
             }
         }
         numPlayers = gameUpdateFullPlayerList.getPlayerList().size();
-        playersJoined.setText(numPlayers + " players joined:");
+        updatePlayersJoinedText();
+    }
 
+    /**
+     * Updates the players joined label each time a player joins/leaves
+     */
+    protected void updatePlayersJoinedText() {
+        if (numPlayers == 1) {
+            playersJoined.setText(numPlayers + " player joined:");
+        } else {
+            playersJoined.setText(numPlayers + " players joined:");
+        }
+    }
+
+    /**
+     * when clicking back button the user is redirected to the main page
+     */
+    public void goBackButton(){
+        fadeOutWait("user");
+    }
+
+    /**
+     * goes to the given scene and does fading animation
+     * @param nextScene
+     */
+    public void fadeOutWait(String nextScene){
+        animation.fadeOut(anchorPane, mainCtrl, nextScene);
+    }
+
+    /**
+     * when entering the scene it does fading animation
+     */
+    public void fadeInWait(){
+        animation.fadeIn(anchorPane);
     }
 }

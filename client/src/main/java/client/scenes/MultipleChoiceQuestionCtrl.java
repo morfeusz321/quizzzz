@@ -3,12 +3,17 @@ package client.scenes;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
+import commons.Question;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.util.List;
 
@@ -23,6 +28,28 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
     protected Button answerBtn3;
 
+    @FXML
+    protected Label powersText;
+
+    @FXML
+    protected ImageView decreaseTime;
+
+    @FXML
+    protected ImageView doublePoints;
+
+    @FXML
+    protected Text correctAns;
+
+    @FXML
+    protected TextFlow fullText;
+
+    @FXML
+    protected AnchorPane anchorPane;
+
+    Question question;
+
+    List<Button> buttonList;
+
     /**
      * Creates a MultipleChoiceQuestionCtrl, which controls the display/interaction of all multiple choice question
      * screens. This includes the general question and the comparison question screens.
@@ -36,10 +63,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     * Initializes the scene elements
+     * Initializes the scene elements and the buttonList for answer buttons
      */
     @FXML
     protected void initialize(){
+        buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         super.initialize();
         initializeAnswerEventHandlers();
     }
@@ -52,6 +80,10 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @Override
     protected void showImages(){
         super.showImages();
+        if(correctTick!=null && wrongCross!=null) {
+            correctTick.setImage(new Image("/client/img/right_answer.png"));
+            wrongCross.setImage(new Image("/client/img/wrong_answer.png"));
+        }
         removeQuestion.setImage(new Image("/client/img/minus_1_btn.png"));
     }
 
@@ -72,8 +104,14 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
-        removeQuestion.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> removeQuestion.setEffect(hover));
-        removeQuestion.addEventHandler(MouseEvent.MOUSE_EXITED, e -> removeQuestion.setEffect(null));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            removeQuestion.setEffect(hover);
+            removeQuestion.getStyleClass().add("hover-cursor");
+        });
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            removeQuestion.setEffect(null);
+            removeQuestion.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -81,7 +119,6 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      */
     private void initializeAnswerEventHandlers(){
 
-        List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         buttonList.forEach(this::addEventHandlersToAnswerButton);
 
     }
@@ -99,17 +136,138 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     * The event handler called when an answer button is clicked
+     * The event handler is called when an answer button is clicked
      * @param btn the button that was clicked
      */
     private void eventHandlerAnswerButtonMouseClicked(Button btn) {
+        buttonList.forEach(b -> {
+                                    b.getStyleClass().remove("selected-answer");
+                                    b.getStyleClass().remove("answerCorrect");
+                                    b.getStyleClass().remove("answerIncorrect");
+                                } );
 
-        List<Button> buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
-        buttonList.forEach(b -> b.getStyleClass().remove("selected-answer"));
+        long selectedButton;
+        if(btn.equals(answerBtn1)) {
+            selectedButton = 1;
+        } else if(btn.equals(answerBtn2)) {
+            selectedButton = 2;
+        } else if(btn.equals(answerBtn3)) {
+            selectedButton = 3;
+        } else {
+            return;
+        }
 
-        btn.getStyleClass().add("selected-answer");
+        server.sendAnswerToServer(selectedButton, mainCtrl.getSavedUsernamePrefill());
+        //disableButtons();
+
+        // TODO: use this when transition is implemented?
+        /*
+        if(answer.correct) {
+            placingTick(selectedButton);
+            correctAns.setText("correctly");
+            btn.getStyleClass().add("answerCorrect");
+            fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
+            fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+        } else {
+            fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
+            fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+            placingCross(selectedButton);
+            correctAns.setText("incorrectly");
+            btn.getStyleClass().add("answerIncorrect");
+            buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
+            placingTick( answer.getAnswer());
+        }
+         */
+
 
     }
+
+    /**
+     *  places the tick next to the correct answer
+     * @param num the number of the answer
+     */
+    private void placingTick(long num){
+        switch((int) num){
+            case 1:
+                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight()*0.34848);
+                break;
+            case 2:
+                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight()*0.51010);
+                break;
+            case 3:
+                correctTick.setLayoutX(anchorPane.getWidth()*0.478125);
+                correctTick.setLayoutY(anchorPane.getHeight()*0.67171);
+                break;
+        }
+    }
+
+    /**
+     *  places the cross next an answer
+     * @param num the number of the button
+     */
+    private void placingCross(long num){
+
+        switch((int) num){
+            case 1:
+                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight()*0.34848);
+                break;
+            case 2:
+                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight()*0.51010);
+                break;
+            case 3:
+                wrongCross.setLayoutX(anchorPane.getWidth()*0.478125);
+                wrongCross.setLayoutY(anchorPane.getHeight()*0.67171);
+                break;
+        }
+        wrongCross.setOpacity(1);
+    }
+
+    /**
+     * Disables the answer and power buttons, makes then power buttons invisible
+     */
+    private void disableButtons(){
+        for(Button x : buttonList){
+            x.setDisable(true);
+        }
+        fullText.setOpacity(1);
+        correctTick.setOpacity(1);
+        powersText.setOpacity(0);
+        decreaseTime.setOpacity(0);
+        doublePoints.setOpacity(0);
+        removeQuestion.setOpacity(0);
+        decreaseTime.setDisable(true);
+        doublePoints.setDisable(true);
+        removeQuestion.setDisable(true);
+    }
+
+    /**
+     * Enables the answer and power buttons, makes then power buttons visible
+     */
+    protected void enableButtons(){
+        correctTick.setOpacity(0);
+        fullText.setOpacity(0);
+        wrongCross.setOpacity(0);
+        powersText.setOpacity(1);
+        decreaseTime.setOpacity(1);
+        doublePoints.setOpacity(1);
+        removeQuestion.setOpacity(1);
+        decreaseTime.setDisable(false);
+        doublePoints.setDisable(false);
+        removeQuestion.setDisable(false);
+        for(Button x : buttonList){
+            x.setDisable(false);
+            x.getStyleClass().clear();
+            x.getStyleClass().add("text");
+            x.getStyleClass().add("question-button");
+            x.getStyleClass().add("button");
+        }
+    }
+
+
 
     /**
      * The event handler called when the user hovers over an answer button
@@ -118,6 +276,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     private void eventHandlerAnswerButtonMouseEntered(Button btn) {
 
         btn.getStyleClass().add("hover-button");
+        btn.getStyleClass().add("hover-cursor");
 
     }
 
@@ -128,6 +287,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     private void eventHandlerAnswerButtonMouseExited(Button btn) {
 
         btn.getStyleClass().remove("hover-button");
+        btn.getStyleClass().remove("hover-cursor");
 
     }
 }

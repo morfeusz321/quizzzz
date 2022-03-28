@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
@@ -10,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 
@@ -29,6 +31,15 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     private Button setAnswerBtn;
     @FXML
     private TextField answerTxtField;
+
+    @FXML
+    protected Label powersText;
+
+    @FXML
+    protected ImageView decreaseTime;
+
+    @FXML
+    protected ImageView doublePoints;
 
     private boolean answerSet;
 
@@ -58,9 +69,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         answerTxtField.textProperty().addListener(
                 (observableValue, oldValue, newValue) -> {
                     // special case of empty string (interpreted as 0)
-                    if(newValue.equals("")){
-                        answerTxtField.setText("0");
-                        slideBar.setValue(0);
+                    if(newValue.equals("") && 0 <= slideBar.getMin()){
+                        answerTxtField.setText(String.valueOf(slideBar.getMin()));
+                        slideBar.setValue(slideBar.getMin());
                         return;
                     }
                     // check whether it is an integer
@@ -97,11 +108,18 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                 setAnswerBtn.setText("Edit answer");
                 slideBar.setDisable(true);
                 answerTxtField.setDisable(true);
-                // TODO: send answer to server here
+                server.sendAnswerToServer((long) slideBar.getValue(), mainCtrl.getSavedUsernamePrefill());
             }
         });
-        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> setAnswerBtn.getStyleClass().add("hover-button"));
-        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> setAnswerBtn.getStyleClass().remove("hover-button"));
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            setAnswerBtn.getStyleClass().add("hover-button");
+            setAnswerBtn.getStyleClass().add("hover-cursor");
+
+        });
+        setAnswerBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            setAnswerBtn.getStyleClass().remove("hover-button");
+            setAnswerBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -112,14 +130,27 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
+        resizeQuestionHandler.setText((int) title.getFont().getSize());
 
         // TODO: handle slider and other question-dependent objects (max/min etc.)
-        slideBar.setMax(200);
-        maxLabel.setText("200");
-        slideBar.setMin(0);
-        minLabel.setText("0");
-        answerTxtField.setText("0");
-        slideBar.setValue(0);
+
+        long min = Long.parseLong(q.answerOptions.get(0));
+        long max = Long.parseLong(q.answerOptions.get(1));
+        System.out.println(min + " " + max + " " + q.answerOptions.get(2));
+        Text maxText = new Text();
+        Text minText = new Text();
+        maxText.setText(String.valueOf(max));
+        minText.setText(String.valueOf(min));
+        DynamicText maxTextDynamic = new DynamicText(maxText, 25, 10, "Karla");
+        DynamicText minTextDynamic = new DynamicText(minText, 25, 10, "Karla");
+        maxTextDynamic.setText((int)maxText.getFont().getSize());
+        minTextDynamic.setText((int)minText.getFont().getSize());
+        slideBar.setMax(max);
+        maxLabel.setText(maxText.getText());
+        slideBar.setMin(min);
+        minLabel.setText(minText.getText());
+        answerTxtField.setText(String.valueOf(min));
+        slideBar.setValue(slideBar.getMin());
         answerSet = false;
         setAnswerBtn.setText("Set as answer");
         slideBar.setDisable(false);
@@ -130,6 +161,17 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
         refreshProgressBar();
 
+    }
+
+    /**
+     * Disables the answer and power buttons, makes then power buttons invisible
+     */
+    private void disableButtons(){
+        powersText.setOpacity(0);
+        decreaseTime.setOpacity(0);
+        doublePoints.setOpacity(0);
+        decreaseTime.setDisable(true);
+        doublePoints.setDisable(true);
     }
 
 }

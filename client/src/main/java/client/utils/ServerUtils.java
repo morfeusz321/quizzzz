@@ -21,6 +21,8 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -29,6 +31,7 @@ import java.util.List;
 import commons.*;
 import commons.gameupdate.GameUpdate;
 
+import commons.gameupdate.GameUpdateGameFinished;
 import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -45,9 +48,32 @@ import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class ServerUtils {
 
-    private static String SERVER = "http://localhost:8080/";
-    private static String WS_SERVER = "ws://localhost:8080/websocket";
+    private static String SERVER = "";
+    private static String WS_SERVER = "";
     private StompSession session;
+    private UUID gameUUID;
+    private boolean isInGame = false;
+
+    /**
+     * Tests the current server address to see if a connection can be established, and if
+     * it is indeed a Quizzz Server
+     * @return true if the current server could be connected to and it is a Quizzz Server, false
+     * otherwise
+     */
+    public boolean connectionTest() {
+
+        try {
+            return ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("")
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(String.class)
+                    .equals("Quizzz Server");
+        } catch(Exception e) {
+            return false;
+        }
+
+    }
 
     /**
      * Attempts to establish a WebSocket connection with the server at the specified URL
@@ -69,6 +95,19 @@ public class ServerUtils {
         }
 
         throw new IllegalStateException();
+
+    }
+
+    /**
+     * Disconnects from the WebSocket session
+     */
+    public void disconnect() {
+
+        if(session != null) {
+            if(session.isConnected()) {
+                session.disconnect();
+            }
+        }
 
     }
 
@@ -109,39 +148,63 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a random question from the server using the API endpoint (sends a get request)
-     * @return Returns the retrieved question from the server
+     * Registers for the game loop updates with the current stored game UUID, and sends
+     * all incoming game loop updates to the provided consumer. The long poll loop is automatically
+     * cancelled upon leaving the game by clicking the back button or closing the window, and it is guaranteed
+     * by this method that no further updates will be accepted by the provided consumer after leaving the game.
+     * @param consumer the consumer that accepts incoming game loop updates
      */
-    public Question getRandomQuestion() {
+    public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
+
+        GameUpdate ret = null;
+        while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
+            ret = ClientBuilder.newClient(new ClientConfig())
+                    .target(SERVER).path("api/game/")
+                    .queryParam("gameID", gameUUID.toString())
+                    .queryParam("username", username)
+                    .request(APPLICATION_JSON)
+                    .accept(APPLICATION_JSON)
+                    .get(GameUpdate.class);
+            if(isInGame) consumer.accept(ret);
+        }
+
+    }
+
+    /**
+     * Gets the questions for a specific game using the API endpoint (sends a get request)
+     * @return Returns the retrieved questions from the server
+     */
+    public List<Question> getQuestions() {
 
         return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/random")
+                .target(SERVER).path("api/game/questions")
+                .queryParam( "gameID", gameUUID.toString())
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(Question.class);
+                .get(new GenericType<>() {});
 
     }
 
     /**
      * Sends the answer to a question to the server
-     * @param question the question to answer
      * @param answer the answer to send to the server
-     * @return An AnswerResponseEntity which contains information about whether the answer was correct,
-     * as well as the proximity to the correct answer for estimation questions
+     * @param playerName the username of the player
      */
-    public AnswerResponseEntity sendAnswerToServer(Question question, long answer) {
+    public void sendAnswerToServer(long answer, String playerName) {
 
         Form postVariables = new Form();
-        postVariables.param("questionID", question.questionId.toString());
+        postVariables.param("gameID", gameUUID.toString());
+        postVariables.param("playerName", playerName);
         postVariables.param("answer", String.valueOf(answer));
 
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/answer")
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/answer")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
+                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), String.class);
 
     }
+
 
     /**
      * Gets all activities from the server using the API endpoint
@@ -209,7 +272,9 @@ public class ServerUtils {
      */
     public static String getImageURL(String imagePath) {
 
-        return SERVER + "api/img/" + imagePath;
+        String[] split = imagePath.split("/");
+        return SERVER + "api/img/"  + URLEncoder.encode(split[0], StandardCharsets.UTF_8) + "/"
+                                    + URLEncoder.encode(split[1], StandardCharsets.UTF_8);
 
     }
 
@@ -261,22 +326,27 @@ public class ServerUtils {
      * @return the response from the server
      */
     public String leaveGame(String username, UUID gameUUID) {
+        
+        isInGame = false;
 
-        if(session != null) {
-            if(session.isConnected()) {
-                session.disconnect();
-            }
-        }
+        disconnect();
+
+        if(username == null || gameUUID == null) return "";
 
         Form form = new Form();
         form.param("username", username);
         form.param("gameUUID", gameUUID.toString());
 
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/user/leave") //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        try {
+            return ClientBuilder.newClient(new ClientConfig()) //
+                    .target(SERVER).path("api/user/leave") //
+                    .request(APPLICATION_JSON) //
+                    .accept(APPLICATION_JSON) //
+                    .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+        } catch(Exception e) {
+            return "";
+        }
+
     }
 
     /**
@@ -314,8 +384,56 @@ public class ServerUtils {
         } catch(MalformedURLException e) {
             throw new IllegalArgumentException("Malformed URL \"" + server + "\" - " + e.getMessage());
         }
+        if(!connectionTest()) {
+            throw new IllegalArgumentException("\"" + server +  "\" - Server not found or was not a Quizzz Server.");
+        }
         WS_SERVER = "ws://" + server + "websocket";
-        session = connect(WS_SERVER);
+        try {
+            session = connect(WS_SERVER);
+        } catch(Exception e) {
+            throw new IllegalArgumentException("\"" + server +  "\" - Found a Quizzz Server at the specified URL, but could not connect its WebSocket topic.");
+        }
+    }
+
+    /**
+     * Sets the UUID of the game the client is in
+     * @param gameUUID the UUID of the corresponding game
+     */
+    public void setGameUUID(UUID gameUUID) {
+        this.gameUUID = gameUUID;
+    }
+
+    /**
+     * Stores the fact that the client is in a game in this class by setting a boolean to true.
+     * This allows the long polling begin and to be cancelled upon clicking the back button by
+     * setting this variable to false again.
+     */
+    public void setInGameTrue() {
+
+        isInGame = true;
+
+    }
+
+    /**
+     * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
+     * @return all scores on the leaderboard sorted by rank ascending
+     */
+    public List<Score> getLeaderboard() {
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                                    .target(SERVER).path("api/scores/sorted") //
+                                    .request(APPLICATION_JSON) //
+                                    .accept(APPLICATION_JSON) //
+                                    .get(new GenericType<List<Score>>() {});
+
+    }
+
+    /**
+     *
+     * @return true if the game is still going
+     */
+    public boolean getIsInTheGame(){
+        return isInGame;
     }
 
     public Score getScoreByUserName(String username){

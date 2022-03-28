@@ -78,6 +78,16 @@ public class ScoreController {
         return scoreDBController.findAll();
     }
 
+    /**
+     * Finds all scores in the database, sorted by leaderboard rank ascending. Maps to /api/scores/sorted
+     * @return all scores saved in the database, sorted by leaderboard rank ascending
+     */
+    @GetMapping("/sorted")
+    public List<Score> getAllSorted() {
+        return scoreDBController.findAllSorted();
+    }
+
+
     @GetMapping(path = {"/{username}" })
     public Score getByName(@PathVariable("username") String username) {
         return scoreDBController.getScoreByName(username);

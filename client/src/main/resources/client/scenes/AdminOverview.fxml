@@ -4,24 +4,30 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="852.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
-   <children>
-      <TableView fx:id="table" layoutX="38.0" layoutY="28.0" onMouseClicked="#handleClickTableView" prefHeight="376.0" prefWidth="785.0">
+<?import java.lang.String?>
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="background" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
+    <stylesheets>
+        <String fx:value="client/stylesheets/Input.css" />
+        <String fx:value="/client/stylesheets/admin-style.css" />
+    </stylesheets>
+    <children>
+      <TableView fx:id="table" layoutX="38.0" layoutY="28.0" onMouseClicked="#handleClickTableView" prefHeight="534.0" prefWidth="1275.0">
         <columns>
-            <TableColumn fx:id="id" prefWidth="103.20000457763672" text="ID" />
-          <TableColumn fx:id="imagePath" prefWidth="131.99996948242188" text="Image path" />
-          <TableColumn fx:id="title" prefWidth="372.7999572753906" text="Title" />
-            <TableColumn fx:id="consumption" prefWidth="178.4000244140625" text="Consumption" />
+            <TableColumn fx:id="id" prefWidth="137.0" text="ID" />
+          <TableColumn fx:id="imagePath" prefWidth="218.0" text="Image path" />
+          <TableColumn fx:id="title" prefWidth="698.0" text="Title" />
+            <TableColumn fx:id="consumption" prefWidth="206.0" text="Consumption" />
         </columns>
       </TableView>
-      <Button layoutX="755.0" layoutY="558.0" mnemonicParsing="false" onAction="#cancel" text="Back" />
-      <Label fx:id="totalNo" layoutX="38.0" layoutY="422.0" text="Label" />
-      <Label fx:id="selected" layoutX="38.0" layoutY="453.0" text="Currently selected: None" />
-      <Button fx:id="edit" disable="true" layoutX="143.0" layoutY="471.0" mnemonicParsing="false" onAction="#showEdit" text="Edit selected" />
-      <Button fx:id="delete" disable="true" layoutX="38.0" layoutY="471.0" mnemonicParsing="false" onAction="#delete" text="Delete selected" />
-      <Button layoutX="40.0" layoutY="565.0" mnemonicParsing="false" onAction="#addActivity" text="Add Activity" />
-      <Button layoutX="135.0" layoutY="565.0" mnemonicParsing="false" onAction="#importActivity" text="Import activity list" />
+      <Label fx:id="totalNo" layoutX="38.0" layoutY="576.0" text="Label" />
+      <Label fx:id="selected" layoutX="38.0" layoutY="604.0" text="Currently selected: None" />
+      <Button fx:id="edit" disable="true" layoutX="169.0" layoutY="629.0" mnemonicParsing="false" onAction="#showEdit" text="Edit selected" />
+      <Button fx:id="delete" disable="true" layoutX="38.0" layoutY="629.0" mnemonicParsing="false" onAction="#delete" text="Delete selected" />
+      <Button fx:id="add" layoutX="38.0" layoutY="689.0" mnemonicParsing="false" onAction="#addActivity" text="Add Activity" />
+      <Button fx:id="imports" layoutX="155.0" layoutY="689.0" mnemonicParsing="false" onAction="#importActivity" text="Import activity list" />
+      <ImageView fx:id="backBtn" fitHeight="88.0" fitWidth="153.0" layoutX="1170.0" layoutY="655.0" pickOnBounds="true" preserveRatio="true" />
    </children>
 </AnchorPane>
