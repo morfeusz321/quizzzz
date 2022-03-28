@@ -111,8 +111,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                 setAnswerBtn.setText("Edit answer");
                 slideBar.setDisable(true);
                 answerTxtField.setDisable(true);
-                // TODO: send answer to server here
-
+                server.sendAnswerToServer((long) slideBar.getValue(), mainCtrl.getSavedUsernamePrefill());
             }
         });
         setAnswerBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {

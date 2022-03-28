@@ -42,6 +42,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainCtrl {
@@ -257,6 +258,14 @@ public class MainCtrl {
     }
 
     /**
+     * if the user is entering the waiting room from the end leaderboard the username scene doesnt have to be shown
+     * and the joining is done here automatically with the pre-filled username
+     */
+    public void showWaitRoomFromTheEndScreen(){
+        userCtrl.join();
+    }
+
+    /**
      * Shows the general question screen
      */
     public void showGeneralQuestion(Question q) {
@@ -377,7 +386,7 @@ public class MainCtrl {
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
-            server.registerForGameLoop(this::incomingQuestionHandler);
+            server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
         }
 
         System.out.println();
@@ -397,7 +406,9 @@ public class MainCtrl {
             // This game update can later contain metadata about the game like scores or anything
             // else the client would want to display after the game ends
             // TODO: for now this just goes to the main screen
-            Platform.runLater(this::showMainScreen);
+            leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.END_GAME_LEADERBOARD);
+            leaderboardCtrl.initializeButtonsForMainScreen();
+            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
 
         } else if (gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
 
@@ -410,11 +421,11 @@ public class MainCtrl {
 
             System.out.println("transition period");
 
-        } else if (gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
+        } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
 
-            // TODO: display the transition leaderboard, this gameupdate contains the score list
-
-            System.out.println("leaderboard");
+            leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.MID_GAME_LEADERBOARD);
+            leaderboardCtrl.disableButtonsForMainScreen();
+            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
 
         }
 
@@ -532,8 +543,17 @@ public class MainCtrl {
         connectToServerCtrl.updateServerAddressPrefill();
         connectToServerCtrl.setGoToScene(LeaderboardCtrl.class.getName());
         connectToServerCtrl.fadeInServer();
+        leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.MAIN_LEADERBOARD);
         primaryStage.setScene(connectToServer);
 
+    }
+
+    /**
+     * if the leaderboard is opened from main screen the text in the bubble should be changed
+      */
+    public void changeLeaderboardText(){
+        leaderboardCtrl.disableButtonsForMainScreen();
+        leaderboardCtrl.changeTextMainScreen();
     }
 
     /**
@@ -546,6 +566,19 @@ public class MainCtrl {
         primaryStage.setScene(leaderboard);
         leaderboardCtrl.fadeInLeaderboard();
         leaderboardCtrl.populateLeaderboard();
+
+    }
+
+    /**
+     * Displays the leaderboard with the given list of scores
+     * @param scoreList the list of scores to display
+     */
+    public void showLeaderboardWithPresetScores(List<Score> scoreList) {
+
+        primaryStage.setTitle("Leaderboard");
+        primaryStage.setScene(leaderboard);
+        leaderboardCtrl.fadeInLeaderboard();
+        leaderboardCtrl.populateLeaderboard(scoreList);
 
     }
 

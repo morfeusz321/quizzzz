@@ -43,6 +43,9 @@ public class AnimationUtils {
             case "leaderboard":
                 fadeTransition.setOnFinished((ActionEvent event) -> mainCtrl.showLeaderboardServerConfirmed());
                 break;
+            case "gameAgain":
+                fadeTransition.setOnFinished((ActionEvent event) -> mainCtrl.showWaitRoomFromTheEndScreen());
+                break;
             default:
                 fadeTransition.setOnFinished((ActionEvent event) -> mainCtrl.showMainScreen());
                 break;
