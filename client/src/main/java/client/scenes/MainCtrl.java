@@ -540,11 +540,6 @@ public class MainCtrl {
         adminEditCtrl.setActivity(activity);
     }
 
-    public Score getCurrentUserScore(){
-        String user = userCtrl.getSavedCurrentUsername();
-        return server.getScoreByUserName(user);
-    }
-
     /**
      * Show the leaderboard screen after verifying the server address.
      */
@@ -676,6 +671,14 @@ public class MainCtrl {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * retrieves the score from player
+     * @return player's score
+     */
+    public int getScore(){
+       return this.scoreHelper.getPoints();
     }
 
 }

@@ -435,14 +435,7 @@ public class ServerUtils {
     public boolean getIsInTheGame(){
         return isInGame;
     }
-
-    public Score getScoreByUserName(String username){
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/scores/" + username) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .get(new GenericType<Score>() {});
-    }
+/*
 
     public Score addScoreToDB(String username, int points){
         Form form = new Form();
@@ -456,10 +449,13 @@ public class ServerUtils {
                 .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), Score.class);
     }
 
-    public Score addNewScoreToDB(String username){
-        return addScoreToDB(username, 0);
-    }
+*/
 
+    /**
+     * retrieve player with given username
+     * @param username player's username
+     * @return Player
+     */
     public Player getPlayerByUsername(String username){
         List<Player> listOfPlayers = getPlayers();
         for (Player p : listOfPlayers){
@@ -471,6 +467,10 @@ public class ServerUtils {
 
     }
 
+    /**
+     * retrieve all the players in the game
+     * @return list of all current players
+     */
     public List<Player> getPlayers() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/game/players") //

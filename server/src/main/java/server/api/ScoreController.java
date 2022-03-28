@@ -1,12 +1,10 @@
 package server.api;
 
 import commons.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import server.database.ScoreDBController;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The API controller for the scores. Controls everything mapped to /api/scores/...
@@ -34,7 +32,7 @@ public class ScoreController {
         return scoreDBController.add(new Score(username, score));
     }
 
-    @PostMapping(path={"{username}"})
+ /*   @PostMapping(path={"{username}"})
     public ResponseEntity<Score> addNewScore(@RequestParam("username") String username){
         if(Objects.equals(username, "")){
             return ResponseEntity.noContent().build();
@@ -67,7 +65,7 @@ public class ScoreController {
         }
 
         return ResponseEntity.ok(saved);
-    }
+    }*/
 
     /**
      * Maps to /api/scores/ and /api/scores
@@ -88,8 +86,8 @@ public class ScoreController {
     }
 
 
-    @GetMapping(path = {"/{username}" })
+   /* @GetMapping(path = {"/{username}" })
     public Score getByName(@PathVariable("username") String username) {
         return scoreDBController.getScoreByName(username);
-    }
+    }*/
 }

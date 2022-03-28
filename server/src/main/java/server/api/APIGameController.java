@@ -143,6 +143,11 @@ public class APIGameController {
 
     }
 
+    /**
+     * retrieve all players from the game
+     * @param gameIDString game UUID of the game
+     * @return List of all current players
+     */
     @GetMapping("/players")
     public ResponseEntity<List<Player>> getAllPlayers(@RequestParam("gameID") String gameIDString) {
 

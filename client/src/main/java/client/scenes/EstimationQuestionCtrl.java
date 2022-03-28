@@ -127,6 +127,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * (and TODO the initialization of the slider).
      */
     public void loadQuestion(Question q) {
+        setPoints();
 
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());

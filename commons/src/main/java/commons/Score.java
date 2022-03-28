@@ -33,14 +33,20 @@ public class Score {
         this.score = score;
     }
 
+    /**
+     * retriev the score
+     * @return score
+     */
     public int getScore() {
         return score;
     }
+/*
 
     public int addPoints(int points){
         score+=points;
         return score;
     }
+*/
 
 
 

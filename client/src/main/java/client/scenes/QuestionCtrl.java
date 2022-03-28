@@ -3,7 +3,6 @@ package client.scenes;
 import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.Score;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -396,5 +395,23 @@ public abstract class QuestionCtrl {
         emoji.setEffect(null);
         emoji.getStyleClass().remove("hover-cursor");
 
+    }
+
+    /**
+     * sets the points shown on the screen with the current user's score
+     */
+    public void setPoints(){
+        int points = mainCtrl.getScore();
+        this.pointsInfo.setText("Your points: " + points);
+    }
+
+    /**
+     * retrieve the time from the timer
+     * @return
+     */
+    public int getTime(){
+        String timeText = timeLabel.getText();
+        int time = Integer.parseInt(timeText.substring(14));
+        return time;
     }
 }

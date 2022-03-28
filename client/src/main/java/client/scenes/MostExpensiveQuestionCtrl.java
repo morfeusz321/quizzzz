@@ -36,6 +36,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     public void loadQuestion(Question q) {
 
         // TODO: add "more expensive" question type, and restructure this afterwards
+        setPoints();
 
         enableButtons();
         questionImg.setImage(new Image("/client/img/question_mark.png"));
