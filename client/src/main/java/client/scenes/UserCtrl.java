@@ -295,8 +295,7 @@ public class UserCtrl {
      *  join button hover effects
      */
     private void joinHandler() {
-
-        join.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> join());
+        
         join.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             join.getStyleClass().add("hover-cursor");
             join.getStyleClass().add("hover-buttonDark");
