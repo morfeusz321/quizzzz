@@ -400,20 +400,6 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
-     * @return all scores on the leaderboard sorted by rank ascending
-     */
-    public List<Score> getLeaderboard() {
-
-        return ClientBuilder.newClient(new ClientConfig()) //
-                                    .target(SERVER).path("api/scores/sorted") //
-                                    .request(APPLICATION_JSON) //
-                                    .accept(APPLICATION_JSON) //
-                                    .get(new GenericType<List<Score>>() {});
-
-    }
-
-    /**
      * Sets the UUID of the game the client is in
      * @param gameUUID the UUID of the corresponding game
      */
@@ -430,6 +416,28 @@ public class ServerUtils {
 
         isInGame = true;
 
+    }
+
+    /**
+     * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
+     * @return all scores on the leaderboard sorted by rank ascending
+     */
+    public List<Score> getLeaderboard() {
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                                    .target(SERVER).path("api/scores/sorted") //
+                                    .request(APPLICATION_JSON) //
+                                    .accept(APPLICATION_JSON) //
+                                    .get(new GenericType<List<Score>>() {});
+
+    }
+
+    /**
+     *
+     * @return true if the game is still going
+     */
+    public boolean getIsInTheGame(){
+        return isInGame;
     }
 
 }

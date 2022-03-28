@@ -317,7 +317,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(true, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -332,7 +332,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "2");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(false, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 
@@ -350,7 +350,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(true, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -368,7 +368,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "3");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(false, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 

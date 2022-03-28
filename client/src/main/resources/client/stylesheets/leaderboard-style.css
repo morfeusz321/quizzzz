@@ -1,5 +1,7 @@
 .leaderboard-text {
     -fx-font-size: 40px;
+    -fx-font-style: italic;
+    -fx-font-weight: bold;
 }
 
 .button {
@@ -79,4 +81,12 @@
 #leaderboard .list-cell:filled:selected {
     -fx-text-fill: #252422;
     /* The default styling makes the text white when it is selected. */
+}
+
+.speech-bubble-text {
+    -fx-font-size: 35px;
+}
+
+.bold {
+    -fx-font-weight: bold;
 }
