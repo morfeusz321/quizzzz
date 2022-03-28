@@ -424,7 +424,7 @@ public class MainCtrl {
 
             leaderboardCtrl.setIsEndLeaderBoardTrue(false);
             leaderboardCtrl.disableButtonsForMainScreen();
-            Platform.runLater(this::showLeaderboard);
+            Platform.runLater(this::showLeaderboardServerConfirmed);
 
         }
 
