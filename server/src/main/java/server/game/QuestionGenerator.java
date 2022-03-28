@@ -253,31 +253,66 @@ public class QuestionGenerator {
      */
     public Question getEstimationQuestion() {
 
+        CommonUtils utils = new CommonUtils();
+
         try {
             // The consumption of the activity should be < 1000000, so we search for an activity with a consumption between
             // 0 and 999999 Wh. The reasons for this bound are that the user can more easily estimate "lower" consumptions
             // and that higher SI units cannot be used here, as they would make the slideBar difficult to configure.
-
             Activity a = activityDBController.getActivityExclAndInRange(List.of(),List.of(),0,999999);
-            List<String> aw = new ArrayList<>();
+            long consumption = a.consumption;
 
-            long min = a.consumption - 100;
-            long max = a.consumption + 100;
+            // Find the maximum percentage of the consumption which defines the maximum length of the range.
+            // This uses a function which was fitted to certain values, which logically and game-wise make sense,
+            // so that there are not only certain threshold values, but a continuous distribution.
+            // It is a logarithmic function, so that, as the consumption grows, the actual range does not grow
+            // as large.
+            double maxPercentage = 11.4 - 0.8 * Math.log(consumption);
+            double minPercentage = maxPercentage * 0.8;
+            // Generate a random percentage in the range
+            double percentage = utils.getRandomDoubleInRange(random, minPercentage, maxPercentage);
+            // The range is set to a value, however, the start- and end-values will be generated from this range.
+            // We can cast to int as range/consumption are expected to not be longs.
+            int range = (int) (percentage * consumption);
+            // Minimum and maximum range conditions
+            if(range < 200){
+                range = 200;
+            } else if(range > 500000){
+                range = 500000;
+            }
 
-            int shift = random.nextInt(200) - 100;
+            // Generate the shift percentage values
+            double shiftMinPercentage = random.nextDouble();
+            double shiftMaxPercentage = 1 - shiftMinPercentage;
 
-            min = min + shift;
-            max = max + shift;
+            // Create min/max bounds
+            int min = (int) (a.consumption - shiftMinPercentage * range);
+            int max = (int) (a.consumption + shiftMaxPercentage * range);
 
+            // First check lower bound as that should not be negative
             if(min < 0) {
                 max = max - min;
                 min = 0;
             }
 
-            aw.add(Long.toString(min));
-            aw.add(Long.toString(max));
-            aw.add(Long.toString(a.consumption));
-            Question toReturn = new EstimationQuestion(a, aw);
+            // Round the ranges to 10Wh
+            min = (int) (Math.round(min/10.0) * 10);
+            max = (int) (Math.round(max/10.0) * 10);
+
+            // Now check upper bound
+            if(max > 999999 && (min - max) > 0) {
+                min = min - max;
+                max = 999999;
+            }
+
+            // Create the question
+            List<String> questionInfo = new ArrayList<>();
+            questionInfo.add(Long.toString(min));
+            questionInfo.add(Long.toString(max));
+            questionInfo.add(Long.toString(a.consumption));
+            Question toReturn = new EstimationQuestion(a, questionInfo);
+
+            // Return/save the question
             questionDBController.add(toReturn);
             return toReturn;
         } catch (Exception e) {
