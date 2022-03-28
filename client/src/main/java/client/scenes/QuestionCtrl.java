@@ -85,6 +85,7 @@ public abstract class QuestionCtrl {
     protected ImageView wrongCross;
 
     private List<ImageView> emojiList;
+    public static int questionNumber;
 
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
@@ -214,6 +215,7 @@ public abstract class QuestionCtrl {
     private void startProgressbar(int timeInMillis) {
         timeBar.setProgress(1);
         int remainingTime = timeInMillis / 1000; // in seconds
+        updateQuestionNumber();
 
         Timeline timeAnim = new Timeline(
                 new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
@@ -323,6 +325,11 @@ public abstract class QuestionCtrl {
 
         ft.play();
         pathTransition.play();
+    }
+
+    private void updateQuestionNumber() {
+        questionNumber++;
+        questionInfo.setText("Question " + questionNumber + "/20");
     }
 
     /**
