@@ -116,9 +116,6 @@ public class GameControllerTest {
     @Test
     public void testStartCurrentGame() {
 
-        // TODO: this test does not work right now. The reason is that the game cannot generate 20 questions with the
-        //  activities in the test database.
-
         UUID uuid = gameController.getCurrentGameUUID();
 
         gameController.startCurrentGame();
@@ -206,9 +203,6 @@ public class GameControllerTest {
 
     @Test
     public void testCreateSinglePlayerGame() {
-
-        // TODO: this test does not work right now. The reason is that the game cannot generate 20 questions with the
-        //  activities in the test database.
 
         Player player1 = new Player("P1");
         GameUpdate gameUpdate = gameController.createSinglePlayerGame(player1);
