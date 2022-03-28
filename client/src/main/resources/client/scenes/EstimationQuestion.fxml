@@ -14,6 +14,10 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.EstimationQuestionCtrl">
+   <stylesheets>
+      <String fx:value="/client/stylesheets/question-style.css" />
+      <String fx:value="/client/stylesheets/screen-style.css" />
+   </stylesheets>
    <children>
       <ImageView fx:id="bgImage" fitHeight="265.0" fitWidth="2034.0" layoutX="-665.0" layoutY="-108.0">
       </ImageView>
@@ -70,7 +74,7 @@
          </children>
       </Pane>
       <Group layoutX="836.0" layoutY="386.0" />
-      <Slider fx:id="slideBar" layoutX="699.0" layoutY="306.0" prefHeight="28.0" prefWidth="434.0" />
+      <Slider fx:id="slideBar" layoutX="709.0" layoutY="306.0" prefHeight="28.0" prefWidth="434.0" />
       <Text fx:id="sliderLabel" layoutX="699.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Slide the bar to answer the question:" textAlignment="CENTER" wrappingWidth="434.0">
          <styleClass>
             <String fx:value="slider-text" />
@@ -83,13 +87,13 @@
             <String fx:value="text" />
          </styleClass>
       </Text>
-      <Label fx:id="minLabel" layoutX="641.0" layoutY="302.0" text="0">
+      <Label fx:id="minLabel" layoutX="644.0" layoutY="302.0" text="0">
          <styleClass>
             <String fx:value="smaller-info-text" />
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <Label fx:id="maxLabel" layoutX="1162.0" layoutY="302.0" text="0">
+      <Label fx:id="maxLabel" layoutX="1172.0" layoutY="302.0" text="0">
          <styleClass>
             <String fx:value="smaller-info-text" />
             <String fx:value="text" />

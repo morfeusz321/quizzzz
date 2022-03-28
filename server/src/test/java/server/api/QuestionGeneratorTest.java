@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
+import server.game.GameTestUtils;
 import server.game.QuestionGenerator;
 
 import java.util.*;
@@ -41,7 +42,7 @@ public class QuestionGeneratorTest {
 
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
-        assertEquals(activity2.title, q.answerOptions.get((int) q.answer));
+        assertEquals(activity2.title, q.answerOptions.get((int) q.answer-1));
 
     }
 
@@ -205,8 +206,72 @@ public class QuestionGeneratorTest {
 
         assertNotNull(moreExpensive);
         assertEquals(moreExpensive, questionDBController.getById(moreExpensive.questionId));
-        assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer));
+        assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer-1));
         // This can be cast to an int because it is only the index, so not a long value.
+
+    }
+
+    @Test
+    public void testMinPerQuestionType() {
+
+        // TODO: this is not the best way to test this, as randomness is involved.
+
+        activityDBController.getInternalDB().deleteAll();
+        GameTestUtils utils = new GameTestUtils();
+        utils.initActivityDB(activityDBController);
+
+        List<Question> questions = questionGenerator.generateGameQuestions(3);
+
+        // Count the occurrences per question type
+        int[] count = new int[4];
+        for(Question q : questions) {
+            if(q instanceof GeneralQuestion){
+                count[0]++;
+            } else if(q instanceof ComparisonQuestion){
+                count[1]++;
+            } else if(q instanceof EstimationQuestion){
+                count[2]++;
+            } else{
+                count[3]++;
+            }
+        }
+
+        // Check if the number of questions per type are sufficient
+        for(int i = 0; i < 4; i++){
+            if(count[i] < 3){
+                fail();
+            }
+        }
+
+    }
+
+    @Test
+    public void testNoDuplicatesQuestionGeneration() {
+
+        // TODO: this is not the best way to test this, as randomness is involved.
+
+        activityDBController.getInternalDB().deleteAll();
+        GameTestUtils utils = new GameTestUtils();
+        utils.initActivityDB(activityDBController);
+
+        List<Question> questions = questionGenerator.generateGameQuestions(3);
+        Set<Question> setQuestions = new HashSet<>(questions);
+
+        // If the set size and the list size are equal, that means that there are no duplicates.
+        assertEquals(20, questions.size());
+        assertEquals(20, setQuestions.size());
+
+    }
+
+    @Test
+    public void testGenerateGameQuestionsThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            questionGenerator.generateGameQuestions(6);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            questionGenerator.generateGameQuestions(-1);
+        });
 
     }
 
@@ -252,7 +317,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(true, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -267,7 +332,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "2");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(false, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 
@@ -285,7 +350,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(true, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -303,7 +368,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "3");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(false, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 
