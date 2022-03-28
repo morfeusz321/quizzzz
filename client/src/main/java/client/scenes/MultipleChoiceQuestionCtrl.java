@@ -53,7 +53,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
     List<Button> buttonList;
 
-    Button lastSelectedButton;
+    protected long lastSelectedButton;
     protected UUID lastQuestion;
 
 
@@ -147,26 +147,26 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * @param btn the button that was clicked
      */
     private void eventHandlerAnswerButtonMouseClicked(Button btn) {
-        this.lastSelectedButton = btn;
+
         buttonList.forEach(b -> {
                                     b.getStyleClass().remove("selected-answer");
                                     b.getStyleClass().remove("answerCorrect");
                                     b.getStyleClass().remove("answerIncorrect");
                                 } );
-        long selectedButton;
+
         if(btn.equals(answerBtn1)) {
-            selectedButton = 1;
+            lastSelectedButton = 1;
         } else if(btn.equals(answerBtn2)) {
-            selectedButton = 2;
+            lastSelectedButton = 2;
         } else if(btn.equals(answerBtn3)) {
-            selectedButton = 3;
+            lastSelectedButton = 3;
         } else {
+            lastSelectedButton = 0;
             return;
         }
-        btn.getStyleClass().add("selected-answer");
-        server.sendAnswerToServer(selectedButton, mainCtrl.getSavedUsernamePrefill());
-        // TODO: use this when transition is implemented?
 
+        btn.getStyleClass().add("selected-answer");
+        server.sendAnswerToServer(lastSelectedButton, mainCtrl.getSavedUsernamePrefill());
 
     }
 
@@ -174,40 +174,31 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
      * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
      */
-    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate, UUID id){
-        if(lastQuestion == null){
+    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate, UUID id) {
+
+        if(lastQuestion == null) {
             lastQuestion = id;
-        }
-        else{
-            if(lastQuestion == id){
-                return;
-            }
-        }
-        disableButtons();
-        AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
-        long correct = answer.getAnswer();
-        long selectedButton;
-        if(lastSelectedButton.equals(answerBtn1)) {
-            selectedButton = 1;
-        } else if(lastSelectedButton.equals(answerBtn2)) {
-            selectedButton = 2;
-        } else if(lastSelectedButton.equals(answerBtn3)) {
-            selectedButton = 3;
-        } else {
+        } else if(lastQuestion == id){
             return;
         }
+
+        disableButtons();
+
+        AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
+        long correct = answer.getAnswer();
+
         if(answer.correct) {
-            placingTick(selectedButton);
+            placingTick(lastSelectedButton);
             correctAns.setText("correctly");
-            lastSelectedButton.getStyleClass().add("answerCorrect");
+            buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerCorrect");
             fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
             fullText.setLayoutY(anchorPane.getHeight()*0.754867);
         } else {
             fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
             fullText.setLayoutY(anchorPane.getHeight()*0.754867);
-            placingCross(selectedButton);
+            placingCross(lastSelectedButton);
             correctAns.setText("incorrectly");
-            lastSelectedButton.getStyleClass().add("answerIncorrect");
+            buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerIncorrect");
             buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
             placingTick(correct);
         }
