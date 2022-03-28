@@ -170,33 +170,14 @@ public class QuestionGeneratorTest {
     }
 
     @Test
-    public void getRandomQuestionWithLongTest() {
-
-        // The WhichIsMore question needs the consumptions to be distinct, otherwise a StackOverFlow error will be thrown.
-        activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999998L));
-        activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999997L));
-        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999996L));
-        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999995L));
-
-        Question q = questionGenerator.getRandomQuestion();
-
-        assertNotNull(q);
-        assertEquals(q, questionDBController.getById(q.questionId));
-
-    }
-
-    @Test
     public void getEstimationWithLongTest() {
+        // It should return null as long values are above the cut-off point for estimation questions.
 
         activityDBController.getInternalDB().deleteAll();
         activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999995L));
 
         Question q = questionGenerator.getEstimationQuestion();
-
-        assertNotNull(q);
-        assertEquals(q, questionDBController.getById(q.questionId));
+        assertNull(q);
 
     }
 

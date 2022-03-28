@@ -253,19 +253,12 @@ public class QuestionGenerator {
      */
     public Question getEstimationQuestion() {
 
-        ActivityDB activityDB = activityDBController.getInternalDB();
-
-        long count = activityDB.count();
-        int index;
         try {
-            index = random.nextInt((int) count);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+            // The consumption of the activity should be < 1000000, so we search for an activity with a consumption between
+            // 0 and 999999 Wh. The reasons for this bound are that the user can more easily estimate "lower" consumptions
+            // and that higher SI units cannot be used here, as they would make the slideBar difficult to configure.
 
-        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent() && page.getContent().get(0) != null) {
-            Activity a = page.getContent().get(0);
+            Activity a = activityDBController.getActivityExclAndInRange(List.of(),List.of(),0,999999);
             List<String> aw = new ArrayList<>();
 
             long min = a.consumption - 100;
@@ -287,9 +280,10 @@ public class QuestionGenerator {
             Question toReturn = new EstimationQuestion(a, aw);
             questionDBController.add(toReturn);
             return toReturn;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-
-        return null;
 
     }
 

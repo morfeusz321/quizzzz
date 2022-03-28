@@ -74,6 +74,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                         slideBar.setValue(slideBar.getMin());
                         return;
                     }
+                    // note: we can assume that it is an integer, as there is a cut-off point for the consumptions
+                    // in the question generation!
+
                     // check whether it is an integer
                     int newInt;
                     try{
