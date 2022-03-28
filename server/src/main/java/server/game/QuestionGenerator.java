@@ -143,17 +143,20 @@ public class QuestionGenerator {
 
     /**
      * Generates a (random) upper/lower bound for a given consumption, which is used to generate the new activities
-     * with a close consumption to this one. The bound is dependent on the "scale" of the given consumption.
+     * with a close consumption to this one. The bound is dependent on the "scale" of the given consumption. The input
+     * should be non-negative.
      * @param consumption the consumption from which to generate a range
      * @return an array with two longs, the lower bound (idx 0) and the upper bound (idx 1)
      */
-    private long[] getLowerUpperBoundSmall(long consumption){
+    public long[] getLowerUpperBoundSmall(long consumption){
         // This is a method that creates a "small" range, that is closer to the initial value.
         // The range does not have to be generated randomly, as the activity itself is chosen randomly
         // within that range.
         // TODO: add method with bigger range, so that different "difficulties" can be generated
-        if(consumption <= 1000){
-            return new long[]{0, 10000};
+        if(consumption <= 500){
+            return new long[]{0, 500};
+        } else if(consumption <= 1000){
+            return new long[]{500, 1000};
         } else if(consumption <= 10000){
             return new long[]{1000,10000};
         } else if(consumption <= 100000){
