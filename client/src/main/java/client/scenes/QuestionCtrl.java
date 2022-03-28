@@ -112,7 +112,6 @@ public abstract class QuestionCtrl {
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
         initializeBackButtonHandlers();
-        setScore();
         initializEmojiHoverHandlers();
         dynamicTextQuestion();
 
@@ -339,13 +338,6 @@ public abstract class QuestionCtrl {
      */
     public void hideEmojis() {
         emojiPane.setVisible(false);
-    }
-
-    public void setScore(){
-        String user = "tete";
-//        Score userScore = mainCtrl.getCurrentUserScore();
-        Score userScore = server.getScoreByUserName(user);
-        System.out.println(user + " " + userScore);
     }
 
     /**

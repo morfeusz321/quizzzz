@@ -143,5 +143,29 @@ public class APIGameController {
 
     }
 
+    @GetMapping("/players")
+    public ResponseEntity<List<Player>> getAllPlayers(@RequestParam("gameID") String gameIDString) {
+
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(gameIDString);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game game = gameController.getGame(uuid);
+
+        if(game == null || game.equals(gameController.getCurrentGame())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if(game.getPlayers() == null){
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok(game.getPlayers());
+
+    }
+
 
 }

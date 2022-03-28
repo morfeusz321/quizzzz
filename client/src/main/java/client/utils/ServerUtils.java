@@ -460,4 +460,24 @@ public class ServerUtils {
         return addScoreToDB(username, 0);
     }
 
+    public Player getPlayerByUsername(String username){
+        List<Player> listOfPlayers = getPlayers();
+        for (Player p : listOfPlayers){
+            if (p.getUsername().equals(username)){
+                return p;
+            }
+        }
+        throw new IllegalArgumentException();
+
+    }
+
+    public List<Player> getPlayers() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/game/players") //
+                .queryParam( "gameID", gameUUID.toString())
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Player>>() {});
+    }
+
 }

@@ -16,6 +16,7 @@
 package client.scenes;
 
 import client.utils.GameManager;
+import client.utils.ScoreUtils;
 import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
@@ -50,6 +51,7 @@ public class MainCtrl {
     private final ServerUtils server;
     private GameManager gameManager;
     private Stage primaryStage;
+    private ScoreUtils scoreHelper;
 
     private MainScreenCtrl mainScreenCtrl;
     private Scene mainScreen;
@@ -169,6 +171,8 @@ public class MainCtrl {
         this.leaderboardCtrl = leaderboard.getKey();
         this.leaderboard = new Scene(leaderboard.getValue());
         this.leaderboard.setFill(Color.valueOf("#F0EAD6"));
+
+        this.scoreHelper = new ScoreUtils();
 
         initializeOnCloseEvents();
         setUsernamePrefill(getUsernamePrefillFromFile());
@@ -386,6 +390,7 @@ public class MainCtrl {
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
+            this.scoreHelper.setPlayer(server.getPlayerByUsername(usernamePrefill));
             server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
         }
 
@@ -416,6 +421,7 @@ public class MainCtrl {
             Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 
         } else if (gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+            scoreHelper.setScore(gameUpdateTransitionPeriodEntered.getAnswerResponseEntity());
 
             // TODO: display transition screen, this gameupdate already contains an answer response entity w/ the necessary information for the screen
 
