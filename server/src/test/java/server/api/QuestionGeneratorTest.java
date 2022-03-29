@@ -98,9 +98,13 @@ public class QuestionGeneratorTest {
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer))
+        // Either main activity should be activity1 and the answer should be activity3 or the other way around
+        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer - 1))
                         ||
-                activity3.title.equals(q.answerOptions.get((int) q.answer)));
+                activity3.title.equals(q.answerOptions.get((int) q.answer - 1)));
+
+        // It should not contain the title as answer
+        assertFalse(q.answerOptions.contains(q.activityTitle));
 
     }
 
@@ -155,9 +159,13 @@ public class QuestionGeneratorTest {
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer))
+        // Either main activity should be activity1 and the answer should be activity3 or the other way around
+        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer - 1))
                 ||
-                activity3.title.equals(q.answerOptions.get((int) q.answer)));
+                activity3.title.equals(q.answerOptions.get((int) q.answer - 1)));
+
+        // It should not contain the title as answer
+        assertFalse(q.answerOptions.contains(q.activityTitle));
 
     }
 
