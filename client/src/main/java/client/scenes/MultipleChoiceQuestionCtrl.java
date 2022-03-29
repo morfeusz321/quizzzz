@@ -18,7 +18,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.util.List;
-import java.util.UUID;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
@@ -54,7 +53,6 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     List<Button> buttonList;
 
     protected long lastSelectedButton;
-    protected UUID lastQuestion;
 
 
     /**
@@ -174,13 +172,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
      * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
      */
-    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate, UUID id) {
-
-        if(lastQuestion == null) {
-            lastQuestion = id;
-        } else if(lastQuestion == id){
-            return;
-        }
+    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
 
         disableButtons();
 
@@ -212,6 +204,9 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
             }
             placingTick(correct);
         }
+
+        lastSelectedButton = 0;
+
     }
 
     /**

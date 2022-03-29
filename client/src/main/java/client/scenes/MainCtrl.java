@@ -417,16 +417,16 @@ public class MainCtrl {
             Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 
         } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
-            
+
             UUID id = gameManager.getCurrentQuestion().questionId;
             if(gameManager.getCurrentQuestion() instanceof GeneralQuestion){
-                generalQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered, id);
+                generalQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
             }
             else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion){
-                mostExpensiveQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered, id);
+                mostExpensiveQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
             }
             else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion){
-                comparisonQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered, id);
+                comparisonQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
             }
             else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion){
                 estimationQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
