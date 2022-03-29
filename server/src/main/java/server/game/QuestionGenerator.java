@@ -309,7 +309,6 @@ public class QuestionGenerator {
             List<String> questionInfo = new ArrayList<>();
             questionInfo.add(Long.toString(min));
             questionInfo.add(Long.toString(max));
-            questionInfo.add(Long.toString(a.consumption));
             Question toReturn = new EstimationQuestion(a, questionInfo);
 
             // Return/save the question
