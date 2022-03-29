@@ -507,6 +507,14 @@ public class MainCtrl {
     }
 
     /**
+     * Returns the game manager (to be used for current question number)
+     * @return the game manager
+     */
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    /**
      * Show the admin screen (table with all activities) after verifying the server address.
      */
     public void showAdmin() {
