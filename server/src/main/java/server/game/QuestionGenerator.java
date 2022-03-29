@@ -109,9 +109,8 @@ public class QuestionGenerator {
             if(activities.get(1) == null) {
                 return getWhichIsMoreQuestion(); // The boundaries did not include a fitting activity. Try again.
             }
-            // Third activity: Bounds depend on the average of the first and second activity. The ids and consumptions
-            // of the previous activities are excluded.
-            bounds = getLowerUpperBoundSmall((first.consumption + activities.get(1).consumption)/2);
+            // Third activity: Bounds would depend on the average of the first and second activity, those are already
+            // in the correct range, however. The ids and consumptions of the previous activities are excluded.
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id, activities.get(1).id),
                     List.of(first.consumption, activities.get(1).consumption),
