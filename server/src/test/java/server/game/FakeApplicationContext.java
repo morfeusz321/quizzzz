@@ -14,6 +14,8 @@ import org.springframework.core.io.Resource;
 import server.api.*;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
+import server.game.questions.QuestionGenerator;
+import server.game.questions.QuestionGeneratorUtils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -189,8 +191,13 @@ public class FakeApplicationContext implements ApplicationContext {
             GameTestUtils utils = new GameTestUtils();
             utils.initActivityDB(activityDBController);
 
+            QuestionGeneratorUtils generatorUtils = new QuestionGeneratorUtils();
             QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
-            QuestionGenerator questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController);
+            QuestionGenerator questionGenerator = new QuestionGenerator(
+                    new Random(),
+                    activityDBController,
+                    questionDBController,
+                    generatorUtils);
             return (T) new Game(new GameUpdateManager(template), questionGenerator);
 
         }

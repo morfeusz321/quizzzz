@@ -1,4 +1,4 @@
-package server.game;
+package server.game.questions;
 
 import commons.*;
 import org.springframework.data.domain.Page;
@@ -15,18 +15,24 @@ public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
+    private final QuestionGeneratorUtils utils;
 
     /**
      * Creates the question generator
      * @param random               the random number generator to be used by this controller
      * @param activityDBController the interface with the activity database to be used for generation
      * @param questionDBController the interface with the question database to be used for generation
+     * @param utils                instance of utility class for question generation
      */
-    public QuestionGenerator(Random random, ActivityDBController activityDBController, QuestionDBController questionDBController) {
+    public QuestionGenerator(Random random,
+                             ActivityDBController activityDBController,
+                             QuestionDBController questionDBController,
+                             QuestionGeneratorUtils utils) {
 
         this.random = random;
         this.activityDBController = activityDBController;
         this.questionDBController = questionDBController;
+        this.utils = utils;
 
     }
 
@@ -99,7 +105,7 @@ public class QuestionGenerator {
             activities.add(first);
             // Second activity: Bounds depend on first activity added. The id and consumption of the first activity are
             // excluded.
-            long[] bounds = getLowerUpperBoundSmall(first.consumption);
+            long[] bounds = utils.getLowerUpperBoundSmall(first.consumption);
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id),
                     List.of(first.consumption),
@@ -111,7 +117,7 @@ public class QuestionGenerator {
             }
             // Third activity: Bounds depend on the average of the first and second activity. The ids and consumptions
             // of the previous activities are excluded.
-            bounds = getLowerUpperBoundSmall((first.consumption + activities.get(1).consumption)/2);
+            bounds = utils.getLowerUpperBoundSmall((first.consumption + activities.get(1).consumption)/2);
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id, activities.get(1).id),
                     List.of(first.consumption, activities.get(1).consumption),
@@ -138,37 +144,6 @@ public class QuestionGenerator {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    /**
-     * Generates a (random) upper/lower bound for a given consumption, which is used to generate the new activities
-     * with a close consumption to this one. The bound is dependent on the "scale" of the given consumption. The input
-     * should be non-negative.
-     * @param consumption the consumption from which to generate a range
-     * @return an array with two longs, the lower bound (idx 0) and the upper bound (idx 1)
-     */
-    public long[] getLowerUpperBoundSmall(long consumption){
-        // This is a method that creates a "small" range, that is closer to the initial value.
-        // The range does not have to be generated randomly, as the activity itself is chosen randomly
-        // within that range.
-        // TODO: add method with bigger range, so that different "difficulties" can be generated
-        if(consumption <= 500){
-            return new long[]{0, 500};
-        } else if(consumption <= 1000){
-            return new long[]{500, 1000};
-        } else if(consumption <= 10000){
-            return new long[]{1000,10000};
-        } else if(consumption <= 100000){
-            return new long[]{10000,10000000L};
-        } else if(consumption <= 10000000L){
-            return new long[]{100000,1000000000L};
-        } else if(consumption <= 1000000000L){
-            return new long[]{10000000L,100000000000L};
-        } else if(consumption <= 100000000000L){
-            return new long[]{1000000000L,100000000000L};
-        } else {
-            return new long[]{100000000000L,Long.MAX_VALUE};
         }
     }
 
