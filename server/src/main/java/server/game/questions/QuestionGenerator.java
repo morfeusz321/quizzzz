@@ -257,7 +257,10 @@ public class QuestionGenerator {
             }
 
             // Generate the shift percentage values
-            double shiftMinPercentage = random.nextDouble();
+            double shiftMinPercentage = random.nextDouble() + 0.2;
+            if(shiftMinPercentage > 1){
+                shiftMinPercentage = 1;
+            }
             double shiftMaxPercentage = 1 - shiftMinPercentage;
 
             // Create min/max bounds
