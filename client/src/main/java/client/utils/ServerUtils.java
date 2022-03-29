@@ -156,17 +156,8 @@ public class ServerUtils {
      */
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
-        GameUpdate ret = null;
-        while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
-            ret = ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER).path("api/game/")
-                    .queryParam("gameID", gameUUID.toString())
-                    .queryParam("username", username)
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .get(GameUpdate.class);
-            if(isInGame) consumer.accept(ret);
-        }
+        LongPollThread longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username);
+        longPollThread.start();
 
     }
 
