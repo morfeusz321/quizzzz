@@ -6,6 +6,7 @@ import commons.AnswerResponseEntity;
 import commons.CommonUtils;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,6 +19,8 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
@@ -174,38 +177,47 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      */
     public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
 
-        disableButtons();
+        Platform.runLater(this::disableButtons);
 
         AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
         long correct = answer.getAnswer();
 
         if(answer.correct) {
-            placingTick(lastSelectedButton);
-            correctAns.setText("correctly");
-            buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerCorrect");
-            fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
-            fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+            Platform.runLater(() -> {
+                placingTick(lastSelectedButton);
+                correctAns.setText("correctly");
+                buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerCorrect");
+                fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
+                fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+            });
         } else {
-            fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
-            fullText.setLayoutY(anchorPane.getHeight()*0.754867);
-            placingCross(lastSelectedButton);
-            correctAns.setText("incorrectly");
-            try {
-                buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerIncorrect");
-            } catch(IndexOutOfBoundsException ignored) {
-                // This is fine, no button was selected in this case
-            }
-            try {
-                buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
-            } catch(IndexOutOfBoundsException ignored) {
-                // This is very much not fine, probably indicates a bug in the
-                // answer response entity creation, or question generation, but there is hardly a
-                // better option than just continuing, otherwise the application will crash!
-            }
-            placingTick(correct);
+            Platform.runLater(() -> {
+                fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
+                fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+                placingCross(lastSelectedButton);
+                correctAns.setText("incorrectly");
+                try {
+                    buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerIncorrect");
+                } catch(IndexOutOfBoundsException ignored) {
+                    // This is fine, no button was selected in this case
+                }
+                try {
+                    buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
+                } catch(IndexOutOfBoundsException ignored) {
+                    // This is very much not fine, probably indicates a bug in the
+                    // answer response entity creation, or question generation, but there is hardly a
+                    // better option than just continuing, otherwise the application will crash!
+                }
+                placingTick(correct);
+            });
         }
 
-        lastSelectedButton = 0;
+        (new Timer()).schedule(new TimerTask() {
+            @Override
+            public void run() {
+                lastSelectedButton = 0;
+            }
+        }, 1000L);
 
     }
 
