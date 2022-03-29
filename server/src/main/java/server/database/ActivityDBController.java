@@ -148,4 +148,25 @@ public class ActivityDBController {
     public ArrayList<Activity> getThreeRandomActivities(){
         return activityDB.getThreeRandomActivities();
     }
+
+    /**
+     * Gets a random activity from the database
+     * @return a random activity
+     */
+    public Activity getRandomActivity(){
+        return activityDB.getRandomActivity();
+    }
+
+    /**
+     * Gets a random activity from the database which consumption is in a specified range, while excluding specific
+     * activities and consumptions
+     * @return a random activity which fulfills the above requirements
+     */
+    public Activity getActivityExclAndInRange(List<String> ids,
+                                              List<Long> consumptions,
+                                              long lower,
+                                              long upper){
+        return activityDB.getActivityExclAndInRange(ids, consumptions, lower, upper);
+    }
+
 }

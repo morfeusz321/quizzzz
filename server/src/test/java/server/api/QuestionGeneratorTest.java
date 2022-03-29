@@ -172,12 +172,13 @@ public class QuestionGeneratorTest {
     @Test
     public void getRandomQuestionWithLongTest() {
 
+        // The WhichIsMore question needs the consumptions to be distinct, otherwise a StackOverFlow error will be thrown.
         activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999998L));
         activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999997L));
+        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999996L));
+        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999995L));
 
         Question q = questionGenerator.getRandomQuestion();
 
@@ -280,6 +281,73 @@ public class QuestionGeneratorTest {
         assertThrows(IllegalArgumentException.class, () -> {
             questionGenerator.generateGameQuestions(-1);
         });
+
+    }
+
+
+    @Test
+    public void getMoreExpensiveIsNull() {
+
+        // It should not be possible to generate a WhichIsMore question if the consumptions are identical.
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 10);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 10);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+
+        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
+        assertNull(moreExpensive);
+
+    }
+
+    @Test
+    public void getMoreExpensiveRangeTest() {
+
+        // The question should not contain an "obvious" answer, i.e. 4 as an answer. The consumption is out of the
+        // desired range. This is checked in this test.
+        // TODO: when Random with seed is added, change this test. This is testing with randomness, so not desired.
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 11);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 999999999);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+        activityDBController.getInternalDB().save(activity4);
+
+        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
+        List<String> allActivities = new ArrayList<>();
+        allActivities.add(moreExpensive.activityTitle);
+        allActivities.addAll(moreExpensive.answerOptions);
+
+        assertNotNull(moreExpensive);
+        assertFalse(allActivities.contains(activity4.title));
+
+    }
+
+    @Test
+    public void testUpperLowerBoundSmall(){
+        // Tests the utility method getLowerUpperBoundSmall().
+
+        long[] bounds = questionGenerator.getLowerUpperBoundSmall(10);
+        assertTrue(bounds[0] == 0 && bounds[1] == 500);
+        bounds = questionGenerator.getLowerUpperBoundSmall(800);
+        assertTrue(bounds[0] == 500 && bounds[1] == 1000);
+        bounds = questionGenerator.getLowerUpperBoundSmall(1200);
+        assertTrue(bounds[0] == 1000 && bounds[1] == 10000);
+        bounds = questionGenerator.getLowerUpperBoundSmall(18000);
+        assertTrue(bounds[0] == 10000 && bounds[1] == 10000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(150000L);
+        assertTrue(bounds[0] == 100000 && bounds[1] == 1000000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(12300000L);
+        assertTrue(bounds[0] == 10000000L && bounds[1] == 100000000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(18970000000L);
+        assertTrue(bounds[0] == 1000000000L && bounds[1] == 100000000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(112000000000L);
+        assertTrue(bounds[0] == 100000000000L && bounds[1] == Long.MAX_VALUE);
 
     }
 
