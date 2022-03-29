@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 import server.game.GameTestUtils;
-import server.game.QuestionGenerator;
+import server.game.questions.QuestionGenerator;
+import server.game.questions.QuestionGeneratorUtils;
 
 import java.util.*;
 
@@ -23,7 +24,12 @@ public class QuestionGeneratorTest {
 
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController);
+        QuestionGeneratorUtils utils = new QuestionGeneratorUtils();
+        questionGenerator = new QuestionGenerator(
+                new Random(),
+                activityDBController,
+                questionDBController,
+                utils);
 
     }
 
@@ -309,28 +315,7 @@ public class QuestionGeneratorTest {
 
     }
 
-    @Test
-    public void testUpperLowerBoundSmall(){
-        // Tests the utility method getLowerUpperBoundSmall().
 
-        long[] bounds = questionGenerator.getLowerUpperBoundSmall(10);
-        assertTrue(bounds[0] == 0 && bounds[1] == 500);
-        bounds = questionGenerator.getLowerUpperBoundSmall(800);
-        assertTrue(bounds[0] == 500 && bounds[1] == 1000);
-        bounds = questionGenerator.getLowerUpperBoundSmall(1200);
-        assertTrue(bounds[0] == 1000 && bounds[1] == 10000);
-        bounds = questionGenerator.getLowerUpperBoundSmall(18000);
-        assertTrue(bounds[0] == 10000 && bounds[1] == 10000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(150000L);
-        assertTrue(bounds[0] == 100000 && bounds[1] == 1000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(12300000L);
-        assertTrue(bounds[0] == 10000000L && bounds[1] == 100000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(18970000000L);
-        assertTrue(bounds[0] == 1000000000L && bounds[1] == 100000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(112000000000L);
-        assertTrue(bounds[0] == 100000000000L && bounds[1] == Long.MAX_VALUE);
-
-    }
 
     // TODO: the following section is commented out so that we still have a reference for testing receiving answers. As
     //  soon as receiving answers is implemented, we should remove this.
