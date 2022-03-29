@@ -15,18 +15,24 @@ public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
+    private final CommonUtils utils;
 
     /**
      * Creates the question generator
      * @param random               the random number generator to be used by this controller
      * @param activityDBController the interface with the activity database to be used for generation
      * @param questionDBController the interface with the question database to be used for generation
+     * @param utils                an instance of the CommonUtils used for the SI prefixes
      */
-    public QuestionGenerator(Random random, ActivityDBController activityDBController, QuestionDBController questionDBController) {
+    public QuestionGenerator(Random random,
+                             ActivityDBController activityDBController,
+                             QuestionDBController questionDBController,
+                             CommonUtils utils) {
 
         this.random = random;
         this.activityDBController = activityDBController;
         this.questionDBController = questionDBController;
+        this.utils = utils;
 
     }
 
@@ -54,8 +60,6 @@ public class QuestionGenerator {
      */
     public Question getGeneralQuestion() {
 
-        CommonUtils utils = new CommonUtils();
-
         ActivityDB activityDB = activityDBController.getInternalDB();
 
         long count = activityDB.count();
@@ -70,11 +74,17 @@ public class QuestionGenerator {
         if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
-            aw.add((long) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
-            aw.add( a.consumption + " Wh");
-            aw.add((long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
+
+            long tmpConsumption = (long) (utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption);
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            tmpConsumption = (long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption)));
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            String mainConsumptionString = utils.createConsumptionString(a.consumption);
+            aw.add(mainConsumptionString);
+
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh") + 1);
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(mainConsumptionString) + 1);
+
             questionDBController.add(toReturn);
             return toReturn;
         }
