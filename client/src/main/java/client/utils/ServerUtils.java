@@ -31,7 +31,6 @@ import java.util.List;
 import commons.*;
 import commons.gameupdate.GameUpdate;
 
-import commons.gameupdate.GameUpdateGameFinished;
 import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;

@@ -17,6 +17,13 @@ public class LongPollThread extends Thread {
     private Consumer<GameUpdate> consumer;
     private String username;
 
+    /**
+     * jfdfaj;dlskfj
+     * @param server
+     * @param gameUUID
+     * @param consumer
+     * @param username
+     */
     public LongPollThread(String server, UUID gameUUID, Consumer<GameUpdate> consumer, String username) {
 
         this.server = server;
@@ -26,6 +33,9 @@ public class LongPollThread extends Thread {
 
     }
 
+    /**
+     * JavaDoc
+     */
     @Override
     public void run() {
 
