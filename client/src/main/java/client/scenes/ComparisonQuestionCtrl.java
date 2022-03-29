@@ -22,6 +22,7 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
     /**
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar.
      */
+    @Override
     public void loadQuestion(Question q) {
 
         // TODO: add comparison question type, and restructure this afterwards if needed
