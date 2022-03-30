@@ -1,6 +1,5 @@
 package server.game;
 
-import commons.CommonUtils;
 import commons.GameType;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
