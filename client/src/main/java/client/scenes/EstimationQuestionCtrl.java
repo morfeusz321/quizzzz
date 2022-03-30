@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
 import commons.Question;
+import commons.gameupdate.GameUpdateTransitionPeriodEntered;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -127,6 +128,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * (and TODO the initialization of the slider).
      */
     public void loadQuestion(Question q) {
+        enableButtons();
         setPoints();
 
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
@@ -168,11 +170,33 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * Disables the answer and power buttons, makes then power buttons invisible
      */
     private void disableButtons(){
-        powersText.setOpacity(0);
-        decreaseTime.setOpacity(0);
-        doublePoints.setOpacity(0);
+        powersText.setOpacity(0.3);
+        decreaseTime.setOpacity(0.3);
+        doublePoints.setOpacity(0.3);
+        setAnswerBtn.setOpacity(0.3);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
+        setAnswerBtn.setDisable(true);
     }
 
+    /**
+     * Enables the answer and power buttons, makes then power buttons visible
+     */
+    protected void enableButtons(){
+        powersText.setOpacity(1);
+        decreaseTime.setOpacity(1);
+        doublePoints.setOpacity(1);
+        setAnswerBtn.setOpacity(1);
+        decreaseTime.setDisable(false);
+        doublePoints.setDisable(false);
+        setAnswerBtn.setDisable(false);
+    }
+
+    /**
+     * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
+     * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
+     */
+    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
+        disableButtons();
+    }
 }

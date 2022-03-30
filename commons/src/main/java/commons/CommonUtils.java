@@ -1,5 +1,6 @@
 package commons;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class CommonUtils {
@@ -83,7 +84,7 @@ public class CommonUtils {
      * @param consumption the consumption in Wh
      * @return a string of the consumption using SI prefixes and rounded to 2 decimals
      */
-    public static String createConsumptionString(long consumption) {
+    public String createConsumptionString(long consumption) {
 
         return createConsumptionString(consumption, 2);
 
@@ -96,7 +97,7 @@ public class CommonUtils {
      * @return a string of the consumption using SI prefixes and rounded to the provided amount of decimals, or an
      * IllegalArgumentException if the amount of decimals or the consumption is negative
      */
-    public static String createConsumptionString(long consumption, int amountOfDecimals) throws IllegalArgumentException {
+    public String createConsumptionString(long consumption, int amountOfDecimals) throws IllegalArgumentException {
 
         if(amountOfDecimals < 0) throw new IllegalArgumentException("Amount of decimals cannot be negative!");
         if(consumption < 0) throw new IllegalArgumentException("Consumption cannot be negative!");
@@ -116,7 +117,7 @@ public class CommonUtils {
         double rounded = ((double) Math.round(doubleConsumption * roundingFactor)) / roundingFactor;
 
         String formatString = "%." + amountOfDecimals + "f";
-        stringBuilder.append(String.format(formatString, rounded)).append(" ").append(getSIPrefix(steps)).append("Wh");
+        stringBuilder.append(String.format(Locale.ENGLISH, formatString, rounded)).append(" ").append(getSIPrefix(steps)).append("Wh");
         return stringBuilder.toString();
 
     }
@@ -128,7 +129,7 @@ public class CommonUtils {
      * @return the appropriate prefix for the amount of division steps by 1 000, or an IllegalArgumentException
      * in case the amount of steps is greater than 4
      */
-    public static String getSIPrefix(int step) throws IllegalArgumentException {
+    public String getSIPrefix(int step) throws IllegalArgumentException {
 
         if(step <= 0) {
             return "";

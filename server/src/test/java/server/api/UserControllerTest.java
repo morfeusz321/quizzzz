@@ -4,6 +4,7 @@ import commons.Score;
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
 import commons.gameupdate.GameUpdateNameInUse;
+import commons.gameupdate.GameUpdateNameTooLong;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,18 @@ public class UserControllerTest {
                 new ScoreController(scoreDBController));
 
         this.userController = new UserController(this.testGameController, this.scoreDBController);
+
+    }
+
+    @Test
+    public void testJoinGameNameTooLong() {
+
+        ResponseEntity<GameUpdate> response = userController.joinGame("wowthisnameiswaytoolongbutokay",
+                "MULTIPLAYER", Optional.empty());
+
+        assertFalse(testGameController.getCurrentGame().containsPlayer("wowthisnameiswaytoolongbutokay"));
+        assertSame(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(new GameUpdateNameTooLong(), response.getBody());
 
     }
 

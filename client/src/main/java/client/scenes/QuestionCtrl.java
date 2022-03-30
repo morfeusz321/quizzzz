@@ -214,6 +214,7 @@ public abstract class QuestionCtrl {
     private void startProgressbar(int timeInMillis) {
         timeBar.setProgress(1);
         int remainingTime = timeInMillis / 1000; // in seconds
+        updateQuestionNumber();
 
         Timeline timeAnim = new Timeline(
                 new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
@@ -323,6 +324,13 @@ public abstract class QuestionCtrl {
 
         ft.play();
         pathTransition.play();
+    }
+
+    /**
+     * Updates the current number of question label
+     */
+    private void updateQuestionNumber() {
+        questionInfo.setText("Question " + (mainCtrl.getGameManager().getQuestions().indexOf(mainCtrl.getGameManager().getCurrentQuestion()) + 1) + "/20");
     }
 
     /**

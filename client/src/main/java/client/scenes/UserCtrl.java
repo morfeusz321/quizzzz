@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
+import client.utils.TextFieldSizeLimiter;
 import com.google.inject.Inject;
 import commons.GameType;
 import commons.gameupdate.*;
@@ -87,6 +88,9 @@ public class UserCtrl {
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
         backButtonHandler();
         joinHandler();
+
+        username.lengthProperty().addListener(new TextFieldSizeLimiter(username, MainCtrl.MAXIMUM_USERNAME_SIZE));
+
     }
 
     /**
@@ -126,6 +130,19 @@ public class UserCtrl {
 
         String un = getUserName();
 
+        if(un.length() > MainCtrl.MAXIMUM_USERNAME_SIZE) {
+
+            // This shouldn't be possible, but who knows what kind of tricks users can try
+
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Provided username \"" + un + "\" is longer than the maximum username length of " +
+                    MainCtrl.MAXIMUM_USERNAME_SIZE + "!");
+            alert.showAndWait();
+            return;
+
+        }
+
         mainCtrl.setUsernamePrefill(un);
         mainCtrl.setServerAddressPrefill(getServer());
 
@@ -150,13 +167,7 @@ public class UserCtrl {
             return;
         }
 
-        if (gu instanceof GameUpdateNameInUse) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("Name \"" + un + "\" already in use!");
-            alert.showAndWait();
-            return;
-        }
+        if(!checkReturnedGameUpdateAfterJoinGame(gu, un)) return;
 
         if (gu instanceof GameUpdateFullPlayerList) {
             waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu), un);
@@ -168,15 +179,6 @@ public class UserCtrl {
 
         this.currentUsername = un;
 
-        /*
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                server.startGame();
-            }
-        }, 10000);
-        */
-
         if (mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             server.startGame();
         } else {
@@ -185,6 +187,38 @@ public class UserCtrl {
             fadeOutUser("wait");        
         }
 
+
+    }
+
+    /**
+     * Checks a game update to see if the client succeeded in joining a game,
+     * and shows an error modal if it wasn't. Used by the join method in this controller,
+     * but moved into this separate method because of the join method's length.
+     * @param gu the GameUpdate that was received from the server after attempting to join a game
+     * @param un the username entered by the user in an attempt to join the game
+     * @return shows an error modal if the GameUpdate was of the name in use or name too long type,
+     * and returns false in that case, and true otherwise
+     */
+    private boolean checkReturnedGameUpdateAfterJoinGame(GameUpdate gu, String un) {
+
+        if (gu instanceof GameUpdateNameInUse) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Name \"" + un + "\" already in use!");
+            alert.showAndWait();
+            return false;
+        }
+
+        if(gu instanceof GameUpdateNameTooLong) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Provided username \"" + un + "\" is longer than the maximum username length allowed" +
+                    "by the server!");
+            alert.showAndWait();
+            return false;
+        }
+
+        return true;
 
     }
 

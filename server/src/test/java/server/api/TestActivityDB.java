@@ -5,10 +5,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.repository.query.FluentQuery;
 import server.database.ActivityDB;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -25,6 +22,26 @@ public class TestActivityDB implements ActivityDB {
 
         this.db = new ArrayList<>();
 
+    }
+
+    @Override
+    public Activity getRandomActivity(){
+        Random r = new Random();
+        int idx = r.nextInt(db.size());
+        return db.get(idx);
+    }
+
+    @Override
+    public Activity getActivityExclAndInRange(Collection<String> ids,
+                                              Collection<Long> consumptions,
+                                              long lower,
+                                              long upper){
+        List<Activity> tmpDb = new ArrayList<>(db);
+        // The elements will not be modified, so using this as a copy is not a problem
+        Collections.shuffle(tmpDb);
+        // Random order and search for the first activity that fulfills the requirements (or return null)
+        return db.stream().filter(a -> (!ids.contains(a.id) && !consumptions.contains(a.consumption)
+        && a.consumption <= upper && a.consumption >= lower)).findAny().orElse(null);
     }
 
     @Override
