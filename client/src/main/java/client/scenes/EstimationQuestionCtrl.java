@@ -1,6 +1,5 @@
 package client.scenes;
 
-import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
@@ -25,9 +24,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     @FXML
     private Text answerDisplay;
     @FXML
-    private Label minLabel;
+    private Text minLabel;
     @FXML
-    private Label maxLabel;
+    private Text maxLabel;
     @FXML
     private Button setAnswerBtn;
     @FXML
@@ -128,7 +127,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
     /**
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar
-     * (and TODO the initialization of the slider).
+     * (and the initialization of the slider).
      */
     public void loadQuestion(Question q) {
         enableButtons();
@@ -136,23 +135,12 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());
 
-        // TODO: handle slider and other question-dependent objects (max/min etc.)
-
         long min = Long.parseLong(q.answerOptions.get(0));
         long max = Long.parseLong(q.answerOptions.get(1));
-        System.out.println(min + " " + max + " " + q.answerOptions.get(2));
-        Text maxText = new Text();
-        Text minText = new Text();
-        maxText.setText(String.valueOf(max));
-        minText.setText(String.valueOf(min));
-        DynamicText maxTextDynamic = new DynamicText(maxText, 25, 10, "Karla");
-        DynamicText minTextDynamic = new DynamicText(minText, 25, 10, "Karla");
-        maxTextDynamic.setText((int)maxText.getFont().getSize());
-        minTextDynamic.setText((int)minText.getFont().getSize());
         slideBar.setMax(max);
-        maxLabel.setText(maxText.getText());
+        maxLabel.setText(min + " Wh");
         slideBar.setMin(min);
-        minLabel.setText(minText.getText());
+        minLabel.setText(max + " Wh");
         answerTxtField.setText(String.valueOf(min));
         slideBar.setValue(slideBar.getMin());
         answerSet = false;
@@ -161,7 +149,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         answerTxtField.setDisable(false);
         slideBar.setMajorTickUnit(100);
         slideBar.setMinorTickCount(99);
-        // must be one less than major tick unit -> one tick per kWh
+        // must be one less than major tick unit -> one tick per Wh
 
         refreshProgressBar();
 
