@@ -1,5 +1,6 @@
 package commons;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -24,7 +25,7 @@ public abstract class Question {
 
     @ElementCollection
     public List<String> answerOptions;
-
+    @JsonIgnore
     public long answer;
 
     /**

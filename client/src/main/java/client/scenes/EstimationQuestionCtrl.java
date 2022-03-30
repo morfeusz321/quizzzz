@@ -129,6 +129,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      */
     public void loadQuestion(Question q) {
         enableButtons();
+        disableJokers();
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());
@@ -199,11 +200,6 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         slideBar.setDisable(false);
         answerTxtField.setDisable(false);
         setAnswerBtn.setDisable(false);
-    }
-
-    @Override
-    void removeQuestion() {
-
     }
 
     /**

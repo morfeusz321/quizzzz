@@ -241,6 +241,7 @@ public abstract class QuestionCtrl {
      * This handles the animation of the time-bar and the setting of the time-label after a time joker has been used
      */
     public void handleTimeJoker() {
+        System.out.println("hello");
         timeAnim.getKeyFrames().clear();
         changeLabel.getKeyFrames().clear();
         int remainingTime = 5;
@@ -332,9 +333,9 @@ public abstract class QuestionCtrl {
         //  Alternatively we can also create classes for handling the powers and call methods of those classes here.
 
         switch (power) {
-            case "remove question" -> removeQuestion();
+            case "remove question" -> removeQuestionJoker();
             case "double points" -> doublePoints();
-            case "decrease time" -> decreaseTime();
+            case "decrease time" -> decreaseTimeJoker();
         }
     }
 
@@ -347,12 +348,14 @@ public abstract class QuestionCtrl {
         mainCtrl.disableJoker(2);
     }
 
-    abstract void removeQuestion();
+    private void removeQuestionJoker() {
+        server.useQuestionJoker(mainCtrl.getSavedUsernamePrefill(),mainCtrl.getGameUUID());
+    }
 
     /**
      * Handling method for decrease time joker TODO: implement (this one is more tricky)
      */
-    private void decreaseTime() {
+    private void decreaseTimeJoker() {
         decreaseTime.setDisable(true);
         decreaseTime.setOpacity(0.3);
         server.useTimeJoker(mainCtrl.getSavedUsernamePrefill(), mainCtrl.getGameUUID());

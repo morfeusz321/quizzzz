@@ -346,8 +346,22 @@ public class Game extends Thread {
      * @param playerList the list of players excluding one
      */
     public void useTimeJoker(List<Player> playerList) {
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTimerJoker(playerList))));
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTimerJoker(playerList))));
         deferredResultMap.clear();
+    }
+
+    public void useQuestionJoker(String username) {
+        Question question = getCurrentQuestion();
+        long answer = question.answer;
+        CommonUtils utils = new CommonUtils();
+        Random random = new Random();
+        int returnValue = 0;
+        switch ((int) answer) {
+            case 1: returnValue = utils.randomIntInRange(1,2,random) + 1; break;
+            case 2: if(utils.randomIntInRange(1,2,random) == 1) returnValue = 3; else returnValue = 1; break;
+            case 3: returnValue = utils.randomIntInRange(1,2,random); break;
+        }
+        deferredResultMap.get(username).setResult(ResponseEntity.ok(new GameUpdateQuestionJoker(returnValue)));
     }
 
     /**

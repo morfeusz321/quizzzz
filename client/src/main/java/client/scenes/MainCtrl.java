@@ -96,7 +96,6 @@ public class MainCtrl {
     private boolean usedDouble = false;
     private boolean usedTime = false;
     private boolean usedRemove = false;
-    private Question currentQuestion;
 
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
@@ -389,6 +388,7 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if (gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
+            resetJokers();
             server.setInGameTrue();
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
@@ -444,8 +444,7 @@ public class MainCtrl {
             leaderboardCtrl.disableButtonsForMainScreen();
             Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
 
-        } else if(gameUpdate instanceof GameUpdateTimerJoker) {
-            GameUpdateTimerJoker update = (GameUpdateTimerJoker) gameUpdate;
+        } else if(gameUpdate instanceof GameUpdateTimerJoker update) {
             List<Player> playerList = update.getPlayerList();
             for(Player player: playerList) {
                 if(player.getUsername().equals(userCtrl.getSavedCurrentUsername())) {
@@ -453,22 +452,35 @@ public class MainCtrl {
                     handleTimerJoker();
                 }
             }
+        } else if(gameUpdate instanceof GameUpdateQuestionJoker update) {
+            int buttonNumber = update.getButtonNumber();
+            handleQuestionJoker(buttonNumber);
+            System.out.println("hello question joker used successfully");
         }
-
     }
 
     /**
      * Method for handling the time joker for each question type.
      */
     public void handleTimerJoker() {
-        if(currentQuestion instanceof GeneralQuestion) {
+        if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
             generalQuestionCtrl.handleTimeJoker();
-        } else if(currentQuestion instanceof ComparisonQuestion) {
+        } else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
             comparisonQuestionCtrl.handleTimeJoker();
-        } else if(currentQuestion instanceof EstimationQuestion) {
+        } else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion) {
             estimationQuestionCtrl.handleTimeJoker();
-        } else if(currentQuestion instanceof WhichIsMoreQuestion) {
+        } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
             mostExpensiveQuestionCtrl.handleTimeJoker();
+        }
+    }
+
+    public void handleQuestionJoker(int buttonNumber) {
+        if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
+            generalQuestionCtrl.removeQuestion(buttonNumber);
+        } else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
+            comparisonQuestionCtrl.removeQuestion(buttonNumber);
+        } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
+            mostExpensiveQuestionCtrl.removeQuestion(buttonNumber);
         }
     }
 

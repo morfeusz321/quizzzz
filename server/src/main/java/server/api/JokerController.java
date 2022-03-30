@@ -44,4 +44,21 @@ public class JokerController {
 
         return ResponseEntity.ok(username);
     }
+
+    @PostMapping("/question")
+    public ResponseEntity<String> useAnswerJoker(@RequestParam("username") String username, @RequestParam("gameUUID") String gameIDString) {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(gameIDString);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game game = gameController.getGame(uuid);
+        if(game == null) return ResponseEntity.badRequest().build();
+
+        game.useQuestionJoker(username);
+
+        return ResponseEntity.ok(username);
+    }
 }
