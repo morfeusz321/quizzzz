@@ -4,10 +4,14 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.CommonUtils;
 import commons.Question;
+import commons.gameupdate.GameUpdateTransitionPeriodEntered;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 
 public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
+
+    private Question currentQuestion;
 
     /**
      * Creates a MostExpensiveQuestionCtrl, which controls the display/interaction of the comparison question screen.
@@ -36,15 +40,24 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     @Override
     public void loadQuestion(Question q) {
 
-        // TODO: add "more expensive" question type, and restructure this afterwards
-
         enableButtons();
         questionImg.setImage(new Image("/client/img/question_mark.png"));
-
+        currentQuestion = q;
+        
         super.loadQuestion(q);
 
     }
 
-    // TODO: when the answer is displayed, the correct image should be shown!
+    /**
+     * Shows transition screen (see method in superclass), and the image corresponding to the answer is displayed.
+     * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
+     */
+    @Override
+    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
 
+        super.enterTransitionScreen(gameUpdate);
+        Platform.runLater(() ->
+                questionImg.setImage(new Image(ServerUtils.getImageURL(currentQuestion.activityImagePath))));
+
+    }
 }
