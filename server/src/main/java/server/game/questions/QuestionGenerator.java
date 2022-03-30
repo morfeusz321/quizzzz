@@ -1,4 +1,4 @@
-package server.game;
+package server.game.questions;
 
 import commons.*;
 import org.springframework.data.domain.Page;
@@ -15,19 +15,19 @@ public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
-    private final CommonUtils utils;
+    private final QuestionGeneratorUtils utils;
 
     /**
      * Creates the question generator
      * @param random               the random number generator to be used by this controller
      * @param activityDBController the interface with the activity database to be used for generation
      * @param questionDBController the interface with the question database to be used for generation
-     * @param utils                an instance of the CommonUtils used for the SI prefixes
+     * @param utils                instance of utility class for question generation
      */
     public QuestionGenerator(Random random,
                              ActivityDBController activityDBController,
                              QuestionDBController questionDBController,
-                             CommonUtils utils) {
+                             QuestionGeneratorUtils utils) {
 
         this.random = random;
         this.activityDBController = activityDBController;
@@ -109,7 +109,7 @@ public class QuestionGenerator {
             activities.add(first);
             // Second activity: Bounds depend on first activity added. The id and consumption of the first activity are
             // excluded.
-            long[] bounds = getLowerUpperBoundSmall(first.consumption);
+            long[] bounds = utils.getLowerUpperBoundSmall(first.consumption);
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id),
                     List.of(first.consumption),
@@ -147,37 +147,6 @@ public class QuestionGenerator {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
-        }
-    }
-
-    /**
-     * Generates a (random) upper/lower bound for a given consumption, which is used to generate the new activities
-     * with a close consumption to this one. The bound is dependent on the "scale" of the given consumption. The input
-     * should be non-negative.
-     * @param consumption the consumption from which to generate a range
-     * @return an array with two longs, the lower bound (idx 0) and the upper bound (idx 1)
-     */
-    public long[] getLowerUpperBoundSmall(long consumption){
-        // This is a method that creates a "small" range, that is closer to the initial value.
-        // The range does not have to be generated randomly, as the activity itself is chosen randomly
-        // within that range.
-        // TODO: add method with bigger range, so that different "difficulties" can be generated
-        if(consumption <= 500){
-            return new long[]{0, 500};
-        } else if(consumption <= 1000){
-            return new long[]{500, 1000};
-        } else if(consumption <= 10000){
-            return new long[]{1000,10000};
-        } else if(consumption <= 100000){
-            return new long[]{10000,10000000L};
-        } else if(consumption <= 10000000L){
-            return new long[]{100000,1000000000L};
-        } else if(consumption <= 1000000000L){
-            return new long[]{10000000L,100000000000L};
-        } else if(consumption <= 100000000000L){
-            return new long[]{1000000000L,100000000000L};
-        } else {
-            return new long[]{100000000000L,Long.MAX_VALUE};
         }
     }
 
@@ -262,43 +231,29 @@ public class QuestionGenerator {
      */
     public Question getEstimationQuestion() {
 
-        ActivityDB activityDB = activityDBController.getInternalDB();
-
-        long count = activityDB.count();
-        int index;
         try {
-            index = random.nextInt((int) count);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+            // The consumption of the activity should be < 1000000, so we search for an activity with a consumption between
+            // 0 and 999999 Wh. The reasons for this bound are that the user can more easily estimate "lower" consumptions
+            // and that higher SI units cannot be used here, as they would make the slideBar difficult to configure.
+            Activity a = activityDBController.getActivityExclAndInRange(List.of(),List.of(),0,999999);
 
-        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent() && page.getContent().get(0) != null) {
-            Activity a = page.getContent().get(0);
-            List<String> aw = new ArrayList<>();
+            // Get the bounds for the input range for the estimation question. The consumption can now be safely cast
+            // to an integer, as the above condition needs to be fulfilled.
+            int[] bounds = utils.getBoundsEstimationQuestion(random, (int) a.consumption);
 
-            long min = a.consumption - 100;
-            long max = a.consumption + 100;
+            // Create the question
+            List<String> questionInfo = new ArrayList<>();
+            questionInfo.add(Integer.toString(bounds[0]));
+            questionInfo.add(Integer.toString(bounds[1]));
+            Question toReturn = new EstimationQuestion(a, questionInfo);
 
-            int shift = random.nextInt(200) - 100;
-
-            min = min + shift;
-            max = max + shift;
-
-            if(min < 0) {
-                max = max - min;
-                min = 0;
-            }
-
-            aw.add(Long.toString(min));
-            aw.add(Long.toString(max));
-            aw.add(Long.toString(a.consumption));
-            Question toReturn = new EstimationQuestion(a, aw);
+            // Return/save the question
             questionDBController.add(toReturn);
             return toReturn;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-
-        return null;
 
     }
 

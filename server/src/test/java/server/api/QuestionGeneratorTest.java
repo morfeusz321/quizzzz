@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 import server.game.GameTestUtils;
-import server.game.QuestionGenerator;
+import server.game.questions.QuestionGenerator;
+import server.game.questions.QuestionGeneratorUtils;
 
 import java.util.*;
 
@@ -17,15 +18,18 @@ public class QuestionGeneratorTest {
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
     private QuestionGenerator questionGenerator;
-    private CommonUtils utils;
 
     @BeforeEach
     public void setup() {
 
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        utils = new CommonUtils();
-        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController, utils);
+        QuestionGeneratorUtils utils = new QuestionGeneratorUtils();
+        questionGenerator = new QuestionGenerator(
+                new Random(),
+                activityDBController,
+                questionDBController,
+                utils);
 
     }
 
@@ -172,33 +176,14 @@ public class QuestionGeneratorTest {
     }
 
     @Test
-    public void getRandomQuestionWithLongTest() {
-
-        // The WhichIsMore question needs the consumptions to be distinct, otherwise a StackOverFlow error will be thrown.
-        activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999998L));
-        activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999997L));
-        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999996L));
-        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999995L));
-
-        Question q = questionGenerator.getRandomQuestion();
-
-        assertNotNull(q);
-        assertEquals(q, questionDBController.getById(q.questionId));
-
-    }
-
-    @Test
     public void getEstimationWithLongTest() {
+        // It should return null as long values are above the cut-off point for estimation questions.
 
         activityDBController.getInternalDB().deleteAll();
         activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999995L));
 
         Question q = questionGenerator.getEstimationQuestion();
-
-        assertNotNull(q);
-        assertEquals(q, questionDBController.getById(q.questionId));
+        assertNull(q);
 
     }
 
@@ -330,28 +315,7 @@ public class QuestionGeneratorTest {
 
     }
 
-    @Test
-    public void testUpperLowerBoundSmall(){
-        // Tests the utility method getLowerUpperBoundSmall().
 
-        long[] bounds = questionGenerator.getLowerUpperBoundSmall(10);
-        assertTrue(bounds[0] == 0 && bounds[1] == 500);
-        bounds = questionGenerator.getLowerUpperBoundSmall(800);
-        assertTrue(bounds[0] == 500 && bounds[1] == 1000);
-        bounds = questionGenerator.getLowerUpperBoundSmall(1200);
-        assertTrue(bounds[0] == 1000 && bounds[1] == 10000);
-        bounds = questionGenerator.getLowerUpperBoundSmall(18000);
-        assertTrue(bounds[0] == 10000 && bounds[1] == 10000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(150000L);
-        assertTrue(bounds[0] == 100000 && bounds[1] == 1000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(12300000L);
-        assertTrue(bounds[0] == 10000000L && bounds[1] == 100000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(18970000000L);
-        assertTrue(bounds[0] == 1000000000L && bounds[1] == 100000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(112000000000L);
-        assertTrue(bounds[0] == 100000000000L && bounds[1] == Long.MAX_VALUE);
-
-    }
 
     // TODO: the following section is commented out so that we still have a reference for testing receiving answers. As
     //  soon as receiving answers is implemented, we should remove this.
