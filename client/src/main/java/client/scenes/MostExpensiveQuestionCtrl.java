@@ -2,16 +2,12 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
-import commons.AnswerResponseEntity;
 import commons.CommonUtils;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
