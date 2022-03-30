@@ -44,8 +44,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class MainCtrl {
+
+    protected static final int MAXIMUM_USERNAME_SIZE = 15;
 
     private final ServerUtils server;
     private GameManager gameManager;
@@ -415,11 +418,21 @@ public class MainCtrl {
             gameManager.setCurrentQuestionByIdx(gameUpdateNextQuestion.getQuestionIdx());
             Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 
-        } else if (gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+        } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
 
-            // TODO: display transition screen, this gameupdate already contains an answer response entity w/ the necessary information for the screen
-
-            System.out.println("transition period");
+            UUID id = gameManager.getCurrentQuestion().questionId;
+            if(gameManager.getCurrentQuestion() instanceof GeneralQuestion){
+                generalQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
+            }
+            else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion){
+                mostExpensiveQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
+            }
+            else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion){
+                comparisonQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
+            }
+            else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion){
+                estimationQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
+            }
 
         } else if(gameUpdate instanceof GameUpdateDisplayLeaderboard gameUpdateDisplayLeaderboard) {
 
@@ -493,6 +506,14 @@ public class MainCtrl {
 
         return this.serverAddressPrefill;
 
+    }
+
+    /**
+     * Returns the game manager (to be used for current question number)
+     * @return the game manager
+     */
+    public GameManager getGameManager() {
+        return gameManager;
     }
 
     /**
@@ -631,7 +652,11 @@ public class MainCtrl {
             String line = fileReader.nextLine();
             if (line.startsWith("username: ")) {
                 try {
-                    return line.split(": ")[1];
+                    String toReturn = line.split(": ")[1];
+                    if(toReturn.length() > MAXIMUM_USERNAME_SIZE) {
+                        toReturn = toReturn.substring(0, MAXIMUM_USERNAME_SIZE);
+                    }
+                    return toReturn;
                 } catch (IndexOutOfBoundsException e) {
                     return "";
                 }

@@ -60,8 +60,7 @@ public class QuestionGenerator {
      */
     public Question getGeneralQuestion() {
 
-        CommonUtils utils = new CommonUtils();
-
+        CommonUtils commonUtils = new CommonUtils();
         ActivityDB activityDB = activityDBController.getInternalDB();
 
         long count = activityDB.count();
@@ -76,11 +75,17 @@ public class QuestionGenerator {
         if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
-            aw.add((long) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
-            aw.add( a.consumption + " Wh");
-            aw.add((long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
+
+            long tmpConsumption = (long) (commonUtils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption);
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            tmpConsumption = (long) (((commonUtils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption)));
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            String mainConsumptionString = utils.createConsumptionString(a.consumption);
+            aw.add(mainConsumptionString);
+
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(Long.toString(a.consumption)+" Wh") + 1);
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(mainConsumptionString) + 1);
+
             questionDBController.add(toReturn);
             return toReturn;
         }
@@ -115,9 +120,8 @@ public class QuestionGenerator {
             if(activities.get(1) == null) {
                 return getWhichIsMoreQuestion(); // The boundaries did not include a fitting activity. Try again.
             }
-            // Third activity: Bounds depend on the average of the first and second activity. The ids and consumptions
-            // of the previous activities are excluded.
-            bounds = utils.getLowerUpperBoundSmall((first.consumption + activities.get(1).consumption)/2);
+            // Third activity: Bounds would depend on the average of the first and second activity, those are already
+            // in the correct range, however. The ids and consumptions of the previous activities are excluded.
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id, activities.get(1).id),
                     List.of(first.consumption, activities.get(1).consumption),

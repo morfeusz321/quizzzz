@@ -17,6 +17,7 @@ package server;
 
 import java.util.Random;
 
+import commons.CommonUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,5 +30,14 @@ public class Config {
     @Bean
     public Random getRandom() {
         return new Random();
+    }
+
+    /**
+     * Creates a new instance of the CommonUtils, managed by the Spring container
+     * @return a new instance of the CommonUtils
+     */
+    @Bean
+    public CommonUtils getCommonUtils() {
+        return new CommonUtils();
     }
 }

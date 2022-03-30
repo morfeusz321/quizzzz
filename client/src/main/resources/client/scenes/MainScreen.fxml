@@ -8,8 +8,8 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" style="-fx-background-color: #F0EAD6;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.MainScreenCtrl">
    <stylesheets>
-      <String fx:value="client/stylesheets/question-style.css" />
       <String fx:value="/client/stylesheets/main-style.css" />
+      <String fx:value="/client/stylesheets/question-style.css" />
    </stylesheets>
    <children>
       <ImageView fx:id="lightning" fitHeight="275.0" fitWidth="549.0" layoutX="242.0" layoutY="134.0" pickOnBounds="true" preserveRatio="true" />

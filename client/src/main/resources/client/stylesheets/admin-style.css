@@ -103,3 +103,11 @@
     -fx-min-height: 80px;
     -fx-font-size: 30px;
 }
+
+.hover-cursor {
+    -fx-cursor: hand;
+}
+
+.hover-buttonDark {
+    -fx-background-color: #d6a048;
+}

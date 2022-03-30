@@ -1,5 +1,6 @@
 package server.game;
 
+import commons.CommonUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -188,8 +189,9 @@ public class FakeApplicationContext implements ApplicationContext {
             ActivityDBController activityDBController = new ActivityDBController(new TestActivityDB());
 
             // Add some default activities to the database
-            GameTestUtils utils = new GameTestUtils();
-            utils.initActivityDB(activityDBController);
+            GameTestUtils gameUtils = new GameTestUtils();
+            CommonUtils commonUtils = new CommonUtils();
+            gameUtils.initActivityDB(activityDBController);
 
             QuestionGeneratorUtils generatorUtils = new QuestionGeneratorUtils();
             QuestionDBController questionDBController = new QuestionDBController(new TestQuestionDB());
