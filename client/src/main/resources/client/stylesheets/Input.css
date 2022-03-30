@@ -34,7 +34,7 @@
     -fx-color: #252422;
 }
 
-.button{
+.buttonInput{
 
     -fx-background-color: #E1B545;
     -fx-border-style: solid;
@@ -46,7 +46,7 @@
     -fx-font-size: 50px;
 }
 
-.input{
+.inputTextField{
     -fx-background-color: #E9DEC8;
     -fx-border-style: solid;
     -fx-border-radius: 50px;
@@ -66,5 +66,12 @@
     -fx-text-align: top center;
 
     -fx-color: #252422;
+}
 
+.hover-cursor {
+    -fx-cursor: hand;
+}
+
+.hover-buttonDark {
+    -fx-background-color: #d6a048;
 }

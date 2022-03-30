@@ -4,6 +4,7 @@ import commons.GameType;
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
 import commons.gameupdate.GameUpdateNameInUse;
+import commons.gameupdate.GameUpdateNameTooLong;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import commons.Player;
@@ -19,6 +20,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    static final int MAXIMUM_USERNAME_SIZE = 15;
 
     private GameController gameController;
     private ScoreDBController scoreDBController;
@@ -55,6 +58,12 @@ public class UserController {
     public ResponseEntity<GameUpdate> joinGame(@RequestParam("username") String username,
                                                   @RequestParam("gametype") String gametype,
                                                   @RequestParam("confirmNameInUse") Optional<String> confirmNameInUse) {
+
+        if(username.length() > MAXIMUM_USERNAME_SIZE) {
+
+            return ResponseEntity.ok(new GameUpdateNameTooLong());
+
+        }
 
         if(gametype.equals(GameType.SINGLEPLAYER.name())) {
 

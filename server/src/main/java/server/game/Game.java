@@ -32,7 +32,9 @@ public class Game extends Thread {
     private int currentQuestionIdx;
     private boolean done;
 
-    private ConcurrentHashMap<UUID, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
+    private ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
+
+    private ConcurrentHashMap<String, Long> answerMap;
 
     private StopWatch stopWatch;
     private long lastTime;
@@ -62,6 +64,7 @@ public class Game extends Thread {
         this.questions = new ArrayList<>(); // questions are "loaded" when game is started
         this.done = false;
         this.deferredResultMap = new ConcurrentHashMap<>();
+        this.answerMap = new ConcurrentHashMap<>();
 
         this.stopWatch = new StopWatch();
         this.lastTime = 0;
@@ -117,7 +120,7 @@ public class Game extends Thread {
 
             currentQuestionIdx++;
             done = true;
-            deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(
+            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
                     new GameUpdateGameFinished(
                             createLeaderboardList()
                     )
@@ -134,7 +137,7 @@ public class Game extends Thread {
         currentQuestionIdx++;
         this.currentQuestion = questions.get(currentQuestionIdx);
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateNextQuestion(currentQuestionIdx))));
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateNextQuestion(currentQuestionIdx))));
         deferredResultMap.clear();
 
         (new Timer()).schedule(new TimerTask() {
@@ -147,12 +150,41 @@ public class Game extends Thread {
     }
 
     /**
+     *  sets the answer in the ConcurrentHashMap
+     * @param username the username of the Player
+     * @param answer the answer the user chose for the question
+     */
+
+    public void saveAnswer(String username, long answer) {
+        this.answerMap.put(username, answer);
+    }
+
+
+    /**
      * Informs all registered long poll requests that the current game is entering the transition period
      */
     private void sendTransitionPeriod() {
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(new AnswerResponseEntity(true, 1)))));
-        deferredResultMap.clear();
+        for(Map.Entry<String, DeferredResult<ResponseEntity<GameUpdate>>> openRequest : deferredResultMap.entrySet()) {
+
+            String username = openRequest.getKey();
+            DeferredResult<ResponseEntity<GameUpdate>> req = openRequest.getValue();
+            deferredResultMap.remove(username);
+
+            long answer;
+            if(!answerMap.containsKey(username)) {
+                answer = -1;
+            } else {
+                answer = answerMap.get(username);
+            }
+
+            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer))));
+
+            // TODO: Save scores to leaderboard here, calculate points
+
+        }
+
+        answerMap.clear();
 
         if(currentQuestionIdx == 9) {
             (new Timer()).schedule(new TimerTask() {
@@ -177,7 +209,7 @@ public class Game extends Thread {
      */
     private void sendLeaderboard() {
 
-        deferredResultMap.forEach((uuid, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
         deferredResultMap.clear();
 
         (new Timer()).schedule(new TimerTask() {
@@ -189,6 +221,10 @@ public class Game extends Thread {
 
     }
 
+    /**
+     * Creates a list of Scores from the internal HashMap used to hold the scores by this game, sorted by scores descending
+     * @return a list of scores for players in this game sorted by scores descending
+     */
     private List<Score> createLeaderboardList() {
 
         List<Score> result = new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
@@ -215,12 +251,13 @@ public class Game extends Thread {
 
     /**
      * Allows a long poll to be registered to this game. This game will update this
-     * long poll whenever the current question updates.
-     * @param deferredResult the long poll to inform of updates
+     * long poll whenever the game phase changes.
+     * @param username the username of the player that this long poll request was sent by
+     * @param deferredResult the long poll request to inform of updates
      */
-    public void runDeferredResult(DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
+    public void runDeferredResult(String username, DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
 
-        this.deferredResultMap.put(UUID.randomUUID(), deferredResult);
+        this.deferredResultMap.put(username, deferredResult);
 
     }
 

@@ -12,7 +12,10 @@
 
 <?import javafx.scene.text.TextFlow?>
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.ComparisonQuestionCtrl">
-
+   <stylesheets>
+      <String fx:value="/client/stylesheets/question-style.css" />
+      <String fx:value="/client/stylesheets/screen-style.css" />
+   </stylesheets>
    <children>
       <ImageView fx:id="bgImage" fitHeight="265.0" fitWidth="2034.0" layoutX="-665.0" layoutY="-108.0">
       </ImageView>
@@ -67,9 +70,9 @@
       </TextFlow>
       <ImageView fx:id="hoverEmoji" fitHeight="126.0" fitWidth="114.0" layoutX="1205.0" layoutY="597.0"
                  onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis" preserveRatio="true"/>
-      <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" layoutX="909.0" layoutY="345.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
       <Label fx:id="questionInfo" layoutX="56.0" layoutY="700.0" text="Question 1/20">
          <styleClass>

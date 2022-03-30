@@ -5,8 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.animation.*;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +18,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import commons.CommonUtils;
 
+import java.util.List;
 import java.util.Random;
 
 public abstract class QuestionCtrl {
@@ -84,6 +84,8 @@ public abstract class QuestionCtrl {
     @FXML
     protected ImageView wrongCross;
 
+    private List<ImageView> emojiList;
+
     private Timeline changeLabel;
     private Timeline timeAnim;
 
@@ -91,9 +93,10 @@ public abstract class QuestionCtrl {
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
      * is handled that is shared for all different question types. The controls of those question type screens extend
      * from this class.
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
-     * @param utils Common utilities (for server- and client-side)
+     * @param utils    Common utilities (for server- and client-side)
      */
     @Inject
     public QuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
@@ -106,10 +109,12 @@ public abstract class QuestionCtrl {
      * Initializes the scene, i.e. handles initialization, images
      */
     protected void initialize(){
+        emojiList = List.of(happyEmoji, sadEmoji, angryEmoji, heartEmoji, thumbsUpEmoji);
         showImages();
         initializeEmojiEventHandlers();
         initializePowerEventHandlers();
         initializeBackButtonHandlers();
+        initializEmojiHoverHandlers();
         dynamicTextQuestion();
 
     }
@@ -117,14 +122,14 @@ public abstract class QuestionCtrl {
     /**
      * Refreshes the progressbar
      */
-    protected void refreshProgressBar(){
+    protected void refreshProgressBar() {
         startProgressbar(15000);
     }
 
     /**
      * Loads all images, i.e. initializes the images of all ImageView objects
      */
-    protected void showImages(){
+    protected void showImages() {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         decreaseTime.setImage(new Image("/client/img/clock_btn.png"));
         doublePoints.setImage(new Image("/client/img/2x_btn.png"));
@@ -140,7 +145,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the event handlers of all emojis
      */
-    private void initializeEmojiEventHandlers(){
+    private void initializeEmojiEventHandlers() {
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         happyEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(happyEmoji));
         sadEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(sadEmoji));
@@ -152,7 +157,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the event handlers of the powers
      */
-    protected void initializePowerEventHandlers(){
+    protected void initializePowerEventHandlers() {
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("decrease time"));
         doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("double points"));
@@ -162,11 +167,23 @@ public abstract class QuestionCtrl {
         hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
-        decreaseTime.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> decreaseTime.setEffect(hover));
-        doublePoints.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> doublePoints.setEffect(hover));
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            decreaseTime.setEffect(hover);
+            decreaseTime.getStyleClass().add("hover-cursor");
+        });
+        doublePoints.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            doublePoints.setEffect(hover);
+            doublePoints.getStyleClass().add("hover-cursor");
+        });
 
-        decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e -> decreaseTime.setEffect(null));
-        doublePoints.addEventHandler(MouseEvent.MOUSE_EXITED, e -> doublePoints.setEffect(null));
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e ->{
+            decreaseTime.setEffect(null);
+            decreaseTime.getStyleClass().remove("hover-cursor");
+        });
+        doublePoints.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            doublePoints.setEffect(null);
+            doublePoints.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
@@ -179,21 +196,28 @@ public abstract class QuestionCtrl {
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-                                                                    mainCtrl.sendLeaveMessageToServer();
-                                                                    mainCtrl.showMainScreen();
-                                                                });
+            mainCtrl.exitWhileInTheGame();
+        });
         // TODO: when the menu screen is added, modify this
-        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
-        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
      * This handles the animation of the time-bar and the setting of the time-label ("time left: ", "time ran out").
+     *
      * @param timeInMillis The time in milliseconds which the time-bar should take until the "time runs out"
      */
-    private void startProgressbar(int timeInMillis){
+    private void startProgressbar(int timeInMillis) {
         timeBar.setProgress(1);
         int remainingTime = timeInMillis / 1000; // in seconds
+        updateQuestionNumber();
 
         timeAnim = new Timeline(
                 new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
@@ -247,9 +271,10 @@ public abstract class QuestionCtrl {
 
     /**
      * Displays an emoji animation for a specific emoji
+     *
      * @param clickedEmoji The image view which was clicked (emoji in the emoji pane)
      */
-    private void emojiAnimation(ImageView clickedEmoji){
+    private void emojiAnimation(ImageView clickedEmoji) {
 
         ImageView emoji = new ImageView(clickedEmoji.getImage());
         anchorPane.getChildren().add(emoji);
@@ -298,6 +323,7 @@ public abstract class QuestionCtrl {
 
     /**
      * TODO: handle powers here
+     *
      * @param power A string describing the power that was clicked
      */
     public void handlePower(String power) {
@@ -341,9 +367,9 @@ public abstract class QuestionCtrl {
 
         Line line = new Line();
         line.setStartX(605); // width of pane
-        line.setStartY(132/2.0); // height of pane/2
-        line.setEndX(605/2.0); // width of pane/2
-        line.setEndY(132/2.0); // height of pane/2
+        line.setStartY(132 / 2.0); // height of pane/2
+        line.setEndX(605 / 2.0); // width of pane/2
+        line.setEndY(132 / 2.0); // height of pane/2
 
         PathTransition pathTransition = new PathTransition();
         pathTransition.setDuration(Duration.millis(350));
@@ -363,6 +389,13 @@ public abstract class QuestionCtrl {
     }
 
     /**
+     * Updates the current number of question label
+     */
+    private void updateQuestionNumber() {
+        questionInfo.setText("Question " + (mainCtrl.getGameManager().getQuestions().indexOf(mainCtrl.getGameManager().getCurrentQuestion()) + 1) + "/20");
+    }
+
+    /**
      * Sets visibility of emoji pane to visible
      */
     public void displayEmojis() {
@@ -379,8 +412,58 @@ public abstract class QuestionCtrl {
     /**
      * sets the maximum height a question title can have
      */
-    private void dynamicTextQuestion(){
+    private void dynamicTextQuestion() {
         title.setText("");
-        resizeQuestionHandler = new DynamicText(title, 170, 35, "System Bold Italic" );
+        resizeQuestionHandler = new DynamicText(title, 170, 35, "System Bold Italic");
+    }
+
+    /**
+     * Initializes the hover handlers for all emojis
+     */
+    private void initializEmojiHoverHandlers(){
+
+        emojiList.forEach(this::addEventHandlersEmoji);
+
+    }
+
+    /**
+     * Gives emojis its event handlers
+     * @param emoji the emoji which is hovered
+     */
+    private void addEventHandlersEmoji(ImageView emoji) {
+
+        emoji.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> eventHandlerEmojiMouseEntered(emoji));
+        emoji.addEventHandler(MouseEvent.MOUSE_EXITED, e -> eventHandlerEmojiMouseExited(emoji));
+
+    }
+
+    /**
+     * The event handler called when the user hovers over an emoji
+     * @param emoji the emoji which the mouse has entered
+     */
+    private void eventHandlerEmojiMouseEntered(ImageView emoji) {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        emoji.setEffect(hover);
+        emoji.getStyleClass().add("hover-cursor");
+
+    }
+
+    /**
+     * The event handler called when the user stops hovering over an emoji
+     * @param emoji the emoji that was stopped hovering over
+     */
+    private void eventHandlerEmojiMouseExited(ImageView emoji) {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        emoji.setEffect(null);
+        emoji.getStyleClass().remove("hover-cursor");
+
     }
 }

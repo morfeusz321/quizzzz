@@ -15,18 +15,24 @@ public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
+    private final CommonUtils utils;
 
     /**
      * Creates the question generator
      * @param random               the random number generator to be used by this controller
      * @param activityDBController the interface with the activity database to be used for generation
      * @param questionDBController the interface with the question database to be used for generation
+     * @param utils                an instance of the CommonUtils used for the SI prefixes
      */
-    public QuestionGenerator(Random random, ActivityDBController activityDBController, QuestionDBController questionDBController) {
+    public QuestionGenerator(Random random,
+                             ActivityDBController activityDBController,
+                             QuestionDBController questionDBController,
+                             CommonUtils utils) {
 
         this.random = random;
         this.activityDBController = activityDBController;
         this.questionDBController = questionDBController;
+        this.utils = utils;
 
     }
 
@@ -54,8 +60,6 @@ public class QuestionGenerator {
      */
     public Question getGeneralQuestion() {
 
-        CommonUtils utils = new CommonUtils();
-
         ActivityDB activityDB = activityDBController.getInternalDB();
 
         long count = activityDB.count();
@@ -67,14 +71,20 @@ public class QuestionGenerator {
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent()) {
+        if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
-            aw.add((long) ((utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption)) + " Wh");
-            aw.add( a.consumption + " Wh");
-            aw.add((long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption))) + " Wh");
+
+            long tmpConsumption = (long) (utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption);
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            tmpConsumption = (long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption)));
+            aw.add(utils.createConsumptionString(tmpConsumption));
+            String mainConsumptionString = utils.createConsumptionString(a.consumption);
+            aw.add(mainConsumptionString);
+
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(a.consumption +" Wh") + 1);
+            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(mainConsumptionString) + 1);
+
             questionDBController.add(toReturn);
             return toReturn;
         }
@@ -89,9 +99,37 @@ public class QuestionGenerator {
      * @return A WhichIsMoreQuestion, or null if no question can be generated
      */
     public Question getWhichIsMoreQuestion() {
-
         try {
-            List<Activity> activities = activityDBController.getThreeRandomActivities();
+            List<Activity> activities = new ArrayList<>();
+            // Get first activity: No conditions.
+            Activity first = activityDBController.getRandomActivity();
+            if(first == null) {
+                return null; // Something went wrong when trying to retrieve an activity.
+            }
+            activities.add(first);
+            // Second activity: Bounds depend on first activity added. The id and consumption of the first activity are
+            // excluded.
+            long[] bounds = getLowerUpperBoundSmall(first.consumption);
+            activities.add(activityDBController.getActivityExclAndInRange(
+                    List.of(first.id),
+                    List.of(first.consumption),
+                    bounds[0],
+                    bounds[1]
+            ));
+            if(activities.get(1) == null) {
+                return getWhichIsMoreQuestion(); // The boundaries did not include a fitting activity. Try again.
+            }
+            // Third activity: Bounds would depend on the average of the first and second activity, those are already
+            // in the correct range, however. The ids and consumptions of the previous activities are excluded.
+            activities.add(activityDBController.getActivityExclAndInRange(
+                    List.of(first.id, activities.get(1).id),
+                    List.of(first.consumption, activities.get(1).consumption),
+                    bounds[0],
+                    bounds[1]
+            ));
+            if(activities.get(2) == null) {
+                return getWhichIsMoreQuestion(); // The boundaries did not include a fitting activity. Try again.
+            }
 
             Activity a1 = activities.get(0);
             for(int i=1;i<3;i++){
@@ -103,9 +141,43 @@ public class QuestionGenerator {
             Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1)+1);
             questionDBController.add(toReturn);
             return toReturn;
+        } catch (StackOverflowError e){
+            System.out.println("Error: No valid question could be generated from the database.");
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Generates a (random) upper/lower bound for a given consumption, which is used to generate the new activities
+     * with a close consumption to this one. The bound is dependent on the "scale" of the given consumption. The input
+     * should be non-negative.
+     * @param consumption the consumption from which to generate a range
+     * @return an array with two longs, the lower bound (idx 0) and the upper bound (idx 1)
+     */
+    public long[] getLowerUpperBoundSmall(long consumption){
+        // This is a method that creates a "small" range, that is closer to the initial value.
+        // The range does not have to be generated randomly, as the activity itself is chosen randomly
+        // within that range.
+        // TODO: add method with bigger range, so that different "difficulties" can be generated
+        if(consumption <= 500){
+            return new long[]{0, 500};
+        } else if(consumption <= 1000){
+            return new long[]{500, 1000};
+        } else if(consumption <= 10000){
+            return new long[]{1000,10000};
+        } else if(consumption <= 100000){
+            return new long[]{10000,10000000L};
+        } else if(consumption <= 10000000L){
+            return new long[]{100000,1000000000L};
+        } else if(consumption <= 1000000000L){
+            return new long[]{10000000L,100000000000L};
+        } else if(consumption <= 100000000000L){
+            return new long[]{1000000000L,100000000000L};
+        } else {
+            return new long[]{100000000000L,Long.MAX_VALUE};
         }
     }
 
@@ -122,7 +194,7 @@ public class QuestionGenerator {
             //First we sort the list of returned activities
             List<Activity> activities = activityDBController.getFiveRandomActivities();
 
-            if(activities.size() < 5) {
+            if(activities.size() < 5 || activities.contains(null)) {
                 return null;
             }
 
@@ -158,8 +230,24 @@ public class QuestionGenerator {
                 return getComparisonQuestion();
             }
 
+            // Create answer options list (activities can not be used as answer options list, as it contains 5
+            // activities, including the actual answer and the title. The actual answer should be guaranteed to be in
+            // the answer options, and the title should never be in it.
+            List<Activity> answerOptions = new ArrayList<>();
+            // Do not add the first activity as this is the title (should not be a selectable answer)
+            answerOptions.add(secondActivity);
+            activities.remove(firstActivity);
+            activities.remove(secondActivity);
+            // Get two random activities from the remaining one's
+            int randomIdx = random.nextInt(3);
+            answerOptions.add(activities.remove(randomIdx));
+            randomIdx = random.nextInt(2);
+            answerOptions.add(activities.remove(randomIdx));
+            // Shuffle for random order
+            Collections.shuffle(answerOptions);
+
             //We return the question
-            Question toReturn = new ComparisonQuestion(firstActivity, activities, activities.indexOf(secondActivity));
+            Question toReturn = new ComparisonQuestion(firstActivity, answerOptions, answerOptions.indexOf(secondActivity)+1);
             questionDBController.add(toReturn);
             return toReturn;
         } catch (StackOverflowError e){
@@ -185,9 +273,27 @@ public class QuestionGenerator {
         }
 
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent()) {
+        if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
-            Question toReturn = new EstimationQuestion(a);
+            List<String> aw = new ArrayList<>();
+
+            long min = a.consumption - 100;
+            long max = a.consumption + 100;
+
+            int shift = random.nextInt(200) - 100;
+
+            min = min + shift;
+            max = max + shift;
+
+            if(min < 0) {
+                max = max - min;
+                min = 0;
+            }
+
+            aw.add(Long.toString(min));
+            aw.add(Long.toString(max));
+            aw.add(Long.toString(a.consumption));
+            Question toReturn = new EstimationQuestion(a, aw);
             questionDBController.add(toReturn);
             return toReturn;
         }
@@ -224,6 +330,12 @@ public class QuestionGenerator {
                     // Something went wrong
                     return null;
                 }
+                // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
+                // that it is very unlikely that questions are ever equal.
+                if(questions.contains(generated)){
+                    j--;
+                    continue;
+                }
                 questions.add(generated);
             }
         }
@@ -234,6 +346,12 @@ public class QuestionGenerator {
             if(generated == null){
                 // Something went wrong
                 return null;
+            }
+            // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
+            // that it is very unlikely that questions are ever equal.
+            if(questions.contains(generated)){
+                i--;
+                continue;
             }
             questions.add(generated);
         }

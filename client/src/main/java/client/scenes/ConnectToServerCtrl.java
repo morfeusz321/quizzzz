@@ -5,7 +5,9 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -29,6 +31,9 @@ public class ConnectToServerCtrl {
     @FXML
     private AnchorPane anchorPane;
 
+    @FXML
+    private Button connect;
+
     /**
      * Constructor for this controller
      * @param server Utilities for communicating with the server (API endpoint)
@@ -46,9 +51,8 @@ public class ConnectToServerCtrl {
      */
     public void initialize() {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
-        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            goBackButton();
-        });
+        backButtonHandler();
+        connectHandler();
     }
 
     /**
@@ -127,6 +131,40 @@ public class ConnectToServerCtrl {
      */
     public void fadeInServer(){
         animation.fadeIn(anchorPane);
+    }
+
+    /**
+     *  The back button functionality
+     */
+    private void backButtonHandler() {
+        ColorAdjust hover = new ColorAdjust();
+        hover.setBrightness(-0.05);
+        hover.setSaturation(0.1);
+        hover.setHue(-0.02);
+
+        backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> goBackButton());
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
+    }
+
+    /**
+     * connect Button hover effects
+     */
+    private void connectHandler() {
+        connect.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            connect.getStyleClass().add("hover-cursor");
+            connect.getStyleClass().add("hover-buttonDark");
+        });
+        connect.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            connect.getStyleClass().remove("hover-cursor");
+            connect.getStyleClass().remove("hover-buttonDark");
+        });
     }
 
 }

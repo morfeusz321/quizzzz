@@ -17,12 +17,14 @@ package client.scenes;
 
 import client.utils.AnimationUtils;
 import client.utils.ServerUtils;
+import client.utils.TextFieldSizeLimiter;
 import com.google.inject.Inject;
 import commons.GameType;
 import commons.gameupdate.*;
 import jakarta.ws.rs.WebApplicationException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
@@ -60,9 +62,13 @@ public class UserCtrl {
     @FXML
     private AnchorPane anchorPane;
 
+    @FXML
+    private Button join;
+
     /**
      * Constructor
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
@@ -73,14 +79,18 @@ public class UserCtrl {
         this.animation = new AnimationUtils();
     }
 
-     /**
+    /**
      * Initializes the default text for the server address
-      * and the back button functionality
+     * and the back button functionality
      */
     public void initialize() {
 
         serverAddress.setText(mainCtrl.getSavedServerAddressPrefill());
         backButtonHandler();
+        joinHandler();
+
+        username.lengthProperty().addListener(new TextFieldSizeLimiter(username, MainCtrl.MAXIMUM_USERNAME_SIZE));
+
     }
 
     /**
@@ -105,11 +115,10 @@ public class UserCtrl {
      * sends the type of the game for the label to the fxml file
      */
 
-    public void setTextGameType(){
-        if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER){
+    public void setTextGameType() {
+        if (mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
             gameType.setText("MULTIPLAYER");
-        }
-        else gameType.setText("SINGLEPLAYER");
+        } else gameType.setText("SINGLEPLAYER");
     }
 
     /**
@@ -121,6 +130,19 @@ public class UserCtrl {
 
         String un = getUserName();
 
+        if(un.length() > MainCtrl.MAXIMUM_USERNAME_SIZE) {
+
+            // This shouldn't be possible, but who knows what kind of tricks users can try
+
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Provided username \"" + un + "\" is longer than the maximum username length of " +
+                    MainCtrl.MAXIMUM_USERNAME_SIZE + "!");
+            alert.showAndWait();
+            return;
+
+        }
+
         mainCtrl.setUsernamePrefill(un);
         mainCtrl.setServerAddressPrefill(getServer());
 
@@ -129,9 +151,9 @@ public class UserCtrl {
 
             server.changeServer(getServer());
 
-            if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            if (mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
                 gu = server.joinSinglePlayerGame(un, true);
-            } else if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
+            } else if (mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
                 gu = server.joinMultiplayerGame(un);
             } else {
                 throw new IllegalArgumentException("Invalid game type!");
@@ -145,15 +167,9 @@ public class UserCtrl {
             return;
         }
 
-        if(gu instanceof GameUpdateNameInUse) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("Name \"" + un + "\" already in use!");
-            alert.showAndWait();
-            return;
-        }
+        if(!checkReturnedGameUpdateAfterJoinGame(gu, un)) return;
 
-        if(gu instanceof GameUpdateFullPlayerList) {
+        if (gu instanceof GameUpdateFullPlayerList) {
             waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu), un);
             this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
         }
@@ -163,21 +179,51 @@ public class UserCtrl {
 
         this.currentUsername = un;
 
-        /*
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                server.startGame();
-            }
-        }, 10000);
-        */
+        if (mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            server.startGame();
+        } else {
 
-        fadeOutUser("wait");
+            fadeOutUser("wait");        
+        }
+
+
+    }
+
+    /**
+     * Checks a game update to see if the client succeeded in joining a game,
+     * and shows an error modal if it wasn't. Used by the join method in this controller,
+     * but moved into this separate method because of the join method's length.
+     * @param gu the GameUpdate that was received from the server after attempting to join a game
+     * @param un the username entered by the user in an attempt to join the game
+     * @return shows an error modal if the GameUpdate was of the name in use or name too long type,
+     * and returns false in that case, and true otherwise
+     */
+    private boolean checkReturnedGameUpdateAfterJoinGame(GameUpdate gu, String un) {
+
+        if (gu instanceof GameUpdateNameInUse) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Name \"" + un + "\" already in use!");
+            alert.showAndWait();
+            return false;
+        }
+
+        if(gu instanceof GameUpdateNameTooLong) {
+            var alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.APPLICATION_MODAL);
+            alert.setContentText("Provided username \"" + un + "\" is longer than the maximum username length allowed" +
+                    "by the server!");
+            alert.showAndWait();
+            return false;
+        }
+
+        return true;
 
     }
 
     /**
      * Returns the username entered by the player which has been used to join a game on the server
+     *
      * @return the current username of the user registered to the server
      */
     public String getSavedCurrentUsername() {
@@ -188,6 +234,7 @@ public class UserCtrl {
 
     /**
      * Returns the UUID of the game that the user is currently in
+     *
      * @return the UUID of the current game received from the server
      */
     public UUID getSavedGameUUID() {
@@ -198,6 +245,7 @@ public class UserCtrl {
 
     /**
      * gets the username
+     *
      * @return String which is the username
      */
     private String getUserName() {
@@ -206,6 +254,7 @@ public class UserCtrl {
 
     /**
      * gets the new server address
+     *
      * @return String which is the new server address
      */
     private String getServer() {
@@ -213,7 +262,7 @@ public class UserCtrl {
     }
 
     /**
-     *  The back button functionality
+     * The back button functionality
      */
     private void backButtonHandler() {
         ColorAdjust hover = new ColorAdjust();
@@ -222,28 +271,35 @@ public class UserCtrl {
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> goBackButton());
-        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> backBtn.setEffect(hover));
-        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> backBtn.setEffect(null));
+        backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            backBtn.setEffect(hover);
+            backBtn.getStyleClass().add("hover-cursor");
+        });
+        backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            backBtn.setEffect(null);
+            backBtn.getStyleClass().remove("hover-cursor");
+        });
     }
 
     /**
-     *  the click of enter continues as join
+     * the click of enter continues as join
+     *
      * @param e a click of the user
      */
     public void keyPressed(KeyEvent e) {
         switch (e.getCode()) {
-        case ENTER:
-            join();
-            break;
-        default:
-            break;
+            case ENTER:
+                join();
+                break;
+            default:
+                break;
         }
     }
 
     /**
      * Loads the back button image, i.e. initializes the image of the back button
      */
-    protected void showImage(){
+    protected void showImage() {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
     }
 
@@ -267,6 +323,21 @@ public class UserCtrl {
      */
     public void fadeInUser(){
         animation.fadeIn(anchorPane);
+    }
+
+    /**
+     *  join button hover effects
+     */
+    private void joinHandler() {
+
+        join.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
+            join.getStyleClass().add("hover-cursor");
+            join.getStyleClass().add("hover-buttonDark");
+        });
+        join.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
+            join.getStyleClass().remove("hover-cursor");
+            join.getStyleClass().remove("hover-buttonDark");
+        });
     }
 
 }

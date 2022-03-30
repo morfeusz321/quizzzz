@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
+import server.game.GameTestUtils;
 import server.game.QuestionGenerator;
 
 import java.util.*;
@@ -16,13 +17,15 @@ public class QuestionGeneratorTest {
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
     private QuestionGenerator questionGenerator;
+    private CommonUtils utils;
 
     @BeforeEach
     public void setup() {
 
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController);
+        utils = new CommonUtils();
+        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController, utils);
 
     }
 
@@ -97,9 +100,13 @@ public class QuestionGeneratorTest {
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer))
+        // Either main activity should be activity1 and the answer should be activity3 or the other way around
+        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer - 1))
                         ||
-                activity3.title.equals(q.answerOptions.get((int) q.answer)));
+                activity3.title.equals(q.answerOptions.get((int) q.answer - 1)));
+
+        // It should not contain the title as answer
+        assertFalse(q.answerOptions.contains(q.activityTitle));
 
     }
 
@@ -154,21 +161,26 @@ public class QuestionGeneratorTest {
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer))
+        // Either main activity should be activity1 and the answer should be activity3 or the other way around
+        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer - 1))
                 ||
-                activity3.title.equals(q.answerOptions.get((int) q.answer)));
+                activity3.title.equals(q.answerOptions.get((int) q.answer - 1)));
+
+        // It should not contain the title as answer
+        assertFalse(q.answerOptions.contains(q.activityTitle));
 
     }
 
     @Test
     public void getRandomQuestionWithLongTest() {
 
+        // The WhichIsMore question needs the consumptions to be distinct, otherwise a StackOverFlow error will be thrown.
         activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999998L));
         activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999999L));
+        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999997L));
+        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999996L));
+        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999995L));
 
         Question q = questionGenerator.getRandomQuestion();
 
@@ -207,6 +219,137 @@ public class QuestionGeneratorTest {
         assertEquals(moreExpensive, questionDBController.getById(moreExpensive.questionId));
         assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer-1));
         // This can be cast to an int because it is only the index, so not a long value.
+
+    }
+
+    @Test
+    public void testMinPerQuestionType() {
+
+        // TODO: this is not the best way to test this, as randomness is involved.
+
+        activityDBController.getInternalDB().deleteAll();
+        GameTestUtils utils = new GameTestUtils();
+        utils.initActivityDB(activityDBController);
+
+        List<Question> questions = questionGenerator.generateGameQuestions(3);
+
+        // Count the occurrences per question type
+        int[] count = new int[4];
+        for(Question q : questions) {
+            if(q instanceof GeneralQuestion){
+                count[0]++;
+            } else if(q instanceof ComparisonQuestion){
+                count[1]++;
+            } else if(q instanceof EstimationQuestion){
+                count[2]++;
+            } else{
+                count[3]++;
+            }
+        }
+
+        // Check if the number of questions per type are sufficient
+        for(int i = 0; i < 4; i++){
+            if(count[i] < 3){
+                fail();
+            }
+        }
+
+    }
+
+    @Test
+    public void testNoDuplicatesQuestionGeneration() {
+
+        // TODO: this is not the best way to test this, as randomness is involved.
+
+        activityDBController.getInternalDB().deleteAll();
+        GameTestUtils utils = new GameTestUtils();
+        utils.initActivityDB(activityDBController);
+
+        List<Question> questions = questionGenerator.generateGameQuestions(3);
+        Set<Question> setQuestions = new HashSet<>(questions);
+
+        // If the set size and the list size are equal, that means that there are no duplicates.
+        assertEquals(20, questions.size());
+        assertEquals(20, setQuestions.size());
+
+    }
+
+    @Test
+    public void testGenerateGameQuestionsThrows() {
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            questionGenerator.generateGameQuestions(6);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            questionGenerator.generateGameQuestions(-1);
+        });
+
+    }
+
+
+    @Test
+    public void getMoreExpensiveIsNull() {
+
+        // It should not be possible to generate a WhichIsMore question if the consumptions are identical.
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 10);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 10);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+
+        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
+        assertNull(moreExpensive);
+
+    }
+
+    @Test
+    public void getMoreExpensiveRangeTest() {
+
+        // The question should not contain an "obvious" answer, i.e. 4 as an answer. The consumption is out of the
+        // desired range. This is checked in this test.
+        // TODO: when Random with seed is added, change this test. This is testing with randomness, so not desired.
+        activityDBController.getInternalDB().deleteAll();
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 11);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 999999999);
+        activityDBController.getInternalDB().save(activity1);
+        activityDBController.getInternalDB().save(activity2);
+        activityDBController.getInternalDB().save(activity3);
+        activityDBController.getInternalDB().save(activity4);
+
+        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
+        List<String> allActivities = new ArrayList<>();
+        allActivities.add(moreExpensive.activityTitle);
+        allActivities.addAll(moreExpensive.answerOptions);
+
+        assertNotNull(moreExpensive);
+        assertFalse(allActivities.contains(activity4.title));
+
+    }
+
+    @Test
+    public void testUpperLowerBoundSmall(){
+        // Tests the utility method getLowerUpperBoundSmall().
+
+        long[] bounds = questionGenerator.getLowerUpperBoundSmall(10);
+        assertTrue(bounds[0] == 0 && bounds[1] == 500);
+        bounds = questionGenerator.getLowerUpperBoundSmall(800);
+        assertTrue(bounds[0] == 500 && bounds[1] == 1000);
+        bounds = questionGenerator.getLowerUpperBoundSmall(1200);
+        assertTrue(bounds[0] == 1000 && bounds[1] == 10000);
+        bounds = questionGenerator.getLowerUpperBoundSmall(18000);
+        assertTrue(bounds[0] == 10000 && bounds[1] == 10000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(150000L);
+        assertTrue(bounds[0] == 100000 && bounds[1] == 1000000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(12300000L);
+        assertTrue(bounds[0] == 10000000L && bounds[1] == 100000000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(18970000000L);
+        assertTrue(bounds[0] == 1000000000L && bounds[1] == 100000000000L);
+        bounds = questionGenerator.getLowerUpperBoundSmall(112000000000L);
+        assertTrue(bounds[0] == 100000000000L && bounds[1] == Long.MAX_VALUE);
 
     }
 
@@ -252,7 +395,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(true, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -267,7 +410,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "2");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(false, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 
@@ -285,7 +428,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "1");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(true, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(true), s.getBody());
 
     }
 
@@ -303,7 +446,7 @@ public class QuestionGeneratorTest {
         ResponseEntity<AnswerResponseEntity> s = questionController.answer(testQuestion.questionId.toString(), "3");
 
         assertEquals(HttpStatus.OK, s.getStatusCode());
-        assertEquals(new AnswerResponseEntity(false, 1), s.getBody());
+        assertEquals(new AnswerResponseEntity(false), s.getBody());
 
     }
 

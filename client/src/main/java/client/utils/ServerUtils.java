@@ -154,13 +154,14 @@ public class ServerUtils {
      * by this method that no further updates will be accepted by the provided consumer after leaving the game.
      * @param consumer the consumer that accepts incoming game loop updates
      */
-    public void registerForGameLoop(Consumer<GameUpdate> consumer) {
+    public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
         GameUpdate ret = null;
         while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
             ret = ClientBuilder.newClient(new ClientConfig())
                     .target(SERVER).path("api/game/")
                     .queryParam("gameID", gameUUID.toString())
+                    .queryParam("username", username)
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
                     .get(GameUpdate.class);
@@ -184,31 +185,26 @@ public class ServerUtils {
 
     }
 
-    // TODO: the following section is commented out so that we still have a reference for sending answers. As
-    //  soon as sending answers is implemented, we should remove this.
-
-    /*
+    /**
      * Sends the answer to a question to the server
-     * @param question the question to answer
      * @param answer the answer to send to the server
-     * @return An AnswerResponseEntity which contains information about whether the answer was correct,
-     * as well as the proximity to the correct answer for estimation questions
+     * @param playerName the username of the player
      */
-    /*
-    public AnswerResponseEntity sendAnswerToServer(Question question, long answer) {
+    public void sendAnswerToServer(long answer, String playerName) {
 
         Form postVariables = new Form();
-        postVariables.param("questionID", question.questionId.toString());
+        postVariables.param("gameID", gameUUID.toString());
+        postVariables.param("playerName", playerName);
         postVariables.param("answer", String.valueOf(answer));
 
-        return ClientBuilder.newClient(new ClientConfig())
-                .target(SERVER).path("api/questions/answer")
+        ClientBuilder.newClient(new ClientConfig())
+                .target(SERVER).path("api/game/answer")
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), AnswerResponseEntity.class);
+                .post(Entity.entity(postVariables, APPLICATION_FORM_URLENCODED_TYPE), String.class);
 
     }
-    */
+
 
     /**
      * Informs the server that a time joker has been used using the API endpoint
@@ -418,20 +414,6 @@ public class ServerUtils {
     }
 
     /**
-     * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
-     * @return all scores on the leaderboard sorted by rank ascending
-     */
-    public List<Score> getLeaderboard() {
-
-        return ClientBuilder.newClient(new ClientConfig()) //
-                                    .target(SERVER).path("api/scores/sorted") //
-                                    .request(APPLICATION_JSON) //
-                                    .accept(APPLICATION_JSON) //
-                                    .get(new GenericType<List<Score>>() {});
-
-    }
-
-    /**
      * Sets the UUID of the game the client is in
      * @param gameUUID the UUID of the corresponding game
      */
@@ -448,6 +430,28 @@ public class ServerUtils {
 
         isInGame = true;
 
+    }
+
+    /**
+     * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
+     * @return all scores on the leaderboard sorted by rank ascending
+     */
+    public List<Score> getLeaderboard() {
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                                    .target(SERVER).path("api/scores/sorted") //
+                                    .request(APPLICATION_JSON) //
+                                    .accept(APPLICATION_JSON) //
+                                    .get(new GenericType<List<Score>>() {});
+
+    }
+
+    /**
+     *
+     * @return true if the game is still going
+     */
+    public boolean getIsInTheGame(){
+        return isInGame;
     }
 
 }
