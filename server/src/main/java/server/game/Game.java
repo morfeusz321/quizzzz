@@ -41,6 +41,8 @@ public class Game extends Thread {
 
     private ConcurrentHashMap<String, Score> leaderboard;
 
+    private ConcurrentHashMap<String, Long> timeJoker;
+
     @HashCodeExclude
     @EqualsExclude
     @ToStringExclude
@@ -70,6 +72,7 @@ public class Game extends Thread {
         this.lastTime = 0;
 
         this.leaderboard = new ConcurrentHashMap<>();
+        this.timeJoker = new ConcurrentHashMap<>();
 
     }
 
@@ -95,7 +98,7 @@ public class Game extends Thread {
 
         // Set first question
         currentQuestionIdx = -1;
-
+        initializeTimeJoker();
         gameUpdateManager.startGame(this.uuid);
 
         this.stopWatch.start();
@@ -331,26 +334,42 @@ public class Game extends Thread {
     }
 
     /**
-     * Returns a list of all players in this game excluding the player who made the request for this method (time joker)
-     * @return a list of players
+     * Informs all registered long polls that a time joker has been used TODO: remove System.out.println
+     * @param username the username of the player that initiated the time joker
      */
-    public List<Player> getPlayersExcludingCurrent(String username) {
-        Player currentPlayer = this.players.getOrDefault(username, null);
-        List<Player> playerList = new ArrayList<>(players.values());
-        playerList.remove(currentPlayer);
-        return playerList;
+    public void useTimeJoker(String username) {
+
+        long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
+
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            player.setValue(remainingTime);
+        }
+
+        // one joker is -35% of current time left (can be changed)
+        long newTime = remainingTime - (long) (35.0/100.0 * remainingTime);
+        System.out.println(remainingTime + " " + newTime);
+
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            if(!player.getKey().equals(username)) {
+                player.setValue(newTime);
+            }
+        }
+
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            System.out.println(player.getKey() + " " + player.getValue());
+        }
+
+        deferredResultMap.forEach((user, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTimerJoker(timeJoker))));
+        deferredResultMap.clear();
+
     }
 
     /**
-     * Informs all registered long polls that a time joker has been used
-     * @param playerList the list of players excluding one
+     * Server-side handling of the question joker, returns an id of a button that will be removed
+     * @param username the name of the player that initiated the question joker
      */
-    public void useTimeJoker(List<Player> playerList) {
-        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTimerJoker(playerList))));
-        deferredResultMap.clear();
-    }
-
     public void useQuestionJoker(String username) {
+
         Question question = getCurrentQuestion();
         long answer = question.answer;
         CommonUtils utils = new CommonUtils();
@@ -362,6 +381,8 @@ public class Game extends Thread {
             case 3: returnValue = utils.randomIntInRange(1,2,random); break;
         }
         deferredResultMap.get(username).setResult(ResponseEntity.ok(new GameUpdateQuestionJoker(returnValue)));
+        deferredResultMap.clear();
+
     }
 
     /**
@@ -392,6 +413,17 @@ public class Game extends Thread {
     protected void addPlayer(Player player) {
 
         this.players.put(player.getUsername(), player);
+
+    }
+
+    /**
+     * This method will initialize the ConcurrentHashMap with the usernames of all players.
+     */
+    protected void initializeTimeJoker() {
+
+        for(Map.Entry<String, Player> player : players.entrySet()) {
+            timeJoker.put(player.getKey(), getElapsedTimeThisQuestion());
+        }
 
     }
 

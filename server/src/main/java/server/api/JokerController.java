@@ -23,7 +23,7 @@ public class JokerController {
     }
 
     /**
-     * Maps to /api/jokers/time. Used for triggering the timer joker for all players except the player who used the joker
+     * Maps to /api/jokers/time. Used for triggering the time joker for all players except the player who used the joker
      * @param username the player who used the joker
      * @param gameIDString The UUID of the current game
      * @return 400 Bad request: the UUID is wrong or the game does not exist, 200 OK: the username is returned to the client
@@ -40,11 +40,17 @@ public class JokerController {
         Game game = gameController.getGame(uuid);
         if(game == null) return ResponseEntity.badRequest().build();
 
-        game.useTimeJoker(game.getPlayersExcludingCurrent(username));
+        game.useTimeJoker(username);
 
         return ResponseEntity.ok(username);
     }
 
+    /**
+     * Maps to /api/jokers/question. Used for triggering the question joker for a player
+     * @param username the player who used the joker
+     * @param gameIDString The UUID of the current game
+     * @return 400 Bad request: the UUID is wrong or the game does not exist, 200 OK: the username is returned to the client
+     */
     @PostMapping("/question")
     public ResponseEntity<String> useAnswerJoker(@RequestParam("username") String username, @RequestParam("gameUUID") String gameIDString) {
         UUID uuid;

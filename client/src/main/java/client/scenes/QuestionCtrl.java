@@ -240,14 +240,14 @@ public abstract class QuestionCtrl {
     /**
      * This handles the animation of the time-bar and the setting of the time-label after a time joker has been used
      */
-    public void handleTimeJoker() {
+    public void handleTimeJoker(long time) {
         System.out.println("hello");
         timeAnim.getKeyFrames().clear();
         changeLabel.getKeyFrames().clear();
-        int remainingTime = 5;
+        int remainingTime = ((int) time)/1000;
 
         timeAnim = new Timeline(
-                new KeyFrame(Duration.millis(5000), new KeyValue(timeBar.progressProperty(), 0))
+                new KeyFrame(Duration.millis(time), new KeyValue(timeBar.progressProperty(), 0))
         );
         changeLabel = new Timeline();
         for(int i = 0; i <= remainingTime; i++){
@@ -353,7 +353,7 @@ public abstract class QuestionCtrl {
     }
 
     /**
-     * Handling method for decrease time joker TODO: implement (this one is more tricky)
+     * Handling method for decrease time joker
      */
     private void decreaseTimeJoker() {
         decreaseTime.setDisable(true);

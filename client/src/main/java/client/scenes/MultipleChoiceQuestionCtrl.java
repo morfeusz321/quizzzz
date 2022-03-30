@@ -21,7 +21,6 @@ import javafx.scene.text.TextFlow;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Random;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
@@ -337,7 +336,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     * Method for removing a wrong answer from the answer list (implementation for the remove answer joker)
+     * Method for removing a wrong answer from the answer list
      */
     public void removeQuestion(int buttonNumber) {
         removeQuestion.setDisable(true);

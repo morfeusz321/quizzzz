@@ -1,12 +1,10 @@
 package commons.gameupdate;
 
-import commons.Player;
-
-import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GameUpdateTimerJoker extends GameUpdate{
 
-    private List<Player> playerList;
+    private ConcurrentHashMap<String, Long> time;
 
     /**
      * Empty constructor used by object mapper
@@ -18,18 +16,17 @@ public class GameUpdateTimerJoker extends GameUpdate{
 
     /**
      * Creates a new Game Update
-     * @param playerList list of current players in the game (excluding one)
+     * @param time hash map containing names and times
      */
-    public GameUpdateTimerJoker(List<Player> playerList) {
-        this.playerList = playerList;
+    public GameUpdateTimerJoker(ConcurrentHashMap<String, Long> time) {
+        this.time = time;
     }
 
     /**
-     * Method for returning the player list
-     * @return the player list
+     * Getter for time hash map
+     * @return a concurrent hash map with names and times
      */
-    public List<Player> getPlayerList() {
-        return playerList;
+    public ConcurrentHashMap<String, Long> getTime() {
+        return time;
     }
-
 }

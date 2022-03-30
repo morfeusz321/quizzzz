@@ -1,9 +1,5 @@
 package commons.gameupdate;
 
-import commons.Player;
-
-import java.util.List;
-
 public class GameUpdateQuestionJoker extends GameUpdate{
     private int buttonNumber;
 

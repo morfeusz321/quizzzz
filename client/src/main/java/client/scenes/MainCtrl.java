@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -445,11 +446,10 @@ public class MainCtrl {
             Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
 
         } else if(gameUpdate instanceof GameUpdateTimerJoker update) {
-            List<Player> playerList = update.getPlayerList();
-            for(Player player: playerList) {
-                if(player.getUsername().equals(userCtrl.getSavedCurrentUsername())) {
-                    System.out.println("hello timer joker has been used");
-                    handleTimerJoker();
+            System.out.println("hello timer joker has been used");
+            for(Map.Entry<String, Long> player : update.getTime().entrySet()) {
+                if(this.userCtrl.getSavedCurrentUsername().equals(player.getKey())) {
+                    handleTimerJoker(player.getValue());
                 }
             }
         } else if(gameUpdate instanceof GameUpdateQuestionJoker update) {
@@ -462,18 +462,21 @@ public class MainCtrl {
     /**
      * Method for handling the time joker for each question type.
      */
-    public void handleTimerJoker() {
+    public void handleTimerJoker(long time) {
         if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
-            generalQuestionCtrl.handleTimeJoker();
+            generalQuestionCtrl.handleTimeJoker(time);
         } else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
-            comparisonQuestionCtrl.handleTimeJoker();
+            comparisonQuestionCtrl.handleTimeJoker(time);
         } else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion) {
-            estimationQuestionCtrl.handleTimeJoker();
+            estimationQuestionCtrl.handleTimeJoker(time);
         } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
-            mostExpensiveQuestionCtrl.handleTimeJoker();
+            mostExpensiveQuestionCtrl.handleTimeJoker(time);
         }
     }
 
+    /**
+     * Method for handling the question joker for each question type.
+     */
     public void handleQuestionJoker(int buttonNumber) {
         if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
             generalQuestionCtrl.removeQuestion(buttonNumber);
