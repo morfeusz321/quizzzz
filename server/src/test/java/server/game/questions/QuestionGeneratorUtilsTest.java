@@ -146,11 +146,85 @@ class QuestionGeneratorUtilsTest {
     }
 
     @Test
+    public void testGetRandomDoubleInRange() {
+
+        // Test with seed
+        double randomDouble = utils.getRandomDoubleInRange(new Random(1234), 0.2, 0.5);
+        Random random = new Random(1234);
+        double randomHere = 0.2 + 0.3 * random.nextDouble();
+        assertEquals(randomHere, randomDouble);
+        assertTrue(randomDouble >= 0.2 && randomDouble <= 0.5);
+
+        // Give "no range"
+        randomDouble = utils.getRandomDoubleInRange(new Random(1234), 0.3, 0.3);
+        assertEquals(0.3, randomDouble);
+
+    }
+
+    @Test
     public void testRandomWithExclusion() {
 
         double r = utils.getRandomWithExclusion(new NotSoRandomForExclusion(), 0, 1, 0);
 
         assertNotEquals(0.0, r);
+
+    }
+
+    @Test
+    public void testGetBoundsEstimationQuestionSmall() {
+
+        int[] bounds = utils.getBoundsEstimationQuestion(new RandomSameNumber(0.5), 200);
+        // Percentage bounds result from: (11.4 - 0.8 * Math.log(200))*0.8, 11.4 - 0.8 * Math.log(200)
+        // The bounds are: 5.729076, 7.161346
+        // Get the "random" percentage:
+        // 5.729076 + (7.161346 - 5.729076) * 0.5 = 6.44521
+        // Set the range: (int) (6.44521 * 200) = 1289
+        // Round to nearest 10: 1290
+        // This already shifts it "to the right" (>= 0 as lower bound):
+        int[] expected = new int[]{0, 1290};
+
+        assertArrayEquals(expected, bounds);
+
+    }
+
+    @Test
+    public void testGetBoundsEstimationQuestionBig() {
+
+        int[] bounds = utils.getBoundsEstimationQuestion(new RandomSameNumber(0.1), 99999);
+        // Percentage bounds result from: (11.4 - 0.8 * Math.log(99999))*0.8, 11.4 - 0.8 * Math.log(99999)
+        // The bounds are: 1.75173, 2.18966
+        // Get the "random" percentage:
+        // 1.75173 + (2.18966 - 1.75173) * 0.1 = 1.795523
+        // Set the range: (int) (1.839316 * 99999) = 179550
+        // Shifting left: 0.3, shifting right: 0.7
+        // Shifted bounds: 46133, 225684
+        // Round to 10: 46130, 225680
+        int[] expected = new int[]{46130, 225680};
+
+        assertArrayEquals(expected, bounds);
+
+    }
+
+    /**
+     * Class used as a non-random Random instance, that only returns a specific number.
+     */
+    private class RandomSameNumber extends Random {
+
+        private double retVal;
+
+        /**
+         * Constructor to set the number it returns.
+         */
+        public RandomSameNumber(double retVal) {
+            this.retVal = retVal;
+        }
+
+        @Override
+        public double nextDouble() {
+
+            return retVal;
+
+        }
 
     }
 
