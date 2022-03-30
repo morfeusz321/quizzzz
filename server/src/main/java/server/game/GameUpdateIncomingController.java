@@ -1,6 +1,9 @@
 package server.game;
 
+import commons.gameupdate.GameUpdate;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -31,6 +34,19 @@ public class GameUpdateIncomingController {
 
         gameController.startCurrentGame();
 
+    }
+
+    /**
+     * Sends the emoji update to every player in the game
+     * @param gameUpdate game update containing username and sent emoji
+     * @param gameId id of the game that sent the update
+     * @return
+     */
+    @MessageMapping("/emoji/{gameId}")
+    @SendTo("/topic/gameupdates/{gameId}")
+    public GameUpdate sendEmoji(GameUpdate gameUpdate, @DestinationVariable String gameId){
+        System.out.println("Server has the emoji");
+        return gameUpdate;
     }
 
 }

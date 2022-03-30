@@ -31,7 +31,6 @@ import java.util.List;
 import commons.*;
 import commons.gameupdate.GameUpdate;
 
-import commons.gameupdate.GameUpdateGameFinished;
 import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -124,6 +123,14 @@ public class ServerUtils {
     }
 
     /**
+     * Sends game update to the game's websocket informing that emoji was sent
+     * @param gameUpdate update containing sent emoji and username
+     */
+    public void sendEmoji(GameUpdate gameUpdate){
+        session.send("/game/emoji/"+gameUUID.toString(),gameUpdate);
+    }
+
+    /**
      * Utility method to subscribe to a WebSocket topic
      * @param destination the URL (relative to the connected server) of the WebSocket topic
      * @param type the class of the message expected to be received from the topic
@@ -156,7 +163,7 @@ public class ServerUtils {
      */
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
-        LongPollThread longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username);
+        LongPollThread longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username,isInGame);
         longPollThread.start();
 
     }

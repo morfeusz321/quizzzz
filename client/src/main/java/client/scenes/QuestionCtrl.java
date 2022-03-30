@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -239,9 +240,10 @@ public abstract class QuestionCtrl {
      *
      * @param clickedEmoji The image view which was clicked (emoji in the emoji pane)
      */
-    private void emojiAnimation(ImageView clickedEmoji) {
+    public void emojiAnimation(ImageView clickedEmoji) {
 
         ImageView emoji = new ImageView(clickedEmoji.getImage());
+        mainCtrl.sendEmoji(clickedEmoji.getId());
         anchorPane.getChildren().add(emoji);
         emoji.toBack();
 

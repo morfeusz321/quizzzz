@@ -16,16 +16,29 @@ public class LongPollThread extends Thread {
     private UUID gameUUID;
     private Consumer<GameUpdate> consumer;
     private String username;
+    private boolean isInGame;
 
-    public LongPollThread(String server, UUID gameUUID, Consumer<GameUpdate> consumer, String username) {
+    /**
+     * Creates LongPollThread instance with specified injections
+     * @param server name of the server that you will send requests to
+     * @param gameUUID uuid of the current game
+     * @param consumer consumer to handle upcoming messages
+     * @param username username of the current player
+     * @param isInGame boolean value which says whether player is currently in the game
+     */
+    public LongPollThread(String server, UUID gameUUID, Consumer<GameUpdate> consumer, String username, boolean isInGame) {
 
         this.server = server;
         this.gameUUID = gameUUID;
         this.consumer = consumer;
         this.username = username;
+        this.isInGame = isInGame;
 
     }
 
+    /**
+     * Starts long pulling requests
+     */
     @Override
     public void run() {
 
@@ -43,7 +56,7 @@ public class LongPollThread extends Thread {
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
         GameUpdate ret = null;
-        while(!(ret instanceof GameUpdateGameFinished) && true) {
+        while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
             ret = ClientBuilder.newClient(new ClientConfig())
                     .target(server).path("api/game/")
                     .queryParam("gameID", gameUUID.toString())
@@ -51,7 +64,7 @@ public class LongPollThread extends Thread {
                     .request(APPLICATION_JSON)
                     .accept(APPLICATION_JSON)
                     .get(GameUpdate.class);
-            if(true) consumer.accept(ret);
+            if(isInGame) consumer.accept(ret);
         }
 
     }
