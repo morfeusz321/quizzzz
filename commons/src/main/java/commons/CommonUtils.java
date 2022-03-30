@@ -50,17 +50,6 @@ public class CommonUtils {
     }
 
     /**
-     * Generates random number from given range excluding those given as the parameter
-     * @param rnd Instant of the Random class
-     * @param start the start of the range in which the number will be generated
-     * @param end the end of the range in which the number will be generated
-     * @return random number in given range (number is not rounded)
-     */
-    public double getRandomDoubleInRange(Random rnd, double start, double end) {
-        return start + (end - start) * rnd.nextDouble();
-    }
-
-    /**
      * Utility method, used to check if a string is null or empty
      * @param s a string
      * @return true if the string is empty or null, false otherwise

@@ -131,4 +131,71 @@ public class QuestionGeneratorUtils {
         }
         return random;
     }
+
+    /**
+     * Generates random number from given range excluding those given as the parameter
+     * @param rnd Instant of the Random class
+     * @param start the start of the range in which the number will be generated
+     * @param end the end of the range in which the number will be generated
+     * @return random number in given range (number is not rounded)
+     */
+    public double getRandomDoubleInRange(Random rnd, double start, double end) {
+        return start + (end - start) * rnd.nextDouble();
+    }
+
+    /**
+     * Generates bounds for the input range for the estimation question.
+     * @param consumption The consumption of the activity for which to generate the range.
+     * @return The bounds for the estimation question input.
+     */
+    public int[] getBoundsEstimationQuestion(Random rnd, int consumption) {
+        // Find the maximum percentage of the consumption which defines the maximum length of the range.
+        // This uses a function which was fitted to certain values, which logically and game-wise make sense,
+        // so that there are not only certain threshold values, but a continuous distribution.
+        // It is a logarithmic function, so that, as the consumption grows, the actual range does not grow
+        // as large.
+        double maxPercentage = 11.4 - 0.8 * Math.log(consumption);
+        double minPercentage = maxPercentage * 0.8;
+        // Generate a random percentage in the range
+        double percentage = getRandomDoubleInRange(rnd, minPercentage, maxPercentage);
+        // The range is set to a value, however, the start- and end-values will be generated from this range.
+        // We can cast to int as range/consumption are expected to not be longs.
+        int range = (int) (percentage * consumption);
+        // Minimum and maximum range conditions
+        if(range < 200){
+            range = 200;
+        } else if(range > 500000){
+            range = 500000;
+        }
+
+        // Generate the shift percentage values
+        double shiftMinPercentage = rnd.nextDouble() + 0.2;
+        if(shiftMinPercentage > 1){
+            shiftMinPercentage = 1;
+        }
+        double shiftMaxPercentage = 1 - shiftMinPercentage;
+
+        // Create min/max bounds
+        int min = (int) (consumption - shiftMinPercentage * range);
+        int max = (int) (consumption + shiftMaxPercentage * range);
+
+        // First check lower bound as that should not be negative
+        if(min < 0) {
+            max = max - min;
+            min = 0;
+        }
+
+        // Round the ranges to 10Wh
+        min = (int) (Math.round(min/10.0) * 10);
+        max = (int) (Math.round(max/10.0) * 10);
+
+        // Now check upper bound
+        if(max > 999999 && (min - max) > 0) {
+            min = min - max;
+            max = 999999;
+        }
+
+        return new int[]{min, max};
+    }
+
 }
