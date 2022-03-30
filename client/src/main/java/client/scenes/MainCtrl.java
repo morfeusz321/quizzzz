@@ -424,13 +424,18 @@ public class MainCtrl {
     }
 
     /**
-     * Displays an emoji animation for a specific emoji
-     * @param sentEmoji specified emoji that have been sent
+     * Sends the message to server utils that emoji was pressed
+     * @param sentEmoji id of sent emoji
      */
     public void sendEmoji(String sentEmoji){
         server.sendEmoji(new GameEmojiUpdate(sentEmoji,userCtrl.getSavedCurrentUsername()));
     }
 
+    /**
+     * Displays emoji animation
+     * @param clickedEmoji clicked emoji instance
+     * @param username name of the user who sent the emoji
+     */
     public void emojiAnimation(ImageView clickedEmoji,String username) {
 
         ImageView emoji = new ImageView(clickedEmoji.getImage());
