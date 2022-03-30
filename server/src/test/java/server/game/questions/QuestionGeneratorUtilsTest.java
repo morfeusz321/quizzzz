@@ -3,6 +3,8 @@ package server.game.questions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class QuestionGeneratorUtilsTest {
@@ -140,6 +142,39 @@ class QuestionGeneratorUtilsTest {
         assertTrue(bounds[0] == 1000000000L && bounds[1] == 100000000000L);
         bounds = utils.getLowerUpperBoundSmall(112000000000L);
         assertTrue(bounds[0] == 100000000000L && bounds[1] == Long.MAX_VALUE);
+
+    }
+
+    @Test
+    public void testRandomWithExclusion() {
+
+        double r = utils.getRandomWithExclusion(new NotSoRandomForExclusion(), 0, 1, 0);
+
+        assertNotEquals(0.0, r);
+
+    }
+
+    private class NotSoRandomForExclusion extends Random {
+
+        private double lastReturned = -1;
+
+        @Override
+        public double nextDouble() {
+
+            if(lastReturned == 0) {
+
+                double ret = super.nextDouble();
+                lastReturned = ret;
+                return ret;
+
+            } else {
+
+                lastReturned = 0;
+                return 0;
+
+            }
+
+        }
 
     }
 

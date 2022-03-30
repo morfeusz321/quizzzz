@@ -60,7 +60,6 @@ public class QuestionGenerator {
      */
     public Question getGeneralQuestion() {
 
-        CommonUtils commonUtils = new CommonUtils();
         ActivityDB activityDB = activityDBController.getInternalDB();
 
         long count = activityDB.count();
@@ -76,9 +75,9 @@ public class QuestionGenerator {
             Activity a = page.getContent().get(0);
             List<String> aw = new ArrayList<>();
 
-            long tmpConsumption = (long) (commonUtils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption);
+            long tmpConsumption = (long) (utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption);
             aw.add(utils.createConsumptionString(tmpConsumption));
-            tmpConsumption = (long) (((commonUtils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption)));
+            tmpConsumption = (long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption)));
             aw.add(utils.createConsumptionString(tmpConsumption));
             String mainConsumptionString = utils.createConsumptionString(a.consumption);
             aw.add(mainConsumptionString);

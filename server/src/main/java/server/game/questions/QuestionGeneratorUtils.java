@@ -3,6 +3,7 @@ package server.game.questions;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
+import java.util.Random;
 
 @Component
 public class QuestionGeneratorUtils {
@@ -110,5 +111,24 @@ public class QuestionGeneratorUtils {
             throw new IllegalArgumentException("The amount of division steps cannot be greater than 4!");
         }
 
+    }
+
+    /**
+     * Generates random number from given range excluding those given as the parameter
+     * @param rnd Instant of the Random class
+     * @param start the start of the range in which the number will be generated
+     * @param end the end of the range in which the number will be generated
+     * @param exclude numbers that will be excluded from the given range
+     * @return random number in given range (number is rounded to first decimal place)
+     */
+    public double getRandomWithExclusion(Random rnd, double start, double end, int... exclude) {
+        double random = start + (end - start) * rnd.nextDouble();
+        random = (double) Math.round(random * 10) / 10;
+        for (int ex : exclude) {
+            if (random == (double) ex) {
+                return getRandomWithExclusion(rnd, start, end, exclude);
+            }
+        }
+        return random;
     }
 }
