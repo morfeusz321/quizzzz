@@ -144,40 +144,41 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * (and TODO the initialization of the slider).
      */
     public void loadQuestion(Question q) {
-        enableButtons();
-        questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
-        title.setText(q.displayQuestion());
-        resizeQuestionHandler.setText((int) title.getFont().getSize());
+        Platform.runLater(()-> {
+            enableButtons();
+            questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
+            title.setText(q.displayQuestion());
+            resizeQuestionHandler.setText((int) title.getFont().getSize());
 
-        // TODO: handle slider and other question-dependent objects (max/min etc.)
+            // TODO: handle slider and other question-dependent objects (max/min etc.)
 
-        long min = Long.parseLong(q.answerOptions.get(0));
-        long max = Long.parseLong(q.answerOptions.get(1));
-        System.out.println(min + " " + max + " " + q.answerOptions.get(2));
-        Text maxText = new Text();
-        Text minText = new Text();
-        maxText.setText(String.valueOf(max));
-        minText.setText(String.valueOf(min));
-        DynamicText maxTextDynamic = new DynamicText(maxText, 25, 10, "Karla");
-        DynamicText minTextDynamic = new DynamicText(minText, 25, 10, "Karla");
-        maxTextDynamic.setText((int)maxText.getFont().getSize());
-        minTextDynamic.setText((int)minText.getFont().getSize());
-        slideBar.setMax(max);
-        maxLabel.setText(maxText.getText());
-        slideBar.setMin(min);
-        minLabel.setText(minText.getText());
-        answerTxtField.setText(String.valueOf(min));
-        slideBar.setValue(slideBar.getMin());
-        answerSet = false;
-        setAnswerBtn.setText("Set as answer");
-        slideBar.setDisable(false);
-        answerTxtField.setDisable(false);
-        slideBar.setMajorTickUnit(100);
-        slideBar.setMinorTickCount(99);
-        // must be one less than major tick unit -> one tick per kWh
+            long min = Long.parseLong(q.answerOptions.get(0));
+            long max = Long.parseLong(q.answerOptions.get(1));
+            System.out.println(min + " " + max + " " + q.answerOptions.get(2));
+            Text maxText = new Text();
+            Text minText = new Text();
+            maxText.setText(String.valueOf(max));
+            minText.setText(String.valueOf(min));
+            DynamicText maxTextDynamic = new DynamicText(maxText, 25, 10, "Karla");
+            DynamicText minTextDynamic = new DynamicText(minText, 25, 10, "Karla");
+            maxTextDynamic.setText((int) maxText.getFont().getSize());
+            minTextDynamic.setText((int) minText.getFont().getSize());
+            slideBar.setMax(max);
+            maxLabel.setText(maxText.getText());
+            slideBar.setMin(min);
+            minLabel.setText(minText.getText());
+            answerTxtField.setText(String.valueOf(min));
+            slideBar.setValue(slideBar.getMin());
+            answerSet = false;
+            setAnswerBtn.setText("Set as answer");
+            slideBar.setDisable(false);
+            answerTxtField.setDisable(false);
+            slideBar.setMajorTickUnit(100);
+            slideBar.setMinorTickCount(99);
+            // must be one less than major tick unit -> one tick per kWh
 
-        refreshProgressBar();
-
+            refreshProgressBar();
+        });
     }
 
     /**
@@ -191,7 +192,6 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         setAnswerBtn.setDisable(true);
-        setAnswerBtn.setOpacity(0);
         correctAnswer.setOpacity(1);
         fullText.setOpacity(1);
     }
@@ -207,7 +207,6 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         decreaseTime.setDisable(false);
         doublePoints.setDisable(false);
         setAnswerBtn.setDisable(false);
-        setAnswerBtn.setOpacity(1);
         correctAnswer.setOpacity(0);
         fullText.setOpacity(0);
     }
@@ -223,7 +222,6 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
         long correct = answer.getAnswer();
         String s = "The correct answer\n was: " + correct +"Wh.";
-        correctAnswer.setText(s);
         if(answer.correct) {
             Platform.runLater(() -> {
                 transText.setText("You answered correctly! Impressive!");
@@ -242,7 +240,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                 Platform.runLater(() -> {
                     fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
                     fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
-                    transText.setText("You were "+answer.proximity+"Wh close to the answer!");
+                    transText.setText("You were "+Math.abs(answer.proximity)+"Wh close to the answer!");
                 });
             }
         }
