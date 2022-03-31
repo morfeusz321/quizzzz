@@ -157,69 +157,64 @@ public class QuestionGenerator {
      */
     public Question getComparisonQuestion() {
         try{
-            //We search for the smallest difference between two consumptions
 
+            // First we retrieve a random activity -> main activity
+            Activity main = activityDBController.getRandomActivity();
 
-            //First we sort the list of returned activities
-            List<Activity> activities = activityDBController.getFiveRandomActivities();
-
-            if(activities.size() < 5 || activities.contains(null)) {
-                return null;
+            if(main == null) {
+                return null; // Something went wrong
             }
 
-            Collections.sort(activities, new Comparator<Activity>() {
-                @Override
-                public int compare(Activity o1, Activity o2) {
-                    // this cannot simply return the difference as the difference can be a long
-                    long diff = o1.consumption - o2.consumption;
-                    if(diff < 0){
-                        return -1;
-                    } else if (diff > 0){
-                        return 1;
-                    }
-                    return 0;
-                }
-            });
+            // Get a second activity which is in a small range around the actual one
+            // TODO: add a "smarter" range here? Not sure if we need it here, 10% was used before and it should be fine?
+            Activity answer = activityDBController.getActivityExclAndInRange(
+                    List.of(main.id),
+                    List.of(), // no values need to be excluded
+                    Math.round(main.consumption - main.consumption * 0.1),
+                    Math.round(main.consumption + main.consumption * 0.1)
+            );
 
-            //Now we search in the List
-            Activity firstActivity = null;
-            Activity secondActivity = null;
-            long difference = Long.MAX_VALUE;
-            for (int i = 0; i < activities.size() - 1; i++) {
-                if (activities.get(i + 1).consumption - activities.get(i).consumption < difference) {
-                    difference = activities.get(i + 1).consumption - activities.get(i).consumption;
-                    firstActivity = activities.get(i + 1);
-                    secondActivity = activities.get(i);
-                }
-            }
-
-            // If difference is bigger than 10% of the original activity we search again
-            // Note: Here casting to double is fine, because doubles have a bigger range than longs
-            if (((double) difference / firstActivity.consumption) > 0.1) {
+            if(answer == null) {
+                // We can only find activities with a difference bigger than 10% of the original activity
+                // We need to search again
                 return getComparisonQuestion();
             }
 
-            // Create answer options list (activities can not be used as answer options list, as it contains 5
-            // activities, including the actual answer and the title. The actual answer should be guaranteed to be in
-            // the answer options, and the title should never be in it.
+            // Create answer option list
             List<Activity> answerOptions = new ArrayList<>();
-            // Do not add the first activity as this is the title (should not be a selectable answer)
-            answerOptions.add(secondActivity);
-            activities.remove(firstActivity);
-            activities.remove(secondActivity);
-            // Get two random activities from the remaining one's
-            int randomIdx = random.nextInt(3);
-            answerOptions.add(activities.remove(randomIdx));
-            randomIdx = random.nextInt(2);
-            answerOptions.add(activities.remove(randomIdx));
+            answerOptions.add(answer);
+
+            // Now two new activities are needed
+            // TODO: make sure that the consumptions of these activities are not in the 10% range around the main one
+            answerOptions.add(activityDBController.getActivityExclAndInRange(
+                    List.of(main.id, answer.id),
+                    List.of(main.consumption, answer.consumption), // exclude main and answer consumption
+                    0, Long.MAX_VALUE // TODO: add "smarter" range selection here
+            ));
+            answerOptions.add(activityDBController.getActivityExclAndInRange(
+                    List.of(main.id, answer.id, answerOptions.get(1).id),
+                    List.of(main.consumption, answer.consumption),
+                    // exclude main and answer consumption, not the previous one, they can have the same consumption
+                    0, Long.MAX_VALUE // TODO: add "smarter" range selection here
+            ));
+
+            if(answerOptions.contains(null)) {
+                return null; // Something went wrong, no activity could be found
+            }
+
             // Shuffle for random order
             Collections.shuffle(answerOptions);
 
             //We return the question
-            Question toReturn = new ComparisonQuestion(firstActivity, answerOptions, answerOptions.indexOf(secondActivity)+1);
+            Question toReturn = new ComparisonQuestion(main, answerOptions, answerOptions.indexOf(answer)+1);
             questionDBController.add(toReturn);
             return toReturn;
+
         } catch (StackOverflowError e){
+            System.out.println("Error: No valid question could be generated from the database.");
+            return null;
+        } catch (Exception e){
+            e.printStackTrace();
             return null;
         }
     }
