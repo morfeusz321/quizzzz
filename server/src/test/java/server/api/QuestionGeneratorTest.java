@@ -65,7 +65,7 @@ public class QuestionGeneratorTest {
     public void getRandomQuestionTest() {
 
         activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 0));
+        activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 1));
 
         Question q = questionGenerator.getGeneralQuestion();
 

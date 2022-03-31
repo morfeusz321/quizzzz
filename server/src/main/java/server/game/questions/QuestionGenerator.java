@@ -64,66 +64,55 @@ public class QuestionGenerator {
                 return null; // Something went wrong when trying to retrieve an activity.
             }
 
+            String mainConsumptionString = utils.createConsumptionString(a.consumption);
             long[] consumptions = new long[2];
+            long[] bounds = utils.getBoundsGeneralQuestion(a.consumption);
 
-            // Decide randomly whether the question should have answer options that are close to each other or
-            // farther away.
-            boolean isBoundSmall = false; // random.nextBoolean();
-
-            double maxPercentage = utils.getMaxPercentageGeneral(isBoundSmall, a.consumption);
-            long[] bounds = new long[]{
-                    (long) (a.consumption * (1 - maxPercentage / 2)),
-                    (long) (a.consumption * (1 + maxPercentage / 2))
-            };
-
-            // Cut-off to not create too large bounds
-            if (bounds[0] < 0) {
-                bounds[0] = 0;
-            }
-
-            long chosen;
-            try{
-                chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption);
-            } catch (StackOverflowError e) {
-                // No good number could be found, try again
-                e.printStackTrace();
+            // Generate the first answer option
+            if(!utils.checkIfGeneratable(List.of(a.consumption), 0.1, bounds[0], bounds[1])){
+                // Might generate StackOverFlowErrors, try again
                 return getGeneralQuestion();
             }
-            consumptions[0] = chosen;
+            consumptions[0] = utils.randomLongInRangeExcl(
+                    bounds[0],
+                    bounds[1],
+                    random,
+                    List.of(mainConsumptionString),
+                    List.of(a.consumption),
+                    0.1
+            );
+            String secondConsumptionString = utils.createConsumptionString(consumptions[0]);
 
-            maxPercentage = utils.getMaxPercentageGeneral(isBoundSmall, a.consumption);
-            bounds = new long[]{
-                    (long) (a.consumption * (1 - maxPercentage / 2)),
-                    (long) (a.consumption * (1 + maxPercentage / 2))
-            };
-
-            // Cut-off to not create too large bounds
-            if (bounds[0] < 0) {
-                bounds[0] = 0;
-            }
-
-            try{
-                chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption, consumptions[0]);
-            } catch (StackOverflowError e) {
-                // No good number could be found, try again
-                e.printStackTrace();
+            // Generate the second answer option
+            if(!utils.checkIfGeneratable(List.of(a.consumption, consumptions[0]), 0.1, bounds[0], bounds[1])){
+                // Might generate StackOverFlowErrors, try again
                 return getGeneralQuestion();
             }
-            consumptions[1] = chosen;
+            consumptions[1] = utils.randomLongInRangeExcl(
+                    bounds[0],
+                    bounds[1],
+                    random,
+                    List.of(mainConsumptionString, secondConsumptionString),
+                    List.of(a.consumption, consumptions[0]),
+                    0.1
+            );
 
             List<String> aw = new ArrayList<>();
-            String mainConsumptionString = utils.createConsumptionString(a.consumption);
             aw.add(mainConsumptionString);
-            aw.add(utils.createConsumptionString(consumptions[0]));
+            aw.add(secondConsumptionString);
             aw.add(utils.createConsumptionString(consumptions[1]));
-
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a, aw, aw.indexOf(mainConsumptionString) + 1);
 
+            Question toReturn = new GeneralQuestion(a, aw, aw.indexOf(mainConsumptionString) + 1);
             questionDBController.add(toReturn);
 
             return toReturn;
 
+        } catch (StackOverflowError e) {
+            // No good number could be found in the generated range, try again
+            // This should not be called, as the safety check should prohibit this
+            e.printStackTrace();
+            return getGeneralQuestion();
         } catch (Exception e){
             e.printStackTrace();
             return null;
