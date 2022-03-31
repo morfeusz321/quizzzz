@@ -241,7 +241,6 @@ public abstract class QuestionCtrl {
      * This handles the animation of the time-bar and the setting of the time-label after a time joker has been used
      */
     public void handleTimeJoker(long time) {
-        System.out.println("hello");
         timeAnim.getKeyFrames().clear();
         changeLabel.getKeyFrames().clear();
         int remainingTime = ((int) time)/1000;

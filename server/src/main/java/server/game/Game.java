@@ -408,7 +408,6 @@ public class Game extends Thread {
             default -> 0;
         };
         deferredResultMap.get(username).setResult(ResponseEntity.ok(new GameUpdateQuestionJoker(returnValue)));
-        deferredResultMap.clear();
 
     }
 
