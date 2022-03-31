@@ -185,31 +185,45 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         if(answer.correct) {
             Platform.runLater(() -> {
                 placingTick(lastSelectedButton);
-                correctAns.setText("correctly");
+                correctAns.setText("You answered correctly!");
                 buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerCorrect");
                 fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
                 fullText.setLayoutY(anchorPane.getHeight()*0.754867);
             });
         } else {
-            Platform.runLater(() -> {
-                fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
-                fullText.setLayoutY(anchorPane.getHeight()*0.754867);
-                placingCross(lastSelectedButton);
-                correctAns.setText("incorrectly");
-                try {
-                    buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerIncorrect");
-                } catch(IndexOutOfBoundsException ignored) {
-                    // This is fine, no button was selected in this case
-                }
+            if(lastSelectedButton==0) {
+                Platform.runLater(() ->{
+                    correctAns.setText("You did not answer. Try to be faster!");
+                    placingTick(correct);
+                   fullText.setLayoutX(anchorPane.getWidth()*0.1043248);
+                   fullText.setLayoutY(anchorPane.getHeight()*0.754867);
                 try {
                     buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
-                } catch(IndexOutOfBoundsException ignored) {
-                    // This is very much not fine, probably indicates a bug in the
-                    // answer response entity creation, or question generation, but there is hardly a
-                    // better option than just continuing, otherwise the application will crash!
+                } catch (IndexOutOfBoundsException ignored) {
+                    // This shouldn't be here, otherwise the app could crash
                 }
-                placingTick(correct);
             });
+            } else {
+                Platform.runLater(() -> {
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                    placingCross(lastSelectedButton);
+                    correctAns.setText("You answered incorrectly!");
+                    try {
+                        buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerIncorrect");
+                    } catch (IndexOutOfBoundsException ignored) {
+                        // This is fine, no button was selected in this case
+                    }
+                    try {
+                        buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
+                    } catch (IndexOutOfBoundsException ignored) {
+                        // This is very much not fine, probably indicates a bug in the
+                        // answer response entity creation, or question generation, but there is hardly a
+                        // better option than just continuing, otherwise the application will crash!
+                    }
+                    placingTick(correct);
+                });
+            }
         }
 
         (new Timer()).schedule(new TimerTask() {
@@ -228,16 +242,16 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     private void placingTick(long num){
         switch ((int) num) {
             case 1 -> {
-                correctTick.setLayoutX(anchorPane.getWidth() * 0.478125);
-                correctTick.setLayoutY(anchorPane.getHeight() * 0.34848);
+                correctTick.setLayoutX(anchorPane.getWidth() * 0.508125);
+                correctTick.setLayoutY(anchorPane.getHeight() * 0.33250);
             }
             case 2 -> {
-                correctTick.setLayoutX(anchorPane.getWidth() * 0.478125);
-                correctTick.setLayoutY(anchorPane.getHeight() * 0.51010);
+                correctTick.setLayoutX(anchorPane.getWidth() * 0.508125);
+                correctTick.setLayoutY(anchorPane.getHeight() * 0.49750);
             }
             case 3 -> {
-                correctTick.setLayoutX(anchorPane.getWidth() * 0.478125);
-                correctTick.setLayoutY(anchorPane.getHeight() * 0.67171);
+                correctTick.setLayoutX(anchorPane.getWidth() * 0.508125);
+                correctTick.setLayoutY(anchorPane.getHeight() * 0.66517);
             }
         }
     }
@@ -250,16 +264,16 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
         switch ((int) num) {
             case 1 -> {
-                wrongCross.setLayoutX(anchorPane.getWidth() * 0.478125);
-                wrongCross.setLayoutY(anchorPane.getHeight() * 0.34848);
+                wrongCross.setLayoutX(anchorPane.getWidth() * 0.508125);
+                wrongCross.setLayoutY(anchorPane.getHeight() * 0.33250);
             }
             case 2 -> {
-                wrongCross.setLayoutX(anchorPane.getWidth() * 0.478125);
-                wrongCross.setLayoutY(anchorPane.getHeight() * 0.51010);
+                wrongCross.setLayoutX(anchorPane.getWidth() * 0.508125);
+                wrongCross.setLayoutY(anchorPane.getHeight() * 0.49750);
             }
             case 3 -> {
-                wrongCross.setLayoutX(anchorPane.getWidth() * 0.478125);
-                wrongCross.setLayoutY(anchorPane.getHeight() * 0.67171);
+                wrongCross.setLayoutX(anchorPane.getWidth() * 0.508125);
+                wrongCross.setLayoutY(anchorPane.getHeight() * 0.66517);
             }
             default -> {
                 // This is fine, just return. No button was selected in this case.
