@@ -60,44 +60,41 @@ public class QuestionGenerator {
      */
     public Question getGeneralQuestion() {
 
-        ActivityDB activityDB = activityDBController.getInternalDB();
-
-        long count = activityDB.count();
-        int index;
         try {
-            index = random.nextInt((int) count);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
 
-        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent() && page.getContent().get(0) != null) {
-            Activity a = page.getContent().get(0);
+            Activity a = activityDBController.getRandomActivity();
+            if(a == null) {
+                return null; // Something went wrong when trying to retrieve an activity.
+            }
 
             long[] consumptions = new long[2];
 
-            double maxPercentage = utils.getMaxPercentageGeneral(false, a.consumption);
+            // Decide randomly whether the question should have answer options that are close to each other or
+            // farther away.
+            boolean isBoundSmall = random.nextBoolean();
+
+            double maxPercentage = utils.getMaxPercentageGeneral(isBoundSmall, a.consumption);
             long[] bounds = new long[]{
-                    (long) (a.consumption * (1 - maxPercentage/2)),
-                    (long) (a.consumption * (1 + maxPercentage/2))
+                    (long) (a.consumption * (1 - maxPercentage / 2)),
+                    (long) (a.consumption * (1 + maxPercentage / 2))
             };
 
             // Cut-off to not create too large bounds
-            if(bounds[0] < 0){
+            if (bounds[0] < 0) {
                 bounds[0] = 0;
             }
 
             long chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption);
             consumptions[0] = chosen;
 
-            maxPercentage = utils.getMaxPercentageGeneral(false, a.consumption);
+            maxPercentage = utils.getMaxPercentageGeneral(isBoundSmall, a.consumption);
             bounds = new long[]{
-                    (long) (a.consumption * (1 - maxPercentage/2)),
-                    (long) (a.consumption * (1 + maxPercentage/2))
+                    (long) (a.consumption * (1 - maxPercentage / 2)),
+                    (long) (a.consumption * (1 + maxPercentage / 2))
             };
 
             // Cut-off to not create too large bounds
-            if(bounds[0] < 0){
+            if (bounds[0] < 0) {
                 bounds[0] = 0;
             }
 
@@ -112,12 +109,16 @@ public class QuestionGenerator {
 
             Collections.shuffle(aw);
             Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(mainConsumptionString) + 1);
+            Question toReturn = new GeneralQuestion(a, aw, aw.indexOf(mainConsumptionString) + 1);
 
             questionDBController.add(toReturn);
-            return toReturn;
-        }
 
-        return null;
+            return toReturn;
+
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
 
     }
 

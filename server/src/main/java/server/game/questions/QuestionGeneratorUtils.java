@@ -72,7 +72,7 @@ public class QuestionGeneratorUtils {
 
         if(small) {
             // f(x) = 2*e^(-8.04429*10^(-17)*x)
-            return 2 * Math.pow(2.71828, -8.04429 * Math.pow(10, -17) * consumption);
+            return Math.pow(2.71828, -8.90751 * Math.pow(10, -17) * consumption);
         } else {
             // f(x) = 5*e^(-9.77074*10^(-17)*x)
             return 5 * Math.pow(2.71828, -9.77074 * Math.pow(10, -17) * consumption);
