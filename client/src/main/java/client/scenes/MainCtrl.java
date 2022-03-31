@@ -404,7 +404,6 @@ public class MainCtrl {
             gameManager.setCurrentQuestionByIdx(0); // set the first question
             server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
         } else if (gameUpdate instanceof GameEmojiUpdate) {
-            System.out.println(gameUpdate);
             if(!((GameEmojiUpdate) gameUpdate).getUsername().equals(userCtrl.getSavedCurrentUsername())){
                 try{
                     ImageView emoji = (ImageView) primaryStage.getScene().lookup('#'+((GameEmojiUpdate) gameUpdate).getEmoji());

@@ -45,7 +45,6 @@ public class GameUpdateIncomingController {
     @MessageMapping("/emoji/{gameId}")
     @SendTo("/topic/gameupdates/{gameId}")
     public GameUpdate sendEmoji(GameUpdate gameUpdate, @DestinationVariable String gameId){
-        System.out.println("Server has the emoji");
         return gameUpdate;
     }
 
