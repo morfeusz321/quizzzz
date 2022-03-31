@@ -58,7 +58,7 @@ public class QuestionGenerator {
     public Question getGeneralQuestion() {
 
         try {
-
+            // First retrieve a random activity from the database.
             Activity a = activityDBController.getRandomActivity();
             if(a == null) {
                 return null; // Something went wrong when trying to retrieve an activity.
@@ -66,13 +66,17 @@ public class QuestionGenerator {
 
             String mainConsumptionString = utils.createConsumptionString(a.consumption);
             long[] consumptions = new long[2];
+            // Use "smart" bound generation
             long[] bounds = utils.getBoundsGeneralQuestion(a.consumption);
 
-            // Generate the first answer option
+            // Generate the first answer option, while excluding the real answer and a range around it.
+            // Check if a number can be generated. If the probability of randomly selecting a valid number is under 30%,
+            // a new general question should be generated, as otherwise StackOverflow errors might be thrown.
             if(!utils.checkIfGeneratable(List.of(a.consumption), 0.1, bounds[0], bounds[1])){
                 // Might generate StackOverFlowErrors, try again
                 return getGeneralQuestion();
             }
+            // Generate the consumption, while taking the conditions (bounds, exclusion...) into account.
             consumptions[0] = utils.randomLongInRangeExcl(
                     bounds[0],
                     bounds[1],
@@ -83,11 +87,14 @@ public class QuestionGenerator {
             );
             String secondConsumptionString = utils.createConsumptionString(consumptions[0]);
 
-            // Generate the second answer option
+            // Generate the second answer option, while excluding the previous answer options and a ranges around them.
+            // Check if a number can be generated. If the probability of randomly selecting a valid number is under 30%,
+            // a new general question should be generated, as otherwise StackOverflow errors might be thrown.
             if(!utils.checkIfGeneratable(List.of(a.consumption, consumptions[0]), 0.1, bounds[0], bounds[1])){
                 // Might generate StackOverFlowErrors, try again
                 return getGeneralQuestion();
             }
+            // Generate the consumption, while taking the conditions (bounds, exclusion...) into account.
             consumptions[1] = utils.randomLongInRangeExcl(
                     bounds[0],
                     bounds[1],
@@ -97,23 +104,24 @@ public class QuestionGenerator {
                     0.1
             );
 
+            // Create the answer option list using the SI strings.
             List<String> aw = new ArrayList<>();
             aw.add(mainConsumptionString);
             aw.add(secondConsumptionString);
             aw.add(utils.createConsumptionString(consumptions[1]));
             Collections.shuffle(aw);
 
+            // Return and save generated question.
             Question toReturn = new GeneralQuestion(a, aw, aw.indexOf(mainConsumptionString) + 1);
             questionDBController.add(toReturn);
-
             return toReturn;
-
         } catch (StackOverflowError e) {
-            // No good number could be found in the generated range, try again
-            // This should not be called, as the safety check should prohibit this
-            e.printStackTrace();
-            return getGeneralQuestion();
-        } catch (Exception e){
+            // StackOverflowError: No good number could be found in the generated range, many times in a row.
+            // This should not be the case, as the safety check should prohibit this. So, if this is the case,
+            // it is because no question can be generated from the database (at all).
+            System.out.println("Error: No valid question could be generated from the database.");
+            return null;
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

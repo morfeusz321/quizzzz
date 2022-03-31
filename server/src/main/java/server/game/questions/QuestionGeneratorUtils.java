@@ -235,11 +235,14 @@ public class QuestionGeneratorUtils {
      * @return the bounds in which to generate the consumption values (answer options) for the general question.
      */
     public long[] getBoundsGeneralQuestion(long consumption) {
+        // Get the maximal percentage while using the formula in getMaxPercentageGeneral, for the given consumption
         double maxPercentage = getMaxPercentageGeneral(consumption);
+        // Generate the bounds, left bound should be 1/2 the percentage shifted and right too.
         long[] bounds = new long[]{
                 (long) (consumption * (1 - maxPercentage / 2)),
                 (long) (consumption * (1 + maxPercentage / 2))
         };
+        // Perform safety check (checks negative bounds, shift/cut-off if necessary)
         safeBoundCheckGeneralQuestion(bounds);
         return bounds;
     }
@@ -257,7 +260,7 @@ public class QuestionGeneratorUtils {
                 bounds[1] = bounds[1] - bounds[0];
             } else {
                 bounds[1] = bounds[1] + bounds[0];
-                // Cut off so that it is not more likely to have a larger number.
+                // Cut off so that it is not more likely to have a larger number
                 // Note that this is + and not - on purpose for the above reason
             }
             bounds[0] = 0;
