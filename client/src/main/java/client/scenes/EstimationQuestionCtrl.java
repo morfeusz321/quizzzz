@@ -3,9 +3,11 @@ package client.scenes;
 import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.AnswerResponseEntity;
 import commons.CommonUtils;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,7 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 public class EstimationQuestionCtrl extends QuestionCtrl {
 
@@ -41,6 +45,18 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
     @FXML
     protected ImageView doublePoints;
+
+    @FXML
+    protected Text correctAnswer;
+
+    @FXML
+    protected Text transText;
+
+    @FXML
+    protected TextFlow fullText;
+
+    @FXML
+    protected AnchorPane anchorPane;
 
     private boolean answerSet;
 
@@ -175,6 +191,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         setAnswerBtn.setDisable(true);
+        setAnswerBtn.setOpacity(0);
+        correctAnswer.setOpacity(1);
+        fullText.setOpacity(1);
     }
 
     /**
@@ -188,6 +207,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         decreaseTime.setDisable(false);
         doublePoints.setDisable(false);
         setAnswerBtn.setDisable(false);
+        setAnswerBtn.setOpacity(1);
+        correctAnswer.setOpacity(0);
+        fullText.setOpacity(0);
     }
 
     /**
@@ -195,6 +217,34 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
      */
     public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
-        disableButtons();
+
+        Platform.runLater(this::disableButtons);
+
+        AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
+        long correct = answer.getAnswer();
+        String s = "The correct answer\n was: " + correct +"Wh.";
+        correctAnswer.setText(s);
+        if(answer.correct) {
+            Platform.runLater(() -> {
+                transText.setText("You answered correctly! Impressive!");
+                fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
+                fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+                correctAnswer.setOpacity(0);
+            });
+        } else {
+            if(!answerSet) {
+                Platform.runLater(() ->{
+                    transText.setText("You did not answer. Try to be faster!");
+                    fullText.setLayoutX(anchorPane.getWidth()*0.1043248);
+                    fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+                });
+            } else {
+                Platform.runLater(() -> {
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                    transText.setText("You were "+answer.proximity+"Wh close to the answer!");
+                });
+            }
+        }
     }
 }
