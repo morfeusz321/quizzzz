@@ -1,10 +1,7 @@
 package server.game.questions;
 
 import commons.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
-import server.database.ActivityDB;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 
@@ -108,7 +105,6 @@ public class QuestionGenerator {
             aw.add(utils.createConsumptionString(consumptions[1]));
 
             Collections.shuffle(aw);
-            Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(mainConsumptionString) + 1);
             Question toReturn = new GeneralQuestion(a, aw, aw.indexOf(mainConsumptionString) + 1);
 
             questionDBController.add(toReturn);
