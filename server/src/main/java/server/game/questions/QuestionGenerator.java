@@ -73,14 +73,42 @@ public class QuestionGenerator {
         Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
         if (page.hasContent() && page.getContent().get(0) != null) {
             Activity a = page.getContent().get(0);
-            List<String> aw = new ArrayList<>();
 
-            long tmpConsumption = (long) (utils.getRandomWithExclusion(random, 0.5, 2, 1) * a.consumption);
-            aw.add(utils.createConsumptionString(tmpConsumption));
-            tmpConsumption = (long) (((utils.getRandomWithExclusion(random, 0.7, 2, 1) * a.consumption)));
-            aw.add(utils.createConsumptionString(tmpConsumption));
+            long[] consumptions = new long[2];
+
+            double maxPercentage = utils.getMaxPercentageGeneral(false, a.consumption);
+            long[] bounds = new long[]{
+                    (long) (a.consumption * (1 - maxPercentage/2)),
+                    (long) (a.consumption * (1 + maxPercentage/2))
+            };
+
+            // Cut-off to not create too large bounds
+            if(bounds[0] < 0){
+                bounds[0] = 0;
+            }
+
+            long chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption);
+            consumptions[0] = chosen;
+
+            maxPercentage = utils.getMaxPercentageGeneral(false, a.consumption);
+            bounds = new long[]{
+                    (long) (a.consumption * (1 - maxPercentage/2)),
+                    (long) (a.consumption * (1 + maxPercentage/2))
+            };
+
+            // Cut-off to not create too large bounds
+            if(bounds[0] < 0){
+                bounds[0] = 0;
+            }
+
+            chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption, consumptions[0]);
+            consumptions[1] = chosen;
+
+            List<String> aw = new ArrayList<>();
             String mainConsumptionString = utils.createConsumptionString(a.consumption);
             aw.add(mainConsumptionString);
+            aw.add(utils.createConsumptionString(consumptions[0]));
+            aw.add(utils.createConsumptionString(consumptions[1]));
 
             Collections.shuffle(aw);
             Question toReturn = new GeneralQuestion(a,aw,aw.indexOf(mainConsumptionString) + 1);
