@@ -2,18 +2,15 @@ package client.utils;
 
 import commons.AnswerResponseEntity;
 import commons.Player;
-import commons.Score;
 
 public class ScoreUtils {
     Player player;
-    Score score;
 
     /**
      * constructor
      */
     public ScoreUtils(){
         player = null;
-        score = null;
     }
 
     /**
@@ -34,7 +31,6 @@ public class ScoreUtils {
      */
     public void setPlayer(Player player){
         this.player = player;
-        this.score = new Score(player.getUsername(), 0);
     }
 
     /**
