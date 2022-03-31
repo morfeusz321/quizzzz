@@ -25,7 +25,6 @@ public class QuestionGeneratorUtils {
         // This is a method that creates a "small" range, that is closer to the initial value.
         // The range does not have to be generated randomly, as the activity itself is chosen randomly
         // within that range.
-        // TODO: add method with bigger range, so that different "difficulties" can be generated
         if(consumption <= 500){
             return new long[]{0, 500};
         } else if(consumption <= 1000){
@@ -159,6 +158,16 @@ public class QuestionGeneratorUtils {
      */
     public boolean checkIfGeneratable(List<Long> excluded, double percentExcl, long lower, long upper){
 
+        if(lower == 0 && upper == 0){
+            // Something went wrong, this can/should not be generated
+            return false;
+        }
+
+        if(lower == upper && (!excluded.contains(upper) || percentExcl == 0)){
+            // Special case where the upper bound equals the lower bound
+            return true;
+        }
+
         // Starting point is just normal range
         long possibleValues = upper - lower;
 
@@ -170,8 +179,10 @@ public class QuestionGeneratorUtils {
         }
 
         long totalRange = upper - lower;
-        // If probability is < 1/3 this might create StackOverFlowErrors
-        return possibleValues > 0 && ((double) possibleValues / totalRange > 0.3);
+        // If probability is < 50% to get a number this might create StackOverFlowErrors
+
+        // TODO: fix problem that occurs when exclusions overlap (how?)
+        return possibleValues > 0 && ((double) possibleValues / totalRange >= 0.5);
 
     }
 
@@ -258,7 +269,8 @@ public class QuestionGeneratorUtils {
             if(bounds[1] <= 20){
                 // If it is very small, shift instead of cut-off
                 bounds[1] = bounds[1] - bounds[0];
-            } else {
+            } else if(Math.abs(bounds[0]) < Math.abs(bounds[1])){
+                // First check if the absolute lower bound is not bigger or equal to the absolute upper bound
                 bounds[1] = bounds[1] + bounds[0];
                 // Cut off so that it is not more likely to have a larger number
                 // Note that this is + and not - on purpose for the above reason
