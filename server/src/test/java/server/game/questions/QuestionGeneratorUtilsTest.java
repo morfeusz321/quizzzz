@@ -3,6 +3,7 @@ package server.game.questions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -201,6 +202,122 @@ class QuestionGeneratorUtilsTest {
         // Round to 10: 46130, 225680
         int[] expected = new int[]{46130, 225680};
 
+        assertArrayEquals(expected, bounds);
+
+    }
+
+    @Test
+    public void testGetMaxPercentageGeneral(){
+
+        // Doubles are sometimes not considered equal due to minor errors. Alpha is the max. difference to test
+        // the equality of the double values.
+        double alpha = 0.00001;
+
+        double generatedPercentage = utils.getMaxPercentageGeneral(0);
+        assertTrue(5 - alpha <= generatedPercentage && generatedPercentage <= 5 + alpha);
+
+        generatedPercentage = utils.getMaxPercentageGeneral(100);
+        assertTrue(5 - alpha <= generatedPercentage && generatedPercentage <= 5 + alpha);
+
+        generatedPercentage = utils.getMaxPercentageGeneral(10000000000000L);
+        assertTrue(4.995117 - alpha <= generatedPercentage && generatedPercentage <= 4.995117 + alpha);
+
+        generatedPercentage = utils.getMaxPercentageGeneral(9999999999999000L);
+        assertTrue(1.882054 - alpha <= generatedPercentage && generatedPercentage <= 1.882054 + alpha);
+
+    }
+
+    @Test
+    public void testCheckIfGeneratableFalse(){
+
+        // All numbers excluded in range (100% blocked)
+        assertFalse(utils.checkIfGeneratable(List.of(10L), 0.5, 5, 15));
+        // More than 50% of the range is blocked
+        assertFalse(utils.checkIfGeneratable(List.of(10L), 0.5, 0, 18));
+        assertFalse(utils.checkIfGeneratable(List.of(10L), 0.5, 0, 15));
+        // General tests with multiple exclusions
+        assertFalse(utils.checkIfGeneratable(List.of(20L, 50L), 0.5, 0, 75));
+        // Overlapping exclusions
+        assertFalse(utils.checkIfGeneratable(List.of(100L, 110L), 0.5, 0, 130));
+        // Bounds are 0,0
+        assertFalse(utils.checkIfGeneratable(List.of(100L, 110L), 0.5, 0, 0));
+
+    }
+
+    @Test
+    public void testIfGeneratableTrue(){
+
+        // Only one number in range -> this is generatable, as 100% of the numbers in the range (1) are not excluded
+        // (The bounds are inclusive!)
+        assertTrue(utils.checkIfGeneratable(List.of(), 0, 1, 1));
+        // Only two numbers in range, but none excluded (see above)
+        assertTrue(utils.checkIfGeneratable(List.of(), 0, 999, 1000));
+        // 10% of the range is blocked
+        assertTrue(utils.checkIfGeneratable(List.of(10L), 0.5, 0, 100));
+        // 20% of the range is blocked
+        assertTrue(utils.checkIfGeneratable(List.of(10L), 0.5, 0, 50));
+        // 25% of the range is blocked
+        assertTrue(utils.checkIfGeneratable(List.of(10L), 0.5, 0, 40));
+        // 40% of the range is blocked
+        assertTrue(utils.checkIfGeneratable(List.of(10L), 0.5, 0, 25));
+        // 50% of the range is blocked
+        assertTrue(utils.checkIfGeneratable(List.of(10L), 0.5, 0, 20));
+        // General check with a large value
+        assertTrue(utils.checkIfGeneratable(List.of(99999999L), 0.5, 999999L, 99999999999L));
+        // General check with multiple exclusions
+        assertTrue(utils.checkIfGeneratable(List.of(2000L, 99999L), 0.2, 1800, 9999999L));
+
+    }
+
+    @Test
+    public void safeBoundCheckGeneralQuestionNoShift() {
+
+        long[] bounds = new long[]{0,100};
+        long[] expected = new long[]{0,100};
+        utils.safeBoundCheckGeneralQuestion(bounds);
+        assertArrayEquals(expected, bounds);
+
+        bounds = new long[]{9999999,9999999999L};
+        expected = new long[]{9999999,9999999999L};
+        utils.safeBoundCheckGeneralQuestion(bounds);
+        assertArrayEquals(expected, bounds);
+
+    }
+
+    @Test
+    public void safeBoundCheckGeneralQuestionShift() {
+
+        long[] bounds = new long[]{-20,20};
+        long[] expected = new long[]{0,40};
+        utils.safeBoundCheckGeneralQuestion(bounds);
+        assertArrayEquals(expected, bounds);
+
+        bounds = new long[]{-15,5};
+        expected = new long[]{0,20};
+        utils.safeBoundCheckGeneralQuestion(bounds);
+        assertArrayEquals(expected, bounds);
+
+        // Is theoretically a shift even though the values do not change
+        bounds = new long[]{0,5};
+        expected = new long[]{0,5};
+        utils.safeBoundCheckGeneralQuestion(bounds);
+        assertArrayEquals(expected, bounds);
+
+    }
+
+    @Test
+    public void safeBoundCheckGeneralQuestionCutOff() {
+
+        // It only gets cut off to the negative side, as otherwise the bounds would be 0, 0
+        long[] bounds = new long[]{-100,100};
+        long[] expected = new long[]{0,100};
+        utils.safeBoundCheckGeneralQuestion(bounds);
+        assertArrayEquals(expected, bounds);
+
+        // Also gets cut off on the positive side
+        bounds = new long[]{-99999,99999999L};
+        expected = new long[]{0,99900000L};
+        utils.safeBoundCheckGeneralQuestion(bounds);
         assertArrayEquals(expected, bounds);
 
     }
