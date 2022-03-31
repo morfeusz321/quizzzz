@@ -134,6 +134,8 @@ public class Game extends Thread {
 
         }
 
+        initializeTimeJoker();
+
         lastTime = stopWatch.getTotalTimeMillis();
         stopWatch.start();
 
@@ -159,7 +161,20 @@ public class Game extends Thread {
      */
 
     public void saveAnswer(String username, long answer) {
-        this.answerMap.put(username, answer);
+        long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
+        long oldTime = 0L;
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            if(oldTime<player.getValue()) {
+                oldTime = player.getValue();
+            }
+        }
+        long elapsedTime = oldTime - remainingTime;
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            player.setValue(player.getValue()-elapsedTime);
+        }
+        if(timeJoker.get(username) >= 0) {
+            this.answerMap.put(username, answer);
+        }
     }
 
 
@@ -341,20 +356,33 @@ public class Game extends Thread {
 
         long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
 
-        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
-            player.setValue(remainingTime);
+        if(timeJoker.get(username) == 15000L) {
+            long newTime = (long) (0.65 * remainingTime);
+            for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+                if(!player.getKey().equals(username)) {
+                    player.setValue(newTime);
+                }
+                else player.setValue(remainingTime);
+            }
+            System.out.println(username + " from " + remainingTime + " to " + newTime); //TODO: remove
         }
+        else {
 
-        // one joker is -35% of current time left (can be changed)
-        long newTime = remainingTime - (long) (35.0/100.0 * remainingTime);
-        System.out.println(remainingTime + " " + newTime);
-
-        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
-            if(!player.getKey().equals(username)) {
-                player.setValue(newTime);
+            long oldTime = 0L;
+            for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+                if(oldTime<player.getValue()) {
+                    oldTime = player.getValue();
+                }
+            }
+            long elapsedTime = oldTime - remainingTime;
+            System.out.println(username + " from " + remainingTime + " to following: (elapsed time: " + elapsedTime + ")"); //TODO: remove
+            for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+                player.setValue(player.getValue()-elapsedTime);
+                long newTime = (long) (0.65 * player.getValue());
+                if(!player.getKey().equals(username)) player.setValue(newTime);
             }
         }
-
+        //TODO:remove
         for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
             System.out.println(player.getKey() + " " + player.getValue());
         }
@@ -372,14 +400,13 @@ public class Game extends Thread {
 
         Question question = getCurrentQuestion();
         long answer = question.answer;
-        CommonUtils utils = new CommonUtils();
         Random random = new Random();
-        int returnValue = 0;
-        switch ((int) answer) {
-            case 1: returnValue = utils.randomIntInRange(1,2,random) + 1; break;
-            case 2: if(utils.randomIntInRange(1,2,random) == 1) returnValue = 3; else returnValue = 1; break;
-            case 3: returnValue = utils.randomIntInRange(1,2,random); break;
-        }
+        int returnValue = switch ((int) answer) {
+            case 1 -> random.nextBoolean() ? 2 : 3;
+            case 2 -> random.nextBoolean() ? 1 : 3;
+            case 3 -> random.nextBoolean() ? 1 : 2;
+            default -> 0;
+        };
         deferredResultMap.get(username).setResult(ResponseEntity.ok(new GameUpdateQuestionJoker(returnValue)));
         deferredResultMap.clear();
 
@@ -420,9 +447,11 @@ public class Game extends Thread {
      * This method will initialize the ConcurrentHashMap with the usernames of all players.
      */
     protected void initializeTimeJoker() {
-
         for(Map.Entry<String, Player> player : players.entrySet()) {
-            timeJoker.put(player.getKey(), getElapsedTimeThisQuestion());
+            timeJoker.remove(player.getKey());
+        }
+        for(Map.Entry<String, Player> player : players.entrySet()) {
+            timeJoker.put(player.getKey(), 15000L);
         }
 
     }

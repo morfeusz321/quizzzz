@@ -48,24 +48,6 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
     }
 
-    /**
-     * Disables joker buttons (if already used)
-     */
-    public void disableJokers() {
-        if(mainCtrl.getJokerStatus(1)) {
-            removeQuestion.setDisable(true);
-            removeQuestion.setOpacity(0.3);
-        }
-        if(mainCtrl.getJokerStatus(2)) {
-            doublePoints.setDisable(true);
-            doublePoints.setOpacity(0.3);
-        }
-        if(mainCtrl.getJokerStatus(3)) {
-            decreaseTime.setDisable(true);
-            decreaseTime.setOpacity(0.3);
-        }
-    }
-
     // TODO: when the answer is displayed, the correct image should be shown!
 
 }
