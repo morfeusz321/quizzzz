@@ -26,7 +26,7 @@ class ScoreUtilsTest {
     void setScore() {
         scoreUtils.setPlayer(player);
         scoreUtils.setScore(new AnswerResponseEntity(true, 0));
-        assertEquals(200, scoreUtils.getPoints());
+        assertEquals(0, scoreUtils.getPoints());
     }
 
     @Test
