@@ -2,40 +2,30 @@ package client.utils;
 
 import commons.AnswerResponseEntity;
 import commons.Player;
+import commons.Score;
 
 public class ScoreUtils {
     Player player;
-    int lastClickedTime;
+    Score score;
 
     /**
      * constructor
      */
     public ScoreUtils(){
         player = null;
+        score = null;
     }
 
     /**
-     * given answer correct/incorrect it gives out points to the player
-     * @param answer answer from GameUpdate
+     * sets score from the answer from the server
+     * @param answer answerResponseEntity from the Server
      */
     public void setScore(AnswerResponseEntity answer){
-        int pointsGiven = dynamicPointsMultipleChoice(answer.correct);
+        if(answer==null){
+            return;
+        }
+        int pointsGiven = answer.getPoints();
         this.player.increasePoints(pointsGiven);
-    }
-
-    /**
-     * depending on when the user clicks on the answer the amount of points is given
-     * @param correct answer is correct or not
-     * @return number of points given
-     */
-    private int dynamicPointsMultipleChoice(boolean correct){
-        System.out.println(this.lastClickedTime);
-        if(correct){
-            return 200;
-        }
-        else{
-            return 0;
-        }
     }
 
     /**
@@ -44,6 +34,7 @@ public class ScoreUtils {
      */
     public void setPlayer(Player player){
         this.player = player;
+        this.score = new Score(player.getUsername(), 0);
     }
 
     /**

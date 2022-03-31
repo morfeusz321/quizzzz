@@ -20,10 +20,15 @@ public class AnswerResponseEntityTest {
     }
 
     @Test
-    public void checkConstructor2() {
-        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(false, 5, 4);
-        assertFalse(answerResponseEntity.correct);
-        assertEquals(5, answerResponseEntity.proximity);
+    public void checkConstructor3() {
+        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(false, 4, 100);
+        assertEquals(100, answerResponseEntity.getPoints());
+    }
+
+    @Test
+    public void getPoints() {
+        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(false, 5);
+        assertEquals(0, answerResponseEntity.getPoints());
     }
 
     @Test
@@ -50,6 +55,36 @@ public class AnswerResponseEntityTest {
         assertTrue(s.contains("\n"));
         assertTrue(s.contains("correct"));
         assertTrue(s.contains("proximity"));
+    }
+
+    @Test
+    public void dynamicPointsEstimationCorrect() {
+        int points = AnswerResponseEntity.dynamicPointsEstimation(90, 100);
+        assertEquals(100, points);
+    }
+
+    @Test
+    public void dynamicPointsEstimationFalse() {
+        int points = AnswerResponseEntity.dynamicPointsEstimation(70, 100);
+        assertNotEquals(100, points);
+    }
+
+    @Test
+    public void dynamicPointsMCCorrectFull() {
+        int points = AnswerResponseEntity.dynamicPointsMultipleChoice(true, 14520);
+        assertEquals(100, points);
+    }
+
+    @Test
+    public void dynamicPointsMCCorrectPartial() {
+        int points = AnswerResponseEntity.dynamicPointsMultipleChoice(true, 100);
+        assertNotEquals(100, points);
+    }
+
+    @Test
+    public void dynamicPointsMCFalse() {
+        int points = AnswerResponseEntity.dynamicPointsMultipleChoice(false, 100);
+        assertEquals(0, points);
     }
 
 }

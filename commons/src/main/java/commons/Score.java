@@ -13,7 +13,6 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 public class Score {
     @Id
     public String username;
-    public int score;
 
     /**
      * Empty constructor used by object mapper
@@ -28,26 +27,9 @@ public class Score {
      * @param username the username for this Score
      * @param score the score of that user
      */
-    public Score(String username, int score) {
+    public Score(String username) {
         this.username = username;
-        this.score = score;
     }
-
-    /**
-     * retriev the score
-     * @return score
-     */
-    public int getScore() {
-        return score;
-    }
-/*
-
-    public int addPoints(int points){
-        score+=points;
-        return score;
-    }
-*/
-
 
 
     /**

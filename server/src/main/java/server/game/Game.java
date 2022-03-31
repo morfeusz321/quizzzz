@@ -34,7 +34,7 @@ public class Game extends Thread {
 
     private ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
 
-    private ConcurrentHashMap<String, Long> answerMap;
+    private ConcurrentHashMap<String, AnswerResponseEntity> answerMap;
 
     private StopWatch stopWatch;
     private long lastTime;
@@ -156,7 +156,8 @@ public class Game extends Thread {
      */
 
     public void saveAnswer(String username, long answer) {
-        this.answerMap.put(username, answer);
+        long timeClicked = getElapsedTimeThisQuestion();
+        this.answerMap.put(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer, (int) timeClicked));
     }
 
 
@@ -171,16 +172,13 @@ public class Game extends Thread {
             DeferredResult<ResponseEntity<GameUpdate>> req = openRequest.getValue();
             deferredResultMap.remove(username);
 
-            long answer;
-            if(!answerMap.containsKey(username)) {
-                answer = -1;
-            } else {
-                answer = answerMap.get(username);
-            }
+            AnswerResponseEntity answer;
+            answer = answerMap.getOrDefault(username, null);
 
-            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer))));
+            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
             // TODO: Save scores to leaderboard here, calculate points
+
 
         }
 
