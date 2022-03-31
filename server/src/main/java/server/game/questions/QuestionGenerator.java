@@ -68,7 +68,7 @@ public class QuestionGenerator {
 
             // Decide randomly whether the question should have answer options that are close to each other or
             // farther away.
-            boolean isBoundSmall = random.nextBoolean();
+            boolean isBoundSmall = false; // random.nextBoolean();
 
             double maxPercentage = utils.getMaxPercentageGeneral(isBoundSmall, a.consumption);
             long[] bounds = new long[]{
@@ -81,7 +81,14 @@ public class QuestionGenerator {
                 bounds[0] = 0;
             }
 
-            long chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption);
+            long chosen;
+            try{
+                chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption);
+            } catch (StackOverflowError e) {
+                // No good number could be found, try again
+                e.printStackTrace();
+                return getGeneralQuestion();
+            }
             consumptions[0] = chosen;
 
             maxPercentage = utils.getMaxPercentageGeneral(isBoundSmall, a.consumption);
@@ -95,7 +102,13 @@ public class QuestionGenerator {
                 bounds[0] = 0;
             }
 
-            chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption, consumptions[0]);
+            try{
+                chosen = utils.randomLongInRangeExcl(bounds[0], bounds[1], random, a.consumption, consumptions[0]);
+            } catch (StackOverflowError e) {
+                // No good number could be found, try again
+                e.printStackTrace();
+                return getGeneralQuestion();
+            }
             consumptions[1] = chosen;
 
             List<String> aw = new ArrayList<>();
