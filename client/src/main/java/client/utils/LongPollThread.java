@@ -16,7 +16,7 @@ public class LongPollThread extends Thread {
     private UUID gameUUID;
     private Consumer<GameUpdate> consumer;
     private String username;
-    private boolean isInGame;
+    private volatile boolean isInGame;
 
     /**
      * Creates LongPollThread instance with specified injections
@@ -66,6 +66,17 @@ public class LongPollThread extends Thread {
                     .get(GameUpdate.class);
             if(isInGame) consumer.accept(ret);
         }
+
+    }
+
+    /**
+     * Sets this Thread's isInGame status (the Thread will no longer push game updates to the consumer
+     * if its isInGame is false, and it also won't make any new long poll requests)
+     * @param isInGame the isInGame status to set this Thread to
+     */
+    public void setIsInGame(boolean isInGame) {
+
+        this.isInGame = isInGame;
 
     }
 
