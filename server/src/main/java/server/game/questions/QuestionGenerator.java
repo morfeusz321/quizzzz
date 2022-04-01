@@ -166,18 +166,29 @@ public class QuestionGenerator {
             }
 
             // Get a second activity which is in a small range around the actual one
-            // TODO: add a "smarter" range here? Not sure if we need it here, 10% was used before and it should be fine?
+            // TODO: add a "smarter" range here? Not sure if we need it here, 10% was used before, but if we have very
+            //  large consumptions, that might be too high? So I changed it to 5%
             Activity answer = activityDBController.getActivityExclAndInRange(
                     List.of(main.id),
                     List.of(), // no values need to be excluded
-                    Math.round(main.consumption - main.consumption * 0.1),
-                    Math.round(main.consumption + main.consumption * 0.1)
+                    Math.round(main.consumption - main.consumption * 0.05),
+                    Math.round(main.consumption + main.consumption * 0.05)
             );
 
             if(answer == null) {
-                // We can only find activities with a difference bigger than 10% of the original activity
+                // We can only find activities with a difference bigger than 5% of the original activity
                 // We need to search again
-                return getComparisonQuestion();
+                // First we try to find one with a "higher" range, of 10%:
+                answer = activityDBController.getActivityExclAndInRange(
+                        List.of(main.id),
+                        List.of(), // no values need to be excluded
+                        Math.round(main.consumption - main.consumption * 0.1),
+                        Math.round(main.consumption + main.consumption * 0.1)
+                );
+                if(answer == null){
+                    // No answer could be generated, try to find another activity
+                    return getComparisonQuestion();
+                }
             }
 
             // Create answer option list
