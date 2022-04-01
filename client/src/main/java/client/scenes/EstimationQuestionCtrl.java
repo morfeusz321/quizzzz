@@ -144,8 +144,13 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * (and TODO the initialization of the slider).
      */
     public void loadQuestion(Question q) {
+
         Platform.runLater(()-> {
+
             enableButtons();
+            disableJokers();
+            setPoints();
+
             questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
             title.setText(q.displayQuestion());
             resizeQuestionHandler.setText((int) title.getFont().getSize());
@@ -178,19 +183,23 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
             // must be one less than major tick unit -> one tick per kWh
 
             refreshProgressBar();
+
         });
+
     }
 
     /**
      * Disables the answer and power buttons, makes then power buttons invisible
      */
-    private void disableButtons(){
-        powersText.setOpacity(0.3);
-        decreaseTime.setOpacity(0.3);
-        doublePoints.setOpacity(0.3);
-        setAnswerBtn.setOpacity(0.3);
+    @Override
+    public void disableButtons(){
+        powersText.setOpacity(0.2);
+        decreaseTime.setOpacity(0.2);
+        doublePoints.setOpacity(0.2);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
+        slideBar.setDisable(true);
+        answerTxtField.setDisable(true);
         setAnswerBtn.setDisable(true);
         correctAnswer.setOpacity(1);
         fullText.setOpacity(1);
@@ -199,16 +208,31 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     /**
      * Enables the answer and power buttons, makes then power buttons visible
      */
-    protected void enableButtons(){
+    public void enableButtons(){
         powersText.setOpacity(1);
         decreaseTime.setOpacity(1);
         doublePoints.setOpacity(1);
-        setAnswerBtn.setOpacity(1);
         decreaseTime.setDisable(false);
         doublePoints.setDisable(false);
+        slideBar.setDisable(false);
+        answerTxtField.setDisable(false);
         setAnswerBtn.setDisable(false);
         correctAnswer.setOpacity(0);
         fullText.setOpacity(0);
+    }
+
+    /**
+     * Disables joker buttons (if already used)
+     */
+    public void disableJokers() {
+        if(mainCtrl.getJokerStatus(2)) {
+            doublePoints.setDisable(true);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
     }
 
     /**
@@ -221,28 +245,30 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
         AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
         long correct = answer.getAnswer();
-        String s = "The correct answer\n was: " + correct +"Wh.";
-        if(answer.correct) {
+        String s = "The correct answer\n was: " + correct + "Wh.";
+        if (answer.correct) {
             Platform.runLater(() -> {
                 transText.setText("You answered correctly! Impressive!");
-                fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
-                fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+                fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
                 correctAnswer.setOpacity(0);
             });
         } else {
-            if(!answerSet) {
-                Platform.runLater(() ->{
+            if (!answerSet) {
+                Platform.runLater(() -> {
                     transText.setText("You did not answer. Try to be faster!");
-                    fullText.setLayoutX(anchorPane.getWidth()*0.1043248);
-                    fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1043248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
                 });
             } else {
                 Platform.runLater(() -> {
                     fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
                     fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
-                    transText.setText("You were "+Math.abs(answer.proximity)+"Wh close to the answer!");
+                    transText.setText("You were " + Math.abs(answer.proximity) + "Wh close to the answer!");
                 });
             }
         }
+
     }
+
 }

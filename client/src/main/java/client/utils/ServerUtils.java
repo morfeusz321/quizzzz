@@ -31,7 +31,6 @@ import java.util.List;
 import commons.*;
 import commons.gameupdate.GameUpdate;
 
-import commons.gameupdate.GameUpdateGameFinished;
 import jakarta.ws.rs.core.Form;
 import org.glassfish.jersey.client.ClientConfig;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -53,6 +52,7 @@ public class ServerUtils {
     private StompSession session;
     private UUID gameUUID;
     private boolean isInGame = false;
+    private LongPollThread longPollThread = null;
 
     /**
      * Tests the current server address to see if a connection can be established, and if
@@ -124,6 +124,14 @@ public class ServerUtils {
     }
 
     /**
+     * Sends game update to the game's websocket informing that emoji was sent
+     * @param gameUpdate update containing sent emoji and username
+     */
+    public void sendEmoji(GameUpdate gameUpdate){
+        session.send("/game/emoji/"+gameUUID.toString(),gameUpdate);
+    }
+
+    /**
      * Utility method to subscribe to a WebSocket topic
      * @param destination the URL (relative to the connected server) of the WebSocket topic
      * @param type the class of the message expected to be received from the topic
@@ -156,17 +164,8 @@ public class ServerUtils {
      */
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
-        GameUpdate ret = null;
-        while(!(ret instanceof GameUpdateGameFinished) && isInGame) {
-            ret = ClientBuilder.newClient(new ClientConfig())
-                    .target(SERVER).path("api/game/")
-                    .queryParam("gameID", gameUUID.toString())
-                    .queryParam("username", username)
-                    .request(APPLICATION_JSON)
-                    .accept(APPLICATION_JSON)
-                    .get(GameUpdate.class);
-            if(isInGame) consumer.accept(ret);
-        }
+        longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username,isInGame);
+        longPollThread.start();
 
     }
 
@@ -205,6 +204,42 @@ public class ServerUtils {
 
     }
 
+
+    /**
+     * Informs the server that a time joker has been used, using the API endpoint
+     * @param username the player that used the time joker
+     * @param gameUUID UUID of the current game
+     * @return The username of the player if the request was successful
+     */
+    public String useTimeJoker(String username, UUID gameUUID) {
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gameUUID", gameUUID.toString());
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/jokers/time") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
+
+    /**
+     * Informs the server that the question joker has been used, using the API endpoint
+     * @param username the player that used the question joker
+     * @param gameUUID UUID of the current game
+     * @return The username of the player if the request was successful
+     */
+    public String useQuestionJoker(String username, UUID gameUUID) {
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gameUUID", gameUUID.toString());
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/jokers/question") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
 
     /**
      * Gets all activities from the server using the API endpoint
@@ -328,6 +363,9 @@ public class ServerUtils {
     public String leaveGame(String username, UUID gameUUID) {
         
         isInGame = false;
+        if(longPollThread != null) {
+            longPollThread.setIsInGame(false);   
+        }
 
         disconnect();
 
@@ -434,6 +472,50 @@ public class ServerUtils {
      */
     public boolean getIsInTheGame(){
         return isInGame;
+    }
+/*
+
+    public Score addScoreToDB(String username, int points){
+        Form form = new Form();
+        form.param("username", username);
+        form.param("points", String.valueOf(points));
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/scores/" + username + "/" + points) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), Score.class);
+    }
+
+*/
+
+    /**
+     * retrieve player with given username
+     * @param username player's username
+     * @return Player
+     */
+    public Player getPlayerByUsername(String username){
+        List<Player> listOfPlayers = getPlayers();
+        for (Player p : listOfPlayers){
+            if (p.getUsername().equals(username)){
+                return p;
+            }
+        }
+        throw new IllegalArgumentException();
+
+    }
+
+    /**
+     * retrieve all the players in the game
+     * @return list of all current players
+     */
+    public List<Player> getPlayers() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/game/players") //
+                .queryParam( "gameID", gameUUID.toString())
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Player>>() {});
     }
 
 }
