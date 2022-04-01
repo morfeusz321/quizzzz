@@ -67,15 +67,18 @@ public class AnswerResponseEntity {
 
     /**
      * Creates a new answer response entity (also with points given for the answer)
+     * for estimation questions
      * @param correct whether the answer should be displayed as correct or not
+     * @param proximity the difference between the answer and the correct answer
      * @param answer which button was clicked
      * @param points points given for the question
      */
-    public AnswerResponseEntity(boolean correct, long answer, int points) {
+    public AnswerResponseEntity(boolean correct,long proximity, long answer, int points) {
 
         this.correct = correct;
         this.answer = answer;
         this.points = points;
+        this.proximity = proximity;
 
     }
 
@@ -91,9 +94,9 @@ public class AnswerResponseEntity {
         boolean cor = answer == q.answer;
 
         if(q instanceof EstimationQuestion) {
-            return new AnswerResponseEntity(cor, q.answer, dynamicPointsEstimation(prox, answer));
+            return new AnswerResponseEntity(cor, prox, q.answer, dynamicPointsEstimation(prox, answer, time));
         } else {
-            return new AnswerResponseEntity(cor, q.answer, dynamicPointsMultipleChoice(cor, time) );
+            return new AnswerResponseEntity(cor, prox, q.answer, dynamicPointsMultipleChoice(cor, time) );
         }
 
     }
@@ -101,16 +104,20 @@ public class AnswerResponseEntity {
     /**
      * depending on how close the user is to the answer the amount of points is given
      * @param proximity how close the user is to the answer
+     * @param answer if the answer is correct or no
+     * @param time the time passed till answering the question
      * @return number of points given
      */
-    public static int dynamicPointsEstimation(long proximity, long answer){
-        double percentagePassed = 1- ((double) proximity) /answer;
-        if(percentagePassed<0.21){
+    public static int dynamicPointsEstimation(long proximity, long answer, int time){
+        if (proximity == 100){
             return 100;
         }
-        else{
-            return (int) ((Math.exp(-3*percentagePassed) + 0.46) * 100);
+        double percentagePassed = Math.abs(1- ((double) proximity) /answer);
+        if(percentagePassed<0.21) {
+            percentagePassed = Math.abs(((double) proximity) /answer);
+            return (((int)(( ((1/(0.4*Math.sqrt(2*Math.PI)))* Math.exp(-0.5*Math.pow(((percentagePassed-1)/0.14), 2))))*100 +1)) + dynamicPointsMultipleChoice(true, time))/2;
         }
+        return 0;
     }
 
     /**

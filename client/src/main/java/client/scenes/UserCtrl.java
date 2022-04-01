@@ -182,8 +182,6 @@ public class UserCtrl {
         if (mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             server.startGame();
         } else {
-//        addToDatabase(currentUsername);
-
             fadeOutUser("wait");        
         }
 

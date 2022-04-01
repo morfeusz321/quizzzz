@@ -412,14 +412,4 @@ public abstract class QuestionCtrl {
         int points = mainCtrl.getScore();
         this.pointsInfo.setText("Your points: " + points);
     }
-
-    /**
-     * retrieve the time from the timer
-     * @return
-     */
-    public int getTime(){
-        String timeText = timeLabel.getText();
-        int time = Integer.parseInt(timeText.substring(14));
-        return time;
-    }
 }

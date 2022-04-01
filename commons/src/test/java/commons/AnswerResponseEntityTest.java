@@ -20,8 +20,8 @@ public class AnswerResponseEntityTest {
     }
 
     @Test
-    public void checkConstructor3() {
-        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(false, 4, 100);
+    public void checkConstructor2() {
+        AnswerResponseEntity answerResponseEntity = new AnswerResponseEntity(true, 4, 2, 100);
         assertEquals(100, answerResponseEntity.getPoints());
     }
 
@@ -59,13 +59,13 @@ public class AnswerResponseEntityTest {
 
     @Test
     public void dynamicPointsEstimationCorrect() {
-        int points = AnswerResponseEntity.dynamicPointsEstimation(90, 100);
+        int points = AnswerResponseEntity.dynamicPointsEstimation(100, 100, 14520);
         assertEquals(100, points);
     }
 
     @Test
     public void dynamicPointsEstimationFalse() {
-        int points = AnswerResponseEntity.dynamicPointsEstimation(70, 100);
+        int points = AnswerResponseEntity.dynamicPointsEstimation(70, 100, 14520);
         assertNotEquals(100, points);
     }
 
