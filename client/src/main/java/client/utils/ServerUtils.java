@@ -363,7 +363,9 @@ public class ServerUtils {
     public String leaveGame(String username, UUID gameUUID) {
         
         isInGame = false;
-        longPollThread.setIsInGame(false);
+        if(longPollThread != null) {
+            longPollThread.setIsInGame(false);   
+        }
 
         disconnect();
 
