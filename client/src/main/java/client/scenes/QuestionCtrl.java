@@ -4,6 +4,7 @@ import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
@@ -257,7 +258,7 @@ public abstract class QuestionCtrl {
         }
         changeLabel.setOnFinished(finished -> {
             timeLabel.setText("Question is over!");
-            disableButtons();
+            Platform.runLater(this::disableButtons);
         });
 
         timeAnim.play();

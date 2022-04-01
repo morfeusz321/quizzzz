@@ -181,6 +181,8 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
         AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
         long correct = answer.getAnswer();
+        fullText.setOpacity(1);
+        correctTick.setOpacity(1);
 
         if(answer.correct) {
             Platform.runLater(() -> {
@@ -277,8 +279,6 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         for(Button x : buttonList){
             x.setDisable(true);
         }
-        fullText.setOpacity(1);
-        correctTick.setOpacity(1);
         powersText.setOpacity(0.3);
         decreaseTime.setOpacity(0.3);
         doublePoints.setOpacity(0.3);
