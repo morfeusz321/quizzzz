@@ -28,6 +28,8 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
         // TODO: add comparison question type, and restructure this afterwards if needed
         setPoints();
         enableButtons();
+        disableJokers();
+        question = q;
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());

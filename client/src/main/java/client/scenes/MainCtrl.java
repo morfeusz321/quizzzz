@@ -55,6 +55,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Random;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -106,6 +107,10 @@ public class MainCtrl {
 
     private String usernamePrefill;
     private String serverAddressPrefill;
+
+    private boolean usedDouble = false;
+    private boolean usedTime = false;
+    private boolean usedRemove = false;
 
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
@@ -402,6 +407,7 @@ public class MainCtrl {
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if (gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
+            resetJokers();
             server.setInGameTrue();
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
@@ -587,8 +593,46 @@ public class MainCtrl {
             leaderboardCtrl.disableButtonsForMainScreen();
             Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
 
+        } else if(gameUpdate instanceof GameUpdateTimerJoker update) {
+            System.out.println("hello timer joker has been used");
+            for(Map.Entry<String, Long> player : update.getTime().entrySet()) {
+                if(this.userCtrl.getSavedCurrentUsername().equals(player.getKey())) {
+                    handleTimerJoker(player.getValue());
+                }
+            }
+        } else if(gameUpdate instanceof GameUpdateQuestionJoker update) {
+            int buttonNumber = update.getButtonNumber();
+            handleQuestionJoker(buttonNumber);
+            System.out.println("hello question joker used successfully");
         }
+    }
 
+    /**
+     * Method for handling the time joker for each question type.
+     */
+    public void handleTimerJoker(long time) {
+        if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
+            generalQuestionCtrl.handleTimeJoker(time);
+        } else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
+            comparisonQuestionCtrl.handleTimeJoker(time);
+        } else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion) {
+            estimationQuestionCtrl.handleTimeJoker(time);
+        } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
+            mostExpensiveQuestionCtrl.handleTimeJoker(time);
+        }
+    }
+
+    /**
+     * Method for handling the question joker for each question type.
+     */
+    public void handleQuestionJoker(int buttonNumber) {
+        if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
+            generalQuestionCtrl.removeQuestion(buttonNumber);
+        } else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
+            comparisonQuestionCtrl.removeQuestion(buttonNumber);
+        } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
+            mostExpensiveQuestionCtrl.removeQuestion(buttonNumber);
+        }
     }
 
     /**
@@ -845,6 +889,55 @@ public class MainCtrl {
      */
     public int getScore(){
        return this.scoreHelper.getPoints();
+    }
+
+    /**
+     * Disables a joker button for the current game
+     * @param number the number of the button (1 - remove one wrong answer joker, 2 - double points joker, 3 - time joker)
+     */
+    public void disableJoker(int number) {
+        switch (number) {
+            case 1 -> usedRemove = true;
+            case 2 -> usedDouble = true;
+            case 3 -> usedTime = true;
+        }
+    }
+
+    /**
+     * Returns whether the selected joker button was used or not
+     * @param number the number of the button (1 - remove one wrong answer joker, 2 - double points joker, 3 - time joker)
+     * @return true if already used, false otherwise
+     */
+    public boolean getJokerStatus(int number) {
+        switch (number) {
+            case 1 -> {
+                return usedRemove;
+            }
+            case 2 -> {
+                return usedDouble;
+            }
+            case 3 -> {
+                return usedTime;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Resets the joker buttons (called every time when a new game is started)
+     */
+    public void resetJokers() {
+        this.usedRemove = false;
+        this.usedDouble = false;
+        this.usedTime = false;
+    }
+
+    /**
+     * Method for getting the current game UUID
+     * @return UUID of the current game
+     */
+    public UUID getGameUUID() {
+        return userCtrl.getSavedGameUUID();
     }
 
 }

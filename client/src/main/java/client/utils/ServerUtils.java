@@ -52,6 +52,7 @@ public class ServerUtils {
     private StompSession session;
     private UUID gameUUID;
     private boolean isInGame = false;
+    private LongPollThread longPollThread = null;
 
     /**
      * Tests the current server address to see if a connection can be established, and if
@@ -163,7 +164,7 @@ public class ServerUtils {
      */
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
-        LongPollThread longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username,isInGame);
+        longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username,isInGame);
         longPollThread.start();
 
     }
@@ -203,6 +204,42 @@ public class ServerUtils {
 
     }
 
+
+    /**
+     * Informs the server that a time joker has been used, using the API endpoint
+     * @param username the player that used the time joker
+     * @param gameUUID UUID of the current game
+     * @return The username of the player if the request was successful
+     */
+    public String useTimeJoker(String username, UUID gameUUID) {
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gameUUID", gameUUID.toString());
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/jokers/time") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
+
+    /**
+     * Informs the server that the question joker has been used, using the API endpoint
+     * @param username the player that used the question joker
+     * @param gameUUID UUID of the current game
+     * @return The username of the player if the request was successful
+     */
+    public String useQuestionJoker(String username, UUID gameUUID) {
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gameUUID", gameUUID.toString());
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/jokers/question") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
 
     /**
      * Gets all activities from the server using the API endpoint
@@ -326,6 +363,7 @@ public class ServerUtils {
     public String leaveGame(String username, UUID gameUUID) {
         
         isInGame = false;
+        longPollThread.setIsInGame(false);
 
         disconnect();
 

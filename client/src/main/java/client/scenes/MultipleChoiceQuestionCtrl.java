@@ -24,7 +24,7 @@ import java.util.TimerTask;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     @FXML
-    private ImageView removeQuestion;
+    protected ImageView removeQuestion;
 
     @FXML
     protected Button answerBtn1;
@@ -109,6 +109,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         super.initializePowerEventHandlers();
 
         removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.handlePower("remove question"));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.emojiAnimation(doublePoints));
 
         ColorAdjust hover = new ColorAdjust();
         hover.setBrightness(-0.05);
@@ -184,6 +185,8 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
         AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
         long correct = answer.getAnswer();
+        fullText.setOpacity(1);
+        correctTick.setOpacity(1);
 
         if(answer.correct) {
             Platform.runLater(() -> {
@@ -289,12 +292,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      * Disables the answer and power buttons, makes then power buttons invisible
      */
-    private void disableButtons(){
+    @Override
+    public void disableButtons(){
         for(Button x : buttonList){
             x.setDisable(true);
         }
-        fullText.setOpacity(1);
-        correctTick.setOpacity(1);
         powersText.setOpacity(0.3);
         decreaseTime.setOpacity(0.3);
         doublePoints.setOpacity(0.3);
@@ -386,6 +388,35 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
         refreshProgressBar();
 
+    }
+
+
+    /**
+     * Method for removing a wrong answer from the answer list
+     */
+    public void removeQuestion(int buttonNumber) {
+        removeQuestion.setDisable(true);
+        removeQuestion.setOpacity(0.3);
+        mainCtrl.disableJoker(1);
+        buttonList.get(buttonNumber-1).setDisable(true);
+    }
+
+    /**
+     * Disables joker buttons (if already used)
+     */
+    public void disableJokers() {
+        if(mainCtrl.getJokerStatus(1)) {
+            removeQuestion.setDisable(true);
+            removeQuestion.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(2)) {
+            doublePoints.setDisable(true);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
     }
 
 }

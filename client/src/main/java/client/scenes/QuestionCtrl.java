@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
@@ -42,7 +43,7 @@ public abstract class QuestionCtrl {
     @FXML
     protected ImageView decreaseTime;
     @FXML
-    private ImageView doublePoints;
+    protected ImageView doublePoints;
 
     @FXML
     private ProgressBar timeBar;
@@ -86,6 +87,9 @@ public abstract class QuestionCtrl {
     protected ImageView wrongCross;
 
     private List<ImageView> emojiList;
+
+    private Timeline changeLabel;
+    private Timeline timeAnim;
 
     /**
      * Creates a QuestionCtrl, which controls the display/interaction of the every question screen. Here, functionality
@@ -150,6 +154,8 @@ public abstract class QuestionCtrl {
         angryEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(angryEmoji));
         heartEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(heartEmoji));
         thumbsUpEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(thumbsUpEmoji));
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(decreaseTime));
+        doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(doublePoints));
     }
 
     /**
@@ -217,11 +223,11 @@ public abstract class QuestionCtrl {
         int remainingTime = timeInMillis / 1000; // in seconds
         updateQuestionNumber();
 
-        Timeline timeAnim = new Timeline(
+        timeAnim = new Timeline(
                 new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
         );
-        Timeline changeLabel = new Timeline();
-        for (int i = 0; i <= remainingTime; i++) {
+        changeLabel = new Timeline();
+        for(int i = 0; i <= remainingTime; i++){
             int finalI = i;
             changeLabel.getKeyFrames().add(
                     new KeyFrame(Duration.seconds(remainingTime - i),
@@ -234,6 +240,38 @@ public abstract class QuestionCtrl {
         timeAnim.play();
         changeLabel.play();
     }
+
+    /**
+     * This handles the animation of the time-bar and the setting of the time-label after a time joker has been used
+     */
+    public void handleTimeJoker(long time) {
+        timeAnim.getKeyFrames().clear();
+        changeLabel.getKeyFrames().clear();
+        int remainingTime = ((int) time)/1000;
+
+        timeAnim = new Timeline(
+                new KeyFrame(Duration.millis(time), new KeyValue(timeBar.progressProperty(), 0))
+        );
+        changeLabel = new Timeline();
+        for(int i = 0; i <= remainingTime; i++){
+            int finalI = i;
+            changeLabel.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(remainingTime - i),
+                            finished -> timeLabel.setText("Time left: 00:" + utils.addPrependingZero(finalI))));
+        }
+        changeLabel.setOnFinished(finished -> {
+            timeLabel.setText("Question is over!");
+            Platform.runLater(this::disableButtons);
+        });
+
+        timeAnim.play();
+        changeLabel.play();
+    }
+
+    /**
+     * Disables the answer and power buttons, makes then power buttons invisible (overridden by child classes
+     */
+    public abstract void disableButtons();
 
     /**
      * Displays an emoji animation for a specific emoji
@@ -297,6 +335,35 @@ public abstract class QuestionCtrl {
         System.out.println(power + " was clicked.");
         // TODO: add (private) methods here for handling powers (which are for example called in a switch-statement).
         //  Alternatively we can also create classes for handling the powers and call methods of those classes here.
+
+        switch (power) {
+            case "remove question" -> removeQuestionJoker();
+            case "double points" -> doublePoints();
+            case "decrease time" -> decreaseTimeJoker();
+        }
+    }
+
+    /**
+     * Handling method for double points joker TODO: implement this once scores are working
+     */
+    private void doublePoints() {
+        doublePoints.setDisable(true);
+        doublePoints.setOpacity(0.3);
+        mainCtrl.disableJoker(2);
+    }
+
+    private void removeQuestionJoker() {
+        server.useQuestionJoker(mainCtrl.getSavedUsernamePrefill(),mainCtrl.getGameUUID());
+    }
+
+    /**
+     * Handling method for decrease time joker
+     */
+    private void decreaseTimeJoker() {
+        decreaseTime.setDisable(true);
+        decreaseTime.setOpacity(0.3);
+        server.useTimeJoker(mainCtrl.getSavedUsernamePrefill(), mainCtrl.getGameUUID());
+        mainCtrl.disableJoker(3);
     }
 
     /**
