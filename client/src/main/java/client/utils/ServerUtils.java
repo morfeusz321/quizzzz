@@ -52,6 +52,7 @@ public class ServerUtils {
     private StompSession session;
     private UUID gameUUID;
     private boolean isInGame = false;
+    private LongPollThread longPollThread = null;
 
     /**
      * Tests the current server address to see if a connection can be established, and if
@@ -163,7 +164,7 @@ public class ServerUtils {
      */
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
-        LongPollThread longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username,isInGame);
+        longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username,isInGame);
         longPollThread.start();
 
     }
@@ -326,6 +327,7 @@ public class ServerUtils {
     public String leaveGame(String username, UUID gameUUID) {
         
         isInGame = false;
+        longPollThread.setIsInGame(false);
 
         disconnect();
 
