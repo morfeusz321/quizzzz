@@ -154,6 +154,8 @@ public abstract class QuestionCtrl {
         angryEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(angryEmoji));
         heartEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(heartEmoji));
         thumbsUpEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(thumbsUpEmoji));
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(decreaseTime));
+        doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(doublePoints));
     }
 
     /**

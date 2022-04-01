@@ -109,6 +109,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         super.initializePowerEventHandlers();
 
         removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.handlePower("remove question"));
+        removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.emojiAnimation(doublePoints));
 
         ColorAdjust hover = new ColorAdjust();
         hover.setBrightness(-0.05);
