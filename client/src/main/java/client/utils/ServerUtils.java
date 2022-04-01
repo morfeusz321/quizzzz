@@ -473,5 +473,49 @@ public class ServerUtils {
     public boolean getIsInTheGame(){
         return isInGame;
     }
+/*
+
+    public Score addScoreToDB(String username, int points){
+        Form form = new Form();
+        form.param("username", username);
+        form.param("points", String.valueOf(points));
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/scores/" + username + "/" + points) //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), Score.class);
+    }
+
+*/
+
+    /**
+     * retrieve player with given username
+     * @param username player's username
+     * @return Player
+     */
+    public Player getPlayerByUsername(String username){
+        List<Player> listOfPlayers = getPlayers();
+        for (Player p : listOfPlayers){
+            if (p.getUsername().equals(username)){
+                return p;
+            }
+        }
+        throw new IllegalArgumentException();
+
+    }
+
+    /**
+     * retrieve all the players in the game
+     * @return list of all current players
+     */
+    public List<Player> getPlayers() {
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("api/game/players") //
+                .queryParam( "gameID", gameUUID.toString())
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Player>>() {});
+    }
 
 }

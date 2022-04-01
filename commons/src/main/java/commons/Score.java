@@ -34,6 +34,15 @@ public class Score {
     }
 
     /**
+     * retrieve the score
+     * @return points of the user
+     */
+    public int getScore(){
+        return this.score;
+    }
+
+
+    /**
      * Checks if two score objects are equal
      * @param obj the object to which this one will be compared
      * @return true, if the objects are equal, else false

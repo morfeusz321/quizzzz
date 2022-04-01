@@ -130,6 +130,8 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     public void loadQuestion(Question q) {
         enableButtons();
         disableJokers();
+        setPoints();
+
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());

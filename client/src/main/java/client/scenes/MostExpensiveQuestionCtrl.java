@@ -40,6 +40,9 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     @Override
     public void loadQuestion(Question q) {
 
+        // TODO: add "more expensive" question type, and restructure this afterwards
+        setPoints();
+
         enableButtons();
         disableJokers();
         question = q;

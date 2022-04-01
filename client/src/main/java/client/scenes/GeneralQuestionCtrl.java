@@ -27,6 +27,7 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
      */
     @Override
     public void loadQuestion(Question q) {
+        setPoints();
 
         enableButtons();
         disableJokers();
