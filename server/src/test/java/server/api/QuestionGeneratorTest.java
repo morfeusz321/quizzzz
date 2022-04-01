@@ -104,9 +104,13 @@ public class QuestionGeneratorTest {
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        // Either main activity should be activity1 and the answer should be activity3 or the other way around
-        // TODO: better/new testing here
-
+        // From the given activities, the main one needs to be either 1, 4 or 5 (for others no correct
+        // answer sets can be generated)
+        assertTrue(q.activityTitle.equals(activity1.title) || q.activityTitle.equals(activity4.title) ||
+                q.activityTitle.equals(activity5.title));
+        // The other answer options should be activity 2 and 3
+        assertTrue(q.answerOptions.contains(activity2.title));
+        assertTrue(q.answerOptions.contains(activity3.title));
         // It should not contain the title as answer
         assertFalse(q.answerOptions.contains(q.activityTitle));
 
@@ -156,20 +160,19 @@ public class QuestionGeneratorTest {
         activityDBController.getInternalDB().save(activity2);
         activityDBController.getInternalDB().save(activity3);
         activityDBController.getInternalDB().save(activity4);
-        activityDBController.getInternalDB().save(activity5);
-        activityDBController.getInternalDB().save(activity1);
-        activityDBController.getInternalDB().save(activity2);
-        activityDBController.getInternalDB().save(activity3);
-        activityDBController.getInternalDB().save(activity4);
-        activityDBController.getInternalDB().save(activity5);
 
         Question q = questionGenerator.getComparisonQuestion();
 
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        // TODO: new testing here
-
+        // From the given activities, the main one needs to be either 1, 4 or 5 (for others no correct
+        // answer sets can be generated)
+        assertTrue(q.activityTitle.equals(activity1.title) || q.activityTitle.equals(activity4.title) ||
+                q.activityTitle.equals(activity5.title));
+        // The other answer options should be activity 2 and 3
+        assertTrue(q.answerOptions.contains(activity2.title));
+        assertTrue(q.answerOptions.contains(activity3.title));
         // It should not contain the title as answer
         assertFalse(q.answerOptions.contains(q.activityTitle));
 
