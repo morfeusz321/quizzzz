@@ -165,9 +165,7 @@ public class QuestionGenerator {
                 return null; // Something went wrong
             }
 
-            // Get a second activity which is in a small range around the actual one
-            // TODO: add a "smarter" range here? 10% was used before, but if we have very large consumptions, that
-            //  might be too high? So I changed it to 5%. Also add test that checks if the answer is actually in the correct range
+            // Get a second activity which is in a small range, i.e. 5%, around the actual one
             Activity answer = activityDBController.getActivityExclAndInRange(
                     List.of(main.id), List.of(), // no values need to be excluded
                     Math.round(main.consumption - main.consumption * 0.05),
@@ -188,34 +186,10 @@ public class QuestionGenerator {
                 }
             }
 
-            List<Activity> chosenActivities = new ArrayList<>();
-            // Now two new activities are needed: Get 2 that are 20-40% below the answer, and 2 that are 20-40% above.
-            // Those are put into a list, null values are filtered out.
-
-            List<String> exclIds = new ArrayList<>(List.of(main.id, answer.id)); // use this so that it is not immutable
-            List<Long> exclConsumptions = List.of(main.consumption, answer.consumption);
-            // Get 2 activities in the "lower" part, i.e. 20-40% below the answer
-            // Use the answer for the bound calculation, as we want to distinguish the answer options
-            long lowerBound = (long) (answer.consumption * 0.6);
-            long upperBound = (long) (answer.consumption * 0.8);
-            for(int i = 0; i < 4; i++){
-                Activity chosen = activityDBController.getActivityExclAndInRange(
-                        exclIds, exclConsumptions, lowerBound, upperBound // exclude main and answer consumption
-                );
-                if(chosen != null) {
-                    chosenActivities.add(chosen);
-                    exclIds.add(chosen.id);
-                }
-                if(i == 1) {
-                    // Use other bounds, now to get 2 activities in the "upper" part, i.e. 20-40% above the answer
-                    lowerBound = (long) (answer.consumption * 1.2);
-                    upperBound = (long) (answer.consumption * 1.4);
-                }
-            }
-
-            // If it does not have any elements (or less than 2), no/not enough fitting activities could be
-            // found, so try again.
-            if(chosenActivities.size() < 2) {
+            List<Activity> chosenActivities = getAnswerOptionsComparisonQuestion(main, answer);
+            if(chosenActivities == null) {
+                // If it does not have any elements (or less than 2), no/not enough fitting activities could be
+                // found, so try again.
                 return getComparisonQuestion();
             }
 
@@ -244,6 +218,48 @@ public class QuestionGenerator {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Returns a list of activities that can be used as answer options, or null if less than 2 could be generated.
+     * @param main The main activity of the comparison question, i.e. the title
+     * @param answer The answer of the comparison question
+     * @return a list of activities that can be used as answer options, or null if less than 2 could be generated.
+     */
+    public List<Activity> getAnswerOptionsComparisonQuestion(Activity main, Activity answer) {
+
+        List<Activity> chosenActivities = new ArrayList<>();
+        // Now two new activities are needed: Get 2 that are 20-40% below the answer, and 2 that are 20-40% above.
+        // Those are put into a list, null values are filtered out.
+
+        List<String> exclIds = new ArrayList<>(List.of(main.id, answer.id)); // use this so that it is not immutable
+        List<Long> exclConsumptions = List.of(main.consumption, answer.consumption);
+        // Get 2 activities in the "lower" part, i.e. 20-40% below the answer
+        // Use the answer for the bound calculation, as we want to distinguish the answer options
+        long lowerBound = (long) (answer.consumption * 0.6);
+        long upperBound = (long) (answer.consumption * 0.8);
+        for(int i = 0; i < 4; i++){
+            Activity chosen = activityDBController.getActivityExclAndInRange(
+                    exclIds, exclConsumptions, lowerBound, upperBound // exclude main and answer consumption
+            );
+            if(chosen != null) {
+                chosenActivities.add(chosen);
+                exclIds.add(chosen.id);
+            }
+            if(i == 1) {
+                // Use other bounds, now to get 2 activities in the "upper" part, i.e. 20-40% above the answer
+                lowerBound = (long) (answer.consumption * 1.2);
+                upperBound = (long) (answer.consumption * 1.4);
+            }
+        }
+
+        // Not enough activities could be found
+        if(chosenActivities.size() < 2) {
+            return null;
+        }
+        // Otherwise, return the generated activities
+        return chosenActivities;
+
     }
 
     /**
