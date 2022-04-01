@@ -109,7 +109,7 @@ public class AnswerResponseEntity {
      * @return number of points given
      */
     public static int dynamicPointsEstimation(long proximity, long answer, int time){
-        if (proximity == 100){
+        if (proximity == 0){
             return 100;
         }
         double percentagePassed = Math.abs(1- ((double) proximity) /answer);

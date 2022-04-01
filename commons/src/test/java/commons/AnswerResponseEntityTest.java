@@ -59,7 +59,7 @@ public class AnswerResponseEntityTest {
 
     @Test
     public void dynamicPointsEstimationCorrect() {
-        int points = AnswerResponseEntity.dynamicPointsEstimation(100, 100, 14520);
+        int points = AnswerResponseEntity.dynamicPointsEstimation(0, 100, 14520);
         assertEquals(100, points);
     }
 
