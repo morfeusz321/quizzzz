@@ -64,6 +64,12 @@ public class AnswerResponseEntityTest {
     }
 
     @Test
+    public void dynamicPointsEstimationPartialCorrect() {
+        int points = AnswerResponseEntity.dynamicPointsEstimation(5, 100, 14520);
+        assertNotEquals(100, points);
+    }
+
+    @Test
     public void dynamicPointsEstimationFalse() {
         int points = AnswerResponseEntity.dynamicPointsEstimation(70, 100, 14520);
         assertNotEquals(100, points);
@@ -71,13 +77,13 @@ public class AnswerResponseEntityTest {
 
     @Test
     public void dynamicPointsMCCorrectFull() {
-        int points = AnswerResponseEntity.dynamicPointsMultipleChoice(true, 14520);
+        int points = AnswerResponseEntity.dynamicPointsMultipleChoice(true, 2520);
         assertEquals(100, points);
     }
 
     @Test
     public void dynamicPointsMCCorrectPartial() {
-        int points = AnswerResponseEntity.dynamicPointsMultipleChoice(true, 100);
+        int points = AnswerResponseEntity.dynamicPointsMultipleChoice(true, 14250);
         assertNotEquals(100, points);
     }
 

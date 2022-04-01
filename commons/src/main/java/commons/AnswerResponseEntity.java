@@ -112,9 +112,9 @@ public class AnswerResponseEntity {
         if (proximity == 0){
             return 100;
         }
-        double percentagePassed = Math.abs(1- ((double) proximity) /answer);
+        double percentagePassed = Math.abs(((double) proximity) /answer);
         if(percentagePassed<0.21) {
-            percentagePassed = Math.abs(((double) proximity) /answer);
+            percentagePassed = Math.abs(1-((double) proximity) /answer);
             return (((int)(( ((1/(0.4*Math.sqrt(2*Math.PI)))* Math.exp(-0.5*Math.pow(((percentagePassed-1)/0.14), 2))))*100 +1)) + dynamicPointsMultipleChoice(true, time))/2;
         }
         return 0;
@@ -128,7 +128,7 @@ public class AnswerResponseEntity {
      */
     public static int dynamicPointsMultipleChoice(boolean correct, int time){
         if(correct){
-            double percentagePassed = 1- ((double) time) /15000L;
+            double percentagePassed =  ((double) time) /15000L;
             if(percentagePassed<0.21){
                 return 100;
             }
