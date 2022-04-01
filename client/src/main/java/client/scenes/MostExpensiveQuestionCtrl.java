@@ -37,6 +37,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     /**
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar.
      */
+    @Override
     public void loadQuestion(Question q) {
 
         // TODO: add "more expensive" question type, and restructure this afterwards
@@ -44,11 +45,9 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
         enableButtons();
         questionImg.setImage(new Image("/client/img/question_mark.png"));
-        answerBtn1.setText(q.answerOptions.get(0));
-        answerBtn2.setText(q.answerOptions.get(1));
-        answerBtn3.setText(q.answerOptions.get(2));
         currentQuestion = q;
-        refreshProgressBar();
+        
+        super.loadQuestion(q);
 
     }
 

@@ -63,10 +63,7 @@
          </styleClass>
       </Label>
       <TextFlow fx:id="fullText" layoutX="332.0" layoutY="747.0" opacity="0" styleClass="answerDisplay">
-         <Text layoutX="388.0" layoutY="827.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You answered " />
-         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text="">
-         </Text>
-         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
+         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text=""/>
       </TextFlow>
       <ImageView fx:id="hoverEmoji" fitHeight="126.0" fitWidth="114.0" layoutX="1205.0" layoutY="597.0"
                  onMouseEntered="#emojisSlideIn" onMouseExited="#hideEmojis" preserveRatio="true"/>
