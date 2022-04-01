@@ -173,7 +173,7 @@ public class Game extends Thread {
             deferredResultMap.remove(username);
 
             AnswerResponseEntity answer;
-            answer = answerMap.getOrDefault(username, null);
+            answer = answerMap.getOrDefault(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, -1, 0));
 
             req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
