@@ -22,6 +22,7 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
     /**
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar.
      */
+    @Override
     public void loadQuestion(Question q) {
 
         // TODO: add comparison question type, and restructure this afterwards if needed
@@ -32,10 +33,8 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());
-        answerBtn1.setText(q.answerOptions.get(0));
-        answerBtn2.setText(q.answerOptions.get(1));
-        answerBtn3.setText(q.answerOptions.get(2));
-        refreshProgressBar();
+
+        super.loadQuestion(q);
 
     }
 

@@ -24,16 +24,26 @@ import commons.*;
 
 import commons.gameupdate.*;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.PathTransition;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.CubicCurve;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -43,6 +53,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Random;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
@@ -54,6 +65,7 @@ public class MainCtrl {
     private final ServerUtils server;
     private GameManager gameManager;
     private Stage primaryStage;
+    private CommonUtils utils;
 
     private MainScreenCtrl mainScreenCtrl;
     private Scene mainScreen;
@@ -100,11 +112,13 @@ public class MainCtrl {
 
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
+     *
      * @param server Utilities for communicating with the server (API endpoint)
      */
     @Inject
-    public MainCtrl(ServerUtils server) {
+    public MainCtrl(ServerUtils server,CommonUtils utils) {
         this.server = server;
+        this.utils=utils;
     }
 
     /**
@@ -395,10 +409,138 @@ public class MainCtrl {
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
             server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
+        } else if (gameUpdate instanceof GameEmojiUpdate) {
+            if(!((GameEmojiUpdate) gameUpdate).getUsername().equals(userCtrl.getSavedCurrentUsername())){
+                try{
+                    ImageView emoji = (ImageView) primaryStage.getScene().lookup('#'+((GameEmojiUpdate) gameUpdate).getEmoji());
+                    String username = ((GameEmojiUpdate) gameUpdate).getUsername();
+                    Platform.runLater(() -> {
+                        emojiAnimation(emoji,username);
+                    });
+                }catch (ClassCastException e){
+                    e.printStackTrace();
+                }
+            }
+
         }
 
         System.out.println();
 
+    }
+
+    /**
+     * Sends the message to server utils that emoji was pressed
+     * @param sentEmoji id of sent emoji
+     */
+    public void sendEmoji(String sentEmoji){
+        server.sendEmoji(new GameEmojiUpdate(sentEmoji,userCtrl.getSavedCurrentUsername()));
+    }
+
+    /**
+     * Displays emoji animation
+     * @param clickedEmoji clicked emoji instance
+     * @param username name of the user who sent the emoji
+     */
+    public void emojiAnimation(ImageView clickedEmoji,String username) {
+
+        ImageView emoji = new ImageView(clickedEmoji.getImage());
+        AnchorPane anchorPane = (AnchorPane) primaryStage.getScene().lookup("#anchorPane");
+        ImageView hoverEmoji = (ImageView) primaryStage.getScene().lookup("#hoverEmoji");
+        anchorPane.getChildren().add(emoji);
+        emojiNameAnimation(username, anchorPane, hoverEmoji);
+        emoji.toBack();
+
+        double sizeRatio = 0.78; // should be <= 1
+        emoji.setFitWidth(hoverEmoji.getFitWidth() * sizeRatio);
+        emoji.setPreserveRatio(true);
+        emoji.setLayoutX(hoverEmoji.getLayoutX() + 20);
+        emoji.setLayoutY(hoverEmoji.getLayoutY());
+
+        Random r = new Random();
+        CubicCurve cubic = new CubicCurve();
+        cubic.setStartX(emoji.getFitWidth() / 2);
+        cubic.setStartY(0);
+        cubic.setControlX1(emoji.getFitWidth() / 2 + utils.randomIntInRange(-40, -20, r));
+        cubic.setControlY1(utils.randomIntInRange(-125, -50, r));
+        cubic.setControlX2(emoji.getFitWidth() / 2 + utils.randomIntInRange(20, 40, r));
+        cubic.setControlY2(utils.randomIntInRange(-275, -175, r));
+        cubic.setEndX(emoji.getFitWidth() / 2);
+        cubic.setEndY(-300);
+
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(600));
+        pathTransition.setPath(cubic);
+        pathTransition.setNode(emoji);
+        pathTransition.setCycleCount(1);
+        pathTransition.setAutoReverse(false);
+
+        emoji.opacityProperty().setValue(0.5);
+        Timeline fade = new Timeline(
+                new KeyFrame(Duration.millis(600), new KeyValue(emoji.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(1050), new KeyValue(emoji.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(1350), new KeyValue(emoji.opacityProperty(), 0))
+        );
+        fade.setAutoReverse(false);
+        fade.setCycleCount(1);
+        fade.setOnFinished(e -> {
+            emoji.setVisible(false);
+            anchorPane.getChildren().remove(emoji);
+        });
+
+        fade.play();
+        pathTransition.play();
+    }
+
+    /**
+     * Displays username of the person who sent emoji underneath the emoji
+     * @param username username of person who sent the emoji
+     * @param anchorPane anchorPane of the current scene
+     * @param hoverEmoji hover Emoji of the current screen
+     */
+    private void emojiNameAnimation(String username, AnchorPane anchorPane,ImageView hoverEmoji) {
+
+        Label label = new Label(username);
+        anchorPane.getChildren().add(label);
+        label.toBack();
+
+        double sizeRatio = 0.78; // should be <= 1
+
+        label.setLayoutX(hoverEmoji.getLayoutX()+65);
+        label.setLayoutY(hoverEmoji.getLayoutY()+70);
+
+        Random r = new Random();
+        CubicCurve cubic = new CubicCurve();
+        cubic.setStartX(label.getPrefWidth() / 2);
+        cubic.setStartY(0);
+        cubic.setControlX1(label.getPrefWidth() / 2 + utils.randomIntInRange(-40, -20, r));
+        cubic.setControlY1(utils.randomIntInRange(-125, -50, r));
+        cubic.setControlX2(label.getPrefWidth() / 2 + utils.randomIntInRange(20, 40, r));
+        cubic.setControlY2(utils.randomIntInRange(-275, -175, r));
+        cubic.setEndX(label.getPrefWidth() / 2);
+        cubic.setEndY(-300);
+
+        PathTransition pathTransition = new PathTransition();
+        pathTransition.setDuration(Duration.millis(600));
+        pathTransition.setPath(cubic);
+        pathTransition.setNode(label);
+        pathTransition.setCycleCount(1);
+        pathTransition.setAutoReverse(false);
+
+        label.opacityProperty().setValue(0.5);
+        Timeline fade = new Timeline(
+                new KeyFrame(Duration.millis(600), new KeyValue(label.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(1050), new KeyValue(label.opacityProperty(), 1)),
+                new KeyFrame(Duration.millis(1350), new KeyValue(label.opacityProperty(), 0))
+        );
+        fade.setAutoReverse(false);
+        fade.setCycleCount(1);
+        fade.setOnFinished(e -> {
+            label.setVisible(false);
+            anchorPane.getChildren().remove(label);
+        });
+
+        fade.play();
+        pathTransition.play();
     }
 
     /**
