@@ -32,41 +32,6 @@ public class ScoreController {
         return scoreDBController.add(new Score(username, score));
     }
 
- /*   @PostMapping(path={"{username}"})
-    public ResponseEntity<Score> addNewScore(@RequestParam("username") String username){
-        if(Objects.equals(username, "")){
-            return ResponseEntity.noContent().build();
-        }
-        Score saved;
-        try{
-            saved = addScore(username,  0);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(saved);
-    }
-
-    @PostMapping(path={"{username}/{points}"})
-    public ResponseEntity<Score> editScore(@RequestParam("username") String username,
-                                           @RequestParam("points") String points){
-        if(username.equals("")){
-            return ResponseEntity.noContent().build();
-        }
-        Score saved;
-        try{
-            saved = addScore(username, getByName(username).getScore() + Integer.parseInt(points));
-        }
-        catch(Exception e){
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok(saved);
-    }*/
-
     /**
      * Maps to /api/scores/ and /api/scores
      * @return all scores saved in the database
@@ -85,9 +50,4 @@ public class ScoreController {
         return scoreDBController.findAllSorted();
     }
 
-
-   /* @GetMapping(path = {"/{username}" })
-    public Score getByName(@PathVariable("username") String username) {
-        return scoreDBController.getScoreByName(username);
-    }*/
 }

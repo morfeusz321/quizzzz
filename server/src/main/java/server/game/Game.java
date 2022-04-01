@@ -196,7 +196,7 @@ public class Game extends Thread {
             req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
             // TODO: Save scores to leaderboard here, calculate points
-
+            saveScoreToLeaderboard(answer.getPoints(), username);
 
         }
 
@@ -221,10 +221,30 @@ public class Game extends Thread {
     }
 
     /**
+     * adds the new score to the leaderboard to the given username
+     * @param score amount of points received
+     * @param username name of the player
+     */
+    private void saveScoreToLeaderboard(int score, String username){
+        if(score == 0){
+            return;
+        }
+        else{
+            if(!leaderboard.containsKey(username)){
+                leaderboard.put(username, new Score(username, score));
+            }
+            else{
+                int currentScore = leaderboard.get(username).getScore();
+                leaderboard.put(username, new Score(username, score+currentScore));
+            }
+        }
+    }
+
+    /**
      * Informs all registered long polls that the intermediate leaderboard should be displayed
      */
     private void sendLeaderboard() {
-
+        
         deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
         deferredResultMap.clear();
 
