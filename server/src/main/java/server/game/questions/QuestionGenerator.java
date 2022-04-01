@@ -166,22 +166,19 @@ public class QuestionGenerator {
             }
 
             // Get a second activity which is in a small range around the actual one
-            // TODO: add a "smarter" range here? Not sure if we need it here, 10% was used before, but if we have very
-            //  large consumptions, that might be too high? So I changed it to 5%
+            // TODO: add a "smarter" range here? 10% was used before, but if we have very large consumptions, that
+            //  might be too high? So I changed it to 5%. Also add test that checks if the answer is actually in the correct range
             Activity answer = activityDBController.getActivityExclAndInRange(
-                    List.of(main.id),
-                    List.of(), // no values need to be excluded
+                    List.of(main.id), List.of(), // no values need to be excluded
                     Math.round(main.consumption - main.consumption * 0.05),
                     Math.round(main.consumption + main.consumption * 0.05)
             );
 
             if(answer == null) {
-                // We can only find activities with a difference bigger than 5% of the original activity
-                // We need to search again
-                // First we try to find one with a "higher" range, of 10%:
+                // We can only find activities with a difference bigger than 5% of the original activity, we
+                // need to search again. First we try to find one with a "higher" range, of 10%:
                 answer = activityDBController.getActivityExclAndInRange(
-                        List.of(main.id),
-                        List.of(), // no values need to be excluded
+                        List.of(main.id), List.of(), // no values need to be excluded
                         Math.round(main.consumption - main.consumption * 0.1),
                         Math.round(main.consumption + main.consumption * 0.1)
                 );
@@ -191,27 +188,46 @@ public class QuestionGenerator {
                 }
             }
 
-            // Create answer option list
+            List<Activity> chosenActivities = new ArrayList<>();
+            // Now two new activities are needed: Get 2 that are 20-40% below the answer, and 2 that are 20-40% above.
+            // Those are put into a list, null values are filtered out.
+
+            List<String> exclIds = new ArrayList<>(List.of(main.id, answer.id)); // use this so that it is not immutable
+            List<Long> exclConsumptions = List.of(main.consumption, answer.consumption);
+            // Get 2 activities in the "lower" part, i.e. 20-40% below the answer
+            // Use the answer for the bound calculation, as we want to distinguish the answer options
+            long lowerBound = (long) (answer.consumption * 0.6);
+            long upperBound = (long) (answer.consumption * 0.8);
+            for(int i = 0; i < 4; i++){
+                Activity chosen = activityDBController.getActivityExclAndInRange(
+                        exclIds, exclConsumptions, lowerBound, upperBound // exclude main and answer consumption
+                );
+                if(chosen != null) {
+                    chosenActivities.add(chosen);
+                    exclIds.add(chosen.id);
+                }
+                if(i == 1) {
+                    // Use other bounds, now to get 2 activities in the "upper" part, i.e. 20-40% above the answer
+                    lowerBound = (long) (answer.consumption * 1.2);
+                    upperBound = (long) (answer.consumption * 1.4);
+                }
+            }
+
+            // If it does not have any elements (or less than 2), no/not enough fitting activities could be
+            // found, so try again.
+            if(chosenActivities.size() < 2) {
+                return getComparisonQuestion();
+            }
+
+            // Create answer option list and add the actual answer.
             List<Activity> answerOptions = new ArrayList<>();
             answerOptions.add(answer);
 
-            // Now two new activities are needed
-            // TODO: make sure that the consumptions of these activities are not in the 10% range around the main one
-            answerOptions.add(activityDBController.getActivityExclAndInRange(
-                    List.of(main.id, answer.id),
-                    List.of(main.consumption, answer.consumption), // exclude main and answer consumption
-                    0, Long.MAX_VALUE // TODO: add "smarter" range selection here
-            ));
-            answerOptions.add(activityDBController.getActivityExclAndInRange(
-                    List.of(main.id, answer.id, answerOptions.get(1).id),
-                    List.of(main.consumption, answer.consumption),
-                    // exclude main and answer consumption, not the previous one, they can have the same consumption
-                    0, Long.MAX_VALUE // TODO: add "smarter" range selection here
-            ));
-
-            if(answerOptions.contains(null)) {
-                return null; // Something went wrong, no activity could be found
-            }
+            // Now we can get 2 random activities from the generated list, and add those as answer options.
+            int idx = random.nextInt(chosenActivities.size());
+            answerOptions.add(chosenActivities.remove(idx));
+            idx = random.nextInt(chosenActivities.size());
+            answerOptions.add(chosenActivities.remove(idx));
 
             // Shuffle for random order
             Collections.shuffle(answerOptions);
