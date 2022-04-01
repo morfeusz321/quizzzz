@@ -26,7 +26,7 @@ public class ComparisonQuestionCtrl extends MultipleChoiceQuestionCtrl {
     public void loadQuestion(Question q) {
 
         // TODO: add comparison question type, and restructure this afterwards if needed
-
+        setPoints();
         enableButtons();
         disableJokers();
         question = q;

@@ -473,4 +473,12 @@ public abstract class QuestionCtrl {
         emoji.getStyleClass().remove("hover-cursor");
 
     }
+
+    /**
+     * sets the points shown on the screen with the current user's score
+     */
+    public void setPoints(){
+        int points = mainCtrl.getScore();
+        this.pointsInfo.setText("Your points: " + points);
+    }
 }

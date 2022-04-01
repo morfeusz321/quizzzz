@@ -178,7 +178,6 @@ public class UserCtrl {
         if (mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             server.startGame();
         } else {
-
             fadeOutUser("wait");        
         }
 
@@ -295,6 +294,9 @@ public class UserCtrl {
         backBtn.setImage(new Image("/client/img/back_btn.png"));
     }
 
+//    private void addToDatabase(String username){
+//        server.addNewScoreToDB(username);
+//    }
     /**
      * when clicking back button the user is redirected to the main page
      */

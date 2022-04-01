@@ -75,7 +75,7 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 200">
+      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 0">
          <styleClass>
             <String fx:value="smaller-info-text" />
             <String fx:value="text" />

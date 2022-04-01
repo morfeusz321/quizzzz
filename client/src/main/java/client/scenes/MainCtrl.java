@@ -17,6 +17,7 @@ package client.scenes;
 
 import client.utils.GameManager;
 import client.utils.ModalFactory;
+import client.utils.ScoreUtils;
 import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
@@ -66,6 +67,7 @@ public class MainCtrl {
     private GameManager gameManager;
     private Stage primaryStage;
     private CommonUtils utils;
+    private ScoreUtils scoreHelper;
 
     private MainScreenCtrl mainScreenCtrl;
     private Scene mainScreen;
@@ -190,6 +192,8 @@ public class MainCtrl {
         this.leaderboardCtrl = leaderboard.getKey();
         this.leaderboard = new Scene(leaderboard.getValue());
         this.leaderboard.setFill(Color.valueOf("#F0EAD6"));
+
+        this.scoreHelper = new ScoreUtils();
 
         initializeOnCloseEvents();
         setUsernamePrefill(getUsernamePrefillFromFile());
@@ -394,6 +398,7 @@ public class MainCtrl {
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
+            this.scoreHelper.setPlayer(server.getPlayerByUsername(usernamePrefill));
             server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
         } else if (gameUpdate instanceof GameEmojiUpdate) {
             if(!((GameEmojiUpdate) gameUpdate).getUsername().equals(userCtrl.getSavedCurrentUsername())){
@@ -551,7 +556,8 @@ public class MainCtrl {
             gameManager.setCurrentQuestionByIdx(gameUpdateNextQuestion.getQuestionIdx());
             Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
 
-        } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+        } else if (gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+            scoreHelper.setScore(gameUpdateTransitionPeriodEntered.getAnswerResponseEntity());
 
             UUID id = gameManager.getCurrentQuestion().questionId;
             if(gameManager.getCurrentQuestion() instanceof GeneralQuestion){
@@ -850,6 +856,14 @@ public class MainCtrl {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * retrieves the score from player
+     * @return player's score
+     */
+    public int getScore(){
+       return this.scoreHelper.getPoints();
     }
 
     /**

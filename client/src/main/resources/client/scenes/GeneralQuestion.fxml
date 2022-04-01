@@ -76,7 +76,7 @@
       </ImageView>
       <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 200">
+      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 0">
          <styleClass>
             <String fx:value="smaller-info-text" />
             <String fx:value="text" />

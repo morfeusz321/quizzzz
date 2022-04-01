@@ -34,7 +34,7 @@ public class Game extends Thread {
 
     private ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
 
-    private ConcurrentHashMap<String, Long> answerMap;
+    private ConcurrentHashMap<String, AnswerResponseEntity> answerMap;
 
     private StopWatch stopWatch;
     private long lastTime;
@@ -161,6 +161,7 @@ public class Game extends Thread {
      */
 
     public void saveAnswer(String username, long answer) {
+        long timeClicked = getElapsedTimeThisQuestion();
         long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
         long oldTime = 0L;
         for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
@@ -173,7 +174,7 @@ public class Game extends Thread {
             player.setValue(player.getValue()-elapsedTime);
         }
         if(timeJoker.get(username) >= 0) {
-            this.answerMap.put(username, answer);
+            this.answerMap.put(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer, (int) timeClicked));
         }
     }
 
@@ -189,16 +190,13 @@ public class Game extends Thread {
             DeferredResult<ResponseEntity<GameUpdate>> req = openRequest.getValue();
             deferredResultMap.remove(username);
 
-            long answer;
-            if(!answerMap.containsKey(username)) {
-                answer = -1;
-            } else {
-                answer = answerMap.get(username);
-            }
+            AnswerResponseEntity answer;
+            answer = answerMap.getOrDefault(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, -1, 0));
 
-            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer))));
+            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
             // TODO: Save scores to leaderboard here, calculate points
+
 
         }
 
