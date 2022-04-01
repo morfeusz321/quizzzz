@@ -41,6 +41,8 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
     public void loadQuestion(Question q) {
 
         enableButtons();
+        disableJokers();
+        question = q;
         questionImg.setImage(new Image("/client/img/question_mark.png"));
         currentQuestion = q;
         

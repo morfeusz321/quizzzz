@@ -129,6 +129,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      */
     public void loadQuestion(Question q) {
         enableButtons();
+        disableJokers();
         questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
         title.setText(q.displayQuestion());
         resizeQuestionHandler.setText((int) title.getFont().getSize());
@@ -167,27 +168,16 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     /**
      * Disables the answer and power buttons, makes then power buttons invisible
      */
-    private void disableButtons(){
-        powersText.setOpacity(0.3);
-        decreaseTime.setOpacity(0.3);
-        doublePoints.setOpacity(0.3);
-        setAnswerBtn.setOpacity(0.3);
+    @Override
+    public void disableButtons(){
+        powersText.setOpacity(0.2);
+        decreaseTime.setOpacity(0.2);
+        doublePoints.setOpacity(0.2);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
+        slideBar.setDisable(true);
+        answerTxtField.setDisable(true);
         setAnswerBtn.setDisable(true);
-    }
-
-    /**
-     * Enables the answer and power buttons, makes then power buttons visible
-     */
-    protected void enableButtons(){
-        powersText.setOpacity(1);
-        decreaseTime.setOpacity(1);
-        doublePoints.setOpacity(1);
-        setAnswerBtn.setOpacity(1);
-        decreaseTime.setDisable(false);
-        doublePoints.setDisable(false);
-        setAnswerBtn.setDisable(false);
     }
 
     /**
@@ -196,5 +186,33 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      */
     public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
         disableButtons();
+    }
+
+    /**
+     * Enables the answer and power buttons, makes then power buttons visible
+     */
+    public void enableButtons(){
+        powersText.setOpacity(1);
+        decreaseTime.setOpacity(1);
+        doublePoints.setOpacity(1);
+        decreaseTime.setDisable(false);
+        doublePoints.setDisable(false);
+        slideBar.setDisable(false);
+        answerTxtField.setDisable(false);
+        setAnswerBtn.setDisable(false);
+    }
+
+    /**
+     * Disables joker buttons (if already used)
+     */
+    public void disableJokers() {
+        if(mainCtrl.getJokerStatus(2)) {
+            doublePoints.setDisable(true);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
     }
 }

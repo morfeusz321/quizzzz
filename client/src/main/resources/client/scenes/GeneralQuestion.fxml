@@ -99,15 +99,5 @@
          </children>
       </Pane>
       <ImageView fx:id="backBtn" fitHeight="77.0" fitWidth="158.0" layoutX="35.0" layoutY="35.0" />
-      <ImageView fx:id="img1" fitHeight="150.0" fitWidth="200.0" layoutX="26.0" layoutY="471.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/angry_lightbulb.png" />
-         </image>
-      </ImageView>
-      <ImageView fx:id="img2" fitHeight="150.0" fitWidth="200.0" layoutX="273.0" layoutY="459.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../img/angry_lightbulb.png" />
-         </image>
-      </ImageView>
    </children>
 </AnchorPane>
