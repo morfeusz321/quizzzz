@@ -1,5 +1,6 @@
 package client.scenes;
 
+import client.utils.ModalFactory;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Activity;
@@ -133,10 +134,7 @@ public class AdminEditActivityCtrl  implements Initializable {
             mainCtrl.showAdmin();
 
         } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid input");
-            alert.setContentText("Consumption must be a number");
+            Alert alert = ModalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
             alert.showAndWait();
         }
     }
@@ -155,10 +153,7 @@ public class AdminEditActivityCtrl  implements Initializable {
             mainCtrl.showAdmin();
 
         } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error");
-            alert.setHeaderText("Invalid input");
-            alert.setContentText("Consumption must be a number");
+            Alert alert = ModalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
             alert.showAndWait();
         }
     }

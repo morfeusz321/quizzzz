@@ -16,6 +16,7 @@
 package client.scenes;
 
 import client.utils.GameManager;
+import client.utils.ModalFactory;
 import client.utils.ServerUtils;
 
 import com.google.inject.Inject;
@@ -34,7 +35,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -241,21 +241,7 @@ public class MainCtrl {
     public void initializeOnCloseEvents() {
 
         primaryStage.setOnCloseRequest(event -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            DialogPane dialogPane = alert.getDialogPane();
-            dialogPane.getStylesheets().add(getClass().getResource("/client/stylesheets/myDialog.css").toExternalForm());
-            dialogPane.getStyleClass().add("myDialog");
-            String pathToLightbulb = getClass().getResource("/client/img/main_lightbulb.png").toExternalForm();
-            Stage stage = (Stage) dialogPane.getScene().getWindow();
-            stage.getIcons().add(
-                    new Image(pathToLightbulb));
-            ImageView lightBulbIcon = new ImageView(pathToLightbulb);
-            lightBulbIcon.setFitHeight(100);
-            lightBulbIcon.setFitWidth(100);
-            lightBulbIcon.setPreserveRatio(true);
-            dialogPane.setGraphic(lightBulbIcon);
-            alert.setHeaderText("Do you want to leave?");
-            alert.setTitle("Leaving?");
+            Alert alert = ModalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.OK) {
@@ -793,26 +779,15 @@ public class MainCtrl {
      * function sends leaving message to server and shows main screen
      */
     public void exitWhileInTheGame() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(getClass().getResource("/client/stylesheets/myDialog.css").toExternalForm());
-        dialogPane.getStyleClass().add("myDialog");
-        String pathToLightbulb = getClass().getResource("/client/img/main_lightbulb.png").toExternalForm();
-        Stage stage = (Stage) dialogPane.getScene().getWindow();
-        stage.getIcons().add(
-                new Image(pathToLightbulb));
-        ImageView lightBulbIcon = new ImageView(pathToLightbulb);
-        lightBulbIcon.setFitHeight(100);
-        lightBulbIcon.setFitWidth(100);
-        dialogPane.setGraphic(lightBulbIcon);
-        alert.setHeaderText("Do you want to leave?");
-        alert.setTitle("Leaving?");
+
+        Alert alert = ModalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.OK) {
             sendLeaveMessageToServer();
             connectToServerCtrl.goBackButton();
         }
+
     }
 
     /**

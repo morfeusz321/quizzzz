@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.AnimationUtils;
+import client.utils.ModalFactory;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Activity;
@@ -119,10 +120,9 @@ public class AdminCtrl implements Initializable {
      * Method for deleting an activity from the database
      */
     public void delete() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirmation");
-        alert.setHeaderText("Are you sure you want to delete this entry?");
-        alert.setContentText("This will delete " + currentActivity.id);
+        Alert alert = ModalFactory.getModal(Alert.AlertType.CONFIRMATION, "Confirmation",
+                "Are you sure you want to delete this entry?",
+                "This will delete " + currentActivity.id);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK){

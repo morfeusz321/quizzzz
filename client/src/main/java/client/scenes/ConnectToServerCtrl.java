@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.AnimationUtils;
+import client.utils.ModalFactory;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import javafx.fxml.FXML;
@@ -12,7 +13,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 
 public class ConnectToServerCtrl {
 
@@ -88,9 +88,7 @@ public class ConnectToServerCtrl {
         try {
             server.changeServer(serverAddress.getText());
         } catch(IllegalArgumentException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "Error", "", e.getMessage());
             alert.showAndWait();
             return;
         }

@@ -16,6 +16,7 @@
 package client.scenes;
 
 import client.utils.AnimationUtils;
+import client.utils.ModalFactory;
 import client.utils.ServerUtils;
 import client.utils.TextFieldSizeLimiter;
 import com.google.inject.Inject;
@@ -33,7 +34,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
 
 import java.util.UUID;
 
@@ -134,9 +134,7 @@ public class UserCtrl {
 
             // This shouldn't be possible, but who knows what kind of tricks users can try
 
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("Provided username \"" + un + "\" is longer than the maximum username length of " +
+            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "", "Provided username \"" + un + "\" is longer than the maximum username length of " +
                     MainCtrl.MAXIMUM_USERNAME_SIZE + "!");
             alert.showAndWait();
             return;
@@ -160,9 +158,7 @@ public class UserCtrl {
             }
 
         } catch (WebApplicationException | IllegalArgumentException e) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText(e.getMessage());
+            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "", e.getMessage());
             alert.showAndWait();
             return;
         }
@@ -201,17 +197,13 @@ public class UserCtrl {
     private boolean checkReturnedGameUpdateAfterJoinGame(GameUpdate gu, String un) {
 
         if (gu instanceof GameUpdateNameInUse) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("Name \"" + un + "\" already in use!");
+            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "Error", "", "Name \"" + un + "\" already in use!");
             alert.showAndWait();
             return false;
         }
 
         if(gu instanceof GameUpdateNameTooLong) {
-            var alert = new Alert(Alert.AlertType.ERROR);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("Provided username \"" + un + "\" is longer than the maximum username length allowed" +
+            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "Error", "", "Provided username \"" + un + "\" is longer than the maximum username length allowed" +
                     "by the server!");
             alert.showAndWait();
             return false;

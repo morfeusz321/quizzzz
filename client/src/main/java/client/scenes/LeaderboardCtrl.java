@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.AnimationUtils;
+import client.utils.ModalFactory;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Score;
@@ -16,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,9 +163,7 @@ public class LeaderboardCtrl {
         int idx = usernameListInternal.indexOf(username);
 
         if(idx == -1) {
-            var alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("User could not be found: \"" + username +"\"!");
+            Alert alert = ModalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "", "User could not be found: \"" + username +"\"!");
             alert.showAndWait();
             return;
         }
