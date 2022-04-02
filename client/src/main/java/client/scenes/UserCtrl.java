@@ -40,6 +40,7 @@ import java.util.UUID;
 public class UserCtrl {
 
     private final ServerUtils server;
+    private ModalFactory modalFactory;
     private final MainCtrl mainCtrl;
     private final WaitingRoomCtrl waitingRoomCtrl;
     public final AnimationUtils animation;
@@ -69,11 +70,13 @@ public class UserCtrl {
      * Constructor
      *
      * @param server   Utilities for communicating with the server (API endpoint)
+     * @param modalFactory  the modal factory to use
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public UserCtrl(ServerUtils server, MainCtrl mainCtrl, WaitingRoomCtrl waitingRoomCtrl) {
+    public UserCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl, WaitingRoomCtrl waitingRoomCtrl) {
         this.server = server;
+        this.modalFactory = modalFactory;
         this.mainCtrl = mainCtrl;
         this.waitingRoomCtrl = waitingRoomCtrl;
         this.animation = new AnimationUtils();
@@ -134,7 +137,7 @@ public class UserCtrl {
 
             // This shouldn't be possible, but who knows what kind of tricks users can try
 
-            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "", "Provided username \"" + un + "\" is longer than the maximum username length of " +
+            Alert alert = modalFactory.getModal(Alert.AlertType.ERROR, "", "Provided username \"" + un + "\" is longer than the maximum username length of " +
                     MainCtrl.MAXIMUM_USERNAME_SIZE + "!");
             alert.showAndWait();
             return;
@@ -158,7 +161,7 @@ public class UserCtrl {
             }
 
         } catch (WebApplicationException | IllegalArgumentException e) {
-            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "", e.getMessage());
+            Alert alert = modalFactory.getModal(Alert.AlertType.ERROR, "", e.getMessage());
             alert.showAndWait();
             return;
         }
@@ -196,13 +199,13 @@ public class UserCtrl {
     private boolean checkReturnedGameUpdateAfterJoinGame(GameUpdate gu, String un) {
 
         if (gu instanceof GameUpdateNameInUse) {
-            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "Error", "", "Name \"" + un + "\" already in use!");
+            Alert alert = modalFactory.getModal(Alert.AlertType.ERROR, "Error", "", "Name \"" + un + "\" already in use!");
             alert.showAndWait();
             return false;
         }
 
         if(gu instanceof GameUpdateNameTooLong) {
-            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "Error", "", "Provided username \"" + un + "\" is longer than the maximum username length allowed" +
+            Alert alert = modalFactory.getModal(Alert.AlertType.ERROR, "Error", "", "Provided username \"" + un + "\" is longer than the maximum username length allowed" +
                     "by the server!");
             alert.showAndWait();
             return false;

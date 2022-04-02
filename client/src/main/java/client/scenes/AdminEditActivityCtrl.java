@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 
 public class AdminEditActivityCtrl  implements Initializable {
     private final ServerUtils server;
+    private ModalFactory modalFactory;
     private final MainCtrl mainCtrl;
 
     @FXML
@@ -45,12 +46,14 @@ public class AdminEditActivityCtrl  implements Initializable {
     /**
      * Creates a AdminEditActivityCtrl, which controls the display/interaction of editing the activities
      * @param server Utilities for communicating with the server (API endpoint)
+     * @param modalFactory the modal factory to use
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public AdminEditActivityCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AdminEditActivityCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.modalFactory = modalFactory;
     }
 
     @Override
@@ -134,7 +137,7 @@ public class AdminEditActivityCtrl  implements Initializable {
             mainCtrl.showAdmin();
 
         } catch (NumberFormatException e) {
-            Alert alert = ModalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
+            Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
             alert.showAndWait();
         }
     }
@@ -153,7 +156,7 @@ public class AdminEditActivityCtrl  implements Initializable {
             mainCtrl.showAdmin();
 
         } catch (NumberFormatException e) {
-            Alert alert = ModalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
+            Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
             alert.showAndWait();
         }
     }

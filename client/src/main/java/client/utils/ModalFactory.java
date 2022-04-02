@@ -16,7 +16,7 @@ public class ModalFactory {
      * @param body the content text for the alert
      * @return an alert with the provided text elements and styling applied
      */
-    public static Alert getModal(Alert.AlertType alertType, String title, String text, String body) {
+    public Alert getModal(Alert.AlertType alertType, String title, String text, String body) {
 
         Alert alert = new Alert(alertType);
 
@@ -49,7 +49,7 @@ public class ModalFactory {
      * @param text the header text for the alert
      * @return an alert with the provided text elements and styling applied
      */
-    public static Alert getModal(Alert.AlertType alertType, String title, String text) {
+    public Alert getModal(Alert.AlertType alertType, String title, String text) {
 
         return getModal(alertType, title, text, "");
 

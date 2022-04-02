@@ -17,6 +17,7 @@ import javafx.scene.layout.AnchorPane;
 public class ConnectToServerCtrl {
 
     private ServerUtils server;
+    private ModalFactory modalFactory;
     private MainCtrl mainCtrl;
     private AnimationUtils animation;
 
@@ -37,11 +38,13 @@ public class ConnectToServerCtrl {
     /**
      * Constructor for this controller
      * @param server Utilities for communicating with the server (API endpoint)
+     * @param modalFactory the modal factory to use
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public ConnectToServerCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public ConnectToServerCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
         this.server = server;
+        this.modalFactory = modalFactory;
         this.mainCtrl = mainCtrl;
         this.animation = new AnimationUtils();
     }
@@ -88,7 +91,7 @@ public class ConnectToServerCtrl {
         try {
             server.changeServer(serverAddress.getText());
         } catch(IllegalArgumentException e) {
-            Alert alert = ModalFactory.getModal(Alert.AlertType.ERROR, "Error", "", e.getMessage());
+            Alert alert = modalFactory.getModal(Alert.AlertType.ERROR, "Error", "", e.getMessage());
             alert.showAndWait();
             return;
         }

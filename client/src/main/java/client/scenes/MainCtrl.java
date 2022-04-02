@@ -68,6 +68,7 @@ public class MainCtrl {
     private Stage primaryStage;
     private CommonUtils utils;
     private ScoreUtils scoreHelper;
+    private ModalFactory modalFactory;
 
     private MainScreenCtrl mainScreenCtrl;
     private Scene mainScreen;
@@ -116,11 +117,14 @@ public class MainCtrl {
      * Creates a MainCtrl, which controls displaying and switching between screens.
      *
      * @param server Utilities for communicating with the server (API endpoint)
+     * @param utils common utils to use
+     * @param modalFactory the modal factory to use
      */
     @Inject
-    public MainCtrl(ServerUtils server,CommonUtils utils) {
+    public MainCtrl(ServerUtils server, CommonUtils utils, ModalFactory modalFactory) {
         this.server = server;
         this.utils=utils;
+        this.modalFactory = modalFactory;
     }
 
     /**
@@ -245,7 +249,7 @@ public class MainCtrl {
     public void initializeOnCloseEvents() {
 
         primaryStage.setOnCloseRequest(event -> {
-            Alert alert = ModalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
+            Alert alert = modalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
             alert.showAndWait();
 
             if (alert.getResult() == ButtonType.OK) {
@@ -786,7 +790,7 @@ public class MainCtrl {
      */
     public void exitWhileInTheGame() {
 
-        Alert alert = ModalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
+        Alert alert = modalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.OK) {

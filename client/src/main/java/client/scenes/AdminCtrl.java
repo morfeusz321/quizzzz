@@ -27,6 +27,7 @@ import java.util.ResourceBundle;
 
 public class AdminCtrl implements Initializable {
     private final ServerUtils server;
+    private ModalFactory modalFactory;
     private final MainCtrl mainCtrl;
     private final AnimationUtils animation;
 
@@ -67,12 +68,14 @@ public class AdminCtrl implements Initializable {
     /**
      * Constructor for a AdminCtrl, which controls the display/interaction of managing the activities
      * @param server Utilities for communicating with the server (API endpoint)
+     * @param modalFactory the modal factory to use
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public AdminCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public AdminCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
         this.mainCtrl = mainCtrl;
         this.server = server;
+        this.modalFactory = modalFactory;
         this.animation = new AnimationUtils();
     }
 
@@ -120,7 +123,7 @@ public class AdminCtrl implements Initializable {
      * Method for deleting an activity from the database
      */
     public void delete() {
-        Alert alert = ModalFactory.getModal(Alert.AlertType.CONFIRMATION, "Confirmation",
+        Alert alert = modalFactory.getModal(Alert.AlertType.CONFIRMATION, "Confirmation",
                 "Are you sure you want to delete this entry?",
                 "This will delete " + currentActivity.id);
 
