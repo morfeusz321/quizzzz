@@ -196,6 +196,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         powersText.setOpacity(0.2);
         decreaseTime.setOpacity(0.2);
         doublePoints.setOpacity(0.2);
+        setAnswerBtn.setOpacity(0);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         slideBar.setDisable(true);
@@ -216,8 +217,10 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         doublePoints.setDisable(false);
         slideBar.setDisable(false);
         answerTxtField.setDisable(false);
+        setAnswerBtn.setOpacity(1);
         setAnswerBtn.setDisable(false);
         correctAnswer.setOpacity(0);
+        correctAnswer.setDisable(true);
         fullText.setOpacity(0);
     }
 
@@ -246,6 +249,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
         long correct = answer.getAnswer();
         String s = "The correct answer\n was: " + correct + "Wh.";
+        correctAnswer.setText(s);
         if (answer.correct) {
             Platform.runLater(() -> {
                 transText.setText("You answered correctly! Impressive!");
