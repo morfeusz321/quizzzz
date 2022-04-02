@@ -52,12 +52,12 @@ public class APIGameController {
         if(game == null || game.equals(gameController.getCurrentGame())) {
             return ResponseEntity.badRequest().build();
         }
-
-        if(game.getQuestions() == null || game.getQuestions().size() != 20){
+        List<Question> questions = game.getQuestions();
+        if(questions == null || questions.size() != 20){
             return ResponseEntity.internalServerError().build();
         }
 
-        return ResponseEntity.ok(game.getQuestions());
+        return ResponseEntity.ok(questions);
 
     }
 
