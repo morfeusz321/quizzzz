@@ -169,3 +169,19 @@
     -fx-color: white;
 
 }
+
+.pointsAdded {
+
+    -fx-font-weight: 800;
+
+}
+
+.answerEstimation {
+    -fx-font-family: 'Karla';
+    -fx-font-style: italic;
+    -fx-font-weight: 700;
+    -fx-font-size: 40px;
+    -fx-letter-spacing: -0.02em;
+    -fx-color: #403D39;
+
+}
