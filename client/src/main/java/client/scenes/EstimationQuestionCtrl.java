@@ -257,6 +257,8 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                 fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
                 fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
                 correctAnswer.setOpacity(0);
+                pointsAdded.setOpacity(1);
+                pointsAdded.setText(" +" + answer.getPoints());
             });
         } else {
             if (!answerSet) {
@@ -270,6 +272,8 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                     fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
                     fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
                     transText.setText("You were " + Math.abs(answer.proximity) + "Wh close to the answer!");
+                    pointsAdded.setOpacity(1);
+                    pointsAdded.setText("  +" + answer.getPoints());
                 });
             }
         }

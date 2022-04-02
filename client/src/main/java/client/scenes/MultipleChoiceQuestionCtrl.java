@@ -195,7 +195,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
                 buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerCorrect");
                 fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
                 fullText.setLayoutY(anchorPane.getHeight()*0.754867);
-                pointsAdded.setText("  +" + answer.getPoints());
+                pointsAdded.setText(" +" + answer.getPoints());
                 pointsAdded.setOpacity(1);
             });
         } else {
