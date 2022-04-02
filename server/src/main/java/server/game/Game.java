@@ -42,6 +42,7 @@ public class Game extends Thread {
     private ConcurrentHashMap<String, Score> leaderboard;
 
     private ConcurrentHashMap<String, Long> timeJoker;
+    private ConcurrentHashMap<String, Boolean> scoreJoker;
 
     @HashCodeExclude
     @EqualsExclude
@@ -73,6 +74,7 @@ public class Game extends Thread {
 
         this.leaderboard = new ConcurrentHashMap<>();
         this.timeJoker = new ConcurrentHashMap<>();
+        this.scoreJoker = new ConcurrentHashMap<>();
 
     }
 
@@ -99,6 +101,7 @@ public class Game extends Thread {
         // Set first question
         currentQuestionIdx = -1;
         initializeTimeJoker();
+        initializeScoreJoker();
         gameUpdateManager.startGame(this.uuid);
 
         this.stopWatch.start();
@@ -192,6 +195,11 @@ public class Game extends Thread {
 
             AnswerResponseEntity answer;
             answer = answerMap.getOrDefault(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, -1, 0));
+
+            if(scoreJoker.containsKey(username) && scoreJoker.get(username)) {
+                answer.doublePoints();
+                scoreJoker.remove(username);
+            }
 
             req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
@@ -362,7 +370,6 @@ public class Game extends Thread {
                 }
                 else player.setValue(remainingTime);
             }
-            System.out.println(username + " from " + remainingTime + " to " + newTime); //TODO: remove
         }
         else {
 
@@ -373,16 +380,11 @@ public class Game extends Thread {
                 }
             }
             long elapsedTime = oldTime - remainingTime;
-            System.out.println(username + " from " + remainingTime + " to following: (elapsed time: " + elapsedTime + ")"); //TODO: remove
             for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
                 player.setValue(player.getValue()-elapsedTime);
                 long newTime = (long) (0.65 * player.getValue());
                 if(!player.getKey().equals(username)) player.setValue(newTime);
             }
-        }
-        //TODO:remove
-        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
-            System.out.println(player.getKey() + " " + player.getValue());
         }
 
         deferredResultMap.forEach((user, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTimerJoker(timeJoker))));
@@ -407,6 +409,14 @@ public class Game extends Thread {
         };
         deferredResultMap.get(username).setResult(ResponseEntity.ok(new GameUpdateQuestionJoker(returnValue)));
 
+    }
+
+    public void useScoreJoker(String username) {
+        if(scoreJoker.containsKey(username)) {
+            if(!scoreJoker.get(username)) {
+                scoreJoker.put(username, true);
+            }
+        }
     }
 
     /**
@@ -449,6 +459,16 @@ public class Game extends Thread {
         }
         for(Map.Entry<String, Player> player : players.entrySet()) {
             timeJoker.put(player.getKey(), 15000L);
+        }
+
+    }
+
+    protected void initializeScoreJoker() {
+        for(Map.Entry<String, Player> player : players.entrySet()) {
+            scoreJoker.remove(player.getKey());
+        }
+        for(Map.Entry<String, Player> player : players.entrySet()) {
+            scoreJoker.put(player.getKey(), false);
         }
 
     }

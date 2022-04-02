@@ -242,6 +242,24 @@ public class ServerUtils {
     }
 
     /**
+     * Informs the server that the double points joker has been used, using the API endpoint
+     * @param username the player that used the question joker
+     * @param gameUUID UUID of the current game
+     * @return The username of the player if the request was successful
+     */
+    public String useScoreJoker(String username, UUID gameUUID) {
+        Form form = new Form();
+        form.param("username", username);
+        form.param("gameUUID", gameUUID.toString());
+
+        return ClientBuilder.newClient(new ClientConfig()) //
+                .target(SERVER).path("/api/jokers/score") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), String.class);
+    }
+
+    /**
      * Gets all activities from the server using the API endpoint
      * @return a list of activities
      */

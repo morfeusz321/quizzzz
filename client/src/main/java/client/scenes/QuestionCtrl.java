@@ -344,12 +344,13 @@ public abstract class QuestionCtrl {
     }
 
     /**
-     * Handling method for double points joker TODO: implement this once scores are working
+     * Handling method for double points joker
      */
     private void doublePoints() {
         doublePoints.setDisable(true);
         doublePoints.setOpacity(0.3);
         mainCtrl.disableJoker(2);
+        server.useScoreJoker(mainCtrl.getSavedUsernamePrefill(),mainCtrl.getGameUUID());
     }
 
     private void removeQuestionJoker() {

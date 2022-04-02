@@ -40,6 +40,13 @@ public class AnswerResponseEntity {
     }
 
     /**
+     * Doubles the current amount of points.
+     */
+    public void doublePoints() {
+        this.points = 2 * this.points;
+    }
+
+    /**
      * Creates a new answer response entity (used for general and comparison questions)
      * @param correct whether the answer was correct or not
      */
