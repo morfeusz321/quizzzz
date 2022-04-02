@@ -355,7 +355,7 @@ public class Game extends Thread {
     }
 
     /**
-     * Informs all registered long polls that a time joker has been used TODO: remove System.out.println
+     * Informs all registered long polls that a time joker has been used
      * @param username the username of the player that initiated the time joker
      */
     public void useTimeJoker(String username) {
@@ -411,6 +411,10 @@ public class Game extends Thread {
 
     }
 
+    /**
+     * Server-side handling of the double points joker, maps true to the username in scoreJoker
+     * @param username the name of the player that initiated the double points joker
+     */
     public void useScoreJoker(String username) {
         if(scoreJoker.containsKey(username)) {
             if(!scoreJoker.get(username)) {
