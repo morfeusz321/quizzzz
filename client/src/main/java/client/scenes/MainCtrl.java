@@ -221,8 +221,6 @@ public class MainCtrl {
                                                        Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
 
 
-        // TODO: this definitely needs restructuring, too much code duplication
-
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
 
@@ -297,7 +295,6 @@ public class MainCtrl {
         primaryStage.setTitle("General question");
         primaryStage.setScene(generalQuestion);
         generalQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -307,7 +304,6 @@ public class MainCtrl {
         primaryStage.setTitle("Comparison question");
         primaryStage.setScene(comparisonQuestion);
         comparisonQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -317,7 +313,6 @@ public class MainCtrl {
         primaryStage.setTitle("Most expensive question");
         primaryStage.setScene(mostExpensiveQuestion);
         mostExpensiveQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -327,7 +322,6 @@ public class MainCtrl {
         primaryStage.setTitle("Estimation question");
         primaryStage.setScene(estimationQuestion);
         estimationQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -560,10 +554,17 @@ public class MainCtrl {
 
             // This game update can later contain metadata about the game like scores or anything
             // else the client would want to display after the game ends
-            // TODO: for now this just goes to the main screen
             leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.END_GAME_LEADERBOARD);
             leaderboardCtrl.initializeButtonsForMainScreen();
-            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
+            // if the game is singleplayer this will be null and therefore
+            // will be redirected to get the server leaderboard
+            if(gameUpdateGameFinished.getLeaderboard()==null){
+                Platform.runLater(this::showLeaderboardServerConfirmed);
+            }
+            // this is normal multiplayer
+            else{
+                Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
+            }
 
         } else if (gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
 
@@ -591,7 +592,15 @@ public class MainCtrl {
 
             leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.MID_GAME_LEADERBOARD);
             leaderboardCtrl.disableButtonsForMainScreen();
-            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
+            // if the game is singleplayer this will be null and therefore
+            // will be redirected to get the server leaderboard
+            if(gameUpdateDisplayLeaderboard.getLeaderboard()==null){
+                Platform.runLater(this::showLeaderboardServerConfirmed);
+            }
+            // this is for multiplayer
+            else{
+                Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
+            }
 
         } else if(gameUpdate instanceof GameUpdateTimerJoker update) {
             System.out.println("hello timer joker has been used");

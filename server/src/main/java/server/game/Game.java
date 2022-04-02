@@ -123,11 +123,21 @@ public class Game extends Thread {
 
             currentQuestionIdx++;
             done = true;
-            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
-                    new GameUpdateGameFinished(
-                            createLeaderboardList()
-                    )
-            )));
+            // if the game is singleplayer the leaderboard is not needed
+            if(gameType==GameType.SINGLEPLAYER){
+                deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
+                        new GameUpdateGameFinished(
+                                null
+                        )
+                )));
+            }
+            else if(gameType==GameType.MULTIPLAYER){
+                deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
+                        new GameUpdateGameFinished(
+                                createLeaderboardList()
+                        )
+                )));
+            }
             deferredResultMap.clear();
 
             return;
@@ -244,9 +254,15 @@ public class Game extends Thread {
      * Informs all registered long polls that the intermediate leaderboard should be displayed
      */
     private void sendLeaderboard() {
-        
-        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
-        deferredResultMap.clear();
+        if(gameType == GameType.MULTIPLAYER){
+            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
+            deferredResultMap.clear();
+        }
+        // if the game is singleplayer the leaderboard is not needed
+        else {
+            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(null))));
+            deferredResultMap.clear();
+        }
 
         (new Timer()).schedule(new TimerTask() {
             @Override
@@ -564,4 +580,11 @@ public class Game extends Thread {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
 
+    /**
+     * retrieve the leaderboard of this game
+     * @return leaderboard
+     */
+    public ConcurrentHashMap<String, Score> getLeaderboard() {
+        return leaderboard;
+    }
 }

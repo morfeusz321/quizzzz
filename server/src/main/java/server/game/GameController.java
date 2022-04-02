@@ -2,6 +2,7 @@ package server.game;
 
 import commons.GameType;
 import commons.Player;
+import commons.Score;
 import commons.gameupdate.GameUpdate;
 import commons.gameupdate.GameUpdateFullPlayerList;
 import org.springframework.beans.BeansException;
@@ -11,10 +12,7 @@ import org.springframework.stereotype.Component;
 import server.api.ScoreController;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -301,4 +299,31 @@ public class GameController implements ApplicationContextAware {
 
     }
 
+    /**
+     * retrieve the database
+     * @return score database
+     */
+    public ScoreController getScoreController(String gameID) {
+        // if the gameID is -1 the user is not in the middle of the game so the scores dont need to be saved
+        if(!Objects.equals(gameID, "-1")){
+            saveScores(gameID);
+        }
+        return scoreController;
+    }
+
+    /**
+     * when the leaderboard is supposed to be shown the scores from that game have to be stored to the database
+     * @param gameID
+     */
+    private void saveScores(String gameID){
+        UUID id = UUID.fromString(gameID);
+        Game game = getGame(id);
+        ConcurrentHashMap<String, Score> leaderboard = game.getLeaderboard();
+        List<Player> players = game.getPlayers();
+        for(Player p: players){
+            String username = p.getUsername();
+            Score score = leaderboard.get(username);
+            scoreController.addScore(username, score.getScore());
+        }
+    }
 }

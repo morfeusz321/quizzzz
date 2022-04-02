@@ -457,9 +457,18 @@ public class ServerUtils {
      * @return all scores on the leaderboard sorted by rank ascending
      */
     public List<Score> getLeaderboard() {
-
+        // if gameId is -1 it means that no game started yet and the leaderboard was called from main screen
+        // therefore no saving o the scores is necessary
+        String gameID;
+        if(gameUUID == null){
+            gameID = "-1";
+        }
+        else{
+            gameID = gameUUID.toString();
+        }
         return ClientBuilder.newClient(new ClientConfig()) //
-                                    .target(SERVER).path("api/scores/sorted") //
+                                    .target(SERVER).path("api/game/sorted") //
+                                    .queryParam( "gameID", gameID)
                                     .request(APPLICATION_JSON) //
                                     .accept(APPLICATION_JSON) //
                                     .get(new GenericType<List<Score>>() {});
@@ -473,21 +482,7 @@ public class ServerUtils {
     public boolean getIsInTheGame(){
         return isInGame;
     }
-/*
 
-    public Score addScoreToDB(String username, int points){
-        Form form = new Form();
-        form.param("username", username);
-        form.param("points", String.valueOf(points));
-
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/scores/" + username + "/" + points) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), Score.class);
-    }
-
-*/
 
     /**
      * retrieve player with given username
