@@ -4,6 +4,7 @@ import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 
+import commons.GameType;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -400,6 +401,16 @@ public abstract class QuestionCtrl {
      */
     private void updateQuestionNumber() {
         questionInfo.setText("Question " + (mainCtrl.getGameManager().getQuestions().indexOf(mainCtrl.getGameManager().getCurrentQuestion()) + 1) + "/20");
+    }
+
+    /**
+     * Updates the player count label
+     */
+    public void updatePlayerCount() {
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            playersInfo.setOpacity(0);
+        }
+        else playersInfo.setText("Players in game: " + mainCtrl.getGameManager().getPlayerCount());
     }
 
     /**

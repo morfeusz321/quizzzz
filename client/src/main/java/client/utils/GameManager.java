@@ -11,6 +11,7 @@ import java.util.List;
 public class GameManager {
     private List<Question> questions;
     private Question currentQuestion;
+    private int playerCount;
 
     /**
      * The (empty) constructor of the GameManager.
@@ -48,5 +49,21 @@ public class GameManager {
      */
     public void setCurrentQuestionByIdx(int idx) {
         this.currentQuestion = questions.get(idx);
+    }
+
+    /**
+     * Getter for player count
+     * @return current number of players in the game
+     */
+    public int getPlayerCount() {
+        return playerCount;
+    }
+
+    /**
+     * Setter for player count
+     * @param playerCount current number of players in the game
+     */
+    public void setPlayerCount(int playerCount) {
+        this.playerCount = playerCount;
     }
 }
