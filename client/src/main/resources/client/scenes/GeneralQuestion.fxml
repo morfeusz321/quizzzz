@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.GeneralQuestionCtrl">
    <stylesheets>
@@ -65,16 +70,13 @@
          </styleClass>
       </Label>
       <TextFlow fx:id="fullText" layoutX="332.0" layoutY="747.0" opacity="0" styleClass="answerDisplay">
-         <Text layoutX="388.0" layoutY="827.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You answered " />
-         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text="">
-         </Text>
-         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
+         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text=""/>
       </TextFlow>
       <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
       <ImageView fx:id="wrongCross" fitHeight="44.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
-      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 200">
+      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 0">
          <styleClass>
             <String fx:value="smaller-info-text" />
             <String fx:value="text" />

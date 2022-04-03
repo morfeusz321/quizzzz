@@ -2,9 +2,11 @@ package client.scenes;
 
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.AnswerResponseEntity;
 import commons.CommonUtils;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,7 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 public class EstimationQuestionCtrl extends QuestionCtrl {
 
@@ -40,6 +44,18 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
     @FXML
     protected ImageView doublePoints;
+
+    @FXML
+    protected Text correctAnswer;
+
+    @FXML
+    protected Text transText;
+
+    @FXML
+    protected TextFlow fullText;
+
+    @FXML
+    protected AnchorPane anchorPane;
 
     private boolean answerSet;
 
@@ -130,55 +146,87 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * (and the initialization of the slider).
      */
     public void loadQuestion(Question q) {
-        enableButtons();
-        questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
-        title.setText(q.displayQuestion());
-        resizeQuestionHandler.setText((int) title.getFont().getSize());
 
-        long min = Long.parseLong(q.answerOptions.get(0));
-        long max = Long.parseLong(q.answerOptions.get(1));
-        slideBar.setMax(max);
-        maxLabel.setText(min + " Wh");
-        slideBar.setMin(min);
-        minLabel.setText(max + " Wh");
-        answerTxtField.setText(String.valueOf(min));
-        slideBar.setValue(slideBar.getMin());
-        answerSet = false;
-        setAnswerBtn.setText("Set as answer");
-        slideBar.setDisable(false);
-        answerTxtField.setDisable(false);
-        slideBar.setMajorTickUnit(100);
-        slideBar.setMinorTickCount(99);
-        // must be one less than major tick unit -> one tick per Wh
+        Platform.runLater(()-> {
 
-        refreshProgressBar();
+            enableButtons();
+            disableJokers();
+            setPoints();
+
+            questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
+            title.setText(q.displayQuestion());
+            resizeQuestionHandler.setText((int) title.getFont().getSize());
+
+            long min = Long.parseLong(q.answerOptions.get(0));
+            long max = Long.parseLong(q.answerOptions.get(1));
+            slideBar.setMax(max);
+            maxLabel.setText(max + " Wh");
+            slideBar.setMin(min);
+            minLabel.setText(min + " Wh");
+            answerTxtField.setText(String.valueOf(min));
+            slideBar.setValue(slideBar.getMin());
+            answerSet = false;
+            setAnswerBtn.setText("Set as answer");
+            slideBar.setDisable(false);
+            answerTxtField.setDisable(false);
+            slideBar.setMajorTickUnit(100);
+            slideBar.setMinorTickCount(99);
+            // must be one less than major tick unit -> one tick per Wh
+
+            refreshProgressBar();
+
+        });
 
     }
 
     /**
      * Disables the answer and power buttons, makes then power buttons invisible
      */
-    private void disableButtons(){
-        powersText.setOpacity(0.3);
-        decreaseTime.setOpacity(0.3);
-        doublePoints.setOpacity(0.3);
-        setAnswerBtn.setOpacity(0.3);
+    @Override
+    public void disableButtons(){
+        powersText.setOpacity(0.2);
+        decreaseTime.setOpacity(0.2);
+        doublePoints.setOpacity(0.2);
+        setAnswerBtn.setOpacity(0);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
+        slideBar.setDisable(true);
+        answerTxtField.setDisable(true);
         setAnswerBtn.setDisable(true);
+        correctAnswer.setOpacity(1);
+        fullText.setOpacity(1);
     }
 
     /**
      * Enables the answer and power buttons, makes then power buttons visible
      */
-    protected void enableButtons(){
+    public void enableButtons(){
         powersText.setOpacity(1);
         decreaseTime.setOpacity(1);
         doublePoints.setOpacity(1);
-        setAnswerBtn.setOpacity(1);
         decreaseTime.setDisable(false);
         doublePoints.setDisable(false);
+        slideBar.setDisable(false);
+        answerTxtField.setDisable(false);
+        setAnswerBtn.setOpacity(1);
         setAnswerBtn.setDisable(false);
+        correctAnswer.setOpacity(0);
+        correctAnswer.setDisable(true);
+        fullText.setOpacity(0);
+    }
+
+    /**
+     * Disables joker buttons (if already used)
+     */
+    public void disableJokers() {
+        if(mainCtrl.getJokerStatus(2)) {
+            doublePoints.setDisable(true);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
     }
 
     /**
@@ -186,6 +234,36 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
      */
     public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
-        disableButtons();
+
+        Platform.runLater(this::disableButtons);
+
+        AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
+        long correct = answer.getAnswer();
+        String s = "The correct answer\n was: " + correct + "Wh.";
+        correctAnswer.setText(s);
+        if (answer.correct) {
+            Platform.runLater(() -> {
+                transText.setText("You answered correctly! Impressive!");
+                fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                correctAnswer.setOpacity(0);
+            });
+        } else {
+            if (!answerSet) {
+                Platform.runLater(() -> {
+                    transText.setText("You did not answer. Try to be faster!");
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1043248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                });
+            } else {
+                Platform.runLater(() -> {
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                    transText.setText("You were " + Math.abs(answer.proximity) + "Wh close to the answer!");
+                });
+            }
+        }
+
     }
+
 }
