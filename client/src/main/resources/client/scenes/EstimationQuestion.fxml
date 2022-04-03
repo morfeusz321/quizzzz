@@ -52,15 +52,24 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
+      <TextFlow fx:id="points" layoutX="950.0" layoutY="700.0" >
+         <Text fx:id="pointsInfo" text="Your points: 0">
+            <styleClass>
+               <String fx:value="smaller-info-text" />
+               <String fx:value="text" />
+            </styleClass>
+         </Text>
+         <Text fx:id="pointsAdded" layoutX="1130.0" layoutY="727.5">
+            <styleClass>
+               <String fx:value="smaller-info-text" />
+               <String fx:value="text" />
+               <String fx:value="pointsAdded" />
+            </styleClass>
+         </Text>
+      </TextFlow>
       <TextFlow fx:id="fullText" layoutX="332.0" layoutY="747.0" opacity="0" styleClass="answerDisplay">
          <Text fx:id="transText" strokeType="OUTSIDE" strokeWidth="0.0" text=""/>
       </TextFlow>
-      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 0">
-         <styleClass>
-            <String fx:value="smaller-info-text" />
-            <String fx:value="text" />
-         </styleClass>
-      </Label>
       <Label fx:id="playersInfo" layoutX="500.0" layoutY="700.0" text="Players in game: 5">
          <styleClass>
             <String fx:value="smaller-info-text" />

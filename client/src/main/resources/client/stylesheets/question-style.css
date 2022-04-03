@@ -170,6 +170,12 @@
 
 }
 
+.pointsAdded {
+
+    -fx-font-weight: 800;
+
+}
+
 .answerEstimation {
     -fx-font-family: 'Karla';
     -fx-font-style: italic;
