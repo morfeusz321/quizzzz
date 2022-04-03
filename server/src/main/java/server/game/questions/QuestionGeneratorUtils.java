@@ -244,9 +244,16 @@ public class QuestionGeneratorUtils {
             throw new IllegalArgumentException();
         }
 
-        // If the bounds are equal, then we can simply return one of the bounds
-        // This is valid, because both bounds are inclusive
+        // Special cases where the upper bound equals the lower bound
         if(lower == upper) {
+            // If the bound is excluded, no number can be generated at all
+            // Theoretically it would aldo be necessary to check all excluded bounds, however checkIfGeneratable
+            // should make sure that this is only called when it really is generatable
+            // So we can assume that this should in fact never even be the case
+            if(excludedNumbers.contains(lower) || excludeSIString.contains(createConsumptionString(lower))) {
+                throw new IllegalArgumentException();
+            }
+            // Otherwise, we can simply return one of the bounds - this is valid, because both bounds are inclusive
             return lower;
         }
 

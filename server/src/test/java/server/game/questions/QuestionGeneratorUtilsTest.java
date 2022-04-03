@@ -343,7 +343,108 @@ class QuestionGeneratorUtilsTest {
 
     }
 
-    // TODO: Tests for getBoundsGeneralQuestion and randomLongInRangeExcl!!!
+    @Test
+    public void randomLongInRangeExclThrows() {
+
+        // If lower > upper, it should throw an IllegalArgumentException.
+        Random random = new RandomSameNumber(0.5);
+        assertThrows(IllegalArgumentException.class, () -> {
+            utils.randomLongInRangeExcl(100,0, random, List.of(), List.of(),0.5);
+        });
+        // If lower = upper, and they are excluded (by consumption and/or consumption string),
+        // then no number can be generated
+        assertThrows(IllegalArgumentException.class, () -> {
+            utils.randomLongInRangeExcl(100,100, random, List.of(), List.of(100L),0.5);
+        });
+        assertThrows(IllegalArgumentException.class, () -> {
+            utils.randomLongInRangeExcl(100,100, random, List.of("100 Wh"), List.of(),0.5);
+        });
+
+    }
+
+    @Test
+    public void randomLongInRangeExclInSIExcl() {
+
+        // Here we test for cases in which the generated value FIRST is in the SI String exclusion, then on second try
+        // it is not anymore.
+
+        // Case where it is the same value that is also in the exclusion list for the long values
+        Random random = new RandomTwoNumbers(0.01, 1);
+        // On the first try it should try with 0.01 -> results in 1 as the generated value -> this is not a valid value
+        // Then on second try it should try with 1 -> results in 100 which is valid -> so we test for 100
+        assertEquals(100,
+                utils.randomLongInRangeExcl(0,100, random, List.of("1 Wh"), List.of(1L),0.5));
+
+        // Case where it is NOT the same value that is in the exclusion list for the long values, but the SI
+        // string is the same
+        random = new RandomTwoNumbers(0.01, 0.5);
+        // On the first try it should try with 0.01 -> results in 1001000 as the generated value
+        // -> this is not a valid value as it's SI string is 1.00 MWh, but it is not equal to 1000000
+        // Then on second try it should try with 0.5 -> results in 1500000 which is valid -> so we test for 1500000
+        assertEquals(1500000,
+                utils.randomLongInRangeExcl(
+                        1000000,2000000, random,
+                        List.of("1.00 MWh"), List.of(1000000L),0.1));
+
+    }
+
+    @Test
+    public void randomLongInRangeExclInExclRange() {
+
+        // Here we test for cases in which the generated value FIRST is in the excluded ranges, then on second try
+        // it is not anymore.
+
+        // Case where it is in the exclusion list directly (not +/- range)
+        Random random = new RandomTwoNumbers(0.01, 1);
+        // On the first try it should try with 0.01 -> results in 110 as the generated value -> this is not a valid value
+        // Then on second try it should try with 1 -> results in 200 which is valid -> so we test for 200
+        assertEquals(200,
+                utils.randomLongInRangeExcl(100,200, random, List.of(), List.of(110L),0.5));
+
+        // Case where it is NOT the same value that is in the exclusion list for the long values, and
+        // only in the range around it
+        random = new RandomTwoNumbers(0.01, 0.5);
+        // On the first try it should try with 0.01 -> results in 110 as the generated value
+        // -> this is not a valid value as it is bigger than 70 and smaller than 130 (range that is excluded)
+        // Then on second try it should try with 0.5 -> results in 150 which is valid -> so we test for 150
+        assertEquals(150,
+                utils.randomLongInRangeExcl(100,200, random, List.of(), List.of(100L),0.3));
+
+    }
+
+    // TODO: Tests for getBoundsGeneralQuestion!!!
+
+    /**
+     * Class used as a non-random Random instance, that returns a specific number in turn with another specific number.
+     */
+    private class RandomTwoNumbers extends Random {
+
+        private final double[] retVals; // length should be 2
+        private boolean firstsTurn; // if the first number is next (true) or the second (false)
+
+        /**
+         * Constructor to set the number it returns.
+         */
+        public RandomTwoNumbers(double val1, double val2) {
+
+            firstsTurn = true;
+            this.retVals = new double[]{val1, val2};
+
+        }
+
+        @Override
+        public double nextDouble() {
+
+            if(firstsTurn) {
+                firstsTurn = false;
+                return retVals[1];
+            }
+            firstsTurn = true;
+            return retVals[0];
+
+        }
+
+    }
 
     /**
      * Class used as a non-random Random instance, that only returns a specific number.
