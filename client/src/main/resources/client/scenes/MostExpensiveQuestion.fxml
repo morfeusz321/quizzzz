@@ -61,10 +61,7 @@
          </styleClass>
       </Label>
       <TextFlow fx:id="fullText" layoutX="332.0" layoutY="747.0" opacity="0" styleClass="answerDisplay">
-         <Text layoutX="388.0" layoutY="827.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You answered " />
-         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text="">
-         </Text>
-         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="!" />
+         <Text fx:id="correctAns" strokeType="OUTSIDE" strokeWidth="0.0" text=""/>
       </TextFlow>
       <ImageView fx:id="correctTick" fitHeight="44.0" fitWidth="41.0" pickOnBounds="true" preserveRatio="true">
       </ImageView>
@@ -78,7 +75,7 @@
             <String fx:value="text" />
          </styleClass>
       </Label>
-      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 200">
+      <Label fx:id="pointsInfo" layoutX="950.0" layoutY="700.0" text="Your points: 0">
          <styleClass>
             <String fx:value="smaller-info-text" />
             <String fx:value="text" />
