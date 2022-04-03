@@ -1,51 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import java.lang.String?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<?import javafx.scene.image.ImageView?>
-<?import java.lang.String?>
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" styleClass="background" prefWidth="1344.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpScreenCtrl">
+<ScrollPane fx:id="scrollPane" hbarPolicy="NEVER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" vbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.HelpScreenCtrl">
    <stylesheets>
       <String fx:value="/client/stylesheets/help-style.css" />
    </stylesheets>
-   <children>
-      <ImageView fx:id="backBtn" fitHeight="77.0" fitWidth="158.0" layoutX="30.0" layoutY="25.0" />
-      <Label layoutX="523.0" layoutY="65.0" text="How to play">
-         <font>
-            <Font name="System Bold" size="45.0" />
-         </font></Label>
-      <Label layoutX="133.0" layoutY="165.0" prefHeight="95.0" prefWidth="1037.0" text="The game has 20 questions about renewable energy and energy consumption. You have 15 seconds to answer a questions, the faster you answer correctly, the more points you get!" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font size="21.0" />
-         </font></Label>
-      <Label layoutX="54.0" layoutY="296.0" text="Multiplayer">
-         <font>
-            <Font name="System Bold" size="22.0" />
-         </font></Label>
-      <Label layoutX="80.0" layoutY="319.0" prefHeight="95.0" prefWidth="1090.0" text="Play with others and compete for the highest score in the game! Express your emotions with emojis during the game. Use jokers to bend the rules of the game in your favor." wrapText="true">
-         <font>
-            <Font size="21.0" />
-         </font></Label>
-      <Label layoutX="80.0" layoutY="448.0" text="1. Halves time for everyone but you">
-         <font>
-            <Font size="18.0" />
-         </font></Label>
-      <Label layoutX="80.0" layoutY="477.0" text="2. Removes one wrong answer">
-         <font>
-            <Font size="18.0" />
-         </font></Label>
-      <Label layoutX="80.0" layoutY="506.0" text="3. Doubles your score for this question">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label layoutX="54.0" layoutY="407.0" text="Jokers">
-         <font>
-            <Font name="System Bold" size="22.0" />
-         </font>
-      </Label>
-   </children>
-</AnchorPane>
+   <AnchorPane fx:id="anchorPane" prefWidth="1344.0" styleClass="background">
+      <children>
+         <ImageView fx:id="backBtn" fitHeight="77.0" fitWidth="158.0" layoutX="30.0" layoutY="25.0" />
+         <Label layoutX="523.0" layoutY="65.0" text="How to play">
+            <font>
+               <Font name="System Bold" size="45.0" />
+            </font></Label>
+         <Label layoutX="133.0" layoutY="165.0" prefHeight="95.0" prefWidth="1037.0" text="The game has 20 questions about renewable energy and energy consumption. You have 15 seconds to answer a question, the faster you answer correctly, the more points you get!" textAlignment="CENTER" wrapText="true">
+            <font>
+               <Font size="21.0" />
+            </font></Label>
+         <Label layoutX="54.0" layoutY="296.0" text="Multiplayer">
+            <font>
+               <Font name="System Bold" size="22.0" />
+            </font></Label>
+         <Label layoutX="80.0" layoutY="319.0" prefHeight="95.0" prefWidth="1090.0" text="Play with others and compete for the highest score in the game! Express your emotions with emojis during the game. Use jokers to bend the rules of the game in your favor." wrapText="true">
+            <font>
+               <Font size="21.0" />
+            </font></Label>
+         <Label layoutX="74.0" layoutY="543.0" text="Time joker: halves time for everyone but you">
+            <font>
+               <Font name="System Bold" size="18.0" />
+            </font></Label>
+         <Label layoutX="74.0" layoutY="822.0" text="Answer joker: removes one wrong answer">
+            <font>
+               <Font name="System Bold" size="18.0" />
+            </font></Label>
+         <Label layoutX="74.0" layoutY="1117.0" text="Points joker: doubles your score for this question">
+            <font>
+               <Font name="System Bold" size="18.0" />
+            </font>
+         </Label>
+         <Label layoutX="54.0" layoutY="414.0" text="Jokers">
+            <font>
+               <Font name="System Bold" size="22.0" />
+            </font>
+         </Label>
+         <ImageView fx:id="timeJokerImage" fitHeight="150.0" fitWidth="200.0" layoutX="95.0" layoutY="570.0" pickOnBounds="true" preserveRatio="true" />
+         <Text layoutX="87.0" layoutY="752.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You can click the time joker at any point during the game to reduce the time other players have to answer the question! Pressure them into making a mistake at a critical moment!" wrappingWidth="449.39288330078125">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Text>
+         <Text layoutX="74.0" layoutY="484.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Use jokers to bend the rules of the game in your favor! Do so simply by clicking one of the joker buttons during a question, but be careful... you can only use each joker once during a game! " wrappingWidth="1092.7882080078125">
+            <font>
+               <Font size="21.0" />
+            </font>
+         </Text>
+         <ImageView fx:id="answerJokerImage" fitHeight="150.0" fitWidth="200.0" layoutX="95.0" layoutY="860.0" pickOnBounds="true" preserveRatio="true" />
+         <ImageView fx:id="pointsJokerImage" fitHeight="150.0" fitWidth="200.0" layoutX="95.0" layoutY="1152.0" pickOnBounds="true" preserveRatio="true" />
+         <Text layoutX="87.0" layoutY="1049.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Can't decide? You can use the answer joker to make the question a bit easier for yourself: it removes one of the wrong answer options, only for you!" wrappingWidth="467.1968994140625">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Text>
+         <Text layoutX="88.0" layoutY="1330.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If you're sure you answered correctly, why not double the stakes? Double the points you get for this question! But, if you're wrong, zero points doubled is still zero..." wrappingWidth="465.5860595703125">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Text>
+      </children>
+   </AnchorPane>
+</ScrollPane>

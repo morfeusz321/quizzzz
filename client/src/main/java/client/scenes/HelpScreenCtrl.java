@@ -3,6 +3,7 @@ package client.scenes;
 import client.utils.AnimationUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,6 +25,15 @@ public class HelpScreenCtrl implements Initializable {
     @FXML
     private AnchorPane anchorPane;
 
+    @FXML
+    private ImageView timeJokerImage;
+
+    @FXML
+    private ImageView answerJokerImage;
+
+    @FXML
+    private ImageView pointsJokerImage;
+
     /**
      * Constructor for help screen controller, which controls the interaction of the help screen
      * @param mainCtrl The main control which is used for calling methods to switch scenes
@@ -42,6 +52,11 @@ public class HelpScreenCtrl implements Initializable {
 
         backButtonHandler();
         backBtn.setImage(new Image("/client/img/back_btn.png"));
+
+        timeJokerImage.setImage(new Image("/client/img/clock_btn.png"));
+        answerJokerImage.setImage(new Image("/client/img/minus_1_btn.png"));
+        pointsJokerImage.setImage(new Image("/client/img/2x_btn.png"));
+
     }
 
     /**
@@ -57,10 +72,12 @@ public class HelpScreenCtrl implements Initializable {
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             backBtn.setEffect(hover);
             backBtn.getStyleClass().add("hover-cursor");
+            backBtn.setCursor(Cursor.HAND);
         });
         backBtn.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
             backBtn.setEffect(null);
             backBtn.getStyleClass().remove("hover-cursor");
+            backBtn.setCursor(Cursor.DEFAULT);
         });
     }
 
