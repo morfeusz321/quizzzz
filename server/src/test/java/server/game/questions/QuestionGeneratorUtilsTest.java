@@ -295,12 +295,12 @@ class QuestionGeneratorUtilsTest {
 
         long[] bounds = new long[]{0,100};
         long[] expected = new long[]{0,100};
-        utils.safeBoundCheckGeneralQuestion(bounds);
+        utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
         bounds = new long[]{9999999,9999999999L};
         expected = new long[]{9999999,9999999999L};
-        utils.safeBoundCheckGeneralQuestion(bounds);
+        utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
     }
@@ -310,18 +310,18 @@ class QuestionGeneratorUtilsTest {
 
         long[] bounds = new long[]{-20,20};
         long[] expected = new long[]{0,40};
-        utils.safeBoundCheckGeneralQuestion(bounds);
+        utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
         bounds = new long[]{-15,5};
         expected = new long[]{0,20};
-        utils.safeBoundCheckGeneralQuestion(bounds);
+        utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
         // Is theoretically a shift even though the values do not change
         bounds = new long[]{0,5};
         expected = new long[]{0,5};
-        utils.safeBoundCheckGeneralQuestion(bounds);
+        utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
     }
@@ -332,13 +332,13 @@ class QuestionGeneratorUtilsTest {
         // It only gets cut off to the negative side, as otherwise the bounds would be 0, 0
         long[] bounds = new long[]{-100,100};
         long[] expected = new long[]{0,100};
-        utils.safeBoundCheckGeneralQuestion(bounds);
+        utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
         // Also gets cut off on the positive side
         bounds = new long[]{-99999,99999999L};
         expected = new long[]{0,99900000L};
-        utils.safeBoundCheckGeneralQuestion(bounds);
+        utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
     }
@@ -412,7 +412,28 @@ class QuestionGeneratorUtilsTest {
 
     }
 
-    // TODO: Tests for getBoundsGeneralQuestion!!!
+    @Test
+    public void testGetBoundsGeneralQuestion(){
+
+        long[] bounds = utils.getBoundsGeneralQuestion(100);
+        // Max percent should be 5 according to manual calculation of the formula
+        // The generated bounds will be: -150 and 350 (100 * (1 - 5/2), 100 * (1 + 5/2))
+        // The safe check cuts of the negative part AND subtracts it from the upper
+        // => So we expect [0, 200]
+        assertArrayEquals(new long[]{0, 200}, bounds);
+
+        bounds = utils.getBoundsGeneralQuestion(10000000000000000L);
+        // Max percent should be about 1.88205433652 according to manual calculation of the formula
+        // The generated bounds will be: 589728317000000 and 19410271700000000
+        // (10000000000000000 * (1 - 1.88205433652/2), 10000000000000000 * (1 + 1.88205433652/2))
+        // The safe check does not do anything, as we do not have a negative part
+        // => So we expect [589728317000000, 19410271700000000]
+        // However we need to consider rounding errors! (here and in code) So we check a range around the values.
+        long alpha = 10000000000L; // allowed error for bounds
+        assertTrue(589728317000000L - alpha <= bounds[0] && 589728317000000L + alpha >= bounds[0]);
+        assertTrue(19410271700000000L - alpha <= bounds[1] && 19410271700000000L + alpha >= bounds[1]);
+
+    }
 
     /**
      * Class used as a non-random Random instance, that returns a specific number in turn with another specific number.

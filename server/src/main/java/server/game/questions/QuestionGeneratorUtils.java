@@ -294,7 +294,7 @@ public class QuestionGeneratorUtils {
                 (long) (consumption * (1 + maxPercentage / 2))
         };
         // Perform safety check (checks negative bounds, shift/cut-off if necessary)
-        safeBoundCheckGeneralQuestion(bounds);
+        safeBoundCheckGeneralQuestion(bounds, consumption);
         return bounds;
     }
 
@@ -302,15 +302,18 @@ public class QuestionGeneratorUtils {
      * Performs a "safety check" for the bounds, i.e. checks for negative bounds, and shifts/cuts it off if necessary.
      * This method is used for the general question generation.
      * @param bounds The bounds to check (two boundaries)
+     * @param consumption The consumption of the original activity
      */
-    public void safeBoundCheckGeneralQuestion(long[] bounds){
+    public void safeBoundCheckGeneralQuestion(long[] bounds, long consumption){
         // Cut-off to not create too large bounds
         if (bounds[0] < 0) {
             if(bounds[1] <= 20){
                 // If it is very small, shift instead of cut-off
                 bounds[1] = bounds[1] - bounds[0];
-            } else if(Math.abs(bounds[0]) < Math.abs(bounds[1])){
+            } else if(Math.abs(bounds[0]) < Math.abs(bounds[1]) && (bounds[1] + bounds[0]) > consumption){
                 // First check if the absolute lower bound is not bigger or equal to the absolute upper bound
+                // AND that the result would be bigger than the actual consumption (as it otherwise would only generate
+                // values below the consumption)
                 bounds[1] = bounds[1] + bounds[0];
                 // Cut off so that it is not more likely to have a larger number
                 // Note that this is + and not - on purpose for the above reason
