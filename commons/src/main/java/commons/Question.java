@@ -25,7 +25,6 @@ public abstract class Question {
 
     @ElementCollection
     public List<String> answerOptions;
-    // Note: the answer starts from 1, and not from 0.
     @JsonIgnore
     public long answer;
 

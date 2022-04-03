@@ -35,12 +35,14 @@ public class Game extends Thread {
 
     private ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
 
-    private ConcurrentHashMap<String, Long> answerMap;
+    private ConcurrentHashMap<String, AnswerResponseEntity> answerMap;
 
     private StopWatch stopWatch;
     private long lastTime;
 
     private ConcurrentHashMap<String, Score> leaderboard;
+
+    private ConcurrentHashMap<String, Long> timeJoker;
 
     @HashCodeExclude
     @EqualsExclude
@@ -71,6 +73,7 @@ public class Game extends Thread {
         this.lastTime = 0;
 
         this.leaderboard = new ConcurrentHashMap<>();
+        this.timeJoker = new ConcurrentHashMap<>();
 
     }
 
@@ -96,7 +99,7 @@ public class Game extends Thread {
 
         // Set first question
         currentQuestionIdx = -1;
-
+        initializeTimeJoker();
         gameUpdateManager.startGame(this.uuid);
 
         this.stopWatch.start();
@@ -132,6 +135,8 @@ public class Game extends Thread {
 
         }
 
+        initializeTimeJoker();
+
         lastTime = stopWatch.getTotalTimeMillis();
         stopWatch.start();
 
@@ -157,7 +162,21 @@ public class Game extends Thread {
      */
 
     public void saveAnswer(String username, long answer) {
-        this.answerMap.put(username, answer);
+        long timeClicked = getElapsedTimeThisQuestion();
+        long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
+        long oldTime = 0L;
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            if(oldTime<player.getValue()) {
+                oldTime = player.getValue();
+            }
+        }
+        long elapsedTime = oldTime - remainingTime;
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            player.setValue(player.getValue()-elapsedTime);
+        }
+        if(timeJoker.get(username) >= 0) {
+            this.answerMap.put(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer, (int) timeClicked));
+        }
     }
 
 
@@ -172,16 +191,13 @@ public class Game extends Thread {
             DeferredResult<ResponseEntity<GameUpdate>> req = openRequest.getValue();
             deferredResultMap.remove(username);
 
-            long answer;
-            if(!answerMap.containsKey(username)) {
-                answer = -1;
-            } else {
-                answer = answerMap.get(username);
-            }
+            AnswerResponseEntity answer;
+            answer = answerMap.getOrDefault(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, -1, 0));
 
-            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer))));
+            req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
             // TODO: Save scores to leaderboard here, calculate points
+
 
         }
 
@@ -332,6 +348,69 @@ public class Game extends Thread {
     }
 
     /**
+     * Informs all registered long polls that a time joker has been used TODO: remove System.out.println
+     * @param username the username of the player that initiated the time joker
+     */
+    public void useTimeJoker(String username) {
+
+        long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
+
+        if(timeJoker.get(username) == 15000L) {
+            long newTime = (long) (0.65 * remainingTime);
+            for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+                if(!player.getKey().equals(username)) {
+                    player.setValue(newTime);
+                }
+                else player.setValue(remainingTime);
+            }
+            System.out.println(username + " from " + remainingTime + " to " + newTime); //TODO: remove
+        }
+        else {
+
+            long oldTime = 0L;
+            for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+                if(oldTime<player.getValue()) {
+                    oldTime = player.getValue();
+                }
+            }
+            long elapsedTime = oldTime - remainingTime;
+            System.out.println(username + " from " + remainingTime + " to following: (elapsed time: " + elapsedTime + ")"); //TODO: remove
+            for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+                player.setValue(player.getValue()-elapsedTime);
+                long newTime = (long) (0.65 * player.getValue());
+                if(!player.getKey().equals(username)) player.setValue(newTime);
+            }
+        }
+        //TODO:remove
+        for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
+            System.out.println(player.getKey() + " " + player.getValue());
+        }
+
+        deferredResultMap.forEach((user, res) -> res.setResult(ResponseEntity.ok(new GameUpdateTimerJoker(timeJoker))));
+        deferredResultMap.clear();
+
+    }
+
+    /**
+     * Server-side handling of the question joker, returns an id of a button that will be removed
+     * @param username the name of the player that initiated the question joker
+     */
+    public void useQuestionJoker(String username) {
+
+        Question question = getCurrentQuestion();
+        long answer = question.answer;
+        Random random = new Random();
+        int returnValue = switch ((int) answer) {
+            case 1 -> random.nextBoolean() ? 2 : 3;
+            case 2 -> random.nextBoolean() ? 1 : 3;
+            case 3 -> random.nextBoolean() ? 1 : 2;
+            default -> 0;
+        };
+        deferredResultMap.get(username).setResult(ResponseEntity.ok(new GameUpdateQuestionJoker(returnValue)));
+
+    }
+
+    /**
      * Returns a player in this game with the specified username
      * @param username the username of the player to retrieve
      * @return the player with that username if it can be found, or null if it can't
@@ -359,6 +438,19 @@ public class Game extends Thread {
     protected void addPlayer(Player player) {
 
         this.players.put(player.getUsername(), player);
+
+    }
+
+    /**
+     * This method will initialize the ConcurrentHashMap with the usernames of all players.
+     */
+    protected void initializeTimeJoker() {
+        for(Map.Entry<String, Player> player : players.entrySet()) {
+            timeJoker.remove(player.getKey());
+        }
+        for(Map.Entry<String, Player> player : players.entrySet()) {
+            timeJoker.put(player.getKey(), 15000L);
+        }
 
     }
 
