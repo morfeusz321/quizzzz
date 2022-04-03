@@ -270,6 +270,27 @@ class QuestionGeneratorUtilsTest {
     }
 
     @Test
+    public void testIfGeneratableTrueOverlapping() {
+
+        // Having an exclusion zone that falls outside the desired range shouldn't matter
+        assertTrue(utils.checkIfGeneratable(List.of(100L), 0.1, 0, 10));
+
+        // Having the same exclusion point multiple times shouldn't matter
+        assertTrue(utils.checkIfGeneratable(List.of(10L, 10L), 0.5, 0, 20));
+
+        // Having two independent ranges should give an accurate result
+        assertTrue(utils.checkIfGeneratable(List.of(1L, 17L), 0.1, 0, 20));
+
+        // Having two overlapping ranges should give an accurate result
+        // This range is effectively [3, 12]
+        //                              => (12-3)/20 <= 0.5
+        //                              => true
+        // If overlap was not accounted for, this would result in (6+8)/20 > 0.5 => false
+        assertTrue(utils.checkIfGeneratable(List.of(6L, 8L), 0.5, 0, 20));
+
+    }
+
+    @Test
     public void safeBoundCheckGeneralQuestionNoShift() {
 
         long[] bounds = new long[]{0,100};

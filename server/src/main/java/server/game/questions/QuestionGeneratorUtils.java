@@ -1,7 +1,9 @@
 package server.game.questions;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -151,38 +153,69 @@ public class QuestionGeneratorUtils {
     }
 
     /**
-     * If the probability of generating a value
-     * @param excluded The values around which certain percentages should be excluded.
-     * @param percentExcl The percentage that should be excluded in +/- direction (PER direction, not total)
-     * @return Whether the probability of generating the random value is high enough (true/false)
+     * Returns whether it is feasible to generate a random number in a given range, provided with exclusion ranges
+     * in this range
+     * @param excluded The points around which certain percentages should be excluded
+     * @param percentExcl The percentage that should be excluded around each exclusion point in +/- direction (PER direction, not total)
+     * @param lower The lower bound of the range that numbers are to be generated in
+     * @param upper The upper bound of the range that numbers are to be generated in
+     * @return Whether the probability of generating a random value in the range on the first try is at least 50% (true/false)
      */
-    public boolean checkIfGeneratable(List<Long> excluded, double percentExcl, long lower, long upper){
+    public boolean checkIfGeneratable(List<Long> excluded, double percentExcl, long lower, long upper) {
 
-        if(lower == 0 && upper == 0){
+        if(lower == 0 && upper == 0) {
             // Something went wrong, this can/should not be generated
             return false;
         }
 
-        if(lower == upper && (!excluded.contains(upper) || percentExcl == 0)){
+        if(lower == upper) {
             // Special case where the upper bound equals the lower bound
-            return true;
+            return !excluded.contains(upper);
         }
 
-        // Starting point is just normal range
-        long possibleValues = upper - lower;
+        // Special case where there are no exclusions; this range is always generatable
+        if(excluded.size() == 0) return true;
 
-        // Subtract the excluded ranges
-        for(long l : excluded){
-            double min = l - percentExcl * l;
-            double max = l + percentExcl * l;
-            possibleValues = possibleValues - Math.round(max - min);
+        // Crop all ranges with their exclusion percentages to fit withing the bounds provided
+        // Converts the single exclusion point into a pair of min, max = bounds of the exclusion range
+        List<Pair<Long, Long>> excludedCropped = new ArrayList<>();
+        excluded.forEach(l -> {
+            long min = Math.round(l - l * percentExcl);
+            long max = Math.round(l + l * percentExcl);
+            if(min < lower) min = lower;
+            if(max > upper) max = upper;
+            excludedCropped.add(Pair.of(min, max));
+        });
+
+        // Converts the exclusion ranges into independent ranges that are non-overlapping
+        List<Pair<Long, Long>> excludedCroppedNonOverlapping = new ArrayList<>();
+        excludedCroppedNonOverlapping.add(excludedCropped.get(0));
+        excludedCropped.forEach(range -> {
+            long min = range.getLeft();
+            long max = range.getRight();
+            boolean overlapDetected = false;
+            for(int i = 0; i < excludedCroppedNonOverlapping.size(); i++) {
+                Pair<Long, Long> finalRange = excludedCroppedNonOverlapping.get(i);
+                long fMin = finalRange.getLeft();
+                long fMax = finalRange.getRight();
+                if(!(min > fMax || max < fMin)) {
+                    overlapDetected = true;
+                } else continue;
+                excludedCroppedNonOverlapping.set(i, Pair.of(Math.min(min, fMin), Math.max(max, fMax)));
+            }
+            if(!overlapDetected) excludedCroppedNonOverlapping.add(range);
+        });
+
+        // Calculate the total size of all the non-overlapping exclusion zones combined
+        long totalExclusionRangeSize = 0;
+        for(Pair<Long, Long> range : excludedCroppedNonOverlapping) {
+            totalExclusionRangeSize += range.getRight() - range.getLeft();
         }
 
-        long totalRange = upper - lower;
-        // If probability is < 50% to get a number this might create StackOverFlowErrors
+        // Calculate the total size of the range
+        long totalRangeSize = upper - lower;
 
-        // TODO: fix problem that occurs when exclusions overlap (how?)
-        return possibleValues > 0 && ((double) possibleValues / totalRange >= 0.5);
+        return ((double) totalExclusionRangeSize) / totalRangeSize <= 0.5;
 
     }
 
