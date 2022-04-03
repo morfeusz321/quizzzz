@@ -172,15 +172,5 @@ public class APIGameController {
 
     }
 
-    /**
-     * Finds all scores in the database, sorted by leaderboard rank ascending. Maps to /api/game/sorted
-     * had to move it here from /scores/sorted as I needed the gameController
-     * @return all scores saved in the database, sorted by leaderboard rank ascending
-     */
-    @GetMapping("/sorted")
-    public List<Score> getAllSorted(@RequestParam("gameID") String gameIDString) {
-        return gameController.getScoreController(gameIDString).getAllSorted();
-    }
-
 
 }

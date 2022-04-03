@@ -556,15 +556,7 @@ public class MainCtrl {
             // else the client would want to display after the game ends
             leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.END_GAME_LEADERBOARD);
             leaderboardCtrl.initializeButtonsForMainScreen();
-            // if the game is singleplayer this will be null and therefore
-            // will be redirected to get the server leaderboard
-            if(gameUpdateGameFinished.getLeaderboard()==null){
-                Platform.runLater(this::showLeaderboardServerConfirmed);
-            }
-            // this is normal multiplayer
-            else{
-                Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
-            }
+            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
 
         } else if (gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
 
@@ -592,15 +584,7 @@ public class MainCtrl {
 
             leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.MID_GAME_LEADERBOARD);
             leaderboardCtrl.disableButtonsForMainScreen();
-            // if the game is singleplayer this will be null and therefore
-            // will be redirected to get the server leaderboard
-            if(gameUpdateDisplayLeaderboard.getLeaderboard()==null){
-                Platform.runLater(this::showLeaderboardServerConfirmed);
-            }
-            // this is for multiplayer
-            else{
-                Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
-            }
+            Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
 
         } else if(gameUpdate instanceof GameUpdateTimerJoker update) {
             System.out.println("hello timer joker has been used");

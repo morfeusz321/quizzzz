@@ -457,18 +457,8 @@ public class ServerUtils {
      * @return all scores on the leaderboard sorted by rank ascending
      */
     public List<Score> getLeaderboard() {
-        // if gameId is -1 it means that no game started yet and the leaderboard was called from main screen
-        // therefore no saving o the scores is necessary
-        String gameID;
-        if(gameUUID == null){
-            gameID = "-1";
-        }
-        else{
-            gameID = gameUUID.toString();
-        }
         return ClientBuilder.newClient(new ClientConfig()) //
-                                    .target(SERVER).path("api/game/sorted") //
-                                    .queryParam( "gameID", gameID)
+                                    .target(SERVER).path("api/scores/sorted") //
                                     .request(APPLICATION_JSON) //
                                     .accept(APPLICATION_JSON) //
                                     .get(new GenericType<List<Score>>() {});
