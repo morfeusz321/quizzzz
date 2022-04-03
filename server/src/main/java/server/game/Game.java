@@ -124,21 +124,23 @@ public class Game extends Thread {
 
             currentQuestionIdx++;
             done = true;
-            // if the game is singleplayer the leaderboard is not needed
+
+            List<Score> list;
             if(gameType==GameType.SINGLEPLAYER){
-                deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
-                        new GameUpdateGameFinished(
-                                sendDatabase()
-                        )
-                )));
+                list = sendDatabase();
             }
             else if(gameType==GameType.MULTIPLAYER){
-                deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
-                        new GameUpdateGameFinished(
-                                createLeaderboardList()
-                        )
-                )));
+                list = createLeaderboardList();
             }
+            else{
+                list = new ArrayList<>();
+            }
+
+            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
+                    new GameUpdateGameFinished(
+                            list
+                    )
+            )));
             deferredResultMap.clear();
 
             return;
@@ -250,16 +252,16 @@ public class Game extends Thread {
      * Informs all registered long polls that the intermediate leaderboard should be displayed
      */
     private void sendLeaderboard() {
-        List<Score> listOfScores = createLeaderboardList();
+        List<Score> listOfScores;
         if(gameType == GameType.MULTIPLAYER){
-            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(listOfScores))));
-            deferredResultMap.clear();
+            listOfScores = createLeaderboardList();
         }
         // if the game is singleplayer the leaderboard is not needed
         else {
-            deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(sendDatabase()))));
-            deferredResultMap.clear();
+            listOfScores = sendDatabase();
         }
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(listOfScores))));
+        deferredResultMap.clear();
 
         (new Timer()).schedule(new TimerTask() {
             @Override
