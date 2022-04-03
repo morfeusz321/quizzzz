@@ -5,6 +5,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.AnswerResponseEntity;
 import commons.CommonUtils;
+import commons.GameType;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
 import javafx.application.Platform;
@@ -193,9 +194,16 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      */
     @Override
     public void disableButtons(){
-        powersText.setOpacity(0.2);
-        decreaseTime.setOpacity(0.2);
-        doublePoints.setOpacity(0.2);
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            powersText.setOpacity(0);
+            decreaseTime.setOpacity(0);
+            doublePoints.setOpacity(0);
+        }
+        else {
+            powersText.setOpacity(0.2);
+            decreaseTime.setOpacity(0.2);
+            doublePoints.setOpacity(0.2);
+        }
         setAnswerBtn.setOpacity(0);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
@@ -229,13 +237,21 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * Disables joker buttons (if already used)
      */
     public void disableJokers() {
-        if(mainCtrl.getJokerStatus(2)) {
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             doublePoints.setDisable(true);
-            doublePoints.setOpacity(0.3);
-        }
-        if(mainCtrl.getJokerStatus(3)) {
+            doublePoints.setOpacity(0);
             decreaseTime.setDisable(true);
-            decreaseTime.setOpacity(0.3);
+            decreaseTime.setOpacity(0);
+        }
+        else {
+            if(mainCtrl.getJokerStatus(2)) {
+                doublePoints.setDisable(true);
+                doublePoints.setOpacity(0.3);
+            }
+            if(mainCtrl.getJokerStatus(3)) {
+                decreaseTime.setDisable(true);
+                decreaseTime.setOpacity(0.3);
+            }
         }
     }
 
