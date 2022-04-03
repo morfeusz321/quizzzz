@@ -236,7 +236,7 @@ public class Game extends Thread {
      * @param score amount of points received
      * @param username name of the player
      */
-    private void saveScoreToLeaderboard(int score, String username){
+    public void saveScoreToLeaderboard(int score, String username){
         if(!leaderboard.containsKey(username)){
             leaderboard.put(username, new Score(username, score));
         }
@@ -296,7 +296,7 @@ public class Game extends Thread {
      * Creates a list of Scores from the internal HashMap used to hold the scores by this game, sorted by scores descending
      * @return a list of scores for players in this game sorted by scores descending
      */
-    private List<Score> createLeaderboardList() {
+    public List<Score> createLeaderboardList() {
 
         List<Score> result = new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
         Collections.reverse(result);
