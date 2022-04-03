@@ -87,8 +87,8 @@
          </children>
       </Pane>
       <Group layoutX="836.0" layoutY="386.0" />
-      <Slider fx:id="slideBar" layoutX="709.0" layoutY="306.0" prefHeight="28.0" prefWidth="434.0" />
-      <Text fx:id="sliderLabel" layoutX="699.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Slide the bar to answer the question:" textAlignment="CENTER" wrappingWidth="434.0">
+      <Slider fx:id="slideBar" layoutX="669.0" layoutY="306.0" prefHeight="28.0" prefWidth="474.0" />
+      <Text fx:id="sliderLabel" layoutX="667.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Slide the bar to answer the question:" textAlignment="CENTER" wrappingWidth="474.40000000000003">
          <styleClass>
             <String fx:value="slider-text" />
             <String fx:value="text" />
@@ -100,18 +100,6 @@
             <String fx:value="text" />
          </styleClass>
       </Text>
-      <Label fx:id="minLabel" layoutX="644.0" layoutY="302.0" text="0">
-         <styleClass>
-            <String fx:value="smaller-info-text" />
-            <String fx:value="text" />
-         </styleClass>
-      </Label>
-      <Label fx:id="maxLabel" layoutX="1172.0" layoutY="302.0" text="0">
-         <styleClass>
-            <String fx:value="smaller-info-text" />
-            <String fx:value="text" />
-         </styleClass>
-      </Label>
       <Button fx:id="setAnswerBtn" layoutX="816.0" layoutY="483.0" mnemonicParsing="false" prefHeight="66.0" prefWidth="218.0" text="Set as answer" textAlignment="CENTER" textFill="#252422" wrapText="true">
          <styleClass>
             <String fx:value="set-answer-button" />
@@ -120,5 +108,17 @@
       </Button>
       <Text fx:id="correctAnswer" layoutX="800.0" layoutY="483.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="answerEstimation" textAlignment="CENTER" />
       <TextField fx:id="answerTxtField" layoutX="900.0" layoutY="381.0" prefHeight="28.0" prefWidth="192.0" styleClass="text" />
+      <Text fx:id="minLabel" layoutX="666.0" layoutY="358.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" wrappingWidth="465.668701171875">
+         <styleClass>
+            <String fx:value="smaller-info-text" />
+            <String fx:value="text" />
+         </styleClass>
+      </Text>
+      <Text fx:id="maxLabel" layoutX="681.0" layoutY="296.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="RIGHT" wrappingWidth="465.668701171875">
+         <styleClass>
+            <String fx:value="smaller-info-text" />
+            <String fx:value="text" />
+         </styleClass>
+      </Text>
    </children>
 </AnchorPane>

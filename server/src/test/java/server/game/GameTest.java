@@ -1,6 +1,5 @@
 package server.game;
 
-import commons.CommonUtils;
 import commons.GameType;
 import commons.Player;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +8,8 @@ import server.api.TestActivityDB;
 import server.api.TestQuestionDB;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
+import server.game.questions.QuestionGenerator;
+import server.game.questions.QuestionGeneratorUtils;
 
 import java.util.List;
 import java.util.Random;
@@ -27,7 +28,7 @@ public class GameTest {
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
     private QuestionGenerator questionGenerator;
-    private CommonUtils utils;
+    private QuestionGeneratorUtils utils;
 
     @BeforeEach
     public void setup() {
@@ -38,10 +39,14 @@ public class GameTest {
         this.uuid = UUID.randomUUID();
 
         // TODO: not sure if this is the correct way to handle this
-        utils = new CommonUtils();
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController, utils);
+        utils = new QuestionGeneratorUtils();
+        questionGenerator = new QuestionGenerator(
+                new Random(),
+                activityDBController,
+                questionDBController,
+                utils);
 
         this.game = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         this.game.setUUID(uuid);
