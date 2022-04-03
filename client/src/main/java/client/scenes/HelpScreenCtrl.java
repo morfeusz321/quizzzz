@@ -34,6 +34,12 @@ public class HelpScreenCtrl implements Initializable {
     @FXML
     private ImageView pointsJokerImage;
 
+    @FXML
+    private ImageView emojiImage;
+
+    @FXML
+    private ImageView emojiPaneImage;
+
     /**
      * Constructor for help screen controller, which controls the interaction of the help screen
      * @param mainCtrl The main control which is used for calling methods to switch scenes
@@ -56,6 +62,8 @@ public class HelpScreenCtrl implements Initializable {
         timeJokerImage.setImage(new Image("/client/img/clock_btn.png"));
         answerJokerImage.setImage(new Image("/client/img/minus_1_btn.png"));
         pointsJokerImage.setImage(new Image("/client/img/2x_btn.png"));
+        emojiImage.setImage(new Image("/client/img/happy_lightbulb.png"));
+        emojiPaneImage.setImage(new Image("/client/img/help_emoji_screenshot.png"));
 
     }
 
