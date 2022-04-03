@@ -48,6 +48,9 @@ public class LeaderboardCtrl {
     private Text speechBubbleText;
 
     @FXML
+    private Text displayScore;
+
+    @FXML
     private ListView<String> leaderboard;
 
     @FXML
@@ -188,6 +191,9 @@ public class LeaderboardCtrl {
             lightbulb.addEventHandler(MouseEvent.MOUSE_EXITED, e -> lightbulb.setCursor(Cursor.DEFAULT));
             speechBubbleText.setText(" CLICK on me and join another game!");
         }
+        else if(state == LeaderboardCtrlState.MAIN_LEADERBOARD){
+            this.displayScore.setOpacity(0);
+        }
     }
 
     /**
@@ -252,6 +258,15 @@ public class LeaderboardCtrl {
             find.getStyleClass().remove("hover-cursor");
             find.getStyleClass().remove("hover-buttonDark");
         });
+    }
+
+    /**
+     * display teh current score of user
+     * @param points score of the user
+     */
+    public void setDisplayScore(int points){
+        this.displayScore.setOpacity(1);
+        this.displayScore.setText("Your score is: " + points);
     }
 
 }

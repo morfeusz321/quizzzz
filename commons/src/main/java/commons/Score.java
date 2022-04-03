@@ -41,6 +41,14 @@ public class Score {
         return this.score;
     }
 
+    /**
+     * return username
+     * @return name of the player
+     */
+    public String getUsername(){
+        return this.username;
+    }
+
 
     /**
      * Checks if two score objects are equal

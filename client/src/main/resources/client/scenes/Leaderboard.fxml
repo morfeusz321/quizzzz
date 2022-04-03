@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.text.TextFlow?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LeaderboardCtrl">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="plane" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.LeaderboardCtrl">
    <stylesheets>
       <String fx:value="client/stylesheets/leaderboard-style.css" />
       <String fx:value="client/stylesheets/screen-style.css" />
@@ -43,7 +39,18 @@
             </font>
          </Text>
       </TextFlow>
-      <TextField fx:id="username" layoutX="336.0" layoutY="573.0" promptText="Username" styleClass="input" />
-      <Button fx:id = "find" layoutX="783.0" layoutY="563.0" mnemonicParsing="false" onAction="#find" text="Find" />
+      <TextField fx:id="username" layoutX="336.0" layoutY="632.0" promptText="Username" styleClass="input" />
+      <Button fx:id="find" layoutX="781.0" layoutY="632.0" mnemonicParsing="false" onAction="#find" text="Find" />
+      <TextFlow layoutX="529.0" layoutY="563.0" prefHeight="56.0" prefWidth="311.0" textAlignment="CENTER" >
+      <Text fx:id="displayScore" strokeType="OUTSIDE" strokeWidth="0.0">
+         <styleClass>
+            <String fx:value="speech-bubble-text" />
+            <String fx:value="text" />
+         </styleClass>
+         <font>
+            <Font size="25.0" />
+         </font>
+      </Text>
+   </TextFlow>
    </children>
 </AnchorPane>

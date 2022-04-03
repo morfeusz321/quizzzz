@@ -53,11 +53,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Random;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class MainCtrl {
 
@@ -783,6 +779,7 @@ public class MainCtrl {
         primaryStage.setTitle("Leaderboard");
         primaryStage.setScene(leaderboard);
         leaderboardCtrl.fadeInLeaderboard();
+        leaderboardCtrl.setDisplayScore(scoreHelper.getPoints());
         leaderboardCtrl.populateLeaderboard(scoreList);
 
     }
