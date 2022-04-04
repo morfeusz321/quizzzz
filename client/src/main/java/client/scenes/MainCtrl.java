@@ -53,11 +53,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Random;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class MainCtrl {
 
@@ -225,8 +221,6 @@ public class MainCtrl {
                                                        Pair<MostExpensiveQuestionCtrl, Parent> mostExpensiveQ) {
 
 
-        // TODO: this definitely needs restructuring, too much code duplication
-
         this.generalQuestionCtrl = generalQ.getKey();
         this.generalQuestion = new Scene(generalQ.getValue());
 
@@ -287,7 +281,6 @@ public class MainCtrl {
         primaryStage.setTitle("General question");
         primaryStage.setScene(generalQuestion);
         generalQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -297,7 +290,6 @@ public class MainCtrl {
         primaryStage.setTitle("Comparison question");
         primaryStage.setScene(comparisonQuestion);
         comparisonQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -307,7 +299,6 @@ public class MainCtrl {
         primaryStage.setTitle("Most expensive question");
         primaryStage.setScene(mostExpensiveQuestion);
         mostExpensiveQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -317,7 +308,6 @@ public class MainCtrl {
         primaryStage.setTitle("Estimation question");
         primaryStage.setScene(estimationQuestion);
         estimationQuestionCtrl.loadQuestion(q);
-        // TODO: display same question synchronously to all clients (this will probably be complicated)
     }
 
     /**
@@ -550,7 +540,6 @@ public class MainCtrl {
 
             // This game update can later contain metadata about the game like scores or anything
             // else the client would want to display after the game ends
-            // TODO: for now this just goes to the main screen
             leaderboardCtrl.setLeaderboardCtrlState(LeaderboardCtrl.LeaderboardCtrlState.END_GAME_LEADERBOARD);
             leaderboardCtrl.initializeButtonsForMainScreen();
             Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
@@ -780,6 +769,7 @@ public class MainCtrl {
         primaryStage.setTitle("Leaderboard");
         primaryStage.setScene(leaderboard);
         leaderboardCtrl.fadeInLeaderboard();
+        leaderboardCtrl.setDisplayScore(scoreHelper.getPoints());
         leaderboardCtrl.populateLeaderboard(scoreList);
 
     }

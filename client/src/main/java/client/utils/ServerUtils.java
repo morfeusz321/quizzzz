@@ -475,7 +475,6 @@ public class ServerUtils {
      * @return all scores on the leaderboard sorted by rank ascending
      */
     public List<Score> getLeaderboard() {
-
         return ClientBuilder.newClient(new ClientConfig()) //
                                     .target(SERVER).path("api/scores/sorted") //
                                     .request(APPLICATION_JSON) //
@@ -491,21 +490,7 @@ public class ServerUtils {
     public boolean getIsInTheGame(){
         return isInGame;
     }
-/*
 
-    public Score addScoreToDB(String username, int points){
-        Form form = new Form();
-        form.param("username", username);
-        form.param("points", String.valueOf(points));
-
-        return ClientBuilder.newClient(new ClientConfig()) //
-                .target(SERVER).path("api/scores/" + username + "/" + points) //
-                .request(APPLICATION_JSON) //
-                .accept(APPLICATION_JSON) //
-                .post(Entity.entity(form, APPLICATION_FORM_URLENCODED_TYPE), Score.class);
-    }
-
-*/
 
     /**
      * retrieve player with given username

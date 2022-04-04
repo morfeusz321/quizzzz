@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.async.DeferredResult;
+import server.api.ScoreController;
 import server.game.questions.QuestionGenerator;
 
 import java.util.*;
@@ -40,6 +41,7 @@ public class Game extends Thread {
     private StopWatch stopWatch;
     private long lastTime;
 
+    private ScoreController scoreController;
     private ConcurrentHashMap<String, Score> leaderboard;
 
     private ConcurrentHashMap<String, Long> timeJoker;
@@ -61,7 +63,6 @@ public class Game extends Thread {
      * @param questionGenerator the question generator
      */
     public Game(GameUpdateManager gameUpdateManager, QuestionGenerator questionGenerator) {
-
         this.gameUpdateManager = gameUpdateManager;
         this.questionGenerator = questionGenerator;
         this.players = new ConcurrentHashMap<>();
@@ -127,9 +128,21 @@ public class Game extends Thread {
 
             currentQuestionIdx++;
             done = true;
+
+            List<Score> list;
+            if(gameType==GameType.SINGLEPLAYER){
+                list = sendDatabase();
+            }
+            else if(gameType==GameType.MULTIPLAYER){
+                list = createLeaderboardList();
+            }
+            else{
+                list = new ArrayList<>();
+            }
+
             deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(
                     new GameUpdateGameFinished(
-                            createLeaderboardList()
+                            list
                     )
             )));
             deferredResultMap.clear();
@@ -205,7 +218,7 @@ public class Game extends Thread {
             req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
             // TODO: Save scores to leaderboard here, calculate points
-
+            saveScoreToLeaderboard(answer.getPoints(), username);
 
         }
 
@@ -230,11 +243,33 @@ public class Game extends Thread {
     }
 
     /**
+     * adds the new score to the leaderboard to the given username
+     * @param score amount of points received
+     * @param username name of the player
+     */
+    public void saveScoreToLeaderboard(int score, String username){
+        if(!leaderboard.containsKey(username)){
+            leaderboard.put(username, new Score(username, score));
+        }
+        else{
+            int currentScore = leaderboard.get(username).getScore();
+            leaderboard.put(username, new Score(username, score+currentScore));
+        }
+    }
+
+    /**
      * Informs all registered long polls that the intermediate leaderboard should be displayed
      */
     private void sendLeaderboard() {
-
-        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(createLeaderboardList()))));
+        List<Score> listOfScores;
+        if(gameType == GameType.MULTIPLAYER){
+            listOfScores = createLeaderboardList();
+        }
+        // if the game is singleplayer the leaderboard is not needed
+        else {
+            listOfScores = sendDatabase();
+        }
+        deferredResultMap.forEach((username, res) -> res.setResult(ResponseEntity.ok(new GameUpdateDisplayLeaderboard(listOfScores))));
         deferredResultMap.clear();
 
         (new Timer()).schedule(new TimerTask() {
@@ -247,10 +282,32 @@ public class Game extends Thread {
     }
 
     /**
+     * send the score database from the server
+     * @return database list sorted
+     */
+    public List<Score> sendDatabase(){
+        saveScores();
+        return scoreController.getAllSorted();
+    }
+
+    /**
+     * when the leaderboard is supposed to be shown the scores from that game have to be stored to the database
+     */
+    private void saveScores(){
+        ConcurrentHashMap<String, Score> leaderboard = getLeaderboard();
+        List<Player> players = getPlayers();
+        for(Player p: players){
+            String username = p.getUsername();
+            Score score = leaderboard.get(username);
+            scoreController.addScore(username, score.getScore());
+        }
+    }
+
+    /**
      * Creates a list of Scores from the internal HashMap used to hold the scores by this game, sorted by scores descending
      * @return a list of scores for players in this game sorted by scores descending
      */
-    private List<Score> createLeaderboardList() {
+    public List<Score> createLeaderboardList() {
 
         List<Score> result = new ArrayList<>(leaderboard.values().stream().sorted(Comparator.comparingInt(s -> s.score)).toList());
         Collections.reverse(result);
@@ -569,4 +626,19 @@ public class Game extends Thread {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
 
+    /**
+     * retrieve the leaderboard of this game
+     * @return leaderboard
+     */
+    public ConcurrentHashMap<String, Score> getLeaderboard() {
+        return leaderboard;
+    }
+
+    /**
+     * set the Score Leaderboard to server database
+     * @param scoreController score database
+     */
+    public void setScoreController(ScoreController scoreController){
+        this.scoreController = scoreController;
+    }
 }

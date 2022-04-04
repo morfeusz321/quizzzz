@@ -11,10 +11,7 @@ import org.springframework.stereotype.Component;
 import server.api.ScoreController;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -285,6 +282,7 @@ public class GameController implements ApplicationContextAware {
         Game singlePlayerGame = context.getBean(Game.class);
         singlePlayerGame.setUUID(uuid);
         singlePlayerGame.setGameType(GameType.SINGLEPLAYER);
+        singlePlayerGame.setScoreController(scoreController);
 
         singlePlayerGame.addPlayer(player);
 
@@ -299,6 +297,14 @@ public class GameController implements ApplicationContextAware {
 
         return new GameUpdateFullPlayerList(singlePlayerGame.getPlayers(), singlePlayerGame.getUUID());
 
+    }
+
+    /**
+     * retrieve the database
+     * @return score database
+     */
+    public ScoreController getScoreController() {
+        return scoreController;
     }
 
 }

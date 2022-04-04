@@ -1,7 +1,6 @@
 package server.game;
 
-import commons.GameType;
-import commons.Player;
+import commons.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.api.TestActivityDB;
@@ -11,6 +10,7 @@ import server.database.QuestionDBController;
 import server.game.questions.QuestionGenerator;
 import server.game.questions.QuestionGeneratorUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -47,6 +47,7 @@ public class GameTest {
                 activityDBController,
                 questionDBController,
                 utils);
+
 
         this.game = new Game(new GameUpdateManager(new FakeSimpMessagingTemplate()), questionGenerator);
         this.game.setUUID(uuid);
@@ -187,6 +188,45 @@ public class GameTest {
         assertTrue(s.contains("gameType"));
         assertTrue(s.contains("players"));
         assertFalse(s.contains("gameUpdateManager"));
+    }
+
+    @Test
+    public void saveScoreToLeaderboard(){
+        game.saveScoreToLeaderboard(100, "user");
+        int points = game.getLeaderboard().get("user").getScore();
+        assertEquals(100, points);
+    }
+
+    @Test
+    public void createLeaderboardList(){
+        game.saveScoreToLeaderboard(100, "user");
+        List<Score> list = new ArrayList<>();
+        list.add(new Score("user", 100));
+        assertEquals(list, game.createLeaderboardList());
+    }
+
+    @Test
+    public void getQuestions(){
+        List<Question> list = new ArrayList<>();
+        assertEquals(list, game.getQuestions());
+    }
+
+    @Test
+    public void isDone(){
+        assertFalse(game.isDone());
+    }
+
+    @Test
+    public void setUUID(){
+        game.setUUID(UUID.randomUUID());
+        assertNotEquals(uuid, game.getUUID());
+    }
+
+    @Test
+    public void setGameType(){
+        GameType gameType = GameType.MULTIPLAYER;
+        game.setGameType(gameType);
+        assertEquals(GameType.MULTIPLAYER, game.getGameType());
     }
 
 }

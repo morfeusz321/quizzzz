@@ -232,4 +232,10 @@ public class GameControllerTest {
 
     }
 
+    @Test
+    public void getScoreControllerTest(){
+        ScoreController sc = gameController.getScoreController();
+        assertNotNull(sc);
+    }
+
 }
