@@ -384,6 +384,8 @@ public class MainCtrl {
             waitingRoomCtrl.addPlayerToWaitingRoom(((GameUpdatePlayerJoined) gameUpdate).getPlayer());
         } else if (gameUpdate instanceof GameUpdatePlayerLeft) {
             System.out.print("Player left: " + ((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+            gameManager.setPlayerCount(gameManager.getPlayerCount()-1);
+            Platform.runLater(this::handleUpdatePlayerCount);
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if (gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
@@ -393,6 +395,8 @@ public class MainCtrl {
             gameManager.setQuestions(server.getQuestions());
             gameManager.setCurrentQuestionByIdx(0); // set the first question
             this.scoreHelper.setPlayer(server.getPlayerByUsername(usernamePrefill));
+            gameManager.setPlayerCount(server.getPlayers().size());
+            handleUpdatePlayerCount();
             server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
         } else if (gameUpdate instanceof GameEmojiUpdate) {
             if(!((GameEmojiUpdate) gameUpdate).getUsername().equals(userCtrl.getSavedCurrentUsername())){
@@ -548,6 +552,7 @@ public class MainCtrl {
 
             gameManager.setCurrentQuestionByIdx(gameUpdateNextQuestion.getQuestionIdx());
             Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
+            handleUpdatePlayerCount();
 
         } else if (gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
             scoreHelper.setScore(gameUpdateTransitionPeriodEntered.getAnswerResponseEntity());
@@ -611,6 +616,21 @@ public class MainCtrl {
             comparisonQuestionCtrl.removeQuestion(buttonNumber);
         } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
             mostExpensiveQuestionCtrl.removeQuestion(buttonNumber);
+        }
+    }
+
+    /**
+     * Updates the player count label from the question screens when a player leaves the game
+     */
+    public void handleUpdatePlayerCount() {
+        if (gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
+            generalQuestionCtrl.updatePlayerCount();
+        } else if (gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
+            comparisonQuestionCtrl.updatePlayerCount();
+        } else if (gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
+            mostExpensiveQuestionCtrl.updatePlayerCount();
+        } else if (gameManager.getCurrentQuestion() instanceof EstimationQuestion) {
+            estimationQuestionCtrl.updatePlayerCount();
         }
     }
 
