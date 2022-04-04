@@ -1,11 +1,12 @@
 package client.scenes;
 
-import client.utils.DynamicText;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
+import commons.AnswerResponseEntity;
 import commons.CommonUtils;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,7 +15,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 public class EstimationQuestionCtrl extends QuestionCtrl {
 
@@ -25,9 +28,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     @FXML
     private Text answerDisplay;
     @FXML
-    private Label minLabel;
+    private Text minLabel;
     @FXML
-    private Label maxLabel;
+    private Text maxLabel;
     @FXML
     private Button setAnswerBtn;
     @FXML
@@ -41,6 +44,18 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
     @FXML
     protected ImageView doublePoints;
+
+    @FXML
+    protected Text correctAnswer;
+
+    @FXML
+    protected Text transText;
+
+    @FXML
+    protected TextFlow fullText;
+
+    @FXML
+    protected AnchorPane anchorPane;
 
     private boolean answerSet;
 
@@ -69,12 +84,15 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         );
         answerTxtField.textProperty().addListener(
                 (observableValue, oldValue, newValue) -> {
-                    // special case of empty string (interpreted as 0)
+                    // special case of empty string (interpreted as minimum)
                     if(newValue.equals("") && 0 <= slideBar.getMin()){
-                        answerTxtField.setText(String.valueOf(slideBar.getMin()));
+                        answerTxtField.setText(String.valueOf((int) slideBar.getMin()));
                         slideBar.setValue(slideBar.getMin());
                         return;
                     }
+                    // note: we can assume that it is an integer, as there is a cut-off point for the consumptions
+                    // in the question generation!
+
                     // check whether it is an integer
                     int newInt;
                     try{
@@ -125,45 +143,39 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
     /**
      * Gets a random question from the server and displays the question to the client. Also, restarts the progress bar
-     * (and TODO the initialization of the slider).
+     * (and the initialization of the slider).
      */
     public void loadQuestion(Question q) {
-        enableButtons();
-        disableJokers();
-        setPoints();
 
-        questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
-        title.setText(q.displayQuestion());
-        resizeQuestionHandler.setText((int) title.getFont().getSize());
+        Platform.runLater(()-> {
 
-        // TODO: handle slider and other question-dependent objects (max/min etc.)
+            enableButtons();
+            disableJokers();
+            setPoints();
 
-        long min = Long.parseLong(q.answerOptions.get(0));
-        long max = Long.parseLong(q.answerOptions.get(1));
-        System.out.println(min + " " + max + " " + q.answerOptions.get(2));
-        Text maxText = new Text();
-        Text minText = new Text();
-        maxText.setText(String.valueOf(max));
-        minText.setText(String.valueOf(min));
-        DynamicText maxTextDynamic = new DynamicText(maxText, 25, 10, "Karla");
-        DynamicText minTextDynamic = new DynamicText(minText, 25, 10, "Karla");
-        maxTextDynamic.setText((int)maxText.getFont().getSize());
-        minTextDynamic.setText((int)minText.getFont().getSize());
-        slideBar.setMax(max);
-        maxLabel.setText(maxText.getText());
-        slideBar.setMin(min);
-        minLabel.setText(minText.getText());
-        answerTxtField.setText(String.valueOf(min));
-        slideBar.setValue(slideBar.getMin());
-        answerSet = false;
-        setAnswerBtn.setText("Set as answer");
-        slideBar.setDisable(false);
-        answerTxtField.setDisable(false);
-        slideBar.setMajorTickUnit(100);
-        slideBar.setMinorTickCount(99);
-        // must be one less than major tick unit -> one tick per kWh
+            questionImg.setImage(new Image(ServerUtils.getImageURL(q.activityImagePath)));
+            title.setText(q.displayQuestion());
+            resizeQuestionHandler.setText((int) title.getFont().getSize());
 
-        refreshProgressBar();
+            long min = Long.parseLong(q.answerOptions.get(0));
+            long max = Long.parseLong(q.answerOptions.get(1));
+            slideBar.setMax(max);
+            maxLabel.setText(max + " Wh");
+            slideBar.setMin(min);
+            minLabel.setText(min + " Wh");
+            answerTxtField.setText(String.valueOf(min));
+            slideBar.setValue(slideBar.getMin());
+            answerSet = false;
+            setAnswerBtn.setText("Set as answer");
+            slideBar.setDisable(false);
+            answerTxtField.setDisable(false);
+            slideBar.setMajorTickUnit(100);
+            slideBar.setMinorTickCount(99);
+            // must be one less than major tick unit -> one tick per Wh
+
+            refreshProgressBar();
+
+        });
 
     }
 
@@ -175,19 +187,14 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         powersText.setOpacity(0.2);
         decreaseTime.setOpacity(0.2);
         doublePoints.setOpacity(0.2);
+        setAnswerBtn.setOpacity(0);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         slideBar.setDisable(true);
         answerTxtField.setDisable(true);
         setAnswerBtn.setDisable(true);
-    }
-
-    /**
-     * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
-     * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
-     */
-    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
-        disableButtons();
+        correctAnswer.setOpacity(1);
+        fullText.setOpacity(1);
     }
 
     /**
@@ -201,7 +208,12 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         doublePoints.setDisable(false);
         slideBar.setDisable(false);
         answerTxtField.setDisable(false);
+        setAnswerBtn.setOpacity(1);
         setAnswerBtn.setDisable(false);
+        correctAnswer.setOpacity(0);
+        correctAnswer.setDisable(true);
+        fullText.setOpacity(0);
+        pointsAdded.setOpacity(0);
     }
 
     /**
@@ -217,4 +229,46 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
             decreaseTime.setOpacity(0.3);
         }
     }
+
+    /**
+     * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
+     * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
+     */
+    public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
+
+        Platform.runLater(this::disableButtons);
+
+        AnswerResponseEntity answer = gameUpdate.getAnswerResponseEntity();
+        long correct = answer.getAnswer();
+        String s = "The correct answer\n was: " + correct + "Wh.";
+        correctAnswer.setText(s);
+        if (answer.correct) {
+            Platform.runLater(() -> {
+                transText.setText("You answered correctly! Impressive!");
+                fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                correctAnswer.setOpacity(0);
+                pointsAdded.setOpacity(1);
+                pointsAdded.setText(" +" + answer.getPoints());
+            });
+        } else {
+            if (!answerSet) {
+                Platform.runLater(() -> {
+                    transText.setText("You did not answer. Try to be faster!");
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1043248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                });
+            } else {
+                Platform.runLater(() -> {
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                    transText.setText("You were " + Math.abs(answer.proximity) + "Wh close to the answer!");
+                    pointsAdded.setOpacity(1);
+                    pointsAdded.setText("  +" + answer.getPoints());
+                });
+            }
+        }
+
+    }
+
 }

@@ -33,7 +33,7 @@ public class EstimationQuestion extends Question {
 
         this.answerOptions = answerOptions;
 
-        this.answer = Long.parseLong(answerOptions.get(2));
+        this.answer = mainActivity.consumption;
 
     }
 

@@ -195,6 +195,8 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
                 buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerCorrect");
                 fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
                 fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+                pointsAdded.setText(" +" + answer.getPoints());
+                pointsAdded.setOpacity(1);
             });
         } else {
             if(lastSelectedButton==0) {
@@ -327,6 +329,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
             x.getStyleClass().add("question-button");
             x.getStyleClass().add("button");
         }
+        pointsAdded.setOpacity(0);
     }
 
 

@@ -1,4 +1,4 @@
-package server.game;
+package server.game.questions;
 
 import commons.*;
 import org.springframework.data.domain.Page;
@@ -15,19 +15,19 @@ public class QuestionGenerator {
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
-    private final CommonUtils utils;
+    private final QuestionGeneratorUtils utils;
 
     /**
      * Creates the question generator
      * @param random               the random number generator to be used by this controller
      * @param activityDBController the interface with the activity database to be used for generation
      * @param questionDBController the interface with the question database to be used for generation
-     * @param utils                an instance of the CommonUtils used for the SI prefixes
+     * @param utils                instance of utility class for question generation
      */
     public QuestionGenerator(Random random,
                              ActivityDBController activityDBController,
                              QuestionDBController questionDBController,
-                             CommonUtils utils) {
+                             QuestionGeneratorUtils utils) {
 
         this.random = random;
         this.activityDBController = activityDBController;
@@ -109,7 +109,7 @@ public class QuestionGenerator {
             activities.add(first);
             // Second activity: Bounds depend on first activity added. The id and consumption of the first activity are
             // excluded.
-            long[] bounds = getLowerUpperBoundSmall(first.consumption);
+            long[] bounds = utils.getLowerUpperBoundSmall(first.consumption);
             activities.add(activityDBController.getActivityExclAndInRange(
                     List.of(first.id),
                     List.of(first.consumption),
@@ -151,108 +151,115 @@ public class QuestionGenerator {
     }
 
     /**
-     * Generates a (random) upper/lower bound for a given consumption, which is used to generate the new activities
-     * with a close consumption to this one. The bound is dependent on the "scale" of the given consumption. The input
-     * should be non-negative.
-     * @param consumption the consumption from which to generate a range
-     * @return an array with two longs, the lower bound (idx 0) and the upper bound (idx 1)
-     */
-    public long[] getLowerUpperBoundSmall(long consumption){
-        // This is a method that creates a "small" range, that is closer to the initial value.
-        // The range does not have to be generated randomly, as the activity itself is chosen randomly
-        // within that range.
-        // TODO: add method with bigger range, so that different "difficulties" can be generated
-        if(consumption <= 500){
-            return new long[]{0, 500};
-        } else if(consumption <= 1000){
-            return new long[]{500, 1000};
-        } else if(consumption <= 10000){
-            return new long[]{1000,10000};
-        } else if(consumption <= 100000){
-            return new long[]{10000,10000000L};
-        } else if(consumption <= 10000000L){
-            return new long[]{100000,1000000000L};
-        } else if(consumption <= 1000000000L){
-            return new long[]{10000000L,100000000000L};
-        } else if(consumption <= 100000000000L){
-            return new long[]{1000000000L,100000000000L};
-        } else {
-            return new long[]{100000000000L,Long.MAX_VALUE};
-        }
-    }
-
-    /**
      * Returns a comparison question generated from a random activity selected from the database
      *
      * @return A ComparisonQuestion, or null if no question can be generated
      */
     public Question getComparisonQuestion() {
         try{
-            //We search for the smallest difference between two consumptions
 
+            // First we retrieve a random activity -> main activity
+            Activity main = activityDBController.getRandomActivity();
 
-            //First we sort the list of returned activities
-            List<Activity> activities = activityDBController.getFiveRandomActivities();
-
-            if(activities.size() < 5 || activities.contains(null)) {
-                return null;
+            if(main == null) {
+                return null; // Something went wrong
             }
 
-            Collections.sort(activities, new Comparator<Activity>() {
-                @Override
-                public int compare(Activity o1, Activity o2) {
-                    // this cannot simply return the difference as the difference can be a long
-                    long diff = o1.consumption - o2.consumption;
-                    if(diff < 0){
-                        return -1;
-                    } else if (diff > 0){
-                        return 1;
-                    }
-                    return 0;
-                }
-            });
+            // Get a second activity which is in a small range, i.e. 5%, around the actual one
+            Activity answer = activityDBController.getActivityExclAndInRange(
+                    List.of(main.id), List.of(), // no values need to be excluded
+                    Math.round(main.consumption - main.consumption * 0.05),
+                    Math.round(main.consumption + main.consumption * 0.05)
+            );
 
-            //Now we search in the List
-            Activity firstActivity = null;
-            Activity secondActivity = null;
-            long difference = Long.MAX_VALUE;
-            for (int i = 0; i < activities.size() - 1; i++) {
-                if (activities.get(i + 1).consumption - activities.get(i).consumption < difference) {
-                    difference = activities.get(i + 1).consumption - activities.get(i).consumption;
-                    firstActivity = activities.get(i + 1);
-                    secondActivity = activities.get(i);
+            if(answer == null) {
+                // We can only find activities with a difference bigger than 5% of the original activity, we
+                // need to search again. First we try to find one with a "higher" range, of 10%:
+                answer = activityDBController.getActivityExclAndInRange(
+                        List.of(main.id), List.of(), // no values need to be excluded
+                        Math.round(main.consumption - main.consumption * 0.1),
+                        Math.round(main.consumption + main.consumption * 0.1)
+                );
+                if(answer == null){
+                    // No answer could be generated, try to find another activity
+                    return getComparisonQuestion();
                 }
             }
 
-            // If difference is bigger than 10% of the original activity we search again
-            // Note: Here casting to double is fine, because doubles have a bigger range than longs
-            if (((double) difference / firstActivity.consumption) > 0.1) {
+            List<Activity> chosenActivities = getAnswerOptionsComparisonQuestion(main, answer);
+            if(chosenActivities == null) {
+                // If it does not have any elements (or less than 2), no/not enough fitting activities could be
+                // found, so try again.
                 return getComparisonQuestion();
             }
 
-            // Create answer options list (activities can not be used as answer options list, as it contains 5
-            // activities, including the actual answer and the title. The actual answer should be guaranteed to be in
-            // the answer options, and the title should never be in it.
+            // Create answer option list and add the actual answer.
             List<Activity> answerOptions = new ArrayList<>();
-            // Do not add the first activity as this is the title (should not be a selectable answer)
-            answerOptions.add(secondActivity);
-            activities.remove(firstActivity);
-            activities.remove(secondActivity);
-            // Get two random activities from the remaining one's
-            int randomIdx = random.nextInt(3);
-            answerOptions.add(activities.remove(randomIdx));
-            randomIdx = random.nextInt(2);
-            answerOptions.add(activities.remove(randomIdx));
+            answerOptions.add(answer);
+
+            // Now we can get 2 random activities from the generated list, and add those as answer options.
+            int idx = random.nextInt(chosenActivities.size());
+            answerOptions.add(chosenActivities.remove(idx));
+            idx = random.nextInt(chosenActivities.size());
+            answerOptions.add(chosenActivities.remove(idx));
+
             // Shuffle for random order
             Collections.shuffle(answerOptions);
 
             //We return the question
-            Question toReturn = new ComparisonQuestion(firstActivity, answerOptions, answerOptions.indexOf(secondActivity)+1);
+            Question toReturn = new ComparisonQuestion(main, answerOptions, answerOptions.indexOf(answer)+1);
             questionDBController.add(toReturn);
             return toReturn;
+
         } catch (StackOverflowError e){
+            System.out.println("Error: No valid question could be generated from the database.");
+            return null;
+        } catch (Exception e){
+            e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Returns a list of activities that can be used as answer options, or null if less than 2 could be generated.
+     * @param main The main activity of the comparison question, i.e. the title
+     * @param answer The answer of the comparison question
+     * @return a list of activities that can be used as answer options, or null if less than 2 could be generated.
+     */
+    public List<Activity> getAnswerOptionsComparisonQuestion(Activity main, Activity answer) {
+
+        List<Activity> chosenActivities = new ArrayList<>();
+        // Now two new activities are needed: Get 2 that are 20-40% below the answer, and 2 that are 20-40% above.
+        // Those are put into a list, null values are filtered out.
+
+        List<String> exclIds = new ArrayList<>(List.of(main.id, answer.id)); // use this so that it is not immutable
+        List<Long> exclConsumptions = List.of(main.consumption, answer.consumption);
+        // Get 2 activities in the "lower" part, i.e. 20-40% below the answer
+        // Use the answer for the bound calculation, as we want to distinguish the answer options
+        long lowerBound = (long) (answer.consumption * 0.6);
+        long upperBound = (long) (answer.consumption * 0.8);
+        for(int i = 0; i < 4; i++){
+            Activity chosen = activityDBController.getActivityExclAndInRange(
+                    exclIds, exclConsumptions, lowerBound, upperBound // exclude main and answer consumption
+            );
+            if(chosen != null) {
+                chosenActivities.add(chosen);
+                exclIds.add(chosen.id);
+            }
+            if(i == 1) {
+                // Use other bounds, now to get 2 activities in the "upper" part, i.e. 20-40% above the answer
+                lowerBound = (long) (answer.consumption * 1.2);
+                upperBound = (long) (answer.consumption * 1.4);
+            }
+        }
+
+        // Not enough activities could be found
+        if(chosenActivities.size() < 2) {
+            return null;
+        }
+        // Otherwise, return the generated activities
+        return chosenActivities;
+
     }
 
     /**
@@ -262,43 +269,29 @@ public class QuestionGenerator {
      */
     public Question getEstimationQuestion() {
 
-        ActivityDB activityDB = activityDBController.getInternalDB();
-
-        long count = activityDB.count();
-        int index;
         try {
-            index = random.nextInt((int) count);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
+            // The consumption of the activity should be < 1000000, so we search for an activity with a consumption between
+            // 0 and 999999 Wh. The reasons for this bound are that the user can more easily estimate "lower" consumptions
+            // and that higher SI units cannot be used here, as they would make the slideBar difficult to configure.
+            Activity a = activityDBController.getActivityExclAndInRange(List.of(),List.of(),0,999999);
 
-        Page<Activity> page = activityDB.findAll(PageRequest.of(index, 1));
-        if (page.hasContent() && page.getContent().get(0) != null) {
-            Activity a = page.getContent().get(0);
-            List<String> aw = new ArrayList<>();
+            // Get the bounds for the input range for the estimation question. The consumption can now be safely cast
+            // to an integer, as the above condition needs to be fulfilled.
+            int[] bounds = utils.getBoundsEstimationQuestion(random, (int) a.consumption);
 
-            long min = a.consumption - 100;
-            long max = a.consumption + 100;
+            // Create the question
+            List<String> questionInfo = new ArrayList<>();
+            questionInfo.add(Integer.toString(bounds[0]));
+            questionInfo.add(Integer.toString(bounds[1]));
+            Question toReturn = new EstimationQuestion(a, questionInfo);
 
-            int shift = random.nextInt(200) - 100;
-
-            min = min + shift;
-            max = max + shift;
-
-            if(min < 0) {
-                max = max - min;
-                min = 0;
-            }
-
-            aw.add(Long.toString(min));
-            aw.add(Long.toString(max));
-            aw.add(Long.toString(a.consumption));
-            Question toReturn = new EstimationQuestion(a, aw);
+            // Return/save the question
             questionDBController.add(toReturn);
             return toReturn;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-
-        return null;
 
     }
 

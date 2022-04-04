@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.request.async.DeferredResult;
 import server.api.ScoreController;
+import server.game.questions.QuestionGenerator;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

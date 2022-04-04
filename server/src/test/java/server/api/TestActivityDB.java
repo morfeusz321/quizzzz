@@ -40,8 +40,8 @@ public class TestActivityDB implements ActivityDB {
         // The elements will not be modified, so using this as a copy is not a problem
         Collections.shuffle(tmpDb);
         // Random order and search for the first activity that fulfills the requirements (or return null)
-        return db.stream().filter(a -> (!ids.contains(a.id) && !consumptions.contains(a.consumption)
-        && a.consumption <= upper && a.consumption >= lower)).findAny().orElse(null);
+        return tmpDb.stream().filter(a -> (!ids.contains(a.id) && !consumptions.contains(a.consumption)
+        && a.consumption <= upper && a.consumption >= lower)).findFirst().orElse(null);
     }
 
     @Override

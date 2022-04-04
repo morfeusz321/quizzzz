@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import server.database.ActivityDBController;
 import server.database.QuestionDBController;
 import server.game.GameTestUtils;
-import server.game.QuestionGenerator;
+import server.game.questions.QuestionGenerator;
+import server.game.questions.QuestionGeneratorUtils;
 
 import java.util.*;
 
@@ -17,15 +18,18 @@ public class QuestionGeneratorTest {
     private ActivityDBController activityDBController;
     private QuestionDBController questionDBController;
     private QuestionGenerator questionGenerator;
-    private CommonUtils utils;
 
     @BeforeEach
     public void setup() {
 
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
-        utils = new CommonUtils();
-        questionGenerator = new QuestionGenerator(new Random(), activityDBController, questionDBController, utils);
+        QuestionGeneratorUtils utils = new QuestionGeneratorUtils();
+        questionGenerator = new QuestionGenerator(
+                new Random(),
+                activityDBController,
+                questionDBController,
+                utils);
 
     }
 
@@ -84,11 +88,11 @@ public class QuestionGeneratorTest {
     public void getComparisonQuestionTest() {
 
         activityDBController.getInternalDB().deleteAll();
-        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 201);
-        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 260);
-        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 187);
-        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 2070);
-        Activity activity5 = new Activity("5", "/path/to/image/", "Activity 5", 20092);
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 100);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 65);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 135);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 101);
+        Activity activity5 = new Activity("5", "/path/to/image/", "Activity 5", 99);
         activityDBController.getInternalDB().save(activity1);
         activityDBController.getInternalDB().save(activity2);
         activityDBController.getInternalDB().save(activity3);
@@ -100,11 +104,13 @@ public class QuestionGeneratorTest {
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        // Either main activity should be activity1 and the answer should be activity3 or the other way around
-        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer - 1))
-                        ||
-                activity3.title.equals(q.answerOptions.get((int) q.answer - 1)));
-
+        // From the given activities, the main one needs to be either 1, 4 or 5 (for others no correct
+        // answer sets can be generated)
+        assertTrue(q.activityTitle.equals(activity1.title) || q.activityTitle.equals(activity4.title) ||
+                q.activityTitle.equals(activity5.title));
+        // The other answer options should be activity 2 and 3
+        assertTrue(q.answerOptions.contains(activity2.title));
+        assertTrue(q.answerOptions.contains(activity3.title));
         // It should not contain the title as answer
         assertFalse(q.answerOptions.contains(q.activityTitle));
 
@@ -145,60 +151,42 @@ public class QuestionGeneratorTest {
     public void getComparisonWithLongTest() {
 
         activityDBController.getInternalDB().deleteAll();
-        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9999999999L);
-        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 19999999999L);
-        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 9999999998L);
-        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 8888888888L);
-        Activity activity5 = new Activity("5", "/path/to/image/", "Activity 5", 9999999999999L);
+        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 100000000000L);
+        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 65000000000L);
+        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 135000000000L);
+        Activity activity4 = new Activity("4", "/path/to/image/", "Activity 4", 100000000001L);
+        Activity activity5 = new Activity("5", "/path/to/image/", "Activity 5", 99999999999L);
         activityDBController.getInternalDB().save(activity1);
         activityDBController.getInternalDB().save(activity2);
         activityDBController.getInternalDB().save(activity3);
         activityDBController.getInternalDB().save(activity4);
-        activityDBController.getInternalDB().save(activity5);
 
         Question q = questionGenerator.getComparisonQuestion();
 
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
 
-        // Either main activity should be activity1 and the answer should be activity3 or the other way around
-        assertTrue(activity1.title.equals(q.answerOptions.get((int) q.answer - 1))
-                ||
-                activity3.title.equals(q.answerOptions.get((int) q.answer - 1)));
-
+        // From the given activities, the main one needs to be either 1, 4 or 5 (for others no correct
+        // answer sets can be generated)
+        assertTrue(q.activityTitle.equals(activity1.title) || q.activityTitle.equals(activity4.title) ||
+                q.activityTitle.equals(activity5.title));
+        // The other answer options should be activity 2 and 3
+        assertTrue(q.answerOptions.contains(activity2.title));
+        assertTrue(q.answerOptions.contains(activity3.title));
         // It should not contain the title as answer
         assertFalse(q.answerOptions.contains(q.activityTitle));
 
     }
 
     @Test
-    public void getRandomQuestionWithLongTest() {
-
-        // The WhichIsMore question needs the consumptions to be distinct, otherwise a StackOverFlow error will be thrown.
-        activityDBController.getInternalDB().deleteAll();
-        activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "title", 9999999998L));
-        activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "title", 9999999999L));
-        activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "title", 9999999997L));
-        activityDBController.getInternalDB().save(new Activity("id4", "imagePath", "title", 9999999996L));
-        activityDBController.getInternalDB().save(new Activity("id5", "imagePath", "title", 9999999995L));
-
-        Question q = questionGenerator.getRandomQuestion();
-
-        assertNotNull(q);
-        assertEquals(q, questionDBController.getById(q.questionId));
-
-    }
-
-    @Test
     public void getEstimationWithLongTest() {
+        // It should return null as long values are above the cut-off point for estimation questions.
 
         activityDBController.getInternalDB().deleteAll();
         activityDBController.getInternalDB().save(new Activity("id", "imagePath", "title", 9999999995L));
 
         Question q = questionGenerator.getEstimationQuestion();
-
-        assertNotNull(q);
-        assertEquals(q, questionDBController.getById(q.questionId));
+        assertNull(q);
 
     }
 
@@ -330,28 +318,7 @@ public class QuestionGeneratorTest {
 
     }
 
-    @Test
-    public void testUpperLowerBoundSmall(){
-        // Tests the utility method getLowerUpperBoundSmall().
 
-        long[] bounds = questionGenerator.getLowerUpperBoundSmall(10);
-        assertTrue(bounds[0] == 0 && bounds[1] == 500);
-        bounds = questionGenerator.getLowerUpperBoundSmall(800);
-        assertTrue(bounds[0] == 500 && bounds[1] == 1000);
-        bounds = questionGenerator.getLowerUpperBoundSmall(1200);
-        assertTrue(bounds[0] == 1000 && bounds[1] == 10000);
-        bounds = questionGenerator.getLowerUpperBoundSmall(18000);
-        assertTrue(bounds[0] == 10000 && bounds[1] == 10000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(150000L);
-        assertTrue(bounds[0] == 100000 && bounds[1] == 1000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(12300000L);
-        assertTrue(bounds[0] == 10000000L && bounds[1] == 100000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(18970000000L);
-        assertTrue(bounds[0] == 1000000000L && bounds[1] == 100000000000L);
-        bounds = questionGenerator.getLowerUpperBoundSmall(112000000000L);
-        assertTrue(bounds[0] == 100000000000L && bounds[1] == Long.MAX_VALUE);
-
-    }
 
     // TODO: the following section is commented out so that we still have a reference for testing receiving answers. As
     //  soon as receiving answers is implemented, we should remove this.

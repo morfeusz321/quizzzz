@@ -51,7 +51,7 @@ public abstract class QuestionCtrl {
     @FXML
     private Label questionInfo;
     @FXML
-    private Label pointsInfo;
+    private Text pointsInfo;
     @FXML
     private Label playersInfo;
 
@@ -85,6 +85,9 @@ public abstract class QuestionCtrl {
 
     @FXML
     protected ImageView wrongCross;
+
+    @FXML
+    protected Text pointsAdded;
 
     private List<ImageView> emojiList;
 

@@ -160,6 +160,10 @@ public class ActivityDBController {
     /**
      * Gets a random activity from the database which consumption is in a specified range, while excluding specific
      * activities and consumptions
+     * @param ids The ids to exclude
+     * @param consumptions Consumptions to exclude
+     * @param lower The lower bound (incl.)
+     * @param upper The upper bound (incl.)
      * @return a random activity which fulfills the above requirements
      */
     public Activity getActivityExclAndInRange(List<String> ids,

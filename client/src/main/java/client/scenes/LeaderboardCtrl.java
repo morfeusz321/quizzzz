@@ -1,6 +1,7 @@
 package client.scenes;
 
 import client.utils.AnimationUtils;
+import client.utils.ModalFactory;
 import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.Score;
@@ -16,7 +17,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,7 @@ public class LeaderboardCtrl {
     }
 
     private ServerUtils server;
+    private ModalFactory modalFactory;
     private MainCtrl mainCtrl;
     private AnimationUtils animation;
 
@@ -65,11 +66,13 @@ public class LeaderboardCtrl {
     /**
      * Constructor for this controller
      * @param server Utilities for communicating with the server (API endpoint)
+     * @param modalFactory the modal factory to use
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
-    public LeaderboardCtrl(ServerUtils server, MainCtrl mainCtrl) {
+    public LeaderboardCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
         this.server = server;
+        this.modalFactory = modalFactory;
         this.mainCtrl = mainCtrl;
         this.usernameListInternal = new ArrayList<>();
         this.animation = new AnimationUtils();
@@ -166,9 +169,7 @@ public class LeaderboardCtrl {
         int idx = usernameListInternal.indexOf(username);
 
         if(idx == -1) {
-            var alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setContentText("User could not be found: \"" + username +"\"!");
+            Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "", "User could not be found: \"" + username +"\"!");
             alert.showAndWait();
             return;
         }
