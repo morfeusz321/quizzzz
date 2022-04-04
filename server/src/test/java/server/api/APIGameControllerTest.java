@@ -13,7 +13,7 @@ import org.springframework.web.context.request.async.DeferredResult;
 import server.game.Game;
 import server.game.GameController;
 import server.game.GameUpdateManager;
-import server.game.QuestionGenerator;
+import server.game.questions.QuestionGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
