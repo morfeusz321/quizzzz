@@ -7,10 +7,7 @@ import com.google.inject.Inject;
 import commons.Score;
 import javafx.fxml.FXML;
 import javafx.scene.Cursor;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -97,8 +94,18 @@ public class LeaderboardCtrl {
         hover.setHue(-0.02);
 
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            server.disconnect();
-            goBackButton();
+            if(state == LeaderboardCtrlState.MID_GAME_LEADERBOARD || state == LeaderboardCtrlState.END_GAME_LEADERBOARD) {
+                Alert alert = modalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.OK) {
+                    server.disconnect();
+                    goBackButton();
+                }
+            } else {
+                server.disconnect();
+                goBackButton();
+            }
         });
 
         lightbulb.setImage(new Image("/client/img/animation/1.png"));
