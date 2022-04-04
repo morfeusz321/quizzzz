@@ -194,15 +194,11 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      */
     @Override
     public void disableButtons(){
+        powersText.setOpacity(0.2);
+        decreaseTime.setOpacity(0.2);
+        doublePoints.setOpacity(0.2);
         if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
-            powersText.setOpacity(0);
             decreaseTime.setOpacity(0);
-            doublePoints.setOpacity(0);
-        }
-        else {
-            powersText.setOpacity(0.2);
-            decreaseTime.setOpacity(0.2);
-            doublePoints.setOpacity(0.2);
         }
         setAnswerBtn.setOpacity(0);
         decreaseTime.setDisable(true);
@@ -237,21 +233,17 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * Disables joker buttons (if already used)
      */
     public void disableJokers() {
-        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+        if(mainCtrl.getJokerStatus(2)) {
             doublePoints.setDisable(true);
-            doublePoints.setOpacity(0);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             decreaseTime.setDisable(true);
             decreaseTime.setOpacity(0);
-        }
-        else {
-            if(mainCtrl.getJokerStatus(2)) {
-                doublePoints.setDisable(true);
-                doublePoints.setOpacity(0.3);
-            }
-            if(mainCtrl.getJokerStatus(3)) {
-                decreaseTime.setDisable(true);
-                decreaseTime.setOpacity(0.3);
-            }
         }
     }
 

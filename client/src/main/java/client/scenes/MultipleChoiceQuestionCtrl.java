@@ -300,17 +300,12 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         for(Button x : buttonList){
             x.setDisable(true);
         }
+        powersText.setOpacity(0.3);
+        decreaseTime.setOpacity(0.3);
+        doublePoints.setOpacity(0.3);
+        removeQuestion.setOpacity(0.3);
         if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
-            powersText.setOpacity(0);
             decreaseTime.setOpacity(0);
-            doublePoints.setOpacity(0);
-            removeQuestion.setOpacity(0);
-        }
-        else {
-            powersText.setOpacity(0.3);
-            decreaseTime.setOpacity(0.3);
-            doublePoints.setOpacity(0.3);
-            removeQuestion.setOpacity(0.3);
         }
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
@@ -417,28 +412,22 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * Disables joker buttons (if already used)
      */
     public void disableJokers() {
-        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
-            doublePoints.setDisable(true);
-            doublePoints.setOpacity(0);
+        if(mainCtrl.getJokerStatus(1)) {
             removeQuestion.setDisable(true);
-            removeQuestion.setOpacity(0);
+            removeQuestion.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(2)) {
+            doublePoints.setDisable(true);
+            doublePoints.setOpacity(0.3);
+        }
+        if(mainCtrl.getJokerStatus(3)) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0.3);
+        }
+
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             decreaseTime.setDisable(true);
             decreaseTime.setOpacity(0);
-            powersText.setOpacity(0);
-        }
-        else {
-            if(mainCtrl.getJokerStatus(1)) {
-                removeQuestion.setDisable(true);
-                removeQuestion.setOpacity(0.3);
-            }
-            if(mainCtrl.getJokerStatus(2)) {
-                doublePoints.setDisable(true);
-                doublePoints.setOpacity(0.3);
-            }
-            if(mainCtrl.getJokerStatus(3)) {
-                decreaseTime.setDisable(true);
-                decreaseTime.setOpacity(0.3);
-            }
         }
     }
 
