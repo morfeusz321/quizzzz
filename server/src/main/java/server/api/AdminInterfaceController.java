@@ -70,7 +70,7 @@ public class AdminInterfaceController {
     }
 
     /**
-     * Imports a new list of activities to the database
+     * Imports a new list of activities to the database and overrides (deletes) the current DB
      * @param path path to the json file
      * @return 200 OK: List imported, 400 Bad Request: Wrong input
      */
@@ -83,6 +83,24 @@ public class AdminInterfaceController {
         File file = new File(path);
         activityDBController.forceReload(file);
         return ResponseEntity.ok(path);
+
+    }
+
+    /**
+     * Imports a new list of activities to the database without overriding the current DB
+     * @param path path to the json file
+     * @return 200 OK: List imported, 400 Bad Request: Wrong input
+     */
+    @PostMapping("/activities/importupdate")
+    public ResponseEntity<String> importActivityUpdate(@RequestBody String path) {
+
+        if (CommonUtils.isNullOrEmpty(path)) {
+            return ResponseEntity.badRequest().build();
+        }
+        File file = new File(path);
+        activityDBController.update(file);
+        return ResponseEntity.ok(path);
+
     }
 
 }

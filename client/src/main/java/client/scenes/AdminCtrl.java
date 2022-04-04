@@ -56,6 +56,8 @@ public class AdminCtrl implements Initializable {
     @FXML
     private Button imports;
     @FXML
+    private Button importsUpdate;
+    @FXML
     private ImageView backBtn;
 
     @FXML
@@ -85,7 +87,7 @@ public class AdminCtrl implements Initializable {
         imagePath.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().imagePath));
         title.setCellValueFactory(q -> new SimpleStringProperty(q.getValue().title));
         consumption.setCellValueFactory(q -> new SimpleStringProperty(String.valueOf(q.getValue().consumption)));
-        buttonList = List.of(edit, delete, imports, add);
+        buttonList = List.of(edit, delete, imports, importsUpdate, add);
         initializeEventHandlers();
 
         backButtonHandler();
@@ -145,7 +147,8 @@ public class AdminCtrl implements Initializable {
     }
 
     /**
-     * Opens a file chooser window where you can choose an activities.json file to import
+     * Opens a file chooser window where you can choose an activities.json file to import and override
+     * (delete) the current DB
      */
     public void importActivity() {
         FileChooser fileChooser = new FileChooser();
@@ -153,6 +156,22 @@ public class AdminCtrl implements Initializable {
             File selectedFile = fileChooser.showOpenDialog(adminScene.getWindow());
             String path = selectedFile.getPath();
             server.importActivity(path);
+            refresh();
+        } catch (NullPointerException e) {
+            System.out.println("Selected file is null");
+        }
+    }
+
+    /**
+     * Opens a file chooser window where you can choose an activities.json file to import without
+     * overriding the current DB
+     */
+    public void importActivityUpdate() {
+        FileChooser fileChooser = new FileChooser();
+        try {
+            File selectedFile = fileChooser.showOpenDialog(adminScene.getWindow());
+            String path = selectedFile.getPath();
+            server.importActivityUpdate(path);
             refresh();
         } catch (NullPointerException e) {
             System.out.println("Selected file is null");

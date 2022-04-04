@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -7,7 +8,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<?import java.lang.String?>
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="756.0" prefWidth="1344.0" styleClass="background" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.scenes.AdminCtrl">
     <stylesheets>
         <String fx:value="client/stylesheets/Input.css" />
@@ -27,7 +27,8 @@
       <Button fx:id="edit" disable="true" layoutX="169.0" layoutY="629.0" mnemonicParsing="false" onAction="#showEdit" text="Edit selected" />
       <Button fx:id="delete" disable="true" layoutX="38.0" layoutY="629.0" mnemonicParsing="false" onAction="#delete" text="Delete selected" />
       <Button fx:id="add" layoutX="38.0" layoutY="689.0" mnemonicParsing="false" onAction="#addActivity" text="Add Activity" />
-      <Button fx:id="imports" layoutX="155.0" layoutY="689.0" mnemonicParsing="false" onAction="#importActivity" text="Import activity list" />
+      <Button fx:id="imports" layoutX="155.0" layoutY="689.0" mnemonicParsing="false" onAction="#importActivity" text="Import activity list (override current DB)" />
       <ImageView fx:id="backBtn" fitHeight="88.0" fitWidth="153.0" layoutX="1170.0" layoutY="655.0" pickOnBounds="true" preserveRatio="true" />
+      <Button fx:id="importsUpdate" layoutX="460.0" layoutY="689.0" mnemonicParsing="false" onAction="#importActivityUpdate" text="Import activity list (add to current DB)" />
    </children>
 </AnchorPane>
