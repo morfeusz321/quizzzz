@@ -4,6 +4,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.AnswerResponseEntity;
 import commons.CommonUtils;
+import commons.GameType;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
 import javafx.application.Platform;
@@ -187,6 +188,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         powersText.setOpacity(0.2);
         decreaseTime.setOpacity(0.2);
         doublePoints.setOpacity(0.2);
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            decreaseTime.setOpacity(0);
+        }
         setAnswerBtn.setOpacity(0);
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
@@ -227,6 +231,10 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         if(mainCtrl.getJokerStatus(3)) {
             decreaseTime.setDisable(true);
             decreaseTime.setOpacity(0.3);
+        }
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0);
         }
     }
 

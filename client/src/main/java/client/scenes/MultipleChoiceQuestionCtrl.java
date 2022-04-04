@@ -4,6 +4,7 @@ import client.utils.ServerUtils;
 import com.google.inject.Inject;
 import commons.AnswerResponseEntity;
 import commons.CommonUtils;
+import commons.GameType;
 import commons.Question;
 import commons.gameupdate.GameUpdateTransitionPeriodEntered;
 import javafx.application.Platform;
@@ -303,6 +304,9 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         decreaseTime.setOpacity(0.3);
         doublePoints.setOpacity(0.3);
         removeQuestion.setOpacity(0.3);
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            decreaseTime.setOpacity(0);
+        }
         decreaseTime.setDisable(true);
         doublePoints.setDisable(true);
         removeQuestion.setDisable(true);
@@ -419,6 +423,11 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         if(mainCtrl.getJokerStatus(3)) {
             decreaseTime.setDisable(true);
             decreaseTime.setOpacity(0.3);
+        }
+
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            decreaseTime.setDisable(true);
+            decreaseTime.setOpacity(0);
         }
     }
 
