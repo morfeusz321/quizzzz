@@ -20,9 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import server.database.ActivityDBController;
 import server.database.QuestionDBController;
-import server.database.ScoreDBController;
 
 @SpringBootApplication
 @EntityScan(basePackages = { "commons", "server" })
