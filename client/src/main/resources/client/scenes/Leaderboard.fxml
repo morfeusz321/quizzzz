@@ -19,7 +19,7 @@
       <ImageView fx:id="lightbulb" fitHeight="369.0" fitWidth="292.0" layoutX="1022.0" layoutY="339.0" preserveRatio="true" />
       <ImageView fx:id="speechBubble" fitHeight="274.0" fitWidth="335.0" layoutX="1009.0" layoutY="64.0" preserveRatio="true" />
       <TextFlow layoutX="1037.0" layoutY="88.0" prefHeight="192.0" prefWidth="291.0" textAlignment="CENTER">
-         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Good job!">
+         <Text fx:id="goodJobText" strokeType="OUTSIDE" strokeWidth="0.0" text="Good job!">
             <styleClass>
                <String fx:value="speech-bubble-text" />
                <String fx:value="bold" />
