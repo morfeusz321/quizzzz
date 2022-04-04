@@ -67,4 +67,27 @@ public class JokerController {
 
         return ResponseEntity.ok(username);
     }
+
+    /**
+     * Maps to /api/jokers/score. Used for triggering the double points joker for a player
+     * @param username the player who used the joker
+     * @param gameIDString The UUID of the current game
+     * @return 400 Bad request: the UUID is wrong or the game does not exist, 200 OK: the username is returned to the client
+     */
+    @PostMapping("/score")
+    public ResponseEntity<String> useScoreJoker(@RequestParam("username") String username, @RequestParam("gameUUID") String gameIDString) {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(gameIDString);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Game game = gameController.getGame(uuid);
+        if(game == null) return ResponseEntity.badRequest().build();
+
+        game.useScoreJoker(username);
+
+        return ResponseEntity.ok(username);
+    }
 }
