@@ -42,6 +42,10 @@ public class LeaderboardCtrl {
 
     @FXML
     public ImageView speechBubble;
+
+    @FXML
+    private Text goodJobText;
+
     @FXML
     private Text speechBubbleText;
 
@@ -197,6 +201,7 @@ public class LeaderboardCtrl {
             });
             lightbulb.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> lightbulb.setCursor(Cursor.HAND));
             lightbulb.addEventHandler(MouseEvent.MOUSE_EXITED, e -> lightbulb.setCursor(Cursor.DEFAULT));
+            goodJobText.setText("Good job!");
             speechBubbleText.setText(" CLICK on me and join another game!");
         }
         else if(state == LeaderboardCtrlState.MAIN_LEADERBOARD){
@@ -210,6 +215,7 @@ public class LeaderboardCtrl {
     public void disableButtonsForMainScreen(){
         if (state == LeaderboardCtrlState.MID_GAME_LEADERBOARD){
             lightbulb.setDisable(true);
+            goodJobText.setText("Good job!");
             speechBubbleText.setText(" You're already halfway there!");
         }
     }
@@ -219,7 +225,8 @@ public class LeaderboardCtrl {
      */
     public void changeTextMainScreen(){
         if(state == LeaderboardCtrlState.MAIN_LEADERBOARD) {
-            speechBubbleText.setText(" You can see all the scores now");
+            goodJobText.setText("");
+            speechBubbleText.setText("Can you get to the top of the leaderboard?");
         }
     }
 
