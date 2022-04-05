@@ -131,6 +131,7 @@ public class Game extends Thread {
 
             List<Score> list;
             if(gameType==GameType.SINGLEPLAYER){
+                saveScores();
                 list = sendDatabase();
             }
             else if(gameType==GameType.MULTIPLAYER){
@@ -285,8 +286,7 @@ public class Game extends Thread {
      * send the score database from the server
      * @return database list sorted
      */
-    public List<Score> sendDatabase(){
-        saveScores();
+    public List<Score> sendDatabase() {
         return scoreController.getAllSorted();
     }
 
