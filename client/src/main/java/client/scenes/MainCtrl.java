@@ -578,7 +578,6 @@ public class MainCtrl {
             Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateDisplayLeaderboard.getLeaderboard()));
 
         } else if(gameUpdate instanceof GameUpdateTimerJoker update) {
-            System.out.println("hello timer joker has been used");
             for(Map.Entry<String, Long> player : update.getTime().entrySet()) {
                 if(this.userCtrl.getSavedCurrentUsername().equals(player.getKey())) {
                     handleTimerJoker(player.getValue());
@@ -587,7 +586,6 @@ public class MainCtrl {
         } else if(gameUpdate instanceof GameUpdateQuestionJoker update) {
             int buttonNumber = update.getButtonNumber();
             handleQuestionJoker(buttonNumber);
-            System.out.println("hello question joker used successfully");
         }
     }
 
