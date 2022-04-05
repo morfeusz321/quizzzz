@@ -213,6 +213,11 @@ public class AdminCtrl implements Initializable {
     @FXML
     private void handleClickTableView(MouseEvent click) {
         Activity activity = table.getSelectionModel().getSelectedItem();
+        if(activity == null) {
+            currentActivity = null;
+            selected.setText("");
+            return;
+        }
         selected.setText("Currently selected: " + activity.id);
         currentActivity = activity;
         edit.setDisable(false);
