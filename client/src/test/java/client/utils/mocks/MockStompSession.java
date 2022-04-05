@@ -7,6 +7,9 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+/**
+ * A StompSession for testing purposes
+ */
 public class MockStompSession implements StompSession {
 
     public Consumer<String> mockReader;
@@ -14,6 +17,10 @@ public class MockStompSession implements StompSession {
     public String destination;
     public boolean isConnected = false;
 
+    /**
+     * Creates a new mock stomp session for testing purposes with the provided consumer
+     * @param mockReader the consumer this mock stomp session will send updates to
+     */
     public MockStompSession(Consumer<String> mockReader) {
 
         this.mockReader = mockReader;

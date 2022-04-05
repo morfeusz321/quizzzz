@@ -26,6 +26,9 @@ public class ServerUtilsTest {
 
     private boolean flag = false;
 
+    /**
+     * Sets up the server utils instance for testing
+     */
     @BeforeEach
     public void setup() {
 
@@ -33,6 +36,9 @@ public class ServerUtilsTest {
 
     }
 
+    /**
+     * Resets all flags, mocks, and server utils
+     */
     @AfterEach
     public void resetAll() {
 
@@ -48,29 +54,50 @@ public class ServerUtilsTest {
 
     }
 
+    /**
+     * Sets up the mock stomp session for testing
+     * @param mockReader the consumer that is called by the mock stomp session
+     */
     private void setupMockStompSession(Consumer<String> mockReader) {
 
         this.mockStompSession = new MockStompSession(mockReader);
 
     }
 
+    /**
+     * Sets up the mock long poll thread for testing
+     * @param server   name of the server that you will send requests to
+     * @param gameUUID uuid of the current game
+     * @param consumer consumer to handle upcoming messages
+     * @param username username of the current player
+     * @param isInGame boolean value which says whether player is currently in the game
+     */
     private void setupMockLongPollThread(String server, UUID gameUUID, Consumer<GameUpdate> consumer, String username, boolean isInGame) {
 
         this.mockLongPollThread = new MockLongPollThread(server, gameUUID, consumer, username, isInGame);
 
     }
 
-    private void setupServerUtils(String SERVER, String WS_SERVER, StompSession session, UUID gameUUID, boolean isInGame, LongPollThread longPollThread) {
+    /**
+     * Sets up ServerUtils for testing
+     * @param server the server address to use
+     * @param wsServer the ws server address to use
+     * @param session the stomp session to use
+     * @param gameUUID the game uuid to use
+     * @param isInGame the is in game status to use
+     * @param longPollThread the long poll thread to use
+     */
+    private void setupServerUtils(String server, String wsServer, StompSession session, UUID gameUUID, boolean isInGame, LongPollThread longPollThread) {
 
         try {
 
             Field serverField = ServerUtils.class.getDeclaredField("SERVER");
             serverField.setAccessible(true);
-            serverField.set(null, SERVER);
+            serverField.set(null, server);
 
             Field wsServerField = ServerUtils.class.getDeclaredField("WS_SERVER");
             wsServerField.setAccessible(true);
-            wsServerField.set(null, WS_SERVER);
+            wsServerField.set(null, wsServer);
 
             Field sessionField = ServerUtils.class.getDeclaredField("session");
             sessionField.setAccessible(true);
@@ -94,6 +121,9 @@ public class ServerUtilsTest {
 
     }
 
+    /**
+     * Resets server utils to the default values after testing
+     */
     private void resetServerUtils() {
 
         setupServerUtils("", "", null, null, false, null);
