@@ -274,24 +274,6 @@ public class QuestionGeneratorTest {
 
     }
 
-
-    @Test
-    public void getMoreExpensiveIsNull() {
-
-        // It should not be possible to generate a WhichIsMore question if the consumptions are identical.
-        activityDBController.getInternalDB().deleteAll();
-        Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 10);
-        Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
-        Activity activity3 = new Activity("3", "/path/to/image/", "Activity 3", 10);
-        activityDBController.getInternalDB().save(activity1);
-        activityDBController.getInternalDB().save(activity2);
-        activityDBController.getInternalDB().save(activity3);
-
-        Question moreExpensive = questionGenerator.getWhichIsMoreQuestion();
-        assertNull(moreExpensive);
-
-    }
-
     @Test
     public void getMoreExpensiveRangeTest() {
 
