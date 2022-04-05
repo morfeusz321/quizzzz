@@ -421,7 +421,7 @@ public class Game extends Thread {
         long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
 
         if(timeJoker.get(username) == 15000L) {
-            long newTime = (long) (0.65 * remainingTime);
+            long newTime = (long) (0.5 * remainingTime);
             for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
                 if(!player.getKey().equals(username)) {
                     player.setValue(newTime);
