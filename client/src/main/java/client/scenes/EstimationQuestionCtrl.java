@@ -185,6 +185,8 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      */
     @Override
     public void disableButtons(){
+        correctAnswer.setOpacity(1);
+        correctAnswer.setDisable(false);
         powersText.setOpacity(0.2);
         decreaseTime.setOpacity(0.2);
         doublePoints.setOpacity(0.2);
@@ -197,7 +199,6 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         slideBar.setDisable(true);
         answerTxtField.setDisable(true);
         setAnswerBtn.setDisable(true);
-        correctAnswer.setOpacity(1);
         fullText.setOpacity(1);
     }
 
