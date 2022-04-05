@@ -387,6 +387,22 @@ public class MainCtrl {
             gameManager.setPlayerCount(gameManager.getPlayerCount()-1);
             Platform.runLater(this::handleUpdatePlayerCount);
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
+        } else if (gameUpdate instanceof GameUpdateNoQuestions) {
+            System.out.print("No questions could be generated!");
+            sendLeaveMessageToServer();
+            Platform.runLater(
+                    () -> {
+                        Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "",
+                                "Oh no, something went wrong and no questions could be generated! \n" +
+                                        "Please try to create a new game. You will be redirected to the main menu after" +
+                                        "closing this pop up.");
+                        alert.showAndWait();
+
+                        if (alert.getResult() == ButtonType.OK) {
+                            connectToServerCtrl.goBackButton();
+                        }
+                    }
+            );
         } else if (gameUpdate instanceof GameUpdateGameStarting) {
             System.out.print("GAME STARTING!");
             resetJokers();

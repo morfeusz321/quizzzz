@@ -2,6 +2,7 @@ package server.game;
 
 import commons.Player;
 import commons.gameupdate.GameUpdateGameStarting;
+import commons.gameupdate.GameUpdateNoQuestions;
 import commons.gameupdate.GameUpdatePlayerJoined;
 import commons.gameupdate.GameUpdatePlayerLeft;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -59,6 +60,17 @@ public class GameUpdateManager {
     public void startGame(UUID gameUUID) {
 
         this.simpMessagingTemplate.convertAndSend("/topic/gameupdates/" + gameUUID.toString(), new GameUpdateGameStarting());
+
+    }
+
+    /**
+     * Sends a message to all subscribers of the game updates topic of the game with the specified UUID
+     * that no questions could be generated for this game.
+     * @param gameUUID the UUID of the game that could not be started
+     */
+    public void noQuestionsGenerated(UUID gameUUID) {
+
+        this.simpMessagingTemplate.convertAndSend("/topic/gameupdates/" + gameUUID.toString(), new GameUpdateNoQuestions());
 
     }
 
