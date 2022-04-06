@@ -3,10 +3,8 @@ package commons.gameupdate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 class GameUpdateTimerJokerTest {
 
