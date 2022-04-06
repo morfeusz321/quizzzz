@@ -86,6 +86,7 @@ class JokerControllerTest {
         verify(gameController, times(1)).getGame(uuid);
         verify(game, times(1)).useQuestionJoker(username);
     }
+
     @Test
     void useQuestionJokerGameNull() throws Exception {
         String username ="username";
