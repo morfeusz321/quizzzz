@@ -67,6 +67,7 @@ class APIGameControllerTest {
 
         verify(gameController, times(1)).getGame(uuid);
     }
+
     @Test
     void getAllQuestionsLessThanTwenty() throws Exception {
         List<Activity> list = new ArrayList<>();
@@ -88,6 +89,7 @@ class APIGameControllerTest {
         verify(gameController, times(1)).getGame(uuid);
         verify(game, times(1)).getQuestions();
     }
+
     @Test
     void getAllQuestionsIsNull() throws Exception {
         UUID uuid = new UUID(1122, 122);
@@ -103,11 +105,13 @@ class APIGameControllerTest {
         verify(gameController, times(1)).getGame(uuid);
         verify(game, times(1)).getQuestions();
     }
+
     @Test
     void getAllQuestionsBadUUID() throws Exception {
         String url = "/api/game/questions";
         mockMvc.perform(get(url).param("gameID","badthing")).andExpect(status().isBadRequest());
     }
+
     @Test
     void getAllQuestionsGameEqualsCurrentGame() throws Exception {
         UUID uuid = new UUID(1122, 122);
@@ -185,6 +189,7 @@ class APIGameControllerTest {
         mockMvc.perform(post(url).param("gameID", "badThings").param("playerName", username).param("answer", answer)).andExpect(status().isBadRequest());
 
     }
+
     @Test
     void answerGameWrongLong() throws Exception {
         UUID uuid = new UUID(1122, 122);
@@ -294,6 +299,7 @@ class APIGameControllerTest {
         verify(gameController, times(1)).getGame(uuid);
         verify(gameController,times(1)).getCurrentGame();
     }
+
     @Test
     void getAllPlayersPlayerNull() throws Exception{
 
