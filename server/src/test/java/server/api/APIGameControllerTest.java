@@ -284,6 +284,7 @@ class APIGameControllerTest {
 
         verify(gameController, times(1)).getGame(uuid);
     }
+
     @Test
     void getAllPlayersTheSameGame() throws Exception{
         UUID uuid = new UUID(1122, 122);
