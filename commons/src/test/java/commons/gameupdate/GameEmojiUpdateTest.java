@@ -28,12 +28,12 @@ class GameEmojiUpdateTest {
         GameEmojiUpdate update5 = new GameEmojiUpdate("emoji", "player");
         String notUpdate = "notUdpate";
 
-        Assertions.assertEquals(update2,update5);
-        Assertions.assertEquals(update2,update2);
-        Assertions.assertNotEquals(update2,update);
-        Assertions.assertNotEquals(update3,update2);
-        Assertions.assertNotEquals(update2,update4);
-        Assertions.assertNotEquals(notUpdate,update2);
+        Assertions.assertEquals(update2, update5);
+        Assertions.assertEquals(update2, update2);
+        Assertions.assertNotEquals(update2, update);
+        Assertions.assertNotEquals(update3, update2);
+        Assertions.assertNotEquals(update2, update4);
+        Assertions.assertNotEquals(notUpdate, update2);
 
     }
 
@@ -46,12 +46,12 @@ class GameEmojiUpdateTest {
         GameEmojiUpdate update5 = new GameEmojiUpdate("emoji", "player");
         String notUpdate = "notUdpate";
 
-        Assertions.assertEquals(update2.hashCode(),update5.hashCode());
-        Assertions.assertEquals(update2.hashCode(),update2.hashCode());
-        Assertions.assertNotEquals(update2.hashCode(),update.hashCode());
-        Assertions.assertNotEquals(update3.hashCode(),update2.hashCode());
-        Assertions.assertNotEquals(update2.hashCode(),update4.hashCode());
-        Assertions.assertNotEquals(notUpdate.hashCode(),update2.hashCode());
+        Assertions.assertEquals(update2.hashCode(), update5.hashCode());
+        Assertions.assertEquals(update2.hashCode(), update2.hashCode());
+        Assertions.assertNotEquals(update2.hashCode(), update.hashCode());
+        Assertions.assertNotEquals(update3.hashCode(), update2.hashCode());
+        Assertions.assertNotEquals(update2.hashCode(), update4.hashCode());
+        Assertions.assertNotEquals(notUpdate.hashCode(), update2.hashCode());
     }
 
     @Test

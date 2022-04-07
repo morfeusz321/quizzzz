@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ScoreTest {
+
     @Test
     public void constructorTest() {
         Score score = new Score("username", 100);
@@ -57,4 +58,5 @@ public class ScoreTest {
         String actual = s.toString();
         assertEquals(ToStringBuilder.reflectionToString(s, MULTI_LINE_STYLE), actual);
     }
+
 }

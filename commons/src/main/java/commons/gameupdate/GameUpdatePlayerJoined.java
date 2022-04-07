@@ -20,6 +20,7 @@ public class GameUpdatePlayerJoined extends GameUpdate {
 
     /**
      * Creates a new GameUpdate
+     *
      * @param player the player that has joined the game
      */
     public GameUpdatePlayerJoined(Player player) {
@@ -30,6 +31,7 @@ public class GameUpdatePlayerJoined extends GameUpdate {
 
     /**
      * Returns the player that has joined the game
+     *
      * @return the player that has joined the game
      */
     public Player getPlayer() {

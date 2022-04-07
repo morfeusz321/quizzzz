@@ -16,12 +16,12 @@ public class EstimationQuestion extends Question {
     private EstimationQuestion() {
 
 
-
     }
 
     /**
      * Creates a question object (used for QuestionType.ESTIMATION)
-     * @param mainActivity the main activity of this question (i.e. the title of the question)
+     *
+     * @param mainActivity  the main activity of this question (i.e. the title of the question)
      * @param answerOptions the answer options (range and actual answer)
      */
     public EstimationQuestion(Activity mainActivity, List<String> answerOptions) {

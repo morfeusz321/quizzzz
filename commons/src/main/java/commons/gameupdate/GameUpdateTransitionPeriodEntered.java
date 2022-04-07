@@ -20,6 +20,7 @@ public class GameUpdateTransitionPeriodEntered extends GameUpdate {
 
     /**
      * Creates a new GameUpdate
+     *
      * @param answerResponseEntity the answer response entity containing the necessary information for the
      *                             client to display the transition screen
      */
@@ -32,6 +33,7 @@ public class GameUpdateTransitionPeriodEntered extends GameUpdate {
     /**
      * Returns the answer response entity containing the necessary information for the client to display
      * the transition screen
+     *
      * @return the answer response entity containing the necessary information for the client to display
      * the transition screen
      */

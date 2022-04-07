@@ -18,6 +18,7 @@ public class GameUpdateNextQuestion extends GameUpdate {
 
     /**
      * Creates a new GameUpdate
+     *
      * @param questionIdx the index of the question that the game is moving to
      */
     public GameUpdateNextQuestion(int questionIdx) {
@@ -28,6 +29,7 @@ public class GameUpdateNextQuestion extends GameUpdate {
 
     /**
      * Returns the index of the new question
+     *
      * @return the index of the new question
      */
     public int getQuestionIdx() {

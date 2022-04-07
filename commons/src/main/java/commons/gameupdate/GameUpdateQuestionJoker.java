@@ -1,6 +1,7 @@
 package commons.gameupdate;
 
-public class GameUpdateQuestionJoker extends GameUpdate{
+public class GameUpdateQuestionJoker extends GameUpdate {
+
     private int buttonNumber;
 
     /**
@@ -13,6 +14,7 @@ public class GameUpdateQuestionJoker extends GameUpdate{
 
     /**
      * Creates a new Game Update
+     *
      * @param buttonNumber the id of the button that will be disabled
      */
     public GameUpdateQuestionJoker(int buttonNumber) {
@@ -21,9 +23,11 @@ public class GameUpdateQuestionJoker extends GameUpdate{
 
     /**
      * Getter for button number
+     *
      * @return button number
      */
     public int getButtonNumber() {
         return buttonNumber;
     }
+
 }

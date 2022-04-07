@@ -5,4 +5,5 @@ package commons.gameupdate;
  * is already in use.
  */
 public class GameUpdateNameInUse extends GameUpdate {
+
 }

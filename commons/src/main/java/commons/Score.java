@@ -11,6 +11,7 @@ import static org.apache.commons.lang3.builder.ToStringStyle.MULTI_LINE_STYLE;
 
 @Entity
 public class Score {
+
     @Id
     public String username;
     public int score;
@@ -25,8 +26,9 @@ public class Score {
 
     /**
      * Creates a Score with the given username and score
+     *
      * @param username the username for this Score
-     * @param score the score of that user
+     * @param score    the score of that user
      */
     public Score(String username, int score) {
         this.username = username;
@@ -35,23 +37,26 @@ public class Score {
 
     /**
      * retrieve the score
+     *
      * @return points of the user
      */
-    public int getScore(){
+    public int getScore() {
         return this.score;
     }
 
     /**
      * return username
+     *
      * @return name of the player
      */
-    public String getUsername(){
+    public String getUsername() {
         return this.username;
     }
 
 
     /**
      * Checks if two score objects are equal
+     *
      * @param obj the object to which this one will be compared
      * @return true, if the objects are equal, else false
      */
@@ -62,6 +67,7 @@ public class Score {
 
     /**
      * Generates the hashCode for this object
+     *
      * @return the hashcode for this object
      */
     @Override
@@ -71,10 +77,12 @@ public class Score {
 
     /**
      * Generates a string representation of this object
+     *
      * @return a string representation of this object
      */
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, MULTI_LINE_STYLE);
     }
+
 }
