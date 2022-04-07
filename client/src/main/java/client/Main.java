@@ -40,7 +40,7 @@ public class Main extends Application {
 
     /**
      * Starts the application by loading the fxml files/scenes and by initializing the
-     * main control with the overview/quote adding. TODO: remove quote adding
+     * main control with all scene/control pairs.
      *
      * @param primaryStage The main application stage (i.e. window) in which all scenes are displayed
      */

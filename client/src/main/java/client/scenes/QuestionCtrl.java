@@ -26,7 +26,7 @@ import java.util.Random;
 
 public abstract class QuestionCtrl {
 
-    protected final ServerUtils server; // TODO: not sure if this is good style (using protected) - also next line
+    protected final ServerUtils server;
     protected final MainCtrl mainCtrl;
 
     private final CommonUtils utils;
@@ -153,7 +153,6 @@ public abstract class QuestionCtrl {
      * Initializes the event handlers of all emojis
      */
     private void initializeEmojiEventHandlers() {
-        // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         happyEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(happyEmoji));
         sadEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(sadEmoji));
         angryEmoji.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> emojiAnimation(angryEmoji));
@@ -167,7 +166,6 @@ public abstract class QuestionCtrl {
      * Initializes the event handlers of the powers
      */
     protected void initializePowerEventHandlers() {
-        // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         decreaseTime.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("decrease time"));
         doublePoints.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> handlePower("double points"));
 
@@ -207,7 +205,6 @@ public abstract class QuestionCtrl {
         backBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             mainCtrl.exitWhileInTheGame();
         });
-        // TODO: when the menu screen is added, modify this
         backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> {
             backBtn.setEffect(hover);
             backBtn.getStyleClass().add("hover-cursor");
@@ -332,16 +329,12 @@ public abstract class QuestionCtrl {
     }
 
     /**
-     * TODO: handle powers here
+     * Handles when a power button has been clicked and calls the corresponding method (per power).
      *
      * @param power A string describing the power that was clicked
      */
     public void handlePower(String power) {
-        System.out.println(power + " was clicked.");
-        // TODO: add (private) methods here for handling powers (which are for example called in a switch-statement).
-        //  Alternatively we can also create classes for handling the powers and call methods of those classes here.
-
-        switch(power) {
+        switch (power) {
             case "remove question" -> removeQuestionJoker();
             case "double points" -> doublePoints();
             case "decrease time" -> decreaseTimeJoker();

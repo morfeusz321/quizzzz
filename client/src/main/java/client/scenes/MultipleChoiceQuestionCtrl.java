@@ -107,8 +107,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * the estimation question).
      */
     @Override
-    protected void initializePowerEventHandlers() {
-        // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
+    protected void initializePowerEventHandlers(){
         super.initializePowerEventHandlers();
 
         removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.handlePower("remove question"));
