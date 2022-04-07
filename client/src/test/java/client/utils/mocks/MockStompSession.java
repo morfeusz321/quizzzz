@@ -19,6 +19,7 @@ public class MockStompSession implements StompSession {
 
     /**
      * Creates a new mock stomp session for testing purposes with the provided consumer
+     *
      * @param mockReader the consumer this mock stomp session will send updates to
      */
     public MockStompSession(Consumer<String> mockReader) {
@@ -39,6 +40,7 @@ public class MockStompSession implements StompSession {
 
     /**
      * Sets this testing session's isConnected status
+     *
      * @param isConnected the isConnected status to set
      */
     public void setIsConnected(boolean isConnected) {

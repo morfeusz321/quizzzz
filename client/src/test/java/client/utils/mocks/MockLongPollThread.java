@@ -28,6 +28,7 @@ public class MockLongPollThread extends LongPollThread {
      * all incoming game loop updates to the provided consumer. The long poll loop is automatically
      * cancelled upon leaving the game by clicking the back button or closing the window, and it is guaranteed
      * by this method that no further updates will be accepted by the provided consumer after leaving the game.
+     *
      * @param consumer the consumer that accepts incoming game loop updates
      */
     @Override
@@ -39,6 +40,7 @@ public class MockLongPollThread extends LongPollThread {
 
     /**
      * Returns this MockLongPollThread's isInGame status via reflection
+     *
      * @return whether this MockLongPollThread's isInGame is set
      */
     public boolean isInGame() {
@@ -47,7 +49,7 @@ public class MockLongPollThread extends LongPollThread {
             Field isInGameField = LongPollThread.class.getDeclaredField("isInGame");
             isInGameField.setAccessible(true);
             return (boolean) isInGameField.get(this);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch(NoSuchFieldException | IllegalAccessException e) {
             return false;
         }
 

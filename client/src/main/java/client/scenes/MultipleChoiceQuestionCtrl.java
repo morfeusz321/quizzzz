@@ -107,7 +107,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * the estimation question).
      */
     @Override
-    protected void initializePowerEventHandlers(){
+    protected void initializePowerEventHandlers() {
         super.initializePowerEventHandlers();
 
         removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.handlePower("remove question"));

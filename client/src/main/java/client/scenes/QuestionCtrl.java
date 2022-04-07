@@ -334,7 +334,7 @@ public abstract class QuestionCtrl {
      * @param power A string describing the power that was clicked
      */
     public void handlePower(String power) {
-        switch (power) {
+        switch(power) {
             case "remove question" -> removeQuestionJoker();
             case "double points" -> doublePoints();
             case "decrease time" -> decreaseTimeJoker();

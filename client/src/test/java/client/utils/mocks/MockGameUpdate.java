@@ -11,6 +11,7 @@ public class MockGameUpdate extends GameUpdate {
 
     /**
      * Creates a new MockGameUpdate with the given information
+     *
      * @param info the information this MockGameUpdate should hold
      */
     public MockGameUpdate(String info) {
@@ -21,6 +22,7 @@ public class MockGameUpdate extends GameUpdate {
 
     /**
      * Returns this GameUpdate's information
+     *
      * @return this GameUpdate's information
      */
     public String getInfo() {
@@ -31,6 +33,7 @@ public class MockGameUpdate extends GameUpdate {
 
     /**
      * Sets this GameUpdate's information
+     *
      * @param info the information to set
      */
     public void setInfo(String info) {

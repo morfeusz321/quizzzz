@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScoreUtilsTest {
+
     private ScoreUtils scoreUtils;
     private Player player;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         scoreUtils = new ScoreUtils();
         player = new Player();
     }
@@ -33,4 +34,5 @@ class ScoreUtilsTest {
     void setPlayer() {
         scoreUtils.setPlayer(player);
     }
+
 }
