@@ -30,6 +30,7 @@ public class GameUpdateTest {
     private GameUpdate gameUpdatePlayerJoined;
     private GameUpdate gameUpdatePlayerLeft;
     private GameUpdate gameUpdateTransitionPeriodEntered;
+    private GameUpdate gameUpdateNoQuestions;
 
     @BeforeEach
     public void setup() {
@@ -52,6 +53,7 @@ public class GameUpdateTest {
         this.gameUpdatePlayerJoined = new GameUpdatePlayerJoined(player1);
         this.gameUpdatePlayerLeft = new GameUpdatePlayerLeft(player1);
         this.gameUpdateTransitionPeriodEntered = new GameUpdateTransitionPeriodEntered(testAnswerResponseEntity);
+        this.gameUpdateNoQuestions = new GameUpdateNoQuestions();
 
     }
 
@@ -84,6 +86,8 @@ public class GameUpdateTest {
         assertNotNull(gameUpdateTransitionPeriodEntered);
         assertEquals(testAnswerResponseEntity, ((GameUpdateTransitionPeriodEntered) gameUpdateTransitionPeriodEntered).getAnswerResponseEntity());
 
+        assertNotNull(gameUpdateNoQuestions);
+
     }
 
     @Test
@@ -98,6 +102,7 @@ public class GameUpdateTest {
         GameUpdate gameUpdatePlayerJoined2 = new GameUpdatePlayerJoined(player1);
         GameUpdate gameUpdatePlayerLeft2 = new GameUpdatePlayerLeft(player1);
         GameUpdate gameUpdateTransitionPeriodEntered2 = new GameUpdateTransitionPeriodEntered(testAnswerResponseEntity);
+        GameUpdate gameUpdateNoQuestions2 = new GameUpdateNoQuestions();
 
         assertEquals(gameUpdateDisplayLeaderboard, gameUpdateDisplayLeaderboard2);
         assertEquals(gameUpdateFullPlayerList, gameUpdateFullPlayerList2);
@@ -108,6 +113,7 @@ public class GameUpdateTest {
         assertEquals(gameUpdatePlayerJoined, gameUpdatePlayerJoined2);
         assertEquals(gameUpdatePlayerLeft, gameUpdatePlayerLeft2);
         assertEquals(gameUpdateTransitionPeriodEntered, gameUpdateTransitionPeriodEntered2);
+        assertEquals(gameUpdateNoQuestions, gameUpdateNoQuestions2);
 
         assertEquals(gameUpdateDisplayLeaderboard.hashCode(), gameUpdateDisplayLeaderboard2.hashCode());
         assertEquals(gameUpdateFullPlayerList.hashCode(), gameUpdateFullPlayerList2.hashCode());
@@ -118,6 +124,7 @@ public class GameUpdateTest {
         assertEquals(gameUpdatePlayerJoined.hashCode(), gameUpdatePlayerJoined2.hashCode());
         assertEquals(gameUpdatePlayerLeft.hashCode(), gameUpdatePlayerLeft2.hashCode());
         assertEquals(gameUpdateTransitionPeriodEntered.hashCode(), gameUpdateTransitionPeriodEntered2.hashCode());
+        assertEquals(gameUpdateNoQuestions.hashCode(), gameUpdateNoQuestions2.hashCode());
 
     }
 
@@ -199,6 +206,10 @@ public class GameUpdateTest {
         assertTrue(gameUpdateTransitionPeriodEnteredToString.contains(GameUpdateTransitionPeriodEntered.class.getSimpleName()));
         assertTrue(gameUpdateTransitionPeriodEnteredToString.contains("\n"));
         assertTrue(gameUpdateTransitionPeriodEnteredToString.contains("answerResponseEntity"));
+
+        String gameUpdateNoQuestionsToString = gameUpdateNoQuestions.toString();
+        assertTrue(gameUpdateNoQuestionsToString.contains(GameUpdateNoQuestions.class.getSimpleName()));
+        assertTrue(gameUpdateNoQuestionsToString.contains("\n"));
 
     }
 

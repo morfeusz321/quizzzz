@@ -84,7 +84,6 @@ public class APIGameController {
         }
 
         Game game = gameController.getGame(uuid);
-
         if(game == null || game.equals(gameController.getCurrentGame())) {
             result.setResult(ResponseEntity.badRequest().build());
             return result;
@@ -164,11 +163,12 @@ public class APIGameController {
             return ResponseEntity.badRequest().build();
         }
 
-        if(game.getPlayers() == null){
+        List<Player> players = game.getPlayers();
+        if( players== null){
             return ResponseEntity.internalServerError().build();
         }
 
-        return ResponseEntity.ok(game.getPlayers());
+        return ResponseEntity.ok(players);
 
     }
 

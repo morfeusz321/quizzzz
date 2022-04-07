@@ -26,7 +26,7 @@ public class QuestionGeneratorTest {
         questionDBController = new QuestionDBController(new TestQuestionDB());
         QuestionGeneratorUtils utils = new QuestionGeneratorUtils();
         questionGenerator = new QuestionGenerator(
-                new Random(),
+                new Random(1234567),
                 activityDBController,
                 questionDBController,
                 utils);
@@ -275,6 +275,7 @@ public class QuestionGeneratorTest {
 
         // The question should not contain an "obvious" answer, i.e. 4 as an answer. The consumption is out of the
         // desired range. This is checked in this test.
+
         activityDBController.getInternalDB().deleteAll();
         Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9);
         Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
