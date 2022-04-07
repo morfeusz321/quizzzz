@@ -13,7 +13,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/jokers")
 public class JokerController {
-    private GameController gameController;
+
+    private final GameController gameController;
 
     /**
      * Creates the API controller
@@ -24,7 +25,8 @@ public class JokerController {
 
     /**
      * Maps to /api/jokers/time. Used for triggering the time joker for all players except the player who used the joker
-     * @param username the player who used the joker
+     *
+     * @param username     the player who used the joker
      * @param gameIDString The UUID of the current game
      * @return 400 Bad request: the UUID is wrong or the game does not exist, 200 OK: the username is returned to the client
      */
@@ -33,7 +35,7 @@ public class JokerController {
         UUID uuid;
         try {
             uuid = UUID.fromString(gameIDString);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -47,7 +49,8 @@ public class JokerController {
 
     /**
      * Maps to /api/jokers/question. Used for triggering the question joker for a player
-     * @param username the player who used the joker
+     *
+     * @param username     the player who used the joker
      * @param gameIDString The UUID of the current game
      * @return 400 Bad request: the UUID is wrong or the game does not exist, 200 OK: the username is returned to the client
      */
@@ -56,7 +59,7 @@ public class JokerController {
         UUID uuid;
         try {
             uuid = UUID.fromString(gameIDString);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -70,7 +73,8 @@ public class JokerController {
 
     /**
      * Maps to /api/jokers/score. Used for triggering the double points joker for a player
-     * @param username the player who used the joker
+     *
+     * @param username     the player who used the joker
      * @param gameIDString The UUID of the current game
      * @return 400 Bad request: the UUID is wrong or the game does not exist, 200 OK: the username is returned to the client
      */
@@ -79,7 +83,7 @@ public class JokerController {
         UUID uuid;
         try {
             uuid = UUID.fromString(gameIDString);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -90,4 +94,5 @@ public class JokerController {
 
         return ResponseEntity.ok(username);
     }
+
 }

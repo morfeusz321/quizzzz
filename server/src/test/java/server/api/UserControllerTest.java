@@ -55,7 +55,7 @@ public class UserControllerTest {
     @Test
     public void testJoinGameIllegalGameType() {
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "SOME_ILLEGAL_GAME_TYPE", Optional.empty());
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "SOME_ILLEGAL_GAME_TYPE", Optional.empty());
 
         assertFalse(testGameController.getCurrentGame().containsPlayer("Username"));
         assertSame(response.getStatusCode(), HttpStatus.BAD_REQUEST);
@@ -65,14 +65,14 @@ public class UserControllerTest {
     @Test
     public void testJoinGameMultiplayer() {
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
 
         assertTrue(testGameController.getCurrentGame().containsPlayer("Username"));
         assertTrue(response.getBody() instanceof GameUpdateFullPlayerList);
         assertEquals(1, ((GameUpdateFullPlayerList) response.getBody()).getPlayerList().size());
         assertEquals(1, testGameController.getCurrentGame().getPlayers().size());
 
-        response =  userController.joinGame("Someone else", "MULTIPLAYER", Optional.empty());
+        response = userController.joinGame("Someone else", "MULTIPLAYER", Optional.empty());
 
         assertTrue(testGameController.getCurrentGame().containsPlayer("Username"));
         assertTrue(testGameController.getCurrentGame().containsPlayer("Someone else"));
@@ -85,8 +85,8 @@ public class UserControllerTest {
     @Test
     public void testJoinGameMultiplayerNameInUse() {
 
-        ResponseEntity<GameUpdate> response1 =  userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
-        ResponseEntity<GameUpdate> response2 =  userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response1 = userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response2 = userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
 
         assertTrue(testGameController.getCurrentGame().containsPlayer("Username"));
         assertTrue(response1.getBody() instanceof GameUpdateFullPlayerList);
@@ -101,7 +101,7 @@ public class UserControllerTest {
 
         scoreDBController.clear();
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "SINGLEPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "SINGLEPLAYER", Optional.empty());
 
         assertTrue(response.getBody() instanceof GameUpdateFullPlayerList);
 
@@ -118,7 +118,7 @@ public class UserControllerTest {
         scoreDBController.clear();
         scoreDBController.add(new Score("Username", 9000));
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "SINGLEPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "SINGLEPLAYER", Optional.empty());
 
         assertTrue(response.getBody() instanceof GameUpdateNameInUse);
         assertFalse(testGameController.currentGameContains("Username"));
@@ -131,7 +131,7 @@ public class UserControllerTest {
         scoreDBController.clear();
         scoreDBController.add(new Score("Username", 9000));
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "SINGLEPLAYER", Optional.of("somethingotherthantrue"));
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "SINGLEPLAYER", Optional.of("somethingotherthantrue"));
 
         assertTrue(response.getBody() instanceof GameUpdateNameInUse);
         assertFalse(testGameController.currentGameContains("Username"));
@@ -144,7 +144,7 @@ public class UserControllerTest {
         scoreDBController.clear();
         scoreDBController.add(new Score("Username", 9000));
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "SINGLEPLAYER", Optional.of("true"));
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "SINGLEPLAYER", Optional.of("true"));
 
         assertTrue(response.getBody() instanceof GameUpdateFullPlayerList);
 
@@ -158,7 +158,7 @@ public class UserControllerTest {
     @Test
     public void testLeaveGame() {
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
 
         assertTrue(testGameController.getCurrentGame().containsPlayer("Username"));
         assertTrue(response.getBody() instanceof GameUpdateFullPlayerList);
@@ -176,7 +176,7 @@ public class UserControllerTest {
     @Test
     public void testLeaveGameMalformedUUID() {
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
 
         assertTrue(testGameController.getCurrentGame().containsPlayer("Username"));
         assertTrue(response.getBody() instanceof GameUpdateFullPlayerList);
@@ -194,7 +194,7 @@ public class UserControllerTest {
     @Test
     public void testLeaveGameUserNotInGame() {
 
-        ResponseEntity<GameUpdate> response =  userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
+        ResponseEntity<GameUpdate> response = userController.joinGame("Username", "MULTIPLAYER", Optional.empty());
 
         assertTrue(testGameController.getCurrentGame().containsPlayer("Username"));
         assertTrue(response.getBody() instanceof GameUpdateFullPlayerList);

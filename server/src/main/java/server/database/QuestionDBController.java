@@ -12,6 +12,7 @@ public class QuestionDBController {
 
     /**
      * Creates a controller for the question database
+     *
      * @param questionDB the question database to be used by this controller
      */
     public QuestionDBController(QuestionDB questionDB) {
@@ -31,6 +32,7 @@ public class QuestionDBController {
 
     /**
      * Retrieves a question from the database from its unique ID
+     *
      * @param uuid the unique id of the question to retrieve
      * @return the question if found, null otherwise
      */
@@ -42,6 +44,7 @@ public class QuestionDBController {
 
     /**
      * Deletes a question from the database by its unique ID
+     *
      * @param uuid the unique ID of the question to delete
      */
     public void deleteById(UUID uuid) {
@@ -52,6 +55,7 @@ public class QuestionDBController {
 
     /**
      * Adds a question to the database
+     *
      * @param question the question to add to the database
      */
     public void add(Question question) {

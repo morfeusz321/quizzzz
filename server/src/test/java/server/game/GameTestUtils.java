@@ -10,9 +10,10 @@ public class GameTestUtils {
 
     /**
      * Initializes the database of the given ActivityDBController with a specific set of activities.
+     *
      * @param activityDBController The activityDBController for the test activity database
      */
-    public void initActivityDB(ActivityDBController activityDBController){
+    public void initActivityDB(ActivityDBController activityDBController) {
         activityDBController.getInternalDB().save(new Activity("id1", "imagePath", "1", 1));
         activityDBController.getInternalDB().save(new Activity("id2", "imagePath", "2", 23));
         activityDBController.getInternalDB().save(new Activity("id3", "imagePath", "3", 332));

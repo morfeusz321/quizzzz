@@ -9,6 +9,7 @@ import java.util.*;
 
 @Component
 public class QuestionGenerator {
+
     private final Random random;
     private final ActivityDBController activityDBController;
     private final QuestionDBController questionDBController;
@@ -16,6 +17,7 @@ public class QuestionGenerator {
 
     /**
      * Creates the question generator
+     *
      * @param random               the random number generator to be used by this controller
      * @param activityDBController the interface with the activity database to be used for generation
      * @param questionDBController the interface with the question database to be used for generation
@@ -35,12 +37,13 @@ public class QuestionGenerator {
 
     /**
      * Returns a random question (of a random type) generated from a random activity selected from the database
+     *
      * @return A Question, or null if no question can be generated
      */
     public Question getRandomQuestion() {
 
         int type = random.nextInt(4);
-        return switch (type) {
+        return switch(type) {
             case 0 -> getGeneralQuestion();
             case 1 -> getWhichIsMoreQuestion();
             case 2 -> getComparisonQuestion();
@@ -72,7 +75,7 @@ public class QuestionGenerator {
             // Generate the first answer option, while excluding the real answer and a range around it.
             // Check if a number can be generated. If the probability of randomly selecting a valid number is under 30%,
             // a new general question should be generated, as otherwise StackOverflow errors might be thrown.
-            if(!utils.checkIfGeneratable(List.of(a.consumption), 0.1, bounds[0], bounds[1])){
+            if(!utils.checkIfGeneratable(List.of(a.consumption), 0.1, bounds[0], bounds[1])) {
                 // Might generate StackOverFlowErrors, try again
                 return getGeneralQuestion();
             }
@@ -90,7 +93,7 @@ public class QuestionGenerator {
             // Generate the second answer option, while excluding the previous answer options and a ranges around them.
             // Check if a number can be generated. If the probability of randomly selecting a valid number is under 30%,
             // a new general question should be generated, as otherwise StackOverflow errors might be thrown.
-            if(!utils.checkIfGeneratable(List.of(a.consumption, consumptions[0]), 0.1, bounds[0], bounds[1])){
+            if(!utils.checkIfGeneratable(List.of(a.consumption, consumptions[0]), 0.1, bounds[0], bounds[1])) {
                 // Might generate StackOverFlowErrors, try again
                 return getGeneralQuestion();
             }
@@ -115,13 +118,13 @@ public class QuestionGenerator {
             Question toReturn = new GeneralQuestion(a, aw, aw.indexOf(mainConsumptionString) + 1);
             questionDBController.add(toReturn);
             return toReturn;
-        } catch (StackOverflowError e) {
+        } catch(StackOverflowError e) {
             // StackOverflowError: No good number could be found in the generated range, many times in a row.
             // This should not be the case, as the safety check should prohibit this. So, if this is the case,
             // it is because no question can be generated from the database (at all).
             System.out.println("Error: No valid question could be generated from the database.");
             return null;
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -167,19 +170,19 @@ public class QuestionGenerator {
             }
 
             Activity a1 = activities.get(0);
-            for(int i=1;i<3;i++){
-                if(a1.consumption<activities.get(i).consumption){
-                    a1=activities.get(i);
+            for(int i = 1; i < 3; i++) {
+                if(a1.consumption < activities.get(i).consumption) {
+                    a1 = activities.get(i);
                 }
             }
 
-            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1)+1);
+            Question toReturn = new WhichIsMoreQuestion(activities, activities.indexOf(a1) + 1);
             questionDBController.add(toReturn);
             return toReturn;
-        } catch (StackOverflowError e){
+        } catch(StackOverflowError e) {
             System.out.println("Error: No valid question could be generated from the database.");
             return null;
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -191,7 +194,7 @@ public class QuestionGenerator {
      * @return A ComparisonQuestion, or null if no question can be generated
      */
     public Question getComparisonQuestion() {
-        try{
+        try {
 
             // First we retrieve a random activity -> main activity
             Activity main = activityDBController.getRandomActivity();
@@ -215,7 +218,7 @@ public class QuestionGenerator {
                         Math.round(main.consumption - main.consumption * 0.1),
                         Math.round(main.consumption + main.consumption * 0.1)
                 );
-                if(answer == null){
+                if(answer == null) {
                     // No answer could be generated, try to find another activity
                     return getComparisonQuestion();
                 }
@@ -242,14 +245,14 @@ public class QuestionGenerator {
             Collections.shuffle(answerOptions);
 
             //We return the question
-            Question toReturn = new ComparisonQuestion(main, answerOptions, answerOptions.indexOf(answer)+1);
+            Question toReturn = new ComparisonQuestion(main, answerOptions, answerOptions.indexOf(answer) + 1);
             questionDBController.add(toReturn);
             return toReturn;
 
-        } catch (StackOverflowError e){
+        } catch(StackOverflowError e) {
             System.out.println("Error: No valid question could be generated from the database.");
             return null;
-        } catch (Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -257,7 +260,8 @@ public class QuestionGenerator {
 
     /**
      * Returns a list of activities that can be used as answer options, or null if less than 2 could be generated.
-     * @param main The main activity of the comparison question, i.e. the title
+     *
+     * @param main   The main activity of the comparison question, i.e. the title
      * @param answer The answer of the comparison question
      * @return a list of activities that can be used as answer options, or null if less than 2 could be generated.
      */
@@ -273,7 +277,7 @@ public class QuestionGenerator {
         // Use the answer for the bound calculation, as we want to distinguish the answer options
         long lowerBound = (long) (answer.consumption * 0.6);
         long upperBound = (long) (answer.consumption * 0.8);
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 4; i++) {
             Activity chosen = activityDBController.getActivityExclAndInRange(
                     exclIds, exclConsumptions, lowerBound, upperBound // exclude main and answer consumption
             );
@@ -308,7 +312,7 @@ public class QuestionGenerator {
             // The consumption of the activity should be < 1000000, so we search for an activity with a consumption between
             // 0 and 999999 Wh. The reasons for this bound are that the user can more easily estimate "lower" consumptions
             // and that higher SI units cannot be used here, as they would make the slideBar difficult to configure.
-            Activity a = activityDBController.getActivityExclAndInRange(List.of(),List.of(),0,999999);
+            Activity a = activityDBController.getActivityExclAndInRange(List.of(), List.of(), 0, 999999);
 
             // Get the bounds for the input range for the estimation question. The consumption can now be safely cast
             // to an integer, as the above condition needs to be fulfilled.
@@ -323,7 +327,7 @@ public class QuestionGenerator {
             // Return/save the question
             questionDBController.add(toReturn);
             return toReturn;
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -332,10 +336,11 @@ public class QuestionGenerator {
 
     /**
      * Generates 20 questions for a game, with a minimum amount of questions per question type.
+     *
      * @param minPerQuestionType The minimum amount of questions per question type
-     * @throws IllegalArgumentException Throws an exception if the minimum amount of questions per type
-     * is not valid (i.e. > 5 because we only have 20 questions, or < 0)
      * @return The generated list of questions, or null if something went wrong
+     * @throws IllegalArgumentException Throws an exception if the minimum amount of questions per type
+     *                                  is not valid (i.e. > 5 because we only have 20 questions, or < 0)
      */
     public List<Question> generateGameQuestions(int minPerQuestionType) throws IllegalArgumentException {
         if(minPerQuestionType > 5 || minPerQuestionType < 0) {
@@ -345,22 +350,22 @@ public class QuestionGenerator {
         List<Question> questions = new ArrayList<>();
 
         // Generate the minimum amount of questions per question type
-        for(int i = 0; i < 4; i++){
-            for(int j = 0; j < minPerQuestionType; j++){
-                Question generated = switch (i) {
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < minPerQuestionType; j++) {
+                Question generated = switch(i) {
                     case 0 -> getGeneralQuestion();
                     case 1 -> getComparisonQuestion();
                     case 2 -> getEstimationQuestion();
                     case 3 -> getWhichIsMoreQuestion();
                     default -> null; // This is only executed if something went wrong, it should not be called.
                 };
-                if(generated == null){
+                if(generated == null) {
                     // Something went wrong
                     return null;
                 }
                 // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
                 // that it is very unlikely that questions are ever equal.
-                if(questions.contains(generated)){
+                if(questions.contains(generated)) {
                     j--;
                     continue;
                 }
@@ -369,15 +374,15 @@ public class QuestionGenerator {
         }
 
         // Generate the questions with random types
-        for(int i = 0; i < 20 - (4 * minPerQuestionType); i++){
+        for(int i = 0; i < 20 - (4 * minPerQuestionType); i++) {
             Question generated = getRandomQuestion();
-            if(generated == null){
+            if(generated == null) {
                 // Something went wrong
                 return null;
             }
             // Note that the cyclomatic complexity of this COULD be very bad. However, it is important to note
             // that it is very unlikely that questions are ever equal.
-            if(questions.contains(generated)){
+            if(questions.contains(generated)) {
                 i--;
                 continue;
             }

@@ -17,15 +17,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class GameController implements ApplicationContextAware {
 
-    private ConcurrentHashMap<UUID, Game> runningGames;
+    private final ConcurrentHashMap<UUID, Game> runningGames;
     private Game currentGame;
-    private GameUpdateManager gameUpdateManager;
-    private ScoreController scoreController;
+    private final GameUpdateManager gameUpdateManager;
+    private final ScoreController scoreController;
 
     private ApplicationContext context;
 
     /**
      * Sets the application context that this class uses to get Game Beans
+     *
      * @param applicationContext the application context
      * @throws BeansException if thrown by application context methods
      */
@@ -36,8 +37,9 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Instantiates a game controller
+     *
      * @param gameUpdateManager the update manager for WebSocket messages
-     * @param scoreController the score controller to save scores
+     * @param scoreController   the score controller to save scores
      */
     public GameController(GameUpdateManager gameUpdateManager, ScoreController scoreController) {
 
@@ -61,6 +63,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Returns the current game (the game that is in the waiting room state)
+     *
      * @return the current game
      */
     public Game getCurrentGame() {
@@ -71,6 +74,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Returns the UUID of the current game (the game that is in the waiting room state)
+     *
      * @return the UUID of the current game
      */
     public UUID getCurrentGameUUID() {
@@ -81,6 +85,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Gets a game (either started or in waiting room state) by its UUID
+     *
      * @param uuid the UUID of the game to retrieve
      * @return the Game with the specified UUID if it exists, or null if it doesn't
      */
@@ -98,6 +103,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Returns all the players in the current game (the game that is in the waiting room state)
+     *
      * @return the list of players in the current game
      */
     public List<Player> getCurrentGamePlayers() {
@@ -109,6 +115,7 @@ public class GameController implements ApplicationContextAware {
     /**
      * Checks if the current game (the game that is in the waiting room state) contains the specified
      * player
+     *
      * @param player the player to check
      * @return true if the player is in the current game, false otherwise
      */
@@ -121,6 +128,7 @@ public class GameController implements ApplicationContextAware {
     /**
      * Checks if the current game (the game that is in the waiting room state) contains the specified
      * player by its username
+     *
      * @param username the username of the player to check
      * @return true if the player with the specified username is in the current game, false otherwise
      */
@@ -148,6 +156,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Adds a player to the current game (the game that is in the waiting room state)
+     *
      * @param player the player to add to the current game
      * @return true if the player was added, false if the current game already contains a
      * player with that username
@@ -168,7 +177,8 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Removes a player from a game by its UUID
-     * @param player the player to remove
+     *
+     * @param player   the player to remove
      * @param gameUUID the UUID of the game to remove this player from
      */
     public void removePlayerFromGame(Player player, UUID gameUUID) {
@@ -187,7 +197,7 @@ public class GameController implements ApplicationContextAware {
         // Check if all players left, in that case stop the game. It also has to be checked whether this is the
         // current game in the waiting room, if that is the case, the game does not have to be stopped as it has
         // not started yet.
-        if(game != currentGame && game.getPlayers().size() == 0){
+        if(game != currentGame && game.getPlayers().size() == 0) {
             stopGame(game);
         }
 
@@ -195,6 +205,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Removes a player by its username from a game by its UUID
+     *
      * @param username the username of the player to remove
      * @param gameUUID the UUID of the game to remove this player from
      */
@@ -217,7 +228,7 @@ public class GameController implements ApplicationContextAware {
         // Check if all players left, in that case stop the game. It also has to be checked whether this is the
         // current game in the waiting room, if that is the case, the game does not have to be stopped as it has
         // not started yet.
-        if(game != currentGame && game.getPlayers().size() == 0){
+        if(game != currentGame && game.getPlayers().size() == 0) {
             stopGame(game);
         }
 
@@ -225,6 +236,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Stops a game (removes it from the runningGames, and handles saving the scores)
+     *
      * @param game the game to stop
      */
     public void stopGame(Game game) {
@@ -234,10 +246,10 @@ public class GameController implements ApplicationContextAware {
         runningGames.remove(game.getUUID());
         // Check if the game was stopped before it actually ended, in that case only interrupt the thread, otherwise
         // save all the scores.
-        if(game.isDone()){
+        if(game.isDone()) {
             // If the game ended after 20 questions, save all players scores
             List<Player> players = game.getPlayers();
-            for(Player p: players){
+            for(Player p : players) {
                 scoreController.addScore(p.getUsername(), p.getPoints());
             }
         }
@@ -247,6 +259,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * Removes a player from the current game (the game that is in the waiting room state)
+     *
      * @param player the player to remove
      */
     public void removePlayerFromCurrentGame(Player player) {
@@ -258,6 +271,7 @@ public class GameController implements ApplicationContextAware {
     /**
      * Removes a player from the current game (the game that is in the waiting room state) by its
      * username
+     *
      * @param username the username of the player to remove
      */
     public void removePlayerFromCurrentGame(String username) {
@@ -273,6 +287,7 @@ public class GameController implements ApplicationContextAware {
      * at that point, the client has only just received its Game UUID in the POST request response,
      * and still has to subscribe to that game's WebSocket topic. If there were no delay, this method
      * would send the game starting message to the WS topic before the player could even subscribe.
+     *
      * @param player the player for the single player game
      */
     public GameUpdate createSinglePlayerGame(Player player) {
@@ -300,6 +315,7 @@ public class GameController implements ApplicationContextAware {
 
     /**
      * retrieve the database
+     *
      * @return score database
      */
     public ScoreController getScoreController() {

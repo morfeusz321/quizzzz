@@ -48,7 +48,7 @@ public class QuestionGeneratorTest {
 
         assertNotNull(q);
         assertEquals(q, questionDBController.getById(q.questionId));
-        assertEquals(activity2.title, q.answerOptions.get((int) q.answer-1));
+        assertEquals(activity2.title, q.answerOptions.get((int) q.answer - 1));
 
     }
 
@@ -205,7 +205,7 @@ public class QuestionGeneratorTest {
 
         assertNotNull(moreExpensive);
         assertEquals(moreExpensive, questionDBController.getById(moreExpensive.questionId));
-        assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer-1));
+        assertEquals(activity2.title, moreExpensive.answerOptions.get((int) moreExpensive.answer - 1));
         // This can be cast to an int because it is only the index, so not a long value.
 
     }
@@ -222,20 +222,20 @@ public class QuestionGeneratorTest {
         // Count the occurrences per question type
         int[] count = new int[4];
         for(Question q : questions) {
-            if(q instanceof GeneralQuestion){
+            if(q instanceof GeneralQuestion) {
                 count[0]++;
-            } else if(q instanceof ComparisonQuestion){
+            } else if(q instanceof ComparisonQuestion) {
                 count[1]++;
-            } else if(q instanceof EstimationQuestion){
+            } else if(q instanceof EstimationQuestion) {
                 count[2]++;
-            } else{
+            } else {
                 count[3]++;
             }
         }
 
         // Check if the number of questions per type are sufficient
-        for(int i = 0; i < 4; i++){
-            if(count[i] < 3){
+        for(int i = 0; i < 4; i++) {
+            if(count[i] < 3) {
                 fail();
             }
         }

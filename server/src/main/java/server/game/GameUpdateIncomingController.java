@@ -12,10 +12,11 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class GameUpdateIncomingController {
 
-    private GameController gameController;
+    private final GameController gameController;
 
     /**
      * Instantiates this controller
+     *
      * @param gameController the game controller of the application
      */
     public GameUpdateIncomingController(GameController gameController) {
@@ -26,6 +27,7 @@ public class GameUpdateIncomingController {
 
     /**
      * Starts the current game
+     *
      * @param s can be anything; sending any WebSocket message to this URL is enough to start
      *          the current game
      */
@@ -38,13 +40,14 @@ public class GameUpdateIncomingController {
 
     /**
      * Sends the emoji update to every player in the game
+     *
      * @param gameUpdate game update containing username and sent emoji
-     * @param gameId id of the game that sent the update
+     * @param gameId     id of the game that sent the update
      * @return
      */
     @MessageMapping("/emoji/{gameId}")
     @SendTo("/topic/gameupdates/{gameId}")
-    public GameUpdate sendEmoji(GameUpdate gameUpdate, @DestinationVariable String gameId){
+    public GameUpdate sendEmoji(GameUpdate gameUpdate, @DestinationVariable String gameId) {
         return gameUpdate;
     }
 

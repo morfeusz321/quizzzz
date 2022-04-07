@@ -23,8 +23,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Config {
+
     /**
      * Creates a new instance of Random class for generating random numbers, managed by the Spring container
+     *
      * @return a new instance of the Random class
      */
     @Bean
@@ -34,10 +36,12 @@ public class Config {
 
     /**
      * Creates a new instance of the CommonUtils, managed by the Spring container
+     *
      * @return a new instance of the CommonUtils
      */
     @Bean
     public CommonUtils getCommonUtils() {
         return new CommonUtils();
     }
+
 }

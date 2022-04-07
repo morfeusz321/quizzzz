@@ -58,8 +58,8 @@ public class TestQuestionDB implements QuestionDB {
     @Override
     public void deleteById(UUID uuid) {
         List<Question> toRemove = new ArrayList<>();
-        for (Question q : db) {
-            if (q.questionId.equals(uuid)) {
+        for(Question q : db) {
+            if(q.questionId.equals(uuid)) {
                 toRemove.add(q);
             }
         }
@@ -181,4 +181,5 @@ public class TestQuestionDB implements QuestionDB {
     public <S extends Question, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
+
 }

@@ -23,8 +23,8 @@ public class UserController {
 
     static final int MAXIMUM_USERNAME_SIZE = 15;
 
-    private GameController gameController;
-    private ScoreDBController scoreDBController;
+    private final GameController gameController;
+    private final ScoreDBController scoreDBController;
 
     /**
      * Creates the API controller
@@ -43,8 +43,9 @@ public class UserController {
      * If the username is already in use, for multiplayer games, the player will not be able to join. For
      * singleplayer games, the player must include the confirmNameInUse=true parameter in the URL in order to
      * start the game.
-     * @param username the requested username for this player
-     * @param gametype the game type that the player wishes to join (either GameType.SINGLEPLAYER or GameType.MULTIPLAYER)
+     *
+     * @param username         the requested username for this player
+     * @param gametype         the game type that the player wishes to join (either GameType.SINGLEPLAYER or GameType.MULTIPLAYER)
      * @param confirmNameInUse confirms that the player knows that the name has already been used on the leaderboard
      *                         before for singleplayer games, and still wishes to use its requested username
      * @return For multiplayer games: 200 OK: GameUpdateFullPlayerList if the player has joined the current game, or 200 OK:
@@ -56,8 +57,8 @@ public class UserController {
      */
     @PostMapping("/enter")
     public ResponseEntity<GameUpdate> joinGame(@RequestParam("username") String username,
-                                                  @RequestParam("gametype") String gametype,
-                                                  @RequestParam("confirmNameInUse") Optional<String> confirmNameInUse) {
+                                               @RequestParam("gametype") String gametype,
+                                               @RequestParam("confirmNameInUse") Optional<String> confirmNameInUse) {
 
         if(username.length() > MAXIMUM_USERNAME_SIZE) {
 
@@ -104,7 +105,7 @@ public class UserController {
             }
 
             return ResponseEntity.ok(new GameUpdateFullPlayerList(gameController.getCurrentGamePlayers(),
-                                                                    gameController.getCurrentGameUUID()));
+                    gameController.getCurrentGameUUID()));
 
         } else {
 
@@ -116,7 +117,8 @@ public class UserController {
 
     /**
      * Removes the player with the specified username from the specified game
-     * @param username the username of the player that is leaving
+     *
+     * @param username       the username of the player that is leaving
      * @param gameUUIDString the UUID game that the player is in
      * @return 200 OK: regardless of whether the player was actually in the game or whether
      * the game even existed, or 400 Bad Request if the UUID was malformed

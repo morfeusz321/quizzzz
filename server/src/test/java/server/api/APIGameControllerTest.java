@@ -38,7 +38,7 @@ class APIGameControllerTest {
         List<Activity> list = new ArrayList<>();
         list.add(new Activity("1", "/path/to/image/", "Activity 1", 9));
         List<Question> questions = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
+        for(int i = 0; i < 20; i++) {
             questions.add(new ComparisonQuestion(new Activity("1", "/path/to/image/", "Activity 1", 9), list, 1));
         }
         UUID uuid = new UUID(1122, 122);
@@ -73,7 +73,7 @@ class APIGameControllerTest {
         List<Activity> list = new ArrayList<>();
         list.add(new Activity("1", "/path/to/image/", "Activity 1", 9));
         List<Question> questions = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for(int i = 0; i < 10; i++) {
             questions.add(new ComparisonQuestion(new Activity("1", "/path/to/image/", "Activity 1", 9), list, 1));
         }
         UUID uuid = new UUID(1122, 122);
@@ -109,7 +109,7 @@ class APIGameControllerTest {
     @Test
     void getAllQuestionsBadUUID() throws Exception {
         String url = "/api/game/questions";
-        mockMvc.perform(get(url).param("gameID","badthing")).andExpect(status().isBadRequest());
+        mockMvc.perform(get(url).param("gameID", "badthing")).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -155,7 +155,7 @@ class APIGameControllerTest {
     @Test
     void gameLongPollLoopBadUUID() throws Exception {
         String url = "/api/game/";
-        mockMvc.perform(get(url).param("gameID","badthing")).andExpect(status().isBadRequest());
+        mockMvc.perform(get(url).param("gameID", "badthing")).andExpect(status().isBadRequest());
     }
 
     @Test
@@ -222,8 +222,8 @@ class APIGameControllerTest {
 
         String url = "/api/game/answer";
         mockMvc.perform(post(url).param("gameID", uuid.toString()).param("playerName", username).param("answer", "1")).andExpect(status().isBadRequest());
-        verify(gameController,times(1)).getGame(uuid);
-        verify(gameController,times(1)).getCurrentGame();
+        verify(gameController, times(1)).getGame(uuid);
+        verify(gameController, times(1)).getCurrentGame();
     }
 
     @Test
@@ -237,17 +237,17 @@ class APIGameControllerTest {
 
         String url = "/api/game/answer";
         mockMvc.perform(post(url).param("gameID", uuid.toString()).param("playerName", username).param("answer", "1")).andExpect(status().isBadRequest());
-        verify(gameController,times(1)).getGame(uuid);
-        verify(gameController,times(1)).getCurrentGame();
-        verify(game,times(1)).containsPlayer(username);
+        verify(gameController, times(1)).getGame(uuid);
+        verify(gameController, times(1)).getCurrentGame();
+        verify(game, times(1)).containsPlayer(username);
 
     }
 
 
     @Test
-    void getAllPlayers() throws Exception{
+    void getAllPlayers() throws Exception {
         List<Player> players = new ArrayList<>();
-        for(int i = 0; i < 6;i++){
+        for(int i = 0; i < 6; i++) {
             players.add(new Player());
         }
         UUID uuid = new UUID(1122, 122);
@@ -265,14 +265,14 @@ class APIGameControllerTest {
     }
 
     @Test
-    void getAllPlayersBadUUID() throws Exception{
+    void getAllPlayersBadUUID() throws Exception {
 
         String url = "/api/game/players";
         mockMvc.perform(get(url).param("gameID", "bad")).andExpect(status().isBadRequest());
     }
 
     @Test
-    void getAllPlayersGameNull() throws Exception{
+    void getAllPlayersGameNull() throws Exception {
         UUID uuid = new UUID(1122, 122);
         Game game = mock(Game.class);
         Mockito.when(gameController.getGame(uuid)).thenReturn(null);
@@ -286,7 +286,7 @@ class APIGameControllerTest {
     }
 
     @Test
-    void getAllPlayersTheSameGame() throws Exception{
+    void getAllPlayersTheSameGame() throws Exception {
         UUID uuid = new UUID(1122, 122);
         Game game = mock(Game.class);
         Mockito.when(gameController.getGame(uuid)).thenReturn(game);
@@ -298,11 +298,11 @@ class APIGameControllerTest {
 
 
         verify(gameController, times(1)).getGame(uuid);
-        verify(gameController,times(1)).getCurrentGame();
+        verify(gameController, times(1)).getCurrentGame();
     }
 
     @Test
-    void getAllPlayersPlayerNull() throws Exception{
+    void getAllPlayersPlayerNull() throws Exception {
 
         UUID uuid = new UUID(1122, 122);
         Game game = mock(Game.class);
@@ -317,4 +317,5 @@ class APIGameControllerTest {
         verify(gameController, times(1)).getGame(uuid);
         verify(game, times(1)).getPlayers();
     }
+
 }

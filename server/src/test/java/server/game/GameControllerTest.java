@@ -61,7 +61,7 @@ public class GameControllerTest {
             scoreControllerField.setAccessible(true);
             assertNotNull(scoreControllerField.get(gameController));
 
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch(NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
 
@@ -125,7 +125,7 @@ public class GameControllerTest {
 
         try {
             Thread.sleep(2000);
-        } catch (InterruptedException e) {
+        } catch(InterruptedException e) {
             e.printStackTrace();
             fail();
         }
@@ -221,7 +221,7 @@ public class GameControllerTest {
 
         try {
             Thread.sleep(2000);
-        } catch (InterruptedException e) {
+        } catch(InterruptedException e) {
             e.printStackTrace();
             fail();
         }
@@ -232,7 +232,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void getScoreControllerTest(){
+    public void getScoreControllerTest() {
         ScoreController sc = gameController.getScoreController();
         assertNotNull(sc);
     }

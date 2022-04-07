@@ -23,10 +23,12 @@ import org.springframework.context.ConfigurableApplicationContext;
 import server.database.QuestionDBController;
 
 @SpringBootApplication
-@EntityScan(basePackages = { "commons", "server" })
+@EntityScan(basePackages = {"commons", "server"})
 public class Main {
+
     /**
      * Main class used to start the server of our application
+     *
      * @param args arguments passed to main before starting the application
      */
     public static void main(String[] args) {
@@ -36,4 +38,5 @@ public class Main {
         context.getBean(QuestionDBController.class).clear();
 
     }
+
 }
