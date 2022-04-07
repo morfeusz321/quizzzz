@@ -93,10 +93,9 @@ public class Game extends Thread {
             return;
         }
 
-        // Something went wrong when trying to generate the questions
+        // Something went wrong when trying to generate the questions -> send message to clients
         if(questions == null){
-            // TODO: some error handling here, maybe send an error message to client that
-            //  should then be displayed
+            gameUpdateManager.noQuestionsGenerated(this.uuid);
             return;
         }
 
