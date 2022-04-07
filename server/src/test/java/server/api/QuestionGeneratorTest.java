@@ -26,7 +26,7 @@ public class QuestionGeneratorTest {
         questionDBController = new QuestionDBController(new TestQuestionDB());
         QuestionGeneratorUtils utils = new QuestionGeneratorUtils();
         questionGenerator = new QuestionGenerator(
-                new Random(),
+                new Random(1234567),
                 activityDBController,
                 questionDBController,
                 utils);
@@ -213,8 +213,6 @@ public class QuestionGeneratorTest {
     @Test
     public void testMinPerQuestionType() {
 
-        // TODO: this is not the best way to test this, as randomness is involved.
-
         activityDBController.getInternalDB().deleteAll();
         GameTestUtils utils = new GameTestUtils();
         utils.initActivityDB(activityDBController);
@@ -247,8 +245,6 @@ public class QuestionGeneratorTest {
     @Test
     public void testNoDuplicatesQuestionGeneration() {
 
-        // TODO: this is not the best way to test this, as randomness is involved.
-
         activityDBController.getInternalDB().deleteAll();
         GameTestUtils utils = new GameTestUtils();
         utils.initActivityDB(activityDBController);
@@ -279,7 +275,7 @@ public class QuestionGeneratorTest {
 
         // The question should not contain an "obvious" answer, i.e. 4 as an answer. The consumption is out of the
         // desired range. This is checked in this test.
-        // TODO: when Random with seed is added, change this test. This is testing with randomness, so not desired.
+
         activityDBController.getInternalDB().deleteAll();
         Activity activity1 = new Activity("1", "/path/to/image/", "Activity 1", 9);
         Activity activity2 = new Activity("2", "/path/to/image/", "Activity 2", 10);
