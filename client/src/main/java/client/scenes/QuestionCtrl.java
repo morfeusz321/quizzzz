@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Random;
 
 public abstract class QuestionCtrl {
+
     protected final ServerUtils server; // TODO: not sure if this is good style (using protected) - also next line
     protected final MainCtrl mainCtrl;
 
@@ -114,7 +115,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the scene, i.e. handles initialization, images
      */
-    protected void initialize(){
+    protected void initialize() {
         emojiList = List.of(happyEmoji, sadEmoji, angryEmoji, heartEmoji, thumbsUpEmoji);
         showImages();
         initializeEmojiEventHandlers();
@@ -184,7 +185,7 @@ public abstract class QuestionCtrl {
             doublePoints.getStyleClass().add("hover-cursor");
         });
 
-        decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e ->{
+        decreaseTime.addEventHandler(MouseEvent.MOUSE_EXITED, e -> {
             decreaseTime.setEffect(null);
             decreaseTime.getStyleClass().remove("hover-cursor");
         });
@@ -231,7 +232,7 @@ public abstract class QuestionCtrl {
                 new KeyFrame(Duration.millis(timeInMillis), new KeyValue(timeBar.progressProperty(), 0))
         );
         changeLabel = new Timeline();
-        for(int i = 0; i <= remainingTime; i++){
+        for(int i = 0; i <= remainingTime; i++) {
             int finalI = i;
             changeLabel.getKeyFrames().add(
                     new KeyFrame(Duration.seconds(remainingTime - i),
@@ -251,13 +252,13 @@ public abstract class QuestionCtrl {
     public void handleTimeJoker(long time) {
         timeAnim.getKeyFrames().clear();
         changeLabel.getKeyFrames().clear();
-        int remainingTime = ((int) time)/1000;
+        int remainingTime = ((int) time) / 1000;
 
         timeAnim = new Timeline(
                 new KeyFrame(Duration.millis(time), new KeyValue(timeBar.progressProperty(), 0))
         );
         changeLabel = new Timeline();
-        for(int i = 0; i <= remainingTime; i++){
+        for(int i = 0; i <= remainingTime; i++) {
             int finalI = i;
             changeLabel.getKeyFrames().add(
                     new KeyFrame(Duration.seconds(remainingTime - i),
@@ -340,7 +341,7 @@ public abstract class QuestionCtrl {
         // TODO: add (private) methods here for handling powers (which are for example called in a switch-statement).
         //  Alternatively we can also create classes for handling the powers and call methods of those classes here.
 
-        switch (power) {
+        switch(power) {
             case "remove question" -> removeQuestionJoker();
             case "double points" -> doublePoints();
             case "decrease time" -> decreaseTimeJoker();
@@ -354,11 +355,11 @@ public abstract class QuestionCtrl {
         doublePoints.setDisable(true);
         doublePoints.setOpacity(0.3);
         mainCtrl.disableJoker(2);
-        server.useScoreJoker(mainCtrl.getSavedUsernamePrefill(),mainCtrl.getGameUUID());
+        server.useScoreJoker(mainCtrl.getSavedUsernamePrefill(), mainCtrl.getGameUUID());
     }
 
     private void removeQuestionJoker() {
-        server.useQuestionJoker(mainCtrl.getSavedUsernamePrefill(),mainCtrl.getGameUUID());
+        server.useQuestionJoker(mainCtrl.getSavedUsernamePrefill(), mainCtrl.getGameUUID());
     }
 
     /**
@@ -413,8 +414,7 @@ public abstract class QuestionCtrl {
     public void updatePlayerCount() {
         if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             playersInfo.setOpacity(0);
-        }
-        else playersInfo.setText("Players in game: " + mainCtrl.getGameManager().getPlayerCount());
+        } else playersInfo.setText("Players in game: " + mainCtrl.getGameManager().getPlayerCount());
     }
 
     /**
@@ -442,7 +442,7 @@ public abstract class QuestionCtrl {
     /**
      * Initializes the hover handlers for all emojis
      */
-    private void initializEmojiHoverHandlers(){
+    private void initializEmojiHoverHandlers() {
 
         emojiList.forEach(this::addEventHandlersEmoji);
 
@@ -450,6 +450,7 @@ public abstract class QuestionCtrl {
 
     /**
      * Gives emojis its event handlers
+     *
      * @param emoji the emoji which is hovered
      */
     private void addEventHandlersEmoji(ImageView emoji) {
@@ -461,6 +462,7 @@ public abstract class QuestionCtrl {
 
     /**
      * The event handler called when the user hovers over an emoji
+     *
      * @param emoji the emoji which the mouse has entered
      */
     private void eventHandlerEmojiMouseEntered(ImageView emoji) {
@@ -476,6 +478,7 @@ public abstract class QuestionCtrl {
 
     /**
      * The event handler called when the user stops hovering over an emoji
+     *
      * @param emoji the emoji that was stopped hovering over
      */
     private void eventHandlerEmojiMouseExited(ImageView emoji) {
@@ -492,8 +495,9 @@ public abstract class QuestionCtrl {
     /**
      * sets the points shown on the screen with the current user's score
      */
-    public void setPoints(){
+    public void setPoints() {
         int points = mainCtrl.getScore();
         this.pointsInfo.setText("Your points: " + points);
     }
+
 }

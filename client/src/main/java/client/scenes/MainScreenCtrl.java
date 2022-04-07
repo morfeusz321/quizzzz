@@ -53,7 +53,8 @@ public class MainScreenCtrl implements Initializable {
 
     /**
      * Constructor for main screen controller, which controls the interaction of the (main) overview screen
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
@@ -65,6 +66,7 @@ public class MainScreenCtrl implements Initializable {
 
     /**
      * Initializes the images on the main screen
+     *
      * @param location
      * @param resources
      */
@@ -90,7 +92,7 @@ public class MainScreenCtrl implements Initializable {
         lightOn = true;
 
         lightbulb.setOnMouseClicked(e -> {
-            if(lightOn){
+            if(lightOn) {
                 // lightbulb is currently on
                 lightbulb.setImage(new Image("/client/img/main_lightbulb_off.png"));
                 lightOn = false;
@@ -106,6 +108,7 @@ public class MainScreenCtrl implements Initializable {
 
     /**
      * Starts the single player mode of the game
+     *
      * @param event click on singleplayer button
      */
     @FXML
@@ -117,6 +120,7 @@ public class MainScreenCtrl implements Initializable {
 
     /**
      * Starts the multi player mode of the game
+     *
      * @param event click on multiplayer button
      */
     @FXML
@@ -150,21 +154,23 @@ public class MainScreenCtrl implements Initializable {
 
     /**
      * goes to the given scene and does fading animation
+     *
      * @param nextScene
      */
-    public void fadeOutMain(String nextScene){
+    public void fadeOutMain(String nextScene) {
         animation.fadeOut(anchorPane, mainCtrl, nextScene);
     }
 
     /**
      * when entering the scene it does fading animation
      */
-    public void fadeInMain(){
+    public void fadeInMain() {
         animation.fadeIn(anchorPane);
     }
 
     /**
      * Gives a button its event handlers
+     *
      * @param btn the button to give event handlers to
      */
     private void addEventHandlersToButton(Button btn) {
@@ -176,6 +182,7 @@ public class MainScreenCtrl implements Initializable {
 
     /**
      * The event handler called when the user hovers over a button
+     *
      * @param btn the button that was hovered over
      */
     private void eventHandlerButtonMouseEntered(Button btn) {
@@ -186,6 +193,7 @@ public class MainScreenCtrl implements Initializable {
 
     /**
      * The event handler called when the user stops hovering over a button
+     *
      * @param btn the button that was stopped hovering over
      */
     private void eventHandlerButtonMouseExited(Button btn) {
@@ -198,20 +206,20 @@ public class MainScreenCtrl implements Initializable {
     /**
      * Initializes the event handlers of all buttons
      */
-    private void initializeEventHandlers(){
+    private void initializeEventHandlers() {
 
         buttonList.forEach(this::addEventHandlersToButton);
 
     }
 
     /**
-     *  The leaderboard button functionality
+     * The leaderboard button functionality
      */
     private void leaderboardHandler() {
 
         ColorAdjust hover = new ColorAdjust();
         hover.setBrightness(-0.05);
-        hover.setSaturation( 0.1);
+        hover.setSaturation(0.1);
         hover.setHue(-0.02);
 
 
@@ -227,12 +235,12 @@ public class MainScreenCtrl implements Initializable {
     }
 
     /**
-     *  The help button functionality
+     * The help button functionality
      */
     private void helpHandler() {
 
         ColorAdjust hover = new ColorAdjust();
-        hover.setBrightness( -0.1);
+        hover.setBrightness(-0.1);
         hover.setSaturation(0.15);
         hover.setHue(-0.03);
 

@@ -12,15 +12,16 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 
 public class LongPollThread extends Thread {
 
-    private String server;
-    private UUID gameUUID;
-    private Consumer<GameUpdate> consumer;
-    private String username;
+    private final String server;
+    private final UUID gameUUID;
+    private final Consumer<GameUpdate> consumer;
+    private final String username;
     private volatile boolean isInGame;
 
     /**
      * Creates LongPollThread instance with specified injections
-     * @param server name of the server that you will send requests to
+     *
+     * @param server   name of the server that you will send requests to
      * @param gameUUID uuid of the current game
      * @param consumer consumer to handle upcoming messages
      * @param username username of the current player
@@ -51,6 +52,7 @@ public class LongPollThread extends Thread {
      * all incoming game loop updates to the provided consumer. The long poll loop is automatically
      * cancelled upon leaving the game by clicking the back button or closing the window, and it is guaranteed
      * by this method that no further updates will be accepted by the provided consumer after leaving the game.
+     *
      * @param consumer the consumer that accepts incoming game loop updates
      */
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
@@ -72,6 +74,7 @@ public class LongPollThread extends Thread {
     /**
      * Sets this Thread's isInGame status (the Thread will no longer push game updates to the consumer
      * if its isInGame is false, and it also won't make any new long poll requests)
+     *
      * @param isInGame the isInGame status to set this Thread to
      */
     public void setIsInGame(boolean isInGame) {

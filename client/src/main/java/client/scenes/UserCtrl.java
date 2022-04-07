@@ -40,7 +40,7 @@ import java.util.UUID;
 public class UserCtrl {
 
     private final ServerUtils server;
-    private ModalFactory modalFactory;
+    private final ModalFactory modalFactory;
     private final MainCtrl mainCtrl;
     private final WaitingRoomCtrl waitingRoomCtrl;
     public final AnimationUtils animation;
@@ -69,9 +69,9 @@ public class UserCtrl {
     /**
      * Constructor
      *
-     * @param server   Utilities for communicating with the server (API endpoint)
-     * @param modalFactory  the modal factory to use
-     * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param server       Utilities for communicating with the server (API endpoint)
+     * @param modalFactory the modal factory to use
+     * @param mainCtrl     The main control which is used for calling methods to switch scenes
      */
     @Inject
     public UserCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl, WaitingRoomCtrl waitingRoomCtrl) {
@@ -119,7 +119,7 @@ public class UserCtrl {
      */
 
     public void setTextGameType() {
-        if (mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
+        if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
             gameType.setText("MULTIPLAYER");
         } else gameType.setText("SINGLEPLAYER");
     }
@@ -152,15 +152,15 @@ public class UserCtrl {
 
             server.changeServer(getServer());
 
-            if (mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+            if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
                 gu = server.joinSinglePlayerGame(un, true);
-            } else if (mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
+            } else if(mainCtrl.getSelectedGameType() == GameType.MULTIPLAYER) {
                 gu = server.joinMultiplayerGame(un);
             } else {
                 throw new IllegalArgumentException("Invalid game type!");
             }
 
-        } catch (WebApplicationException | IllegalArgumentException e) {
+        } catch(WebApplicationException | IllegalArgumentException e) {
             Alert alert = modalFactory.getModal(Alert.AlertType.ERROR, "", e.getMessage());
             alert.showAndWait();
             return;
@@ -168,7 +168,7 @@ public class UserCtrl {
 
         if(!checkReturnedGameUpdateAfterJoinGame(gu, un)) return;
 
-        if (gu instanceof GameUpdateFullPlayerList) {
+        if(gu instanceof GameUpdateFullPlayerList) {
             waitingRoomCtrl.updateWaitingRoomPlayers(((GameUpdateFullPlayerList) gu), un);
             this.gameUUID = ((GameUpdateFullPlayerList) gu).getGameUUID();
         }
@@ -178,10 +178,10 @@ public class UserCtrl {
 
         this.currentUsername = un;
 
-        if (mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
             server.startGame();
         } else {
-            fadeOutUser("wait");        
+            fadeOutUser("wait");
         }
 
 
@@ -191,6 +191,7 @@ public class UserCtrl {
      * Checks a game update to see if the client succeeded in joining a game,
      * and shows an error modal if it wasn't. Used by the join method in this controller,
      * but moved into this separate method because of the join method's length.
+     *
      * @param gu the GameUpdate that was received from the server after attempting to join a game
      * @param un the username entered by the user in an attempt to join the game
      * @return shows an error modal if the GameUpdate was of the name in use or name too long type,
@@ -198,7 +199,7 @@ public class UserCtrl {
      */
     private boolean checkReturnedGameUpdateAfterJoinGame(GameUpdate gu, String un) {
 
-        if (gu instanceof GameUpdateNameInUse) {
+        if(gu instanceof GameUpdateNameInUse) {
             Alert alert = modalFactory.getModal(Alert.AlertType.ERROR, "Error", "", "Name \"" + un + "\" already in use!");
             alert.showAndWait();
             return false;
@@ -281,7 +282,7 @@ public class UserCtrl {
      * @param e a click of the user
      */
     public void keyPressed(KeyEvent e) {
-        switch (e.getCode()) {
+        switch(e.getCode()) {
             case ENTER:
                 join();
                 break;
@@ -300,30 +301,32 @@ public class UserCtrl {
 //    private void addToDatabase(String username){
 //        server.addNewScoreToDB(username);
 //    }
+
     /**
      * when clicking back button the user is redirected to the main page
      */
-    public void goBackButton(){
+    public void goBackButton() {
         fadeOutUser("main");
     }
 
     /**
      * goes to the given scene and does fading animation
+     *
      * @param nextScene
      */
-    public void fadeOutUser(String nextScene){
+    public void fadeOutUser(String nextScene) {
         animation.fadeOut(anchorPane, mainCtrl, nextScene);
     }
 
     /**
      * when entering the scene it does fading animation
      */
-    public void fadeInUser(){
+    public void fadeInUser() {
         animation.fadeIn(anchorPane);
     }
 
     /**
-     *  join button hover effects
+     * join button hover effects
      */
     private void joinHandler() {
 

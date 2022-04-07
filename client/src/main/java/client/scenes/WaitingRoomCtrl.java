@@ -127,7 +127,7 @@ public class WaitingRoomCtrl {
     private void initializeStartGameHandlers() {
 
         List<Node> elements = List.of(lightbulb, speechBubble, speechBubbleText);
-        for (Node el : elements) {
+        for(Node el : elements) {
             el.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> server.startGame());
             el.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> el.setCursor(Cursor.HAND));
             el.addEventHandler(MouseEvent.MOUSE_EXITED, e -> el.setCursor(Cursor.DEFAULT));
@@ -141,7 +141,7 @@ public class WaitingRoomCtrl {
     private void initializeLightbulbAnimation() {
 
         Timeline waving = new Timeline();
-        for (int i = 1; i < 24; i++) {
+        for(int i = 1; i < 24; i++) {
             int finalI = i;
             waving.getKeyFrames().add(
                     new KeyFrame(Duration.millis(110 * i),
@@ -165,7 +165,7 @@ public class WaitingRoomCtrl {
      */
     protected void addPlayerToWaitingRoom(Player player) {
 
-        if (!thisUser.equals(player.getUsername())) {
+        if(!thisUser.equals(player.getUsername())) {
             Platform.runLater(() -> playerList.getItems().add(player.getUsername()));
         } else {
             Platform.runLater(() -> playerList.getItems().add(0, "\u2015 You: " + player.getUsername() + " \u2015"));
@@ -182,7 +182,7 @@ public class WaitingRoomCtrl {
      */
     protected void removePlayerFromWaitingRoom(Player player) {
 
-        if (!thisUser.equals(player.getUsername())) {
+        if(!thisUser.equals(player.getUsername())) {
             Platform.runLater(() -> playerList.getItems().remove(player.getUsername()));
         } else {
             Platform.runLater(() -> playerList.getItems().remove("\u2015 You: " + player.getUsername() + " \u2015"));
@@ -203,8 +203,8 @@ public class WaitingRoomCtrl {
 
         playerList.getItems().clear();
         thisUser = username;
-        for (Player p : gameUpdateFullPlayerList.getPlayerList()) {
-            if (!username.equals(p.getUsername())) {
+        for(Player p : gameUpdateFullPlayerList.getPlayerList()) {
+            if(!username.equals(p.getUsername())) {
                 playerList.getItems().add(playerList.getItems().size(), p.getUsername());
             } else {
                 playerList.getItems().add(0, "\u2015 You: " + p.getUsername() + " \u2015");
@@ -218,7 +218,7 @@ public class WaitingRoomCtrl {
      * Updates the players joined label each time a player joins/leaves
      */
     protected void updatePlayersJoinedText() {
-        if (numPlayers == 1) {
+        if(numPlayers == 1) {
             playersJoined.setText(numPlayers + " player joined:");
         } else {
             playersJoined.setText(numPlayers + " players joined:");
@@ -228,22 +228,24 @@ public class WaitingRoomCtrl {
     /**
      * when clicking back button the user is redirected to the main page
      */
-    public void goBackButton(){
+    public void goBackButton() {
         fadeOutWait("user");
     }
 
     /**
      * goes to the given scene and does fading animation
+     *
      * @param nextScene
      */
-    public void fadeOutWait(String nextScene){
+    public void fadeOutWait(String nextScene) {
         animation.fadeOut(anchorPane, mainCtrl, nextScene);
     }
 
     /**
      * when entering the scene it does fading animation
      */
-    public void fadeInWait(){
+    public void fadeInWait() {
         animation.fadeIn(anchorPane);
     }
+
 }

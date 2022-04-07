@@ -26,8 +26,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AdminCtrl implements Initializable {
+
     private final ServerUtils server;
-    private ModalFactory modalFactory;
+    private final ModalFactory modalFactory;
     private final MainCtrl mainCtrl;
     private final AnimationUtils animation;
 
@@ -69,9 +70,10 @@ public class AdminCtrl implements Initializable {
 
     /**
      * Constructor for a AdminCtrl, which controls the display/interaction of managing the activities
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server       Utilities for communicating with the server (API endpoint)
      * @param modalFactory the modal factory to use
-     * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param mainCtrl     The main control which is used for calling methods to switch scenes
      */
     @Inject
     public AdminCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
@@ -95,7 +97,7 @@ public class AdminCtrl implements Initializable {
     }
 
     /**
-     *  The back button functionality
+     * The back button functionality
      */
     private void backButtonHandler() {
         ColorAdjust hover = new ColorAdjust();
@@ -130,7 +132,7 @@ public class AdminCtrl implements Initializable {
                 "This will delete " + currentActivity.id);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if(result.get() == ButtonType.OK) {
             server.deleteActivity(currentActivity);
             refresh();
         } else {
@@ -140,6 +142,7 @@ public class AdminCtrl implements Initializable {
 
     /**
      * Sets the current scene to admin scene (required for file chooser)
+     *
      * @param scene admin scene
      */
     public void setScene(Scene scene) {
@@ -157,7 +160,7 @@ public class AdminCtrl implements Initializable {
             String path = selectedFile.getPath();
             server.importActivity(path);
             refresh();
-        } catch (NullPointerException e) {
+        } catch(NullPointerException e) {
             System.out.println("Selected file is null");
         }
     }
@@ -173,7 +176,7 @@ public class AdminCtrl implements Initializable {
             String path = selectedFile.getPath();
             server.importActivityUpdate(path);
             refresh();
-        } catch (NullPointerException e) {
+        } catch(NullPointerException e) {
             System.out.println("Selected file is null");
         }
     }
@@ -208,6 +211,7 @@ public class AdminCtrl implements Initializable {
 
     /**
      * Automatically updates currentActivity to the selected activity from the table
+     *
      * @param click mouse event
      */
     @FXML
@@ -227,27 +231,29 @@ public class AdminCtrl implements Initializable {
     /**
      * when clicking back button the user is redirected to the main page
      */
-    public void goBackButton(){
+    public void goBackButton() {
         fadeOutAdmin("main");
     }
 
     /**
      * goes to the given scene and does fading animation
+     *
      * @param nextScene
      */
-    public void fadeOutAdmin(String nextScene){
+    public void fadeOutAdmin(String nextScene) {
         animation.fadeOut(anchorPane, mainCtrl, nextScene);
     }
 
     /**
      * when entering the scene it does fading animation
      */
-    public void fadeInAdmin(){
+    public void fadeInAdmin() {
         animation.fadeIn(anchorPane);
     }
 
     /**
      * Gives a button its event handlers
+     *
      * @param btn the button to give event handlers to
      */
     private void addEventHandlersToButton(Button btn) {
@@ -259,6 +265,7 @@ public class AdminCtrl implements Initializable {
 
     /**
      * The event handler called when the user hovers over a button
+     *
      * @param btn the button that was hovered over
      */
     private void eventHandlerButtonMouseEntered(Button btn) {
@@ -269,6 +276,7 @@ public class AdminCtrl implements Initializable {
 
     /**
      * The event handler called when the user stops hovering over a button
+     *
      * @param btn the button that was stopped hovering over
      */
     private void eventHandlerButtonMouseExited(Button btn) {
@@ -281,7 +289,7 @@ public class AdminCtrl implements Initializable {
     /**
      * Initializes the event handlers of all buttons
      */
-    private void initializeEventHandlers(){
+    private void initializeEventHandlers() {
 
         buttonList.forEach(this::addEventHandlersToButton);
 

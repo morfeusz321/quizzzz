@@ -24,6 +24,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
+
     @FXML
     protected ImageView removeQuestion;
 
@@ -62,9 +63,10 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      * Creates a MultipleChoiceQuestionCtrl, which controls the display/interaction of all multiple choice question
      * screens. This includes the general question and the comparison question screens.
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
-     * @param utils Common utilities (for server- and client-side)
+     * @param utils    Common utilities (for server- and client-side)
      */
     @Inject
     public MultipleChoiceQuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
@@ -75,7 +77,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * Initializes the scene elements and the buttonList for answer buttons
      */
     @FXML
-    protected void initialize(){
+    protected void initialize() {
         buttonList = List.of(answerBtn1, answerBtn2, answerBtn3);
         buttonList.forEach(button -> {
             button.getStyleClass().add("button-font-size-1");
@@ -90,9 +92,9 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * the estimation question).
      */
     @Override
-    protected void showImages(){
+    protected void showImages() {
         super.showImages();
-        if(correctTick!=null && wrongCross!=null) {
+        if(correctTick != null && wrongCross != null) {
             correctTick.setImage(new Image("/client/img/right_answer.png"));
             wrongCross.setImage(new Image("/client/img/wrong_answer.png"));
         }
@@ -105,7 +107,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * the estimation question).
      */
     @Override
-    protected void initializePowerEventHandlers(){
+    protected void initializePowerEventHandlers() {
         // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
         super.initializePowerEventHandlers();
 
@@ -130,7 +132,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      * Initializes the event handlers of all answer buttons
      */
-    private void initializeAnswerEventHandlers(){
+    private void initializeAnswerEventHandlers() {
 
         buttonList.forEach(this::addEventHandlersToAnswerButton);
 
@@ -138,6 +140,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
     /**
      * Gives an answer button its event handlers
+     *
      * @param btn the answer button to give event handlers to
      */
     private void addEventHandlersToAnswerButton(Button btn) {
@@ -150,15 +153,16 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
     /**
      * The event handler is called when an answer button is clicked
+     *
      * @param btn the button that was clicked
      */
     private void eventHandlerAnswerButtonMouseClicked(Button btn) {
 
         buttonList.forEach(b -> {
-                                    b.getStyleClass().remove("selected-answer");
-                                    b.getStyleClass().remove("answerCorrect");
-                                    b.getStyleClass().remove("answerIncorrect");
-                                } );
+            b.getStyleClass().remove("selected-answer");
+            b.getStyleClass().remove("answerCorrect");
+            b.getStyleClass().remove("answerIncorrect");
+        });
 
         if(btn.equals(answerBtn1)) {
             lastSelectedButton = 1;
@@ -178,6 +182,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
     /**
      * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
+     *
      * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
      */
     public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
@@ -194,24 +199,24 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
                 placingTick(lastSelectedButton);
                 correctAns.setText("You answered correctly!");
                 buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerCorrect");
-                fullText.setLayoutX(anchorPane.getWidth()*0.1543248);
-                fullText.setLayoutY(anchorPane.getHeight()*0.754867);
+                fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
+                fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
                 pointsAdded.setText(" +" + answer.getPoints());
                 pointsAdded.setOpacity(1);
             });
         } else {
-            if(lastSelectedButton==0) {
-                Platform.runLater(() ->{
+            if(lastSelectedButton == 0) {
+                Platform.runLater(() -> {
                     correctAns.setText("You did not answer. Try to be faster!");
                     placingTick(correct);
-                   fullText.setLayoutX(anchorPane.getWidth()*0.1043248);
-                   fullText.setLayoutY(anchorPane.getHeight()*0.754867);
-                try {
-                    buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
-                } catch (IndexOutOfBoundsException ignored) {
-                    // This shouldn't be here, otherwise the app could crash
-                }
-            });
+                    fullText.setLayoutX(anchorPane.getWidth() * 0.1043248);
+                    fullText.setLayoutY(anchorPane.getHeight() * 0.754867);
+                    try {
+                        buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
+                    } catch(IndexOutOfBoundsException ignored) {
+                        // This shouldn't be here, otherwise the app could crash
+                    }
+                });
             } else {
                 Platform.runLater(() -> {
                     fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
@@ -220,12 +225,12 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
                     correctAns.setText("You answered incorrectly!");
                     try {
                         buttonList.get((int) lastSelectedButton - 1).getStyleClass().add("answerIncorrect");
-                    } catch (IndexOutOfBoundsException ignored) {
+                    } catch(IndexOutOfBoundsException ignored) {
                         // This is fine, no button was selected in this case
                     }
                     try {
                         buttonList.get((int) answer.getAnswer() - 1).getStyleClass().add("answerCorrect");
-                    } catch (IndexOutOfBoundsException ignored) {
+                    } catch(IndexOutOfBoundsException ignored) {
                         // This is very much not fine, probably indicates a bug in the
                         // answer response entity creation, or question generation, but there is hardly a
                         // better option than just continuing, otherwise the application will crash!
@@ -245,11 +250,12 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     *  places the tick next to the correct answer
+     * places the tick next to the correct answer
+     *
      * @param num the number of the answer
      */
-    private void placingTick(long num){
-        switch ((int) num) {
+    private void placingTick(long num) {
+        switch((int) num) {
             case 1 -> {
                 correctTick.setLayoutX(anchorPane.getWidth() * 0.508125);
                 correctTick.setLayoutY(anchorPane.getHeight() * 0.33250);
@@ -266,12 +272,13 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
     /**
-     *  places the cross next an answer
+     * places the cross next an answer
+     *
      * @param num the number of the button
      */
-    private void placingCross(long num){
+    private void placingCross(long num) {
 
-        switch ((int) num) {
+        switch((int) num) {
             case 1 -> {
                 wrongCross.setLayoutX(anchorPane.getWidth() * 0.508125);
                 wrongCross.setLayoutY(anchorPane.getHeight() * 0.33250);
@@ -296,8 +303,8 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      * Disables the answer and power buttons, makes then power buttons invisible
      */
     @Override
-    public void disableButtons(){
-        for(Button x : buttonList){
+    public void disableButtons() {
+        for(Button x : buttonList) {
             x.setDisable(true);
         }
         powersText.setOpacity(0.3);
@@ -315,7 +322,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     /**
      * Enables the answer and power buttons, makes then power buttons visible
      */
-    protected void enableButtons(){
+    protected void enableButtons() {
         correctTick.setOpacity(0);
         fullText.setOpacity(0);
         wrongCross.setOpacity(0);
@@ -326,7 +333,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         decreaseTime.setDisable(false);
         doublePoints.setDisable(false);
         removeQuestion.setDisable(false);
-        for(Button x : buttonList){
+        for(Button x : buttonList) {
             x.setDisable(false);
             x.getStyleClass().clear();
             x.getStyleClass().add("text");
@@ -337,9 +344,9 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
     }
 
 
-
     /**
      * The event handler called when the user hovers over an answer button
+     *
      * @param btn the button that was hovered over
      */
     private void eventHandlerAnswerButtonMouseEntered(Button btn) {
@@ -351,6 +358,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
 
     /**
      * The event handler called when the user stops hovering over an answer button
+     *
      * @param btn the button that was stopped hovering over
      */
     private void eventHandlerAnswerButtonMouseExited(Button btn) {
@@ -405,7 +413,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
         removeQuestion.setDisable(true);
         removeQuestion.setOpacity(0.3);
         mainCtrl.disableJoker(1);
-        buttonList.get(buttonNumber-1).setDisable(true);
+        buttonList.get(buttonNumber - 1).setDisable(true);
     }
 
     /**

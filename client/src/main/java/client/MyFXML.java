@@ -34,10 +34,11 @@ import javafx.util.Pair;
  */
 public class MyFXML {
 
-    private Injector injector;
+    private final Injector injector;
 
     /**
      * Creates the FXML loader
+     *
      * @param injector the injector used to get the controllers
      */
     public MyFXML(Injector injector) {
@@ -46,9 +47,10 @@ public class MyFXML {
 
     /**
      * Loads a scene from an FXML file
-     * @param c the class of the controller for this scene
+     *
+     * @param c     the class of the controller for this scene
      * @param parts the relative file path of the scene
-     * @param <T> the controller for this scene
+     * @param <T>   the controller for this scene
      * @return a pair of the controller for this scene, and the parent node of the scene
      */
     public <T> Pair<T, Parent> load(Class<T> c, String... parts) {
@@ -57,13 +59,14 @@ public class MyFXML {
             Parent parent = loader.load();
             T ctrl = loader.getController();
             return new Pair<>(ctrl, parent);
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
      * Constructs a URL from an array of Strings
+     *
      * @param parts an array of Strings representing the file path
      * @return a URL of the file path
      */
@@ -92,5 +95,7 @@ public class MyFXML {
         public Object call(Class<?> type) {
             return injector.getInstance(type);
         }
+
     }
+
 }

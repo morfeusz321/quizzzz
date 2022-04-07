@@ -26,12 +26,12 @@ public class LeaderboardCtrl {
         END_GAME_LEADERBOARD
     }
 
-    private ServerUtils server;
-    private ModalFactory modalFactory;
-    private MainCtrl mainCtrl;
-    private AnimationUtils animation;
+    private final ServerUtils server;
+    private final ModalFactory modalFactory;
+    private final MainCtrl mainCtrl;
+    private final AnimationUtils animation;
 
-    private List<String> usernameListInternal;
+    private final List<String> usernameListInternal;
     private LeaderboardCtrlState state;
 
     @FXML
@@ -66,9 +66,10 @@ public class LeaderboardCtrl {
 
     /**
      * Constructor for this controller
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server       Utilities for communicating with the server (API endpoint)
      * @param modalFactory the modal factory to use
-     * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param mainCtrl     The main control which is used for calling methods to switch scenes
      */
     @Inject
     public LeaderboardCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
@@ -102,7 +103,7 @@ public class LeaderboardCtrl {
                 Alert alert = modalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
                 alert.showAndWait();
 
-                if (alert.getResult() == ButtonType.OK) {
+                if(alert.getResult() == ButtonType.OK) {
                     server.disconnect();
                     goBackButton();
                 }
@@ -146,6 +147,7 @@ public class LeaderboardCtrl {
 
     /**
      * Populates the leaderboard with a given list of scores
+     *
      * @param scores the list of scores to display
      */
     public void populateLeaderboard(List<Score> scores) {
@@ -173,6 +175,7 @@ public class LeaderboardCtrl {
     /**
      * Finds the given username in the leaderboard and scrolls to it if it can be found, or doesn't do anything
      * if it can't
+     *
      * @param username the username to scroll to in the leaderboard
      */
     public void scrollTo(String username) {
@@ -180,7 +183,7 @@ public class LeaderboardCtrl {
         int idx = usernameListInternal.indexOf(username);
 
         if(idx == -1) {
-            Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "", "User could not be found: \"" + username +"\"!");
+            Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "", "User could not be found: \"" + username + "\"!");
             alert.showAndWait();
             return;
         }
@@ -192,8 +195,8 @@ public class LeaderboardCtrl {
     /**
      * if the game is ended the button for leaving the game should be enabled and the text should be adjusted
      */
-    public void initializeButtonsForMainScreen(){
-        if (state == LeaderboardCtrlState.END_GAME_LEADERBOARD){
+    public void initializeButtonsForMainScreen() {
+        if(state == LeaderboardCtrlState.END_GAME_LEADERBOARD) {
             lightbulb.setDisable(false);
             lightbulb.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
                 server.disconnect();
@@ -203,8 +206,7 @@ public class LeaderboardCtrl {
             lightbulb.addEventHandler(MouseEvent.MOUSE_EXITED, e -> lightbulb.setCursor(Cursor.DEFAULT));
             goodJobText.setText("Good job!");
             speechBubbleText.setText(" CLICK on me and join another game!");
-        }
-        else if(state == LeaderboardCtrlState.MAIN_LEADERBOARD){
+        } else if(state == LeaderboardCtrlState.MAIN_LEADERBOARD) {
             this.displayScore.setOpacity(0);
         }
     }
@@ -212,8 +214,8 @@ public class LeaderboardCtrl {
     /**
      * if the game is still going the buttons should be disabled
      */
-    public void disableButtonsForMainScreen(){
-        if (state == LeaderboardCtrlState.MID_GAME_LEADERBOARD){
+    public void disableButtonsForMainScreen() {
+        if(state == LeaderboardCtrlState.MID_GAME_LEADERBOARD) {
             lightbulb.setDisable(true);
             goodJobText.setText("Good job!");
             speechBubbleText.setText(" You're already halfway there!");
@@ -223,7 +225,7 @@ public class LeaderboardCtrl {
     /**
      * if the leaderboard is opened from main screen the text in the bubble should be changed
      */
-    public void changeTextMainScreen(){
+    public void changeTextMainScreen() {
         if(state == LeaderboardCtrlState.MAIN_LEADERBOARD) {
             goodJobText.setText("");
             speechBubbleText.setText("Can you get to the top of the leaderboard?");
@@ -233,7 +235,8 @@ public class LeaderboardCtrl {
     /**
      * Sets the state of this controller which indicates which leaderboard should be shown (singleplayer or
      * multiplayer)
-     * @param state     the desired leaderboard to display
+     *
+     * @param state the desired leaderboard to display
      */
     public void setLeaderboardCtrlState(LeaderboardCtrlState state) {
         this.state = state;
@@ -242,22 +245,23 @@ public class LeaderboardCtrl {
     /**
      * when clicking back button the user is redirected to the main page
      */
-    public void goBackButton(){
+    public void goBackButton() {
         fadeOutLeaderboard("main");
     }
 
     /**
      * goes to the given scene and does fading animation
+     *
      * @param nextScene
      */
-    public void fadeOutLeaderboard(String nextScene){
+    public void fadeOutLeaderboard(String nextScene) {
         animation.fadeOut(anchorPane, mainCtrl, nextScene);
     }
 
     /**
      * when entering the scene it does fading animation
      */
-    public void fadeInLeaderboard(){
+    public void fadeInLeaderboard() {
         animation.fadeIn(anchorPane);
     }
 
@@ -277,9 +281,10 @@ public class LeaderboardCtrl {
 
     /**
      * display teh current score of user
+     *
      * @param points score of the user
      */
-    public void setDisplayScore(int points){
+    public void setDisplayScore(int points) {
         this.displayScore.setOpacity(1);
         this.displayScore.setText("Your score is: " + points);
     }
