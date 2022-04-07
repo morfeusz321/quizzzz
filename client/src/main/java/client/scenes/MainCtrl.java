@@ -388,7 +388,6 @@ public class MainCtrl {
             Platform.runLater(this::handleUpdatePlayerCount);
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
         } else if (gameUpdate instanceof GameUpdateNoQuestions) {
-            System.out.print("No questions could be generated!");
             sendLeaveMessageToServer();
             Platform.runLater(
                     () -> {
