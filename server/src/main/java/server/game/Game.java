@@ -95,8 +95,6 @@ public class Game extends Thread {
 
         // Something went wrong when trying to generate the questions
         if(questions == null){
-            // TODO: some error handling here, maybe send an error message to client that
-            //  should then be displayed
             return;
         }
 

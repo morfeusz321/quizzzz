@@ -172,7 +172,6 @@ public class GameControllerTest {
 
     @Test
     public void testRemovePlayerFromGameNotEmpty() {
-        // TODO: add a test to test whether an empty game has been stopped
 
         Player player1 = new Player("P1");
         Player player2 = new Player("P2");

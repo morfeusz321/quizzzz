@@ -228,7 +228,6 @@ public class GameController implements ApplicationContextAware {
      * @param game the game to stop
      */
     public void stopGame(Game game) {
-        // TODO: test this method, this has not been properly tested yet
         if(game == null || !runningGames.containsKey(game.getUUID())) {
             return;
         }
