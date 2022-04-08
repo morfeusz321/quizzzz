@@ -106,7 +106,7 @@ public abstract class MultipleChoiceQuestionCtrl extends QuestionCtrl {
      */
     @Override
     protected void initializePowerEventHandlers(){
-        // TODO: add communication to server, this is only client-side for now (and only concerning visuals)
+
         super.initializePowerEventHandlers();
 
         removeQuestion.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> super.handlePower("remove question"));

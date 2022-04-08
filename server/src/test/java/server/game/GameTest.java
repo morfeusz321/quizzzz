@@ -38,7 +38,6 @@ public class GameTest {
 
         this.uuid = UUID.randomUUID();
 
-        // TODO: not sure if this is the correct way to handle this
         activityDBController = new ActivityDBController(new TestActivityDB());
         questionDBController = new QuestionDBController(new TestQuestionDB());
         utils = new QuestionGeneratorUtils();

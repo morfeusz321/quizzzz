@@ -184,7 +184,6 @@ public class FakeApplicationContext implements ApplicationContext {
 
         if(requiredType.equals(Game.class)) {
 
-            // TODO: not sure if this is the correct way to do this
             ActivityDBController activityDBController = new ActivityDBController(new TestActivityDB());
 
             // Add some default activities to the database

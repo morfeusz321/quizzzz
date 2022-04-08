@@ -217,7 +217,6 @@ public class Game extends Thread {
 
             req.setResult(ResponseEntity.ok(new GameUpdateTransitionPeriodEntered(answer)));
 
-            // TODO: Save scores to leaderboard here, calculate points
             saveScoreToLeaderboard(answer.getPoints(), username);
 
         }
