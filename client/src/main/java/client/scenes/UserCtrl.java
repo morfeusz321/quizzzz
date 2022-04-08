@@ -178,8 +178,8 @@ public class UserCtrl {
 
         this.currentUsername = un;
 
-        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER) {
-            server.startGame();
+        if(mainCtrl.getSelectedGameType() == GameType.SINGLEPLAYER){
+            return;
         } else {
             fadeOutUser("wait");
         }
