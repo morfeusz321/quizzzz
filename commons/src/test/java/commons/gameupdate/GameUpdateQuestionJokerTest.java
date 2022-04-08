@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class GameUpdateQuestionJokerTest {
 
     @Test
-    void testConstructor(){
+    void testConstructor() {
         GameUpdateQuestionJoker gameUpdateQuestionJoker = new GameUpdateQuestionJoker(1);
         Assertions.assertNotNull(gameUpdateQuestionJoker);
     }
@@ -15,6 +15,7 @@ class GameUpdateQuestionJokerTest {
     @Test
     void getButtonNumber() {
         GameUpdateQuestionJoker gameUpdateQuestionJoker = new GameUpdateQuestionJoker(1);
-        Assertions.assertEquals(gameUpdateQuestionJoker.getButtonNumber(),1);
+        Assertions.assertEquals(gameUpdateQuestionJoker.getButtonNumber(), 1);
     }
+
 }

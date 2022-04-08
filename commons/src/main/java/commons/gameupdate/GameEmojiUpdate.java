@@ -4,13 +4,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class GameEmojiUpdate extends GameUpdate{
+public class GameEmojiUpdate extends GameUpdate {
+
     private String emoji;
     private String username;
 
     /**
      * Creates instance of the GameEmojiUpdate
-     * @param emoji id of the emoji that was sent
+     *
+     * @param emoji    id of the emoji that was sent
      * @param username name of the user who sent the emoji
      */
     public GameEmojiUpdate(String emoji, String username) {
@@ -26,6 +28,7 @@ public class GameEmojiUpdate extends GameUpdate{
 
     /**
      * Returns the id of the sent emoji
+     *
      * @return return sent emoji id
      */
     public String getEmoji() {
@@ -34,6 +37,7 @@ public class GameEmojiUpdate extends GameUpdate{
 
     /**
      * Returns name of the user who sent the id
+     *
      * @return name of the user who sent id
      */
     public String getUsername() {
@@ -42,14 +46,15 @@ public class GameEmojiUpdate extends GameUpdate{
 
     /**
      * Equals method of GameEmojiUpdate
+     *
      * @param o object we want to compare to
      * @return boolean representing equality of o and GameEmojiUpdate on which it was called
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
+        if(this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if(o == null || getClass() != o.getClass()) return false;
 
         GameEmojiUpdate that = (GameEmojiUpdate) o;
 
@@ -58,6 +63,7 @@ public class GameEmojiUpdate extends GameUpdate{
 
     /**
      * Hash function for GameEmojiUpdate
+     *
      * @return hash of the class instance
      */
     @Override
@@ -67,6 +73,7 @@ public class GameEmojiUpdate extends GameUpdate{
 
     /**
      * ToString method of the GameEmojiUpdate
+     *
      * @return string description of the class instance
      */
     @Override
@@ -76,5 +83,6 @@ public class GameEmojiUpdate extends GameUpdate{
                 .append("username", username)
                 .toString();
     }
+
 }
 

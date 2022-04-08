@@ -28,37 +28,38 @@ public class Game extends Thread {
     private UUID uuid;
     private GameType gameType;
 
-    private ConcurrentHashMap<String, Player> players;
+    private final ConcurrentHashMap<String, Player> players;
     private List<Question> questions;
     private Question currentQuestion;
     private int currentQuestionIdx;
     private boolean done;
 
-    private ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
+    private final ConcurrentHashMap<String, DeferredResult<ResponseEntity<GameUpdate>>> deferredResultMap;
 
-    private ConcurrentHashMap<String, AnswerResponseEntity> answerMap;
+    private final ConcurrentHashMap<String, AnswerResponseEntity> answerMap;
 
-    private StopWatch stopWatch;
+    private final StopWatch stopWatch;
     private long lastTime;
 
     private ScoreController scoreController;
-    private ConcurrentHashMap<String, Score> leaderboard;
+    private final ConcurrentHashMap<String, Score> leaderboard;
 
-    private ConcurrentHashMap<String, Long> timeJoker;
-    private ConcurrentHashMap<String, Boolean> scoreJoker;
-
-    @HashCodeExclude
-    @EqualsExclude
-    @ToStringExclude
-    private GameUpdateManager gameUpdateManager;
+    private final ConcurrentHashMap<String, Long> timeJoker;
+    private final ConcurrentHashMap<String, Boolean> scoreJoker;
 
     @HashCodeExclude
     @EqualsExclude
     @ToStringExclude
-    private QuestionGenerator questionGenerator;
+    private final GameUpdateManager gameUpdateManager;
+
+    @HashCodeExclude
+    @EqualsExclude
+    @ToStringExclude
+    private final QuestionGenerator questionGenerator;
 
     /**
      * Creates a new game
+     *
      * @param gameUpdateManager the game update manager used by this game to send messages to the client
      * @param questionGenerator the question generator
      */
@@ -84,17 +85,17 @@ public class Game extends Thread {
      * Starts the game and initializes the questions.
      */
     @Override
-    public void run(){
+    public void run() {
         // Minimum amount of questions per question type is set to 2 here
         try {
             questions = questionGenerator.generateGameQuestions(2);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             // This will only be the case, if minPerQuestionType is not valid.
             return;
         }
 
         // Something went wrong when trying to generate the questions -> send message to clients
-        if(questions == null){
+        if(questions == null) {
             gameUpdateManager.noQuestionsGenerated(this.uuid);
             return;
         }
@@ -129,14 +130,12 @@ public class Game extends Thread {
             done = true;
 
             List<Score> list;
-            if(gameType==GameType.SINGLEPLAYER){
+            if(gameType == GameType.SINGLEPLAYER) {
                 saveScores();
                 list = sendDatabase();
-            }
-            else if(gameType==GameType.MULTIPLAYER){
+            } else if(gameType == GameType.MULTIPLAYER) {
                 list = createLeaderboardList();
-            }
-            else{
+            } else {
                 list = new ArrayList<>();
             }
 
@@ -172,9 +171,10 @@ public class Game extends Thread {
     }
 
     /**
-     *  sets the answer in the ConcurrentHashMap
+     * sets the answer in the ConcurrentHashMap
+     *
      * @param username the username of the Player
-     * @param answer the answer the user chose for the question
+     * @param answer   the answer the user chose for the question
      */
 
     public void saveAnswer(String username, long answer) {
@@ -182,13 +182,13 @@ public class Game extends Thread {
         long remainingTime = QUESTION_TIME_MILLISECONDS - getElapsedTimeThisQuestion();
         long oldTime = 0L;
         for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
-            if(oldTime<player.getValue()) {
+            if(oldTime < player.getValue()) {
                 oldTime = player.getValue();
             }
         }
         long elapsedTime = oldTime - remainingTime;
         for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
-            player.setValue(player.getValue()-elapsedTime);
+            player.setValue(player.getValue() - elapsedTime);
         }
         if(timeJoker.get(username) >= 0) {
             this.answerMap.put(username, AnswerResponseEntity.generateAnswerResponseEntity(currentQuestion, answer, (int) timeClicked));
@@ -243,16 +243,16 @@ public class Game extends Thread {
 
     /**
      * adds the new score to the leaderboard to the given username
-     * @param score amount of points received
+     *
+     * @param score    amount of points received
      * @param username name of the player
      */
-    public void saveScoreToLeaderboard(int score, String username){
-        if(!leaderboard.containsKey(username)){
+    public void saveScoreToLeaderboard(int score, String username) {
+        if(!leaderboard.containsKey(username)) {
             leaderboard.put(username, new Score(username, score));
-        }
-        else{
+        } else {
             int currentScore = leaderboard.get(username).getScore();
-            leaderboard.put(username, new Score(username, score+currentScore));
+            leaderboard.put(username, new Score(username, score + currentScore));
         }
     }
 
@@ -261,7 +261,7 @@ public class Game extends Thread {
      */
     private void sendLeaderboard() {
         List<Score> listOfScores;
-        if(gameType == GameType.MULTIPLAYER){
+        if(gameType == GameType.MULTIPLAYER) {
             listOfScores = createLeaderboardList();
         }
         // if the game is singleplayer the leaderboard is not needed
@@ -282,6 +282,7 @@ public class Game extends Thread {
 
     /**
      * send the score database from the server
+     *
      * @return database list sorted
      */
     public List<Score> sendDatabase() {
@@ -291,10 +292,10 @@ public class Game extends Thread {
     /**
      * when the leaderboard is supposed to be shown the scores from that game have to be stored to the database
      */
-    private void saveScores(){
+    private void saveScores() {
         ConcurrentHashMap<String, Score> leaderboard = getLeaderboard();
         List<Player> players = getPlayers();
-        for(Player p: players){
+        for(Player p : players) {
             String username = p.getUsername();
             Score score = leaderboard.get(username);
             scoreController.addScore(username, score.getScore());
@@ -303,6 +304,7 @@ public class Game extends Thread {
 
     /**
      * Creates a list of Scores from the internal HashMap used to hold the scores by this game, sorted by scores descending
+     *
      * @return a list of scores for players in this game sorted by scores descending
      */
     public List<Score> createLeaderboardList() {
@@ -315,6 +317,7 @@ public class Game extends Thread {
 
     /**
      * Returns the amount of time that the current question has already been the current question
+     *
      * @return the elapsed time in this round of the game
      */
     public long getElapsedTimeThisQuestion() {
@@ -332,7 +335,8 @@ public class Game extends Thread {
     /**
      * Allows a long poll to be registered to this game. This game will update this
      * long poll whenever the game phase changes.
-     * @param username the username of the player that this long poll request was sent by
+     *
+     * @param username       the username of the player that this long poll request was sent by
      * @param deferredResult the long poll request to inform of updates
      */
     public void runDeferredResult(String username, DeferredResult<ResponseEntity<GameUpdate>> deferredResult) {
@@ -343,22 +347,25 @@ public class Game extends Thread {
 
     /**
      * Gets the list of all questions
+     *
      * @return the list of all questions
      */
-    public List<Question> getQuestions(){
+    public List<Question> getQuestions() {
         return questions;
     }
 
     /**
      * Returns whether this game is done, i.e. all 20 questions have been answered/displayed
+     *
      * @return whether this game is done
      */
-    public boolean isDone(){
+    public boolean isDone() {
         return done;
     }
 
     /**
      * Sets this game's UUID
+     *
      * @param uuid the UUID for this game
      */
     public void setUUID(UUID uuid) {
@@ -369,6 +376,7 @@ public class Game extends Thread {
 
     /**
      * Returns this game's UUID
+     *
      * @return this game's UUID
      */
     public UUID getUUID() {
@@ -379,6 +387,7 @@ public class Game extends Thread {
 
     /**
      * Sets this game's game type
+     *
      * @param gameType the game type for this game
      */
     public void setGameType(GameType gameType) {
@@ -389,6 +398,7 @@ public class Game extends Thread {
 
     /**
      * Returns this game's game type
+     *
      * @return this game's game type
      */
     public GameType getGameType() {
@@ -399,6 +409,7 @@ public class Game extends Thread {
 
     /**
      * Returns a list of all players in this game
+     *
      * @return all players in this game
      */
     public List<Player> getPlayers() {
@@ -412,6 +423,7 @@ public class Game extends Thread {
 
     /**
      * Informs all registered long polls that a time joker has been used
+     *
      * @param username the username of the player that initiated the time joker
      */
     public void useTimeJoker(String username) {
@@ -423,21 +435,19 @@ public class Game extends Thread {
             for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
                 if(!player.getKey().equals(username)) {
                     player.setValue(newTime);
-                }
-                else player.setValue(remainingTime);
+                } else player.setValue(remainingTime);
             }
-        }
-        else {
+        } else {
 
             long oldTime = 0L;
             for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
-                if(oldTime<player.getValue()) {
+                if(oldTime < player.getValue()) {
                     oldTime = player.getValue();
                 }
             }
             long elapsedTime = oldTime - remainingTime;
             for(Map.Entry<String, Long> player : timeJoker.entrySet()) {
-                player.setValue(player.getValue()-elapsedTime);
+                player.setValue(player.getValue() - elapsedTime);
                 long newTime = (long) (0.65 * player.getValue());
                 if(!player.getKey().equals(username)) player.setValue(newTime);
             }
@@ -450,6 +460,7 @@ public class Game extends Thread {
 
     /**
      * Server-side handling of the question joker, returns an id of a button that will be removed
+     *
      * @param username the name of the player that initiated the question joker
      */
     public void useQuestionJoker(String username) {
@@ -457,7 +468,7 @@ public class Game extends Thread {
         Question question = getCurrentQuestion();
         long answer = question.answer;
         Random random = new Random();
-        int returnValue = switch ((int) answer) {
+        int returnValue = switch((int) answer) {
             case 1 -> random.nextBoolean() ? 2 : 3;
             case 2 -> random.nextBoolean() ? 1 : 3;
             case 3 -> random.nextBoolean() ? 1 : 2;
@@ -469,6 +480,7 @@ public class Game extends Thread {
 
     /**
      * Server-side handling of the double points joker, maps true to the username in scoreJoker
+     *
      * @param username the name of the player that initiated the double points joker
      */
     public void useScoreJoker(String username) {
@@ -481,6 +493,7 @@ public class Game extends Thread {
 
     /**
      * Returns a player in this game with the specified username
+     *
      * @param username the username of the player to retrieve
      * @return the player with that username if it can be found, or null if it can't
      */
@@ -492,6 +505,7 @@ public class Game extends Thread {
 
     /**
      * Returns the current question of this game
+     *
      * @return the current question of this game
      */
     private Question getCurrentQuestion() {
@@ -502,6 +516,7 @@ public class Game extends Thread {
      * Adds a player to this game. Note that the Game assumes that it has been confirmed already that a
      * player with this username is not yet in the Game, and that this is *not* checked again
      * in this method
+     *
      * @param player the player that is joining
      */
     protected void addPlayer(Player player) {
@@ -535,6 +550,7 @@ public class Game extends Thread {
 
     /**
      * Removes a player from this game
+     *
      * @param player the player that is leaving
      */
     public void removePlayer(Player player) {
@@ -550,6 +566,7 @@ public class Game extends Thread {
 
     /**
      * Removes a player from this game by username
+     *
      * @param username the username of the player that is leaving
      */
     public void removePlayer(String username) {
@@ -560,6 +577,7 @@ public class Game extends Thread {
 
     /**
      * Checks whether the specified player is in this game
+     *
      * @param player the player to check
      * @return true if the player is in this game, false otherwise
      */
@@ -571,6 +589,7 @@ public class Game extends Thread {
 
     /**
      * Checks whether the specified player is in this game by its username
+     *
      * @param username the username of the player to check
      * @return true if the player with the specified username is in this game, false otherwise
      */
@@ -582,30 +601,31 @@ public class Game extends Thread {
 
     /**
      * Checks if 2 game objects are equal
+     *
      * @param obj the object that will be compared
      * @return true or false, whether the objects are equal or not
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj == null){
+        if(obj == null) {
             return false;
         }
-        if(obj instanceof Game){
+        if(obj instanceof Game) {
             Game other = (Game) obj;
             return this.uuid.equals(other.uuid) &&
-            this.gameType.equals(other.gameType) &&
-            this.players.equals(other.players) &&
-            (done == other.done) &&
-            this.questions.equals(other.questions) &&
-            Objects.equals(this.currentQuestion, other.currentQuestion);
+                    this.gameType.equals(other.gameType) &&
+                    this.players.equals(other.players) &&
+                    (done == other.done) &&
+                    this.questions.equals(other.questions) &&
+                    Objects.equals(this.currentQuestion, other.currentQuestion);
         }
         return false;
     }
 
 
-
     /**
      * Generate a hash code for this object
+     *
      * @return hash code
      */
     @Override
@@ -617,6 +637,7 @@ public class Game extends Thread {
 
     /**
      * Creates a formatted string for this object
+     *
      * @return a formatted string in multi line style
      */
     @Override
@@ -626,6 +647,7 @@ public class Game extends Thread {
 
     /**
      * retrieve the leaderboard of this game
+     *
      * @return leaderboard
      */
     public ConcurrentHashMap<String, Score> getLeaderboard() {
@@ -634,9 +656,11 @@ public class Game extends Thread {
 
     /**
      * set the Score Leaderboard to server database
+     *
      * @param scoreController score database
      */
-    public void setScoreController(ScoreController scoreController){
+    public void setScoreController(ScoreController scoreController) {
         this.scoreController = scoreController;
     }
+
 }

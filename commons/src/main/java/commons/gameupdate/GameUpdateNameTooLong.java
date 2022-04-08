@@ -5,4 +5,5 @@ package commons.gameupdate;
  * is longer than the allowed username size limit.
  */
 public class GameUpdateNameTooLong extends GameUpdate {
+
 }

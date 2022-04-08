@@ -16,10 +16,10 @@ import javafx.scene.layout.AnchorPane;
 
 public class ConnectToServerCtrl {
 
-    private ServerUtils server;
-    private ModalFactory modalFactory;
-    private MainCtrl mainCtrl;
-    private AnimationUtils animation;
+    private final ServerUtils server;
+    private final ModalFactory modalFactory;
+    private final MainCtrl mainCtrl;
+    private final AnimationUtils animation;
 
     private String goToScene;
 
@@ -37,9 +37,10 @@ public class ConnectToServerCtrl {
 
     /**
      * Constructor for this controller
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server       Utilities for communicating with the server (API endpoint)
      * @param modalFactory the modal factory to use
-     * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param mainCtrl     The main control which is used for calling methods to switch scenes
      */
     @Inject
     public ConnectToServerCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
@@ -72,6 +73,7 @@ public class ConnectToServerCtrl {
     /**
      * Sets which scene this controller should show next after successfully connecting to a server. The provided
      * String should be given by NextSceneController.class.getName()
+     *
      * @param goToScene the next scene to show after connecting to a server by the class name of its controller
      */
     public void setGoToScene(String goToScene) {
@@ -115,27 +117,28 @@ public class ConnectToServerCtrl {
     /**
      * when clicking back button the user is redirected to the main page
      */
-    public void goBackButton(){
+    public void goBackButton() {
         fadeOutServer("main");
     }
 
     /**
      * goes to the given scene and does fading animation
+     *
      * @param nextScene
      */
-    public void fadeOutServer(String nextScene){
+    public void fadeOutServer(String nextScene) {
         animation.fadeOut(anchorPane, mainCtrl, nextScene);
     }
 
     /**
      * when entering the scene it does fading animation
      */
-    public void fadeInServer(){
+    public void fadeInServer() {
         animation.fadeIn(anchorPane);
     }
 
     /**
-     *  The back button functionality
+     * The back button functionality
      */
     private void backButtonHandler() {
         ColorAdjust hover = new ColorAdjust();

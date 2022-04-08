@@ -190,14 +190,14 @@ public class GameTest {
     }
 
     @Test
-    public void saveScoreToLeaderboard(){
+    public void saveScoreToLeaderboard() {
         game.saveScoreToLeaderboard(100, "user");
         int points = game.getLeaderboard().get("user").getScore();
         assertEquals(100, points);
     }
 
     @Test
-    public void createLeaderboardList(){
+    public void createLeaderboardList() {
         game.saveScoreToLeaderboard(100, "user");
         List<Score> list = new ArrayList<>();
         list.add(new Score("user", 100));
@@ -205,24 +205,24 @@ public class GameTest {
     }
 
     @Test
-    public void getQuestions(){
+    public void getQuestions() {
         List<Question> list = new ArrayList<>();
         assertEquals(list, game.getQuestions());
     }
 
     @Test
-    public void isDone(){
+    public void isDone() {
         assertFalse(game.isDone());
     }
 
     @Test
-    public void setUUID(){
+    public void setUUID() {
         game.setUUID(UUID.randomUUID());
         assertNotEquals(uuid, game.getUUID());
     }
 
     @Test
-    public void setGameType(){
+    public void setGameType() {
         GameType gameType = GameType.MULTIPLAYER;
         game.setGameType(gameType);
         assertEquals(GameType.MULTIPLAYER, game.getGameType());

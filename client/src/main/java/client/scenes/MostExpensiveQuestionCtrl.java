@@ -15,9 +15,10 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
     /**
      * Creates a MostExpensiveQuestionCtrl, which controls the display/interaction of the comparison question screen.
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
-     * @param utils Common utilities (for server- and client-side)
+     * @param utils    Common utilities (for server- and client-side)
      */
     @Inject
     public MostExpensiveQuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
@@ -28,7 +29,7 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
      * Initializes the title
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         super.initialize();
         title.setText("What is most expensive?");
         resizeQuestionHandler.setText((int) title.getFont().getSize());
@@ -47,13 +48,14 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
         question = q;
         questionImg.setImage(new Image("/client/img/question_mark.png"));
         currentQuestion = q;
-        
+
         super.loadQuestion(q);
 
     }
 
     /**
      * Shows transition screen (see method in superclass), and the image corresponding to the answer is displayed.
+     *
      * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
      */
     @Override
@@ -64,4 +66,5 @@ public class MostExpensiveQuestionCtrl extends MultipleChoiceQuestionCtrl {
                 questionImg.setImage(new Image(ServerUtils.getImageURL(currentQuestion.activityImagePath))));
 
     }
+
 }

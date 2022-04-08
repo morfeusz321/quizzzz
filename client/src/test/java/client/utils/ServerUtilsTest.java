@@ -56,6 +56,7 @@ public class ServerUtilsTest {
 
     /**
      * Sets up the mock stomp session for testing
+     *
      * @param mockReader the consumer that is called by the mock stomp session
      */
     private void setupMockStompSession(Consumer<String> mockReader) {
@@ -66,6 +67,7 @@ public class ServerUtilsTest {
 
     /**
      * Sets up the mock long poll thread for testing
+     *
      * @param server   name of the server that you will send requests to
      * @param gameUUID uuid of the current game
      * @param consumer consumer to handle upcoming messages
@@ -80,11 +82,12 @@ public class ServerUtilsTest {
 
     /**
      * Sets up ServerUtils for testing
-     * @param server the server address to use
-     * @param wsServer the ws server address to use
-     * @param session the stomp session to use
-     * @param gameUUID the game uuid to use
-     * @param isInGame the is in game status to use
+     *
+     * @param server         the server address to use
+     * @param wsServer       the ws server address to use
+     * @param session        the stomp session to use
+     * @param gameUUID       the game uuid to use
+     * @param isInGame       the is in game status to use
      * @param longPollThread the long poll thread to use
      */
     private void setupServerUtils(String server, String wsServer, StompSession session, UUID gameUUID, boolean isInGame, LongPollThread longPollThread) {
@@ -206,7 +209,7 @@ public class ServerUtilsTest {
         Method method = null;
         try {
             method = serverUtils.getClass().getDeclaredMethod("registerForWebsocketMessages", String.class, Class.class, Consumer.class);
-        } catch (NoSuchMethodException e) {
+        } catch(NoSuchMethodException e) {
             fail();
         }
         method.setAccessible(true);
@@ -214,7 +217,7 @@ public class ServerUtilsTest {
             Object r = method.invoke(serverUtils, "destination", String.class, (Consumer<String>) s -> {
 
             });
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch(IllegalAccessException | InvocationTargetException e) {
             fail();
         }
 
@@ -350,7 +353,7 @@ public class ServerUtilsTest {
             Field uuidField = ServerUtils.class.getDeclaredField("gameUUID");
             uuidField.setAccessible(true);
             actual = (UUID) uuidField.get(serverUtils);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch(NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
         assertEquals(uuid, actual);
@@ -368,7 +371,7 @@ public class ServerUtilsTest {
             Field isInGameField = ServerUtils.class.getDeclaredField("isInGame");
             isInGameField.setAccessible(true);
             actual = (boolean) isInGameField.get(serverUtils);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch(NoSuchFieldException | IllegalAccessException e) {
             fail();
         }
         assertTrue(actual);

@@ -25,7 +25,8 @@ public class ActivityImageController {
 
     /**
      * Returns the image associated with a certain activity from its imagePath (e.g. 00/shower.jpg)
-     * @param imagePathGroup the group part of the image path (e.g. 00 in 00/shower.jpg)
+     *
+     * @param imagePathGroup    the group part of the image path (e.g. 00 in 00/shower.jpg)
      * @param imagePathFileName the file name part of the image path (e.g. shower.jpg in 00/shower.jpg)
      * @return 200 OK: InputStream of the image if it exists, 404: Not found otherwise. Can also return 500: Internal server error
      * in case of a URI syntax exception in the file path
@@ -37,7 +38,7 @@ public class ActivityImageController {
         URI imageURI = null;
         try {
             imageURI = ActivityImageController.class.getClassLoader().getResource("activities/" + URLDecoder.decode(imagePathGroup, StandardCharsets.UTF_8) + "/" + URLDecoder.decode(imagePathFileName, StandardCharsets.UTF_8)).toURI();
-        } catch (URISyntaxException e) {
+        } catch(URISyntaxException e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().build();
         }
@@ -47,7 +48,7 @@ public class ActivityImageController {
         InputStream imageInputStream = null;
         try {
             imageInputStream = new FileInputStream(image);
-        } catch (FileNotFoundException e) {
+        } catch(FileNotFoundException e) {
             return ResponseEntity.noContent().build();
         }
 

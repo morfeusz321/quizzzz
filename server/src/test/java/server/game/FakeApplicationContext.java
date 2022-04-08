@@ -42,9 +42,10 @@ public class FakeApplicationContext implements ApplicationContext {
      * Sets the FakeSimpMessagingTemplate, so that the GameUpdateManagers of Game objects are initialized with the same
      * FakeSimpMessagingTemplate. This is necessary so that it can be tested whether that messaging template has
      * sent specific messages.
+     *
      * @param template the FakeSimpMessagingTemplate used as an argument for all GameUpdateManagers of Game objects
      */
-    public void setFakeMessagingTemplate(FakeSimpMessagingTemplate template){
+    public void setFakeMessagingTemplate(FakeSimpMessagingTemplate template) {
         this.template = template;
     }
 
@@ -299,4 +300,5 @@ public class FakeApplicationContext implements ApplicationContext {
     public ClassLoader getClassLoader() {
         return null;
     }
+
 }

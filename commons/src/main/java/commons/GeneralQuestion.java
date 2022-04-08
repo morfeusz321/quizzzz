@@ -17,14 +17,14 @@ public class GeneralQuestion extends Question {
     private GeneralQuestion() {
 
 
-
     }
 
     /**
      * Creates a question object (used for QuestionType.GENERAL)
-     * @param mainActivity the main activity of this question (i.e. the title)
+     *
+     * @param mainActivity  the main activity of this question (i.e. the title)
      * @param answerOptions the answer options to be displayed for this question (e.g. "50 Wh", "100 Wh", etc.)
-     * @param answer the answer to this question (i.e. the index 1, 2, 3 of the multiple choice answer)
+     * @param answer        the answer to this question (i.e. the index 1, 2, 3 of the multiple choice answer)
      */
     public GeneralQuestion(Activity mainActivity, List<String> answerOptions, long answer) {
         // Note: we can assume that the question is initialized with non-null parameters. Questions are only initialized

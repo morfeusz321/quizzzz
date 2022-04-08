@@ -20,11 +20,11 @@ public class AnswerResponseEntity {
     private AnswerResponseEntity() {
 
 
-
     }
 
     /**
      * gets the answer number
+     *
      * @return the number of the answer
      */
     public long getAnswer() {
@@ -33,9 +33,10 @@ public class AnswerResponseEntity {
 
     /**
      * gets the points received
+     *
      * @return amount of points
      */
-    public int getPoints(){
+    public int getPoints() {
         return points;
     }
 
@@ -48,6 +49,7 @@ public class AnswerResponseEntity {
 
     /**
      * Creates a new answer response entity (used for general and comparison questions)
+     *
      * @param correct whether the answer was correct or not
      */
     public AnswerResponseEntity(boolean correct, long answer) {
@@ -60,7 +62,8 @@ public class AnswerResponseEntity {
 
     /**
      * Creates a new answer response entity (used for estimation questions)
-     * @param correct whether the answer should be displayed as correct or not
+     *
+     * @param correct   whether the answer should be displayed as correct or not
      * @param proximity the difference between the answer and the correct answer
      */
     public AnswerResponseEntity(boolean correct, long proximity, long answer) {
@@ -75,12 +78,13 @@ public class AnswerResponseEntity {
     /**
      * Creates a new answer response entity (also with points given for the answer)
      * for estimation questions
-     * @param correct whether the answer should be displayed as correct or not
+     *
+     * @param correct   whether the answer should be displayed as correct or not
      * @param proximity the difference between the answer and the correct answer
-     * @param answer which button was clicked
-     * @param points points given for the question
+     * @param answer    which button was clicked
+     * @param points    points given for the question
      */
-    public AnswerResponseEntity(boolean correct,long proximity, long answer, int points) {
+    public AnswerResponseEntity(boolean correct, long proximity, long answer, int points) {
 
         this.correct = correct;
         this.answer = answer;
@@ -92,7 +96,8 @@ public class AnswerResponseEntity {
     /**
      * Convenience factory method to automatically generate an AnswerResponseEntity for a given question
      * and answer
-     * @param q the question that is being answered
+     *
+     * @param q      the question that is being answered
      * @param answer the answer given
      * @return an applicable AnswerResponseEntity for the given question and answer
      */
@@ -103,53 +108,54 @@ public class AnswerResponseEntity {
         if(q instanceof EstimationQuestion) {
             return new AnswerResponseEntity(cor, prox, q.answer, dynamicPointsEstimation(prox, answer, time));
         } else {
-            return new AnswerResponseEntity(cor, prox, q.answer, dynamicPointsMultipleChoice(cor, time) );
+            return new AnswerResponseEntity(cor, prox, q.answer, dynamicPointsMultipleChoice(cor, time));
         }
 
     }
 
     /**
      * depending on how close the user is to the answer the amount of points is given
+     *
      * @param proximity how close the user is to the answer
-     * @param answer if the answer is correct or no
-     * @param time the time passed till answering the question
+     * @param answer    if the answer is correct or no
+     * @param time      the time passed till answering the question
      * @return number of points given
      */
-    public static int dynamicPointsEstimation(long proximity, long answer, int time){
-        if (proximity == 0){
+    public static int dynamicPointsEstimation(long proximity, long answer, int time) {
+        if(proximity == 0) {
             return 100;
         }
-        double percentagePassed = Math.abs(((double) proximity) /answer);
-        if(percentagePassed<0.21) {
-            percentagePassed = Math.abs(1-((double) proximity) /answer);
-            return (((int)(( ((1/(0.4*Math.sqrt(2*Math.PI)))* Math.exp(-0.5*Math.pow(((percentagePassed-1)/0.14), 2))))*100 +1)) + dynamicPointsMultipleChoice(true, time))/2;
+        double percentagePassed = Math.abs(((double) proximity) / answer);
+        if(percentagePassed < 0.21) {
+            percentagePassed = Math.abs(1 - ((double) proximity) / answer);
+            return (((int) ((((1 / (0.4 * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow(((percentagePassed - 1) / 0.14), 2)))) * 100 + 1)) + dynamicPointsMultipleChoice(true, time)) / 2;
         }
         return 0;
     }
 
     /**
      * depending on when the user clicks on the answer the amount of points is given
+     *
      * @param correct answer is correct or not
-     * @param time hwo fast the user clicked on the answer
+     * @param time    hwo fast the user clicked on the answer
      * @return number of points given
      */
-    public static int dynamicPointsMultipleChoice(boolean correct, int time){
-        if(correct){
-            double percentagePassed =  ((double) time) /15000L;
-            if(percentagePassed<0.21){
+    public static int dynamicPointsMultipleChoice(boolean correct, int time) {
+        if(correct) {
+            double percentagePassed = ((double) time) / 15000L;
+            if(percentagePassed < 0.21) {
                 return 100;
+            } else {
+                return (int) ((Math.exp(-3 * percentagePassed) + 0.46) * 100);
             }
-            else{
-                return (int) ((Math.exp(-3*percentagePassed) + 0.46) * 100);
-            }
-        }
-        else{
+        } else {
             return 0;
         }
     }
 
     /**
      * Checks if 2 answer response entity objects are equal
+     *
      * @param obj the object that will be compared
      * @return true or false, whether the objects are equal or not
      */
@@ -160,6 +166,7 @@ public class AnswerResponseEntity {
 
     /**
      * Generate a hash code for this object
+     *
      * @return hash code
      */
     @Override
@@ -169,6 +176,7 @@ public class AnswerResponseEntity {
 
     /**
      * Creates a formatted string for this object
+     *
      * @return a formatted string in multi line style
      */
     @Override

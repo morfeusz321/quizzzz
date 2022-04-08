@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class FakeSimpMessagingTemplate extends SimpMessagingTemplate {
 
-    private List<Pair<String, Object>> sentPayloads;
+    private final List<Pair<String, Object>> sentPayloads;
 
     /**
      * Creates a new FakeSimpMessagingTemplate
@@ -28,8 +28,9 @@ public class FakeSimpMessagingTemplate extends SimpMessagingTemplate {
     /**
      * Saves the combination of destination and payload to a list containing
      * all "sent" messages by this FakeSimpMessagingTemplate
+     *
      * @param destination the destination to save
-     * @param payload the payload to save
+     * @param payload     the payload to save
      */
     @Override
     public void convertAndSend(String destination, Object payload) {
@@ -40,6 +41,7 @@ public class FakeSimpMessagingTemplate extends SimpMessagingTemplate {
 
     /**
      * Returns the list of all "sent" messages by this FakeSimpMessagingTemplate
+     *
      * @return the list of all "sent" messages
      */
     public List<Pair<String, Object>> getSentPayloads() {
@@ -50,6 +52,7 @@ public class FakeSimpMessagingTemplate extends SimpMessagingTemplate {
 
     /**
      * Returns the most recent "sent" message by this FakeSimpMessagingTemplate
+     *
      * @return the most recent "sent" message
      */
     public Pair<String, Object> getMostRecentSentPayload() {

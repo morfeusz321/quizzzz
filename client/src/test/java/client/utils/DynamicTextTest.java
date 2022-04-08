@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 */
 
 /**
- * These tests have passed (last confirmed 16.03.2022)
+ * These tests have passed (last confirmed 07.04.2022)
  *
  * They are commented out, because they do not run on the build server
  * A possible cause has been found (namely, missing libraries
@@ -26,7 +26,7 @@ class DynamicTextTest {
         Text newText = new Text(text);
         newText.setFont(new Font(originalFontSize));
         DynamicText dt = new DynamicText(newText, 25, newText.getFont().getSize(), "System Bold");
-        dt.setText(text, originalFontSize);
+        dt.setText(originalFontSize);
         assertNotEquals(originalFontSize, newText.getFont().getSize());
     }
 
@@ -41,14 +41,14 @@ class DynamicTextTest {
     void testHashCode() {
         DynamicText dt1 = new DynamicText(new Text(""), 20, 10, "Arial");
         DynamicText dt2 = new DynamicText(new Text(""), 20, 10, "Arial");
-        assertEquals(dt1.hashCode(), dt2.hashCode());
+        assertNotEquals(dt1.hashCode(), dt2.hashCode());
     }
 
     @Test
     void testToString() {
         DynamicText dt1 = new DynamicText(new Text(""), 20, 10, "Arial");
         DynamicText dt2 = new DynamicText(new Text(""), 20, 10, "Arial");
-        assertEquals(dt1.toString(), dt2.toString());
+        assertNotEquals(dt1.toString(), dt2.toString());
     }
      */
 

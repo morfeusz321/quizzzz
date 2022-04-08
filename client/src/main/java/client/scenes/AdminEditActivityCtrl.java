@@ -18,9 +18,10 @@ import javafx.scene.layout.AnchorPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdminEditActivityCtrl  implements Initializable {
+public class AdminEditActivityCtrl implements Initializable {
+
     private final ServerUtils server;
-    private ModalFactory modalFactory;
+    private final ModalFactory modalFactory;
     private final MainCtrl mainCtrl;
 
     @FXML
@@ -45,9 +46,10 @@ public class AdminEditActivityCtrl  implements Initializable {
 
     /**
      * Creates a AdminEditActivityCtrl, which controls the display/interaction of editing the activities
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server       Utilities for communicating with the server (API endpoint)
      * @param modalFactory the modal factory to use
-     * @param mainCtrl The main control which is used for calling methods to switch scenes
+     * @param mainCtrl     The main control which is used for calling methods to switch scenes
      */
     @Inject
     public AdminEditActivityCtrl(ServerUtils server, ModalFactory modalFactory, MainCtrl mainCtrl) {
@@ -58,7 +60,6 @@ public class AdminEditActivityCtrl  implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
         backButtonHandler();
         backBtn.setImage(new Image("/client/img/back_btn.png"));
         saveHandler();
@@ -66,7 +67,7 @@ public class AdminEditActivityCtrl  implements Initializable {
     }
 
     /**
-     *  The back button functionality
+     * The back button functionality
      */
     private void backButtonHandler() {
         ColorAdjust hover = new ColorAdjust();
@@ -97,6 +98,7 @@ public class AdminEditActivityCtrl  implements Initializable {
 
     /**
      * Sets the TextField values to the previously selected activity (or empty if creating a new activity)
+     *
      * @param activity selected activity
      */
     public void setActivity(Activity activity) {
@@ -105,8 +107,7 @@ public class AdminEditActivityCtrl  implements Initializable {
             save.setDisable(true);
             create.setDisable(false);
             id.setEditable(true);
-        }
-        else {
+        } else {
             this.activity = activity;
             id.setText(activity.id);
             imagePath.setText(activity.imagePath);
@@ -135,8 +136,7 @@ public class AdminEditActivityCtrl  implements Initializable {
             this.activity.consumption = Long.parseLong(consumption.getText());
             server.editActivity(activity);
             mainCtrl.showAdmin();
-
-        } catch (NumberFormatException e) {
+        } catch(NumberFormatException e) {
             Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
             alert.showAndWait();
         }
@@ -154,8 +154,7 @@ public class AdminEditActivityCtrl  implements Initializable {
             activity = new Activity(id, imagePath, title, consumption);
             server.editActivity(activity);
             mainCtrl.showAdmin();
-
-        } catch (NumberFormatException e) {
+        } catch(NumberFormatException e) {
             Alert alert = modalFactory.getModal(Alert.AlertType.INFORMATION, "Error", "Invalid input", "Consumption must be a number");
             alert.showAndWait();
         }

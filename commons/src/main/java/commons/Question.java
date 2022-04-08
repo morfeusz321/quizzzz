@@ -38,6 +38,7 @@ public abstract class Question {
 
     /**
      * Creates a human-readable form of this question
+     *
      * @return a formatted string of the question, which differs based on question type
      */
     public String displayQuestion() {
@@ -46,7 +47,7 @@ public abstract class Question {
             return "How much energy does " + Activity.displayActivity(activityTitle) + " take?";
         } else if(this instanceof ComparisonQuestion) {
             return "Instead of " + Activity.displayActivity(activityTitle) + ", you could use the same amount of energy for...";
-        }else if(this instanceof WhichIsMoreQuestion){
+        } else if(this instanceof WhichIsMoreQuestion) {
             return "Which activity consumes more energy?";
         }
 
@@ -57,16 +58,17 @@ public abstract class Question {
     /**
      * Checks if 2 question objects are equal. They are considered as equal, if they are of the same question type and
      * if they have the same main activity.
+     *
      * @param obj the object that will be compared
      * @return true or false, whether the objects are equal or not
      */
     @Override
     public boolean equals(Object obj) {
-        if(obj == null){
+        if(obj == null) {
             return false;
         }
         // First check if it is an instance of class Question the correct sub-class of Question.
-        if(obj instanceof Question && this.getClass().equals(obj.getClass())){
+        if(obj instanceof Question && this.getClass().equals(obj.getClass())) {
 
             Question other = (Question) obj;
             // Note: We assume that all Question objects have a valid answer, and that they were initialized with
@@ -87,6 +89,7 @@ public abstract class Question {
     /**
      * Generate a hash code for this object. Two objects have the same hash code, if their main activity is the same,
      * and if they are of the same sub-class, so the class is hashed too.
+     *
      * @return hash code
      */
     @Override
@@ -96,6 +99,7 @@ public abstract class Question {
 
     /**
      * Creates a formatted string for this object
+     *
      * @return a formatted string in multi line style
      */
     @Override

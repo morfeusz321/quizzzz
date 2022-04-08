@@ -12,10 +12,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/scores")
 public class ScoreController {
+
     private final ScoreDBController scoreDBController;
 
     /**
      * Creates the API controller
+     *
      * @param scoreDBController the interface with the score database to be used by this controller
      */
     public ScoreController(ScoreDBController scoreDBController) {
@@ -24,8 +26,9 @@ public class ScoreController {
 
     /**
      * Adds a score to the database (no API mapping)
+     *
      * @param username the username for which to save the score
-     * @param score the score to save
+     * @param score    the score to save
      * @return the score that was saved
      */
     public Score addScore(String username, int score) {
@@ -34,15 +37,17 @@ public class ScoreController {
 
     /**
      * Maps to /api/scores/ and /api/scores
+     *
      * @return all scores saved in the database
      */
-    @GetMapping(path = { "", "/" })
+    @GetMapping(path = {"", "/"})
     public List<Score> getAll() {
         return scoreDBController.findAll();
     }
 
     /**
      * Finds all scores in the database, sorted by leaderboard rank ascending. Maps to /api/scores/sorted
+     *
      * @return all scores saved in the database, sorted by leaderboard rank ascending
      */
     @GetMapping("/sorted")

@@ -3,8 +3,9 @@ package commons;
 import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
-public class WhichIsMoreQuestion extends Question{
+public class WhichIsMoreQuestion extends Question {
 
 
     /**
@@ -14,13 +15,13 @@ public class WhichIsMoreQuestion extends Question{
     private WhichIsMoreQuestion() {
 
 
-
     }
 
     /**
      * Creates a question object (used for QuestionType.WHICHISMORE)
+     *
      * @param answerOptions the answer options to be displayed for this question (e.g. "50 Wh", "100 Wh", etc.)
-     * @param answer the answer to this question (i.e. the index 1, 2, 3 of the multiple choice answer)
+     * @param answer        the answer to this question (i.e. the index 1, 2, 3 of the multiple choice answer)
      */
     public WhichIsMoreQuestion(List<Activity> answerOptions, long answer) {
         // Note: we can assume that the question is initialized with non-null and valid parameters. Questions are only
@@ -38,4 +39,5 @@ public class WhichIsMoreQuestion extends Question{
         this.answer = answer;
 
     }
+
 }

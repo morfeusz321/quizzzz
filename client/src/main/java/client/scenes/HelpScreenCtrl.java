@@ -42,6 +42,7 @@ public class HelpScreenCtrl implements Initializable {
 
     /**
      * Constructor for help screen controller, which controls the interaction of the help screen
+     *
      * @param mainCtrl The main control which is used for calling methods to switch scenes
      */
     @Inject
@@ -68,7 +69,7 @@ public class HelpScreenCtrl implements Initializable {
     }
 
     /**
-     *  The back button functionality
+     * The back button functionality
      */
     private void backButtonHandler() {
         ColorAdjust hover = new ColorAdjust();
@@ -91,16 +92,18 @@ public class HelpScreenCtrl implements Initializable {
 
     /**
      * goes to the given scene and does fading animation
+     *
      * @param nextScene
      */
-    public void fadeOutHelp(String nextScene){
+    public void fadeOutHelp(String nextScene) {
         animation.fadeOut(anchorPane, mainCtrl, nextScene);
     }
 
     /**
      * when entering the scene it does fading animation
      */
-    public void fadeInHelp(){
+    public void fadeInHelp() {
         animation.fadeIn(anchorPane);
     }
+
 }

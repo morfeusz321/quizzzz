@@ -62,9 +62,10 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
     /**
      * Creates a EstimationQuestionCtrl, which controls the display/interaction of the estimation question screen.
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
-     * @param utils Common utilities (for server- and client-side)
+     * @param utils    Common utilities (for server- and client-side)
      */
     @Inject
     public EstimationQuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {
@@ -76,7 +77,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * Initializes the scene elements
      */
     @FXML
-    public void initialize(){
+    public void initialize() {
         super.initialize();
         slideBar.setSnapToTicks(true);
         slideBar.valueProperty().addListener(
@@ -86,7 +87,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         answerTxtField.textProperty().addListener(
                 (observableValue, oldValue, newValue) -> {
                     // special case of empty string (interpreted as minimum)
-                    if(newValue.equals("") && 0 <= slideBar.getMin()){
+                    if(newValue.equals("") && 0 <= slideBar.getMin()) {
                         answerTxtField.setText(String.valueOf((int) slideBar.getMin()));
                         slideBar.setValue(slideBar.getMin());
                         return;
@@ -96,14 +97,14 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
                     // check whether it is an integer
                     int newInt;
-                    try{
+                    try {
                         newInt = Integer.parseInt(newValue);
-                    } catch (NumberFormatException e){
+                    } catch(NumberFormatException e) {
                         answerTxtField.setText(oldValue);
                         return;
                     }
                     // check boundaries
-                    if((int) slideBar.getMax() < newInt || (int) slideBar.getMin() > newInt){
+                    if((int) slideBar.getMax() < newInt || (int) slideBar.getMin() > newInt) {
                         answerTxtField.setText(oldValue);
                         return;
                     }
@@ -116,9 +117,9 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     /**
      * Initializes the event handlers of the "set answer" button
      */
-    public void initializeAnswerBtnEventHandlers(){
+    public void initializeAnswerBtnEventHandlers() {
         setAnswerBtn.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
-            if(answerSet){
+            if(answerSet) {
                 answerSet = false;
                 setAnswerBtn.setText("Set as answer");
                 slideBar.setDisable(false);
@@ -148,7 +149,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      */
     public void loadQuestion(Question q) {
 
-        Platform.runLater(()-> {
+        Platform.runLater(() -> {
 
             enableButtons();
             disableJokers();
@@ -184,7 +185,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
      * Disables the answer and power buttons, makes then power buttons invisible
      */
     @Override
-    public void disableButtons(){
+    public void disableButtons() {
         correctAnswer.setOpacity(1);
         correctAnswer.setDisable(false);
         powersText.setOpacity(0.2);
@@ -205,7 +206,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
     /**
      * Enables the answer and power buttons, makes then power buttons visible
      */
-    public void enableButtons(){
+    public void enableButtons() {
         powersText.setOpacity(1);
         decreaseTime.setOpacity(1);
         doublePoints.setOpacity(1);
@@ -241,6 +242,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
 
     /**
      * when the timer counts down the transition screen is entered where user can see if they answered correctly and also can take a break
+     *
      * @param gameUpdate contains AnswerResponseEntity with correctness of user's answer
      */
     public void enterTransitionScreen(GameUpdateTransitionPeriodEntered gameUpdate) {
@@ -251,7 +253,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
         long correct = answer.getAnswer();
         String s = "The correct answer\n was: " + correct + "Wh.";
         correctAnswer.setText(s);
-        if (answer.correct) {
+        if(answer.correct) {
             Platform.runLater(() -> {
                 transText.setText("You answered correctly! Impressive!");
                 fullText.setLayoutX(anchorPane.getWidth() * 0.1543248);
@@ -261,7 +263,7 @@ public class EstimationQuestionCtrl extends QuestionCtrl {
                 pointsAdded.setText(" +" + answer.getPoints());
             });
         } else {
-            if (!answerSet) {
+            if(!answerSet) {
                 Platform.runLater(() -> {
                     transText.setText("You did not answer. Try to be faster!");
                     fullText.setLayoutX(anchorPane.getWidth() * 0.1043248);

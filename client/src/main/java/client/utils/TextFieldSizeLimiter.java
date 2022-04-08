@@ -12,11 +12,12 @@ import javafx.scene.control.TextField;
  */
 public class TextFieldSizeLimiter implements ChangeListener<Number> {
 
-    private TextField textField;
-    private int sizeLimit;
+    private final TextField textField;
+    private final int sizeLimit;
 
     /**
      * Creates a new text field size limiter
+     *
      * @param textField the TextField whose size should be limited
      * @param sizeLimit the desired size limit (>= 0)
      */

@@ -18,7 +18,7 @@ class GameManagerTest {
     private List<Question> list;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         this.manager = new GameManager();
         this.activity = new Activity();
         this.list = new ArrayList<>();
@@ -26,7 +26,7 @@ class GameManagerTest {
     }
 
     @Test
-    void constructorTests(){
+    void constructorTests() {
         assertNotNull(this.manager);
     }
 
@@ -67,4 +67,5 @@ class GameManagerTest {
         manager.setCurrentQuestionByIdx(0);
         assertNotNull(manager.getCurrentQuestion());
     }
+
 }

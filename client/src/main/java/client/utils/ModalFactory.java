@@ -10,10 +10,11 @@ public class ModalFactory {
 
     /**
      * Creates a modal with styling and the provided text elements
+     *
      * @param alertType the type of this alert
-     * @param title the title for the alert
-     * @param text the header text for the alert
-     * @param body the content text for the alert
+     * @param title     the title for the alert
+     * @param text      the header text for the alert
+     * @param body      the content text for the alert
      * @return an alert with the provided text elements and styling applied
      */
     public Alert getModal(Alert.AlertType alertType, String title, String text, String body) {
@@ -44,9 +45,10 @@ public class ModalFactory {
 
     /**
      * Creates a modal with styling and the provided text elements
+     *
      * @param alertType the type of this alert
-     * @param title the title for the alert
-     * @param text the header text for the alert
+     * @param title     the title for the alert
+     * @param text      the header text for the alert
      * @return an alert with the provided text elements and styling applied
      */
     public Alert getModal(Alert.AlertType alertType, String title, String text) {

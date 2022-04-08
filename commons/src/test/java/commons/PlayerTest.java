@@ -83,4 +83,5 @@ public class PlayerTest {
         var player = new Player();
         assertEquals(ToStringBuilder.reflectionToString(player, MULTI_LINE_STYLE), player.toString());
     }
+
 }

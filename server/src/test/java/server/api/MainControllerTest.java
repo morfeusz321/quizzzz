@@ -7,6 +7,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(MainController.class)
 class MainControllerTest {
 
@@ -14,7 +15,8 @@ class MainControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void serverExists() throws Exception{
+    void serverExists() throws Exception {
         mockMvc.perform(get("/")).andExpect(status().isOk());
     }
+
 }

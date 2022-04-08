@@ -31,6 +31,7 @@ public class Main extends Application {
 
     /**
      * Launches the client application
+     *
      * @param args Command line arguments
      */
     public static void main(String[] args) {
@@ -40,10 +41,11 @@ public class Main extends Application {
     /**
      * Starts the application by loading the fxml files/scenes and by initializing the
      * main control with all scene/control pairs.
+     *
      * @param primaryStage The main application stage (i.e. window) in which all scenes are displayed
      */
     @Override
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) {
 
         var mainScreen = FXML.load(MainScreenCtrl.class, "client", "scenes", "MainScreen.fxml");
         var username = FXML.load(UserCtrl.class, "client", "scenes", "UserOverview.fxml");

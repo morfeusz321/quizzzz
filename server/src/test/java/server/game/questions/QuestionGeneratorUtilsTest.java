@@ -124,7 +124,7 @@ class QuestionGeneratorUtilsTest {
     }
 
     @Test
-    public void testUpperLowerBoundSmall(){
+    public void testUpperLowerBoundSmall() {
         // Tests the utility method getLowerUpperBoundSmall().
 
         long[] bounds = utils.getLowerUpperBoundSmall(10);
@@ -207,7 +207,7 @@ class QuestionGeneratorUtilsTest {
     }
 
     @Test
-    public void testGetMaxPercentageGeneral(){
+    public void testGetMaxPercentageGeneral() {
 
         // Doubles are sometimes not considered equal due to minor errors. Alpha is the max. difference to test
         // the equality of the double values.
@@ -228,7 +228,7 @@ class QuestionGeneratorUtilsTest {
     }
 
     @Test
-    public void testCheckIfGeneratableFalse(){
+    public void testCheckIfGeneratableFalse() {
 
         // All numbers excluded in range (100% blocked)
         assertFalse(utils.checkIfGeneratable(List.of(10L), 0.5, 5, 15));
@@ -245,7 +245,7 @@ class QuestionGeneratorUtilsTest {
     }
 
     @Test
-    public void testIfGeneratableTrue(){
+    public void testIfGeneratableTrue() {
 
         // Only one number in range -> this is generatable, as 100% of the numbers in the range (1) are not excluded
         // (The bounds are inclusive!)
@@ -293,13 +293,13 @@ class QuestionGeneratorUtilsTest {
     @Test
     public void safeBoundCheckGeneralQuestionNoShift() {
 
-        long[] bounds = new long[]{0,100};
-        long[] expected = new long[]{0,100};
+        long[] bounds = new long[]{0, 100};
+        long[] expected = new long[]{0, 100};
         utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
-        bounds = new long[]{9999999,9999999999L};
-        expected = new long[]{9999999,9999999999L};
+        bounds = new long[]{9999999, 9999999999L};
+        expected = new long[]{9999999, 9999999999L};
         utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
@@ -308,19 +308,19 @@ class QuestionGeneratorUtilsTest {
     @Test
     public void safeBoundCheckGeneralQuestionShift() {
 
-        long[] bounds = new long[]{-20,20};
-        long[] expected = new long[]{0,40};
+        long[] bounds = new long[]{-20, 20};
+        long[] expected = new long[]{0, 40};
         utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
-        bounds = new long[]{-15,5};
-        expected = new long[]{0,20};
+        bounds = new long[]{-15, 5};
+        expected = new long[]{0, 20};
         utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
         // Is theoretically a shift even though the values do not change
-        bounds = new long[]{0,5};
-        expected = new long[]{0,5};
+        bounds = new long[]{0, 5};
+        expected = new long[]{0, 5};
         utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
@@ -330,14 +330,14 @@ class QuestionGeneratorUtilsTest {
     public void safeBoundCheckGeneralQuestionCutOff() {
 
         // It only gets cut off to the negative side, as otherwise the bounds would be 0, 0
-        long[] bounds = new long[]{-100,100};
-        long[] expected = new long[]{0,100};
+        long[] bounds = new long[]{-100, 100};
+        long[] expected = new long[]{0, 100};
         utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
         // Also gets cut off on the positive side
-        bounds = new long[]{-99999,99999999L};
-        expected = new long[]{0,99900000L};
+        bounds = new long[]{-99999, 99999999L};
+        expected = new long[]{0, 99900000L};
         utils.safeBoundCheckGeneralQuestion(bounds, 9999999);
         assertArrayEquals(expected, bounds);
 
@@ -349,15 +349,15 @@ class QuestionGeneratorUtilsTest {
         // If lower > upper, it should throw an IllegalArgumentException.
         Random random = new RandomSameNumber(0.5);
         assertThrows(IllegalArgumentException.class, () -> {
-            utils.randomLongInRangeExcl(100,0, random, List.of(), List.of(),0.5);
+            utils.randomLongInRangeExcl(100, 0, random, List.of(), List.of(), 0.5);
         });
         // If lower = upper, and they are excluded (by consumption and/or consumption string),
         // then no number can be generated
         assertThrows(IllegalArgumentException.class, () -> {
-            utils.randomLongInRangeExcl(100,100, random, List.of(), List.of(100L),0.5);
+            utils.randomLongInRangeExcl(100, 100, random, List.of(), List.of(100L), 0.5);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            utils.randomLongInRangeExcl(100,100, random, List.of("100 Wh"), List.of(),0.5);
+            utils.randomLongInRangeExcl(100, 100, random, List.of("100 Wh"), List.of(), 0.5);
         });
 
     }
@@ -373,7 +373,7 @@ class QuestionGeneratorUtilsTest {
         // On the first try it should try with 0.01 -> results in 1 as the generated value -> this is not a valid value
         // Then on second try it should try with 1 -> results in 100 which is valid -> so we test for 100
         assertEquals(100,
-                utils.randomLongInRangeExcl(0,100, random, List.of("1 Wh"), List.of(1L),0.5));
+                utils.randomLongInRangeExcl(0, 100, random, List.of("1 Wh"), List.of(1L), 0.5));
 
         // Case where it is NOT the same value that is in the exclusion list for the long values, but the SI
         // string is the same
@@ -383,8 +383,8 @@ class QuestionGeneratorUtilsTest {
         // Then on second try it should try with 0.5 -> results in 1500000 which is valid -> so we test for 1500000
         assertEquals(1500000,
                 utils.randomLongInRangeExcl(
-                        1000000,2000000, random,
-                        List.of("1.00 MWh"), List.of(1000000L),0.1));
+                        1000000, 2000000, random,
+                        List.of("1.00 MWh"), List.of(1000000L), 0.1));
 
     }
 
@@ -399,7 +399,7 @@ class QuestionGeneratorUtilsTest {
         // On the first try it should try with 0.01 -> results in 110 as the generated value -> this is not a valid value
         // Then on second try it should try with 1 -> results in 200 which is valid -> so we test for 200
         assertEquals(200,
-                utils.randomLongInRangeExcl(100,200, random, List.of(), List.of(110L),0.5));
+                utils.randomLongInRangeExcl(100, 200, random, List.of(), List.of(110L), 0.5));
 
         // Case where it is NOT the same value that is in the exclusion list for the long values, and
         // only in the range around it
@@ -408,12 +408,12 @@ class QuestionGeneratorUtilsTest {
         // -> this is not a valid value as it is bigger than 70 and smaller than 130 (range that is excluded)
         // Then on second try it should try with 0.5 -> results in 150 which is valid -> so we test for 150
         assertEquals(150,
-                utils.randomLongInRangeExcl(100,200, random, List.of(), List.of(100L),0.3));
+                utils.randomLongInRangeExcl(100, 200, random, List.of(), List.of(100L), 0.3));
 
     }
 
     @Test
-    public void testGetBoundsGeneralQuestion(){
+    public void testGetBoundsGeneralQuestion() {
 
         long[] bounds = utils.getBoundsGeneralQuestion(100);
         // Max percent should be 5 according to manual calculation of the formula
@@ -472,7 +472,7 @@ class QuestionGeneratorUtilsTest {
      */
     private class RandomSameNumber extends Random {
 
-        private double retVal;
+        private final double retVal;
 
         /**
          * Constructor to set the number it returns.

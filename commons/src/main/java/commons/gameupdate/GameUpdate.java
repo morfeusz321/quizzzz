@@ -17,6 +17,7 @@ public abstract class GameUpdate {
 
     /**
      * Checks if 2 game update objects are equal
+     *
      * @param obj the object that will be compared
      * @return true or false, whether the objects are equal or not
      */
@@ -27,6 +28,7 @@ public abstract class GameUpdate {
 
     /**
      * Generate a hash code for this object
+     *
      * @return hash code
      */
     @Override
@@ -36,6 +38,7 @@ public abstract class GameUpdate {
 
     /**
      * Creates a formatted string for this object
+     *
      * @return a formatted string in multi line style
      */
     @Override

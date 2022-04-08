@@ -22,6 +22,7 @@ public class GameUpdateDisplayLeaderboard extends GameUpdate {
 
     /**
      * Creates a new GameUpdate
+     *
      * @param leaderboard the leaderboard to be displayed by the client
      */
     public GameUpdateDisplayLeaderboard(List<Score> leaderboard) {
@@ -32,6 +33,7 @@ public class GameUpdateDisplayLeaderboard extends GameUpdate {
 
     /**
      * Returns the leaderboard to be displayed by the client
+     *
      * @return the leaderboard to be displayed by the client
      */
     public List<Score> getLeaderboard() {

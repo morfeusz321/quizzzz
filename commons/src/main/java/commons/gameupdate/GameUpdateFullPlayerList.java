@@ -24,8 +24,9 @@ public class GameUpdateFullPlayerList extends GameUpdate {
 
     /**
      * Creates a new GameUpdate
+     *
      * @param playerList the list of players in the game
-     * @param gameUUID the UUID of the game
+     * @param gameUUID   the UUID of the game
      */
     public GameUpdateFullPlayerList(List<Player> playerList, UUID gameUUID) {
 
@@ -36,6 +37,7 @@ public class GameUpdateFullPlayerList extends GameUpdate {
 
     /**
      * Returns the list of all players in the game
+     *
      * @return the list of all players in the game
      */
     public List<Player> getPlayerList() {
@@ -46,6 +48,7 @@ public class GameUpdateFullPlayerList extends GameUpdate {
 
     /**
      * Returns the UUID of the game
+     *
      * @return the UUID of the game
      */
     public UUID getGameUUID() {

@@ -9,6 +9,7 @@ import java.util.List;
  * current question, etc.
  */
 public class GameManager {
+
     private List<Question> questions;
     private Question currentQuestion;
     private int playerCount;
@@ -16,11 +17,12 @@ public class GameManager {
     /**
      * The (empty) constructor of the GameManager.
      */
-    public GameManager(){
+    public GameManager() {
     }
 
     /**
      * Returns the list of questions
+     *
      * @return the list of questions
      */
     public List<Question> getQuestions() {
@@ -29,6 +31,7 @@ public class GameManager {
 
     /**
      * Sets the list of questions
+     *
      * @param questions the list of questions
      */
     public void setQuestions(List<Question> questions) {
@@ -37,6 +40,7 @@ public class GameManager {
 
     /**
      * Returns the current question
+     *
      * @return the current question
      */
     public Question getCurrentQuestion() {
@@ -45,6 +49,7 @@ public class GameManager {
 
     /**
      * Sets the current question to a question at a specific index in the question list
+     *
      * @param idx the index in the question list
      */
     public void setCurrentQuestionByIdx(int idx) {
@@ -53,6 +58,7 @@ public class GameManager {
 
     /**
      * Getter for player count
+     *
      * @return current number of players in the game
      */
     public int getPlayerCount() {
@@ -61,9 +67,11 @@ public class GameManager {
 
     /**
      * Setter for player count
+     *
      * @param playerCount current number of players in the game
      */
     public void setPlayerCount(int playerCount) {
         this.playerCount = playerCount;
     }
+
 }

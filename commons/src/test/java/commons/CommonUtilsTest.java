@@ -22,24 +22,24 @@ public class CommonUtilsTest {
     }
 
     @Test
-    void prependingZeroTestPrepend(){
+    void prependingZeroTestPrepend() {
         assertEquals("01", utils.addPrependingZero(1));
     }
 
     @Test
-    void prependingZeroTestNoPrepend(){
+    void prependingZeroTestNoPrepend() {
         assertEquals("10", utils.addPrependingZero(10));
         assertEquals("-3", utils.addPrependingZero(-3));
     }
 
     @RepeatedTest(20)
-    void randomIntInRangeTestBothNegative(){
+    void randomIntInRangeTestBothNegative() {
         int r = utils.randomIntInRange(-50, -10, random);
         assertEquals(((NotSoRandom) random).getLastReturned() - 50, r);
     }
 
     @RepeatedTest(20)
-    void randomIntInRangeTestBothPositive(){
+    void randomIntInRangeTestBothPositive() {
         int r = utils.randomIntInRange(10, 50, random);
         assertEquals(((NotSoRandom) random).getLastReturned() + 10, r);
     }

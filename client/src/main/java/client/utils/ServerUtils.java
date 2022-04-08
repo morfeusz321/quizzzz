@@ -57,6 +57,7 @@ public class ServerUtils {
     /**
      * Tests the current server address to see if a connection can be established, and if
      * it is indeed a Quizzz Server
+     *
      * @return true if the current server could be connected to and it is a Quizzz Server, false
      * otherwise
      */
@@ -77,6 +78,7 @@ public class ServerUtils {
 
     /**
      * Attempts to establish a WebSocket connection with the server at the specified URL
+     *
      * @param url the URL with which a WebSocket connection is to be established
      * @return a WebSocket session if it can be established
      */
@@ -87,7 +89,8 @@ public class ServerUtils {
         stomp.setMessageConverter(new MappingJackson2MessageConverter());
 
         try {
-            return stomp.connect(url, new StompSessionHandlerAdapter() {}).get();
+            return stomp.connect(url, new StompSessionHandlerAdapter() {
+            }).get();
         } catch(InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch(ExecutionException e) {
@@ -114,6 +117,7 @@ public class ServerUtils {
     /**
      * Subscribes to the gameupdates WebSocket topic for the game with the specified UUID. All
      * messages published to the topic will be sent to the specified consumer.
+     *
      * @param gameUUID the UUID of the game whose topic to subscribe to
      * @param consumer the consumer to send all the messages published to the topic to
      */
@@ -125,18 +129,20 @@ public class ServerUtils {
 
     /**
      * Sends game update to the game's websocket informing that emoji was sent
+     *
      * @param gameUpdate update containing sent emoji and username
      */
-    public void sendEmoji(GameUpdate gameUpdate){
-        session.send("/game/emoji/"+gameUUID.toString(),gameUpdate);
+    public void sendEmoji(GameUpdate gameUpdate) {
+        session.send("/game/emoji/" + gameUUID.toString(), gameUpdate);
     }
 
     /**
      * Utility method to subscribe to a WebSocket topic
+     *
      * @param destination the URL (relative to the connected server) of the WebSocket topic
-     * @param type the class of the message expected to be received from the topic
-     * @param consumer the consumer to send all messages published to the topic to
-     * @param <T> the type of the message expected to be received from the topic
+     * @param type        the class of the message expected to be received from the topic
+     * @param consumer    the consumer to send all messages published to the topic to
+     * @param <T>         the type of the message expected to be received from the topic
      */
     private <T> void registerForWebsocketMessages(String destination, Class<T> type, Consumer<T> consumer) {
 
@@ -160,33 +166,37 @@ public class ServerUtils {
      * all incoming game loop updates to the provided consumer. The long poll loop is automatically
      * cancelled upon leaving the game by clicking the back button or closing the window, and it is guaranteed
      * by this method that no further updates will be accepted by the provided consumer after leaving the game.
+     *
      * @param consumer the consumer that accepts incoming game loop updates
      */
     public void registerForGameLoop(Consumer<GameUpdate> consumer, String username) {
 
-        longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username,isInGame);
+        longPollThread = new LongPollThread(SERVER, gameUUID, consumer, username, isInGame);
         longPollThread.start();
 
     }
 
     /**
      * Gets the questions for a specific game using the API endpoint (sends a get request)
+     *
      * @return Returns the retrieved questions from the server
      */
     public List<Question> getQuestions() {
 
         return ClientBuilder.newClient(new ClientConfig())
                 .target(SERVER).path("api/game/questions")
-                .queryParam( "gameID", gameUUID.toString())
+                .queryParam("gameID", gameUUID.toString())
                 .request(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .get(new GenericType<>() {});
+                .get(new GenericType<>() {
+                });
 
     }
 
     /**
      * Sends the answer to a question to the server
-     * @param answer the answer to send to the server
+     *
+     * @param answer     the answer to send to the server
      * @param playerName the username of the player
      */
     public void sendAnswerToServer(long answer, String playerName) {
@@ -207,6 +217,7 @@ public class ServerUtils {
 
     /**
      * Informs the server that a time joker has been used, using the API endpoint
+     *
      * @param username the player that used the time joker
      * @param gameUUID UUID of the current game
      * @return The username of the player if the request was successful
@@ -225,6 +236,7 @@ public class ServerUtils {
 
     /**
      * Informs the server that the question joker has been used, using the API endpoint
+     *
      * @param username the player that used the question joker
      * @param gameUUID UUID of the current game
      * @return The username of the player if the request was successful
@@ -243,6 +255,7 @@ public class ServerUtils {
 
     /**
      * Informs the server that the double points joker has been used, using the API endpoint
+     *
      * @param username the player that used the question joker
      * @param gameUUID UUID of the current game
      * @return The username of the player if the request was successful
@@ -261,6 +274,7 @@ public class ServerUtils {
 
     /**
      * Gets all activities from the server using the API endpoint
+     *
      * @return a list of activities
      */
     public List<Activity> getActivities() {
@@ -268,11 +282,13 @@ public class ServerUtils {
                 .target(SERVER).path("debug/activities") //
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Activity>>() {});
+                .get(new GenericType<List<Activity>>() {
+                });
     }
 
     /**
      * Post a modified activity to the server using the API endpoint
+     *
      * @param activity modified activity
      * @return the new activity if the request was successful
      */
@@ -286,6 +302,7 @@ public class ServerUtils {
 
     /**
      * Sends a post request to delete an activity
+     *
      * @param activity the activity that will be deleted
      * @return the old activity (now deleted) if the request was successful
      */
@@ -299,6 +316,7 @@ public class ServerUtils {
 
     /**
      * Sends a post request to import a list of activities and override (delete) the current DB
+     *
      * @param path the path to the json file
      * @return string indicating whether the request was successful
      */
@@ -312,6 +330,7 @@ public class ServerUtils {
 
     /**
      * Sends a post request to import a list of activities without overriding the current DB
+     *
      * @param path the path to the json file
      * @return string indicating whether the request was successful
      */
@@ -325,6 +344,7 @@ public class ServerUtils {
 
     /**
      * Gets the URL where the server is located as a string (e.g. http://localhost:8080/)
+     *
      * @return Returns the URL where the server is located as a string
      */
     public static String getServer() {
@@ -333,19 +353,21 @@ public class ServerUtils {
 
     /**
      * Gets the URL to a given image path
+     *
      * @param imagePath The path to the image which should be retrieved
      * @return Returns the URL to the given image path
      */
     public static String getImageURL(String imagePath) {
 
         String[] split = imagePath.split("/");
-        return SERVER + "api/img/"  + URLEncoder.encode(split[0], StandardCharsets.UTF_8) + "/"
-                                    + URLEncoder.encode(split[1], StandardCharsets.UTF_8);
+        return SERVER + "api/img/" + URLEncoder.encode(split[0], StandardCharsets.UTF_8) + "/"
+                + URLEncoder.encode(split[1], StandardCharsets.UTF_8);
 
     }
 
     /**
      * Sends a request to join a multiplayer game
+     *
      * @param username the requested username
      * @return a GameUpdateFullPlayerList if the player has joined a multiplayer game, or a GameUpdateNameInUse
      * if a player with the requested username is already in the current game
@@ -364,7 +386,8 @@ public class ServerUtils {
 
     /**
      * Sends a request to start a singleplayer game
-     * @param username the requested username
+     *
+     * @param username         the requested username
      * @param confirmNameInUse true if the client wishes to start a singleplayer game even if the username
      *                         has been registered to the leaderboard before
      * @return a GameUpdateGameStarting if the game is starting, or a GameUpdateNameInUse if the name requested
@@ -387,15 +410,16 @@ public class ServerUtils {
 
     /**
      * Informs the server that the specified player is leaving the game
+     *
      * @param username the username of the player that is leaving
      * @param gameUUID the UUID of the game that the player is leaving
      * @return the response from the server
      */
     public String leaveGame(String username, UUID gameUUID) {
-        
+
         isInGame = false;
         if(longPollThread != null) {
-            longPollThread.setIsInGame(false);   
+            longPollThread.setIsInGame(false);
         }
 
         disconnect();
@@ -429,6 +453,7 @@ public class ServerUtils {
 
     /**
      * Sends a post request for the server address
+     *
      * @param server - the address of the server
      */
     public void changeServer(String server) {
@@ -445,7 +470,7 @@ public class ServerUtils {
         }
 
         if(!server.endsWith("/"))
-            server +="/";
+            server += "/";
 
         SERVER = "http://" + server;
         try {
@@ -454,18 +479,19 @@ public class ServerUtils {
             throw new IllegalArgumentException("Malformed URL \"" + server + "\" - " + e.getMessage());
         }
         if(!connectionTest()) {
-            throw new IllegalArgumentException("\"" + server +  "\" - Server not found or was not a Quizzz Server.");
+            throw new IllegalArgumentException("\"" + server + "\" - Server not found or was not a Quizzz Server.");
         }
         WS_SERVER = "ws://" + server + "websocket";
         try {
             session = connect(WS_SERVER);
         } catch(Exception e) {
-            throw new IllegalArgumentException("\"" + server +  "\" - Found a Quizzz Server at the specified URL, but could not connect its WebSocket topic.");
+            throw new IllegalArgumentException("\"" + server + "\" - Found a Quizzz Server at the specified URL, but could not connect its WebSocket topic.");
         }
     }
 
     /**
      * Sets the UUID of the game the client is in
+     *
      * @param gameUUID the UUID of the corresponding game
      */
     public void setGameUUID(UUID gameUUID) {
@@ -485,35 +511,37 @@ public class ServerUtils {
 
     /**
      * Gets a list of scores (username and points) registered to the server's leaderboard, guaranteed to be sorted by leaderboard rank ascending
+     *
      * @return all scores on the leaderboard sorted by rank ascending
      */
     public List<Score> getLeaderboard() {
         return ClientBuilder.newClient(new ClientConfig()) //
-                                    .target(SERVER).path("api/scores/sorted") //
-                                    .request(APPLICATION_JSON) //
-                                    .accept(APPLICATION_JSON) //
-                                    .get(new GenericType<List<Score>>() {});
+                .target(SERVER).path("api/scores/sorted") //
+                .request(APPLICATION_JSON) //
+                .accept(APPLICATION_JSON) //
+                .get(new GenericType<List<Score>>() {
+                });
 
     }
 
     /**
-     *
      * @return true if the game is still going
      */
-    public boolean getIsInTheGame(){
+    public boolean getIsInTheGame() {
         return isInGame;
     }
 
 
     /**
      * retrieve player with given username
+     *
      * @param username player's username
      * @return Player
      */
-    public Player getPlayerByUsername(String username){
+    public Player getPlayerByUsername(String username) {
         List<Player> listOfPlayers = getPlayers();
-        for (Player p : listOfPlayers){
-            if (p.getUsername().equals(username)){
+        for(Player p : listOfPlayers) {
+            if(p.getUsername().equals(username)) {
                 return p;
             }
         }
@@ -523,15 +551,17 @@ public class ServerUtils {
 
     /**
      * retrieve all the players in the game
+     *
      * @return list of all current players
      */
     public List<Player> getPlayers() {
         return ClientBuilder.newClient(new ClientConfig()) //
                 .target(SERVER).path("api/game/players") //
-                .queryParam( "gameID", gameUUID.toString())
+                .queryParam("gameID", gameUUID.toString())
                 .request(APPLICATION_JSON) //
                 .accept(APPLICATION_JSON) //
-                .get(new GenericType<List<Player>>() {});
+                .get(new GenericType<List<Player>>() {
+                });
     }
 
 }

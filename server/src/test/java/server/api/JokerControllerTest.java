@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(JokerController.class)
 class JokerControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -27,17 +28,15 @@ class JokerControllerTest {
 
     @Test
     void useTimeJoker() throws Exception {
-        String username ="username";
+        String username = "username";
         UUID uuid = new UUID(1122, 122);
         Game game = mock(Game.class);
         Mockito.when(gameController.getGame(uuid)).thenReturn(game);
         Mockito.doNothing().when(game).useTimeJoker(username);
 
 
-
-
         String url = "/api/jokers/time";
-        mockMvc.perform(post(url).param("gameUUID",uuid.toString()).param("username",username)).andExpect(status().isOk());
+        mockMvc.perform(post(url).param("gameUUID", uuid.toString()).param("username", username)).andExpect(status().isOk());
 
 
         verify(gameController, times(1)).getGame(uuid);
@@ -46,13 +45,13 @@ class JokerControllerTest {
 
     @Test
     void useTimeJokerGameNull() throws Exception {
-        String username ="username";
+        String username = "username";
         UUID uuid = new UUID(1122, 122);
         Mockito.when(gameController.getGame(uuid)).thenReturn(null);
 
 
         String url = "/api/jokers/time";
-        mockMvc.perform(post(url).param("gameUUID",uuid.toString()).param("username",username)).andExpect(status().isBadRequest());
+        mockMvc.perform(post(url).param("gameUUID", uuid.toString()).param("username", username)).andExpect(status().isBadRequest());
 
 
         verify(gameController, times(1)).getGame(uuid);
@@ -60,27 +59,25 @@ class JokerControllerTest {
 
     @Test
     void useTimeJokerBadUUID() throws Exception {
-        String username ="username";
+        String username = "username";
 
         String url = "/api/jokers/time";
-        mockMvc.perform(post(url).param("gameUUID","badthing").param("username",username)).andExpect(status().isBadRequest());
+        mockMvc.perform(post(url).param("gameUUID", "badthing").param("username", username)).andExpect(status().isBadRequest());
 
     }
 
 
     @Test
-    void useAnswerJoker() throws Exception{
-        String username ="username";
+    void useAnswerJoker() throws Exception {
+        String username = "username";
         UUID uuid = new UUID(1122, 122);
         Game game = mock(Game.class);
         Mockito.when(gameController.getGame(uuid)).thenReturn(game);
         Mockito.doNothing().when(game).useQuestionJoker(username);
 
 
-
-
         String url = "/api/jokers/question";
-        mockMvc.perform(post(url).param("gameUUID",uuid.toString()).param("username",username)).andExpect(status().isOk());
+        mockMvc.perform(post(url).param("gameUUID", uuid.toString()).param("username", username)).andExpect(status().isOk());
 
 
         verify(gameController, times(1)).getGame(uuid);
@@ -89,13 +86,13 @@ class JokerControllerTest {
 
     @Test
     void useQuestionJokerGameNull() throws Exception {
-        String username ="username";
+        String username = "username";
         UUID uuid = new UUID(1122, 122);
         Mockito.when(gameController.getGame(uuid)).thenReturn(null);
 
 
         String url = "/api/jokers/question";
-        mockMvc.perform(post(url).param("gameUUID",uuid.toString()).param("username",username)).andExpect(status().isBadRequest());
+        mockMvc.perform(post(url).param("gameUUID", uuid.toString()).param("username", username)).andExpect(status().isBadRequest());
 
 
         verify(gameController, times(1)).getGame(uuid);
@@ -103,26 +100,24 @@ class JokerControllerTest {
 
     @Test
     void useQuestionJokerBadUUID() throws Exception {
-        String username ="username";
+        String username = "username";
 
         String url = "/api/jokers/question";
-        mockMvc.perform(post(url).param("gameUUID","badthing").param("username",username)).andExpect(status().isBadRequest());
+        mockMvc.perform(post(url).param("gameUUID", "badthing").param("username", username)).andExpect(status().isBadRequest());
 
     }
 
     @Test
-    void useScoreJoker() throws Exception{
-        String username ="username";
+    void useScoreJoker() throws Exception {
+        String username = "username";
         UUID uuid = new UUID(1122, 122);
         Game game = mock(Game.class);
         Mockito.when(gameController.getGame(uuid)).thenReturn(game);
         Mockito.doNothing().when(game).useScoreJoker(username);
 
 
-
-
         String url = "/api/jokers/score";
-        mockMvc.perform(post(url).param("gameUUID",uuid.toString()).param("username",username)).andExpect(status().isOk());
+        mockMvc.perform(post(url).param("gameUUID", uuid.toString()).param("username", username)).andExpect(status().isOk());
 
 
         verify(gameController, times(1)).getGame(uuid);
@@ -131,13 +126,13 @@ class JokerControllerTest {
 
     @Test
     void useScoreJokerGameNull() throws Exception {
-        String username ="username";
+        String username = "username";
         UUID uuid = new UUID(1122, 122);
         Mockito.when(gameController.getGame(uuid)).thenReturn(null);
 
 
         String url = "/api/jokers/score";
-        mockMvc.perform(post(url).param("gameUUID",uuid.toString()).param("username",username)).andExpect(status().isBadRequest());
+        mockMvc.perform(post(url).param("gameUUID", uuid.toString()).param("username", username)).andExpect(status().isBadRequest());
 
 
         verify(gameController, times(1)).getGame(uuid);
@@ -145,10 +140,10 @@ class JokerControllerTest {
 
     @Test
     void useScoreJokerBadUUID() throws Exception {
-        String username ="username";
+        String username = "username";
 
         String url = "/api/jokers/score";
-        mockMvc.perform(post(url).param("gameUUID","badthing").param("username",username)).andExpect(status().isBadRequest());
+        mockMvc.perform(post(url).param("gameUUID", "badthing").param("username", username)).andExpect(status().isBadRequest());
 
     }
 

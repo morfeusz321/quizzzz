@@ -20,6 +20,7 @@ public class GameUpdatePlayerLeft extends GameUpdate {
 
     /**
      * Creates a new GameUpdate
+     *
      * @param player the player that has left the game
      */
     public GameUpdatePlayerLeft(Player player) {
@@ -30,6 +31,7 @@ public class GameUpdatePlayerLeft extends GameUpdate {
 
     /**
      * Returns the player that has left the game
+     *
      * @return the player that has left the game
      */
     public Player getPlayer() {

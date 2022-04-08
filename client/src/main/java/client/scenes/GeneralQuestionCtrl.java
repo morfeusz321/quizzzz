@@ -12,9 +12,10 @@ public class GeneralQuestionCtrl extends MultipleChoiceQuestionCtrl {
 
     /**
      * Creates a GeneralQuestionCtrl, which controls the display/interaction of the general question screen.
-     * @param server Utilities for communicating with the server (API endpoint)
+     *
+     * @param server   Utilities for communicating with the server (API endpoint)
      * @param mainCtrl The main control which is used for calling methods to switch scenes
-     * @param utils Common utilities (for server- and client-side)
+     * @param utils    Common utilities (for server- and client-side)
      */
     @Inject
     public GeneralQuestionCtrl(ServerUtils server, MainCtrl mainCtrl, CommonUtils utils) {

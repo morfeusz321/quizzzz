@@ -62,9 +62,9 @@ public class MainCtrl {
     private final ServerUtils server;
     private GameManager gameManager;
     private Stage primaryStage;
-    private CommonUtils utils;
+    private final CommonUtils utils;
     private ScoreUtils scoreHelper;
-    private ModalFactory modalFactory;
+    private final ModalFactory modalFactory;
 
     private MainScreenCtrl mainScreenCtrl;
     private Scene mainScreen;
@@ -112,14 +112,14 @@ public class MainCtrl {
     /**
      * Creates a MainCtrl, which controls displaying and switching between screens.
      *
-     * @param server Utilities for communicating with the server (API endpoint)
-     * @param utils common utils to use
+     * @param server       Utilities for communicating with the server (API endpoint)
+     * @param utils        common utils to use
      * @param modalFactory the modal factory to use
      */
     @Inject
     public MainCtrl(ServerUtils server, CommonUtils utils, ModalFactory modalFactory) {
         this.server = server;
-        this.utils=utils;
+        this.utils = utils;
         this.modalFactory = modalFactory;
     }
 
@@ -246,7 +246,7 @@ public class MainCtrl {
             Alert alert = modalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
             alert.showAndWait();
 
-            if (alert.getResult() == ButtonType.OK) {
+            if(alert.getResult() == ButtonType.OK) {
                 sendLeaveMessageToServer();
                 saveUsernamePrefillToFile(usernamePrefill);
                 System.exit(0);
@@ -270,7 +270,7 @@ public class MainCtrl {
      * if the user is entering the waiting room from the end leaderboard the username scene doesnt have to be shown
      * and the joining is done here automatically with the pre-filled username
      */
-    public void showWaitRoomFromTheEndScreen(){
+    public void showWaitRoomFromTheEndScreen() {
         userCtrl.join();
     }
 
@@ -332,13 +332,13 @@ public class MainCtrl {
      * Shows next question, the question type is selected randomly
      */
     public void nextQuestion(Question q) {
-        if (q instanceof GeneralQuestion) {
+        if(q instanceof GeneralQuestion) {
             showGeneralQuestion(q);
-        } else if (q instanceof ComparisonQuestion) {
+        } else if(q instanceof ComparisonQuestion) {
             showComparisonQuestion(q);
-        } else if (q instanceof EstimationQuestion) {
+        } else if(q instanceof EstimationQuestion) {
             showEstimationQuestion(q);
-        } else if (q instanceof WhichIsMoreQuestion) {
+        } else if(q instanceof WhichIsMoreQuestion) {
             showMostExpensiveQuestion(q);
         }
     }
@@ -377,15 +377,15 @@ public class MainCtrl {
      */
     protected void gameUpdateHandler(GameUpdate gameUpdate) {
 
-        if (gameUpdate instanceof GameUpdatePlayerJoined) {
+        if(gameUpdate instanceof GameUpdatePlayerJoined) {
             waitingRoomCtrl.addPlayerToWaitingRoom(((GameUpdatePlayerJoined) gameUpdate).getPlayer());
-        } else if (gameUpdate instanceof GameUpdatePlayerLeft) {
+        } else if(gameUpdate instanceof GameUpdatePlayerLeft) {
             if(gameManager != null) {
-                gameManager.setPlayerCount(gameManager.getPlayerCount()-1);
+                gameManager.setPlayerCount(gameManager.getPlayerCount() - 1);
                 Platform.runLater(this::handleUpdatePlayerCount);
             }
             waitingRoomCtrl.removePlayerFromWaitingRoom(((GameUpdatePlayerLeft) gameUpdate).getPlayer());
-        } else if (gameUpdate instanceof GameUpdateNoQuestions) {
+        } else if(gameUpdate instanceof GameUpdateNoQuestions) {
             sendLeaveMessageToServer();
             Platform.runLater(
                     () -> {
@@ -395,12 +395,12 @@ public class MainCtrl {
                                         "closing this pop up.");
                         alert.showAndWait();
 
-                        if (alert.getResult() == ButtonType.OK) {
+                        if(alert.getResult() == ButtonType.OK) {
                             connectToServerCtrl.goBackButton();
                         }
                     }
             );
-        } else if (gameUpdate instanceof GameUpdateGameStarting) {
+        } else if(gameUpdate instanceof GameUpdateGameStarting) {
             resetJokers();
             server.setInGameTrue();
             gameManager = new GameManager(); // "reset" game manager, because a new game is started
@@ -410,15 +410,15 @@ public class MainCtrl {
             gameManager.setPlayerCount(server.getPlayers().size());
             handleUpdatePlayerCount();
             server.registerForGameLoop(this::incomingQuestionHandler, getSavedUsernamePrefill());
-        } else if (gameUpdate instanceof GameEmojiUpdate) {
-            if(!((GameEmojiUpdate) gameUpdate).getUsername().equals(userCtrl.getSavedCurrentUsername())){
-                try{
-                    ImageView emoji = (ImageView) primaryStage.getScene().lookup('#'+((GameEmojiUpdate) gameUpdate).getEmoji());
+        } else if(gameUpdate instanceof GameEmojiUpdate) {
+            if(!((GameEmojiUpdate) gameUpdate).getUsername().equals(userCtrl.getSavedCurrentUsername())) {
+                try {
+                    ImageView emoji = (ImageView) primaryStage.getScene().lookup('#' + ((GameEmojiUpdate) gameUpdate).getEmoji());
                     String username = ((GameEmojiUpdate) gameUpdate).getUsername();
                     Platform.runLater(() -> {
-                        emojiAnimation(emoji,username);
+                        emojiAnimation(emoji, username);
                     });
-                }catch (ClassCastException e){
+                } catch(ClassCastException e) {
                     e.printStackTrace();
                 }
             }
@@ -429,18 +429,20 @@ public class MainCtrl {
 
     /**
      * Sends the message to server utils that emoji was pressed
+     *
      * @param sentEmoji id of sent emoji
      */
-    public void sendEmoji(String sentEmoji){
-        server.sendEmoji(new GameEmojiUpdate(sentEmoji,userCtrl.getSavedCurrentUsername()));
+    public void sendEmoji(String sentEmoji) {
+        server.sendEmoji(new GameEmojiUpdate(sentEmoji, userCtrl.getSavedCurrentUsername()));
     }
 
     /**
      * Displays emoji animation
+     *
      * @param clickedEmoji clicked emoji instance
-     * @param username name of the user who sent the emoji
+     * @param username     name of the user who sent the emoji
      */
-    public void emojiAnimation(ImageView clickedEmoji,String username) {
+    public void emojiAnimation(ImageView clickedEmoji, String username) {
 
         ImageView emoji = new ImageView(clickedEmoji.getImage());
         AnchorPane anchorPane = (AnchorPane) primaryStage.getScene().lookup("#anchorPane");
@@ -492,11 +494,12 @@ public class MainCtrl {
 
     /**
      * Displays username of the person who sent emoji underneath the emoji
-     * @param username username of person who sent the emoji
+     *
+     * @param username   username of person who sent the emoji
      * @param anchorPane anchorPane of the current scene
      * @param hoverEmoji hover Emoji of the current screen
      */
-    private void emojiNameAnimation(String username, AnchorPane anchorPane,ImageView hoverEmoji) {
+    private void emojiNameAnimation(String username, AnchorPane anchorPane, ImageView hoverEmoji) {
 
         Label label = new Label(username);
         anchorPane.getChildren().add(label);
@@ -504,8 +507,8 @@ public class MainCtrl {
 
         double sizeRatio = 0.78; // should be <= 1
 
-        label.setLayoutX(hoverEmoji.getLayoutX()+65);
-        label.setLayoutY(hoverEmoji.getLayoutY()+70);
+        label.setLayoutX(hoverEmoji.getLayoutX() + 65);
+        label.setLayoutY(hoverEmoji.getLayoutY() + 70);
 
         Random r = new Random();
         CubicCurve cubic = new CubicCurve();
@@ -550,7 +553,7 @@ public class MainCtrl {
      */
     private void incomingQuestionHandler(GameUpdate gameUpdate) {
 
-        if (gameUpdate instanceof GameUpdateGameFinished gameUpdateGameFinished) {
+        if(gameUpdate instanceof GameUpdateGameFinished gameUpdateGameFinished) {
 
             // This game update can later contain metadata about the game like scores or anything
             // else the client would want to display after the game ends
@@ -558,26 +561,23 @@ public class MainCtrl {
             leaderboardCtrl.initializeButtonsForMainScreen();
             Platform.runLater(() -> this.showLeaderboardWithPresetScores(gameUpdateGameFinished.getLeaderboard()));
 
-        } else if (gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
+        } else if(gameUpdate instanceof GameUpdateNextQuestion gameUpdateNextQuestion) {
 
             gameManager.setCurrentQuestionByIdx(gameUpdateNextQuestion.getQuestionIdx());
             Platform.runLater(() -> nextQuestion(gameManager.getCurrentQuestion()));
             handleUpdatePlayerCount();
 
-        } else if (gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
+        } else if(gameUpdate instanceof GameUpdateTransitionPeriodEntered gameUpdateTransitionPeriodEntered) {
             scoreHelper.setScore(gameUpdateTransitionPeriodEntered.getAnswerResponseEntity());
 
             UUID id = gameManager.getCurrentQuestion().questionId;
-            if(gameManager.getCurrentQuestion() instanceof GeneralQuestion){
+            if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
                 generalQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
-            }
-            else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion){
+            } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
                 mostExpensiveQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
-            }
-            else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion){
+            } else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
                 comparisonQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
-            }
-            else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion){
+            } else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion) {
                 estimationQuestionCtrl.enterTransitionScreen(gameUpdateTransitionPeriodEntered);
             }
 
@@ -631,13 +631,13 @@ public class MainCtrl {
      * Updates the player count label from the question screens when a player leaves the game
      */
     public void handleUpdatePlayerCount() {
-        if (gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
+        if(gameManager.getCurrentQuestion() instanceof GeneralQuestion) {
             generalQuestionCtrl.updatePlayerCount();
-        } else if (gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
+        } else if(gameManager.getCurrentQuestion() instanceof ComparisonQuestion) {
             comparisonQuestionCtrl.updatePlayerCount();
-        } else if (gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
+        } else if(gameManager.getCurrentQuestion() instanceof WhichIsMoreQuestion) {
             mostExpensiveQuestionCtrl.updatePlayerCount();
-        } else if (gameManager.getCurrentQuestion() instanceof EstimationQuestion) {
+        } else if(gameManager.getCurrentQuestion() instanceof EstimationQuestion) {
             estimationQuestionCtrl.updatePlayerCount();
         }
     }
@@ -708,6 +708,7 @@ public class MainCtrl {
 
     /**
      * Returns the game manager (to be used for current question number)
+     *
      * @return the game manager
      */
     public GameManager getGameManager() {
@@ -769,8 +770,8 @@ public class MainCtrl {
 
     /**
      * if the leaderboard is opened from main screen the text in the bubble should be changed
-      */
-    public void changeLeaderboardText(){
+     */
+    public void changeLeaderboardText() {
         leaderboardCtrl.disableButtonsForMainScreen();
         leaderboardCtrl.changeTextMainScreen();
     }
@@ -790,6 +791,7 @@ public class MainCtrl {
 
     /**
      * Displays the leaderboard with the given list of scores
+     *
      * @param scoreList the list of scores to display
      */
     public void showLeaderboardWithPresetScores(List<Score> scoreList) {
@@ -811,7 +813,7 @@ public class MainCtrl {
         Alert alert = modalFactory.getModal(Alert.AlertType.CONFIRMATION, "Leaving?", "Do you want to leave?");
         alert.showAndWait();
 
-        if (alert.getResult() == ButtonType.OK) {
+        if(alert.getResult() == ButtonType.OK) {
             sendLeaveMessageToServer();
             connectToServerCtrl.goBackButton();
         }
@@ -832,20 +834,20 @@ public class MainCtrl {
             URI uri = MainCtrl.class.getResource("/client/data/data.quizzz").toURI();
             File data = new File(uri);
             fileReader = new Scanner(data);
-        } catch (NullPointerException | URISyntaxException | FileNotFoundException e) {
+        } catch(NullPointerException | URISyntaxException | FileNotFoundException e) {
             return "";
         }
 
-        while (fileReader.hasNextLine()) {
+        while(fileReader.hasNextLine()) {
             String line = fileReader.nextLine();
-            if (line.startsWith("username: ")) {
+            if(line.startsWith("username: ")) {
                 try {
                     String toReturn = line.split(": ")[1];
                     if(toReturn.length() > MAXIMUM_USERNAME_SIZE) {
                         toReturn = toReturn.substring(0, MAXIMUM_USERNAME_SIZE);
                     }
                     return toReturn;
-                } catch (IndexOutOfBoundsException e) {
+                } catch(IndexOutOfBoundsException e) {
                     return "";
                 }
             }
@@ -874,7 +876,7 @@ public class MainCtrl {
             fileWriter.write("username: " + username);
             fileWriter.close();
 
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
@@ -882,18 +884,20 @@ public class MainCtrl {
 
     /**
      * retrieves the score from player
+     *
      * @return player's score
      */
-    public int getScore(){
-       return this.scoreHelper.getPoints();
+    public int getScore() {
+        return this.scoreHelper.getPoints();
     }
 
     /**
      * Disables a joker button for the current game
+     *
      * @param number the number of the button (1 - remove one wrong answer joker, 2 - double points joker, 3 - time joker)
      */
     public void disableJoker(int number) {
-        switch (number) {
+        switch(number) {
             case 1 -> usedRemove = true;
             case 2 -> usedDouble = true;
             case 3 -> usedTime = true;
@@ -902,11 +906,12 @@ public class MainCtrl {
 
     /**
      * Returns whether the selected joker button was used or not
+     *
      * @param number the number of the button (1 - remove one wrong answer joker, 2 - double points joker, 3 - time joker)
      * @return true if already used, false otherwise
      */
     public boolean getJokerStatus(int number) {
-        switch (number) {
+        switch(number) {
             case 1 -> {
                 return usedRemove;
             }
@@ -931,6 +936,7 @@ public class MainCtrl {
 
     /**
      * Method for getting the current game UUID
+     *
      * @return UUID of the current game
      */
     public UUID getGameUUID() {

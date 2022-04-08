@@ -7,21 +7,23 @@ import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
 public class AnimationUtils {
+
     private static final long ANIMATION_MILLISECONDS = 400L;
 
     /**
      * fading transition and depending on nextScene it goes to that scene
+     *
      * @param anchorPane anchorPane of the Controller
-     * @param mainCtrl main controller
-     * @param nextScene next scene to be shown
+     * @param mainCtrl   main controller
+     * @param nextScene  next scene to be shown
      */
-    public void fadeOut(AnchorPane anchorPane, MainCtrl mainCtrl, String nextScene){
+    public void fadeOut(AnchorPane anchorPane, MainCtrl mainCtrl, String nextScene) {
         FadeTransition fadeTransition = new FadeTransition();
         fadeTransition.setDuration(Duration.millis(ANIMATION_MILLISECONDS));
         fadeTransition.setNode(anchorPane);
         fadeTransition.setFromValue(1);
         fadeTransition.setToValue(0);
-        switch(nextScene){
+        switch(nextScene) {
             case "main":
                 fadeTransition.setOnFinished((ActionEvent event) -> mainCtrl.showMainScreen());
                 break;
@@ -55,6 +57,7 @@ public class AnimationUtils {
 
     /**
      * fading transition
+     *
      * @param anchorPane
      */
     public void fadeIn(AnchorPane anchorPane) {
@@ -66,4 +69,5 @@ public class AnimationUtils {
         fadeTransition.setToValue(1);
         fadeTransition.play();
     }
+
 }

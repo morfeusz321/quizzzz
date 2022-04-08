@@ -34,48 +34,49 @@ class AdminInterfaceControllerTest {
     void getAllActivities() throws Exception {
         List<Activity> list = new ArrayList<>();
         list.add(new Activity("1", "/path/to/image/", "Activity 1", 9));
-        list.add( new Activity("2", "/path/to/image/", "Activity 2", 10));
-        list.add( new Activity("3", "/path/to/image/", "Activity 3", 11));
-        list.add( new Activity("4", "/path/to/image/", "Activity 4", 999999999));
+        list.add(new Activity("2", "/path/to/image/", "Activity 2", 10));
+        list.add(new Activity("3", "/path/to/image/", "Activity 3", 11));
+        list.add(new Activity("4", "/path/to/image/", "Activity 4", 999999999));
         Mockito.when(activityDBController.listAll()).thenReturn(list);
         String url = "/debug/activities";
         mockMvc.perform(get(url)).andExpect(status().isOk());
-        verify(activityDBController,times(1)).listAll();
+        verify(activityDBController, times(1)).listAll();
     }
 
     @Test
     void edit() throws Exception {
-        ObjectMapper objectMapper =new ObjectMapper();
-        ActivityDB activityDB =mock(ActivityDB.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ActivityDB activityDB = mock(ActivityDB.class);
         Activity activity = new Activity("1", "/path/to/image/", "Activity 1", 9);
         Mockito.when(activityDBController.getInternalDB()).thenReturn(activityDB);
         Mockito.when(activityDB.save(activity)).thenReturn(activity);
         String url = "/debug/activities/edit";
         mockMvc.perform(post(url).content(objectMapper.writeValueAsString(activity)).contentType("application/json")).andExpect(status().isOk());
-        verify(activityDB,times(1)).save(activity);
-        verify(activityDBController,times(1)).getInternalDB();
+        verify(activityDB, times(1)).save(activity);
+        verify(activityDBController, times(1)).getInternalDB();
 
     }
 
     @Test
     void delete() throws Exception {
-        ObjectMapper objectMapper =new ObjectMapper();
-        ActivityDB activityDB =mock(ActivityDB.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ActivityDB activityDB = mock(ActivityDB.class);
         Activity activity = new Activity("1", "/path/to/image/", "Activity 1", 9);
         Mockito.when(activityDBController.getInternalDB()).thenReturn(activityDB);
         String url = "/debug/activities/delete";
         mockMvc.perform(post(url).content(objectMapper.writeValueAsString(activity)).contentType("application/json")).andExpect(status().isOk());
-        verify(activityDB,times(1)).delete(activity);
-        verify(activityDBController,times(1)).getInternalDB();
+        verify(activityDB, times(1)).delete(activity);
+        verify(activityDBController, times(1)).getInternalDB();
     }
 
     @Test
-    void importActivity() throws Exception{
-        String path ="server/src/main/resources/activities/activities.json";
+    void importActivity() throws Exception {
+        String path = "server/src/main/resources/activities/activities.json";
         String url = "/debug/activities/import";
         File file = new File(path);
         doNothing().when(activityDBController).forceReload(file);
         mockMvc.perform(post(url).content(path).contentType("application/json")).andExpect(status().isOk());
 
     }
+
 }

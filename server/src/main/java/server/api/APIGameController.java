@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/game")
 public class APIGameController {
 
-    private GameController gameController;
+    private final GameController gameController;
 
     /**
      * Creates the API controller
@@ -43,7 +43,7 @@ public class APIGameController {
         UUID uuid;
         try {
             uuid = UUID.fromString(gameIDString);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -53,7 +53,7 @@ public class APIGameController {
             return ResponseEntity.badRequest().build();
         }
         List<Question> questions = game.getQuestions();
-        if(questions == null || questions.size() != 20){
+        if(questions == null || questions.size() != 20) {
             return ResponseEntity.internalServerError().build();
         }
 
@@ -64,9 +64,10 @@ public class APIGameController {
     /**
      * Provides game loop updates in the form of a deffered result to allow for
      * long polling to this endpoint. Maps to api/game/
+     *
      * @param gameIDString the UUID of the game whose updates the client wishes to
      *                     subscribe to
-     * @param username the name of the player
+     * @param username     the name of the player
      * @return 200 OK: game loop update, or bad request if the game UUID does not exist.
      * Can also return an internal server error in case of timeout.
      */
@@ -78,7 +79,7 @@ public class APIGameController {
         UUID uuid;
         try {
             uuid = UUID.fromString(gameIDString);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             result.setResult(ResponseEntity.badRequest().build());
             return result;
         }
@@ -102,11 +103,12 @@ public class APIGameController {
     /**
      * maps to /api/game/answer
      * saves the answer to the Concurrent map in the game class, answers the http request
+     *
      * @param gameIDString the UUID string of the game
-     * @param playerName the username of the player
+     * @param playerName   the username of the player
      * @param answerString the chosen answer by the player
      * @return response entity containing information about the answer: whether the answer was correct,
-     *  the answer, and proximity to the correct answer for the estimation question
+     * the answer, and proximity to the correct answer for the estimation question
      */
     @PostMapping("/answer")
     public ResponseEntity<String> answer(@RequestParam("gameID") String gameIDString,
@@ -115,14 +117,14 @@ public class APIGameController {
         long answer;
         try {
             answer = Long.parseLong(answerString);
-        } catch (NumberFormatException e) {
+        } catch(NumberFormatException e) {
             return ResponseEntity.badRequest().build();
         }
 
         UUID gameID;
         try {
             gameID = UUID.fromString(gameIDString);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -144,6 +146,7 @@ public class APIGameController {
 
     /**
      * retrieve all players from the game
+     *
      * @param gameIDString game UUID of the game
      * @return List of all current players
      */
@@ -153,7 +156,7 @@ public class APIGameController {
         UUID uuid;
         try {
             uuid = UUID.fromString(gameIDString);
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -164,7 +167,7 @@ public class APIGameController {
         }
 
         List<Player> players = game.getPlayers();
-        if( players== null){
+        if(players == null) {
             return ResponseEntity.internalServerError().build();
         }
 

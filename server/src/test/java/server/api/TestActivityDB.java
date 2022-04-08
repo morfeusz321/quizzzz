@@ -25,7 +25,7 @@ public class TestActivityDB implements ActivityDB {
     }
 
     @Override
-    public Activity getRandomActivity(){
+    public Activity getRandomActivity() {
         Random r = new Random();
         int idx = r.nextInt(db.size());
         return db.get(idx);
@@ -35,13 +35,13 @@ public class TestActivityDB implements ActivityDB {
     public Activity getActivityExclAndInRange(Collection<String> ids,
                                               Collection<Long> consumptions,
                                               long lower,
-                                              long upper){
+                                              long upper) {
         List<Activity> tmpDb = new ArrayList<>(db);
         // The elements will not be modified, so using this as a copy is not a problem
         Collections.shuffle(tmpDb);
         // Random order and search for the first activity that fulfills the requirements (or return null)
         return tmpDb.stream().filter(a -> (!ids.contains(a.id) && !consumptions.contains(a.consumption)
-        && a.consumption <= upper && a.consumption >= lower)).findFirst().orElse(null);
+                && a.consumption <= upper && a.consumption >= lower)).findFirst().orElse(null);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class TestActivityDB implements ActivityDB {
     public Page<Activity> findAll(Pageable pageable) {
 
         List<Activity> returnValues = new ArrayList<>();
-        for (long i = pageable.getOffset(); i < pageable.getOffset() + pageable.getPageSize(); i++) {
+        for(long i = pageable.getOffset(); i < pageable.getOffset() + pageable.getPageSize(); i++) {
 
             returnValues.add(db.get((int) i));
 

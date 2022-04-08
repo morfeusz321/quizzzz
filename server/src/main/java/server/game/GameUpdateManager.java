@@ -16,10 +16,11 @@ import java.util.UUID;
 @Component
 public class GameUpdateManager {
 
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     /**
      * Instantiates this controller
+     *
      * @param simpMessagingTemplate the messaging template for sending messages
      */
     public GameUpdateManager(SimpMessagingTemplate simpMessagingTemplate) {
@@ -31,7 +32,8 @@ public class GameUpdateManager {
     /**
      * Sends a message to all subscribers of the game updates topic of the game with the specified UUID
      * that the specified player has joined
-     * @param player the player that joined
+     *
+     * @param player   the player that joined
      * @param gameUUID the UUID of the game that the player has joined
      */
     public void playerJoined(Player player, UUID gameUUID) {
@@ -43,7 +45,8 @@ public class GameUpdateManager {
     /**
      * Sends a message to all subscribers of the game updates topic of the game with the specified UUID
      * that the specified player has left
-     * @param player the player that left
+     *
+     * @param player   the player that left
      * @param gameUUID the UUID of the game that the player has left
      */
     public void playerLeft(Player player, UUID gameUUID) {
@@ -55,6 +58,7 @@ public class GameUpdateManager {
     /**
      * Sends a message to all subscribers of the game updates topic of the game with the specified UUID
      * that the game is starting
+     *
      * @param gameUUID the UUID of the game that is starting
      */
     public void startGame(UUID gameUUID) {
@@ -66,6 +70,7 @@ public class GameUpdateManager {
     /**
      * Sends a message to all subscribers of the game updates topic of the game with the specified UUID
      * that no questions could be generated for this game.
+     *
      * @param gameUUID the UUID of the game that could not be started
      */
     public void noQuestionsGenerated(UUID gameUUID) {
